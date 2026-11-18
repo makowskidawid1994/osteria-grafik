@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Osteria Antonina — Grafik</title>
+<style>
+:root {
+  --primary: #1a1a2e;
+  --accent: #c8973a;
+  --accent2: #2d6a4f;
+  --bg: #f7f8fa;
+  --card: #ffffff;
+  --border: #e2e6ea;
+  --text: #1a1a2e;
+  --muted: #6b7280;
+  --danger: #dc2626;
+  --success: #16a34a;
+  --warn: #d97706;
+  --shadow: 0 1px 3px rgba(0,0,0,.08), 0 4px 16px rgba(0,0,0,.04);
+  --radius: 12px;
+  --font: -apple-system, 'Inter', 'Segoe UI', sans-serif;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: var(--font); background: var(--bg); color: var(--text); min-height: 100vh; }
+
+#auth-screen {
+  min-height: 100vh; display: flex; align-items: center; justify-content: center;
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 60%, #0f3460 100%);
+  padding: 24px;
+}
+.auth-box {
+  background: white; border-radius: 20px; padding: 40px 36px; width: 100%; max-width: 380px;
+  box-shadow: 0 20px 60px rgba(0,0,0,.3);
+}
+.auth-logo { text-align: center; margin-bottom: 32px; }
+.auth-logo h1 { font-size: 22px; font-weight: 700; color: var(--primary); letter-spacing: -.3px; }
+.auth-logo p { font-size: 13px; color: var(--muted); margin-top: 4px; }
+.auth-logo .dot { color: var(--accent); }
+.form-group { margin-bottom: 16px; }
+.form-group label { display: block; font-size: 12px; font-weight: 600; color: var(--muted); margin-bottom: 6px; letter-spacing: .4px; text-transform: uppercase; }
+.form-group input {
+  width: 100%; padding: 12px 14px; border: 1.5px solid var(--border); border-radius: 10px;
+  font-size: 15px; font-family: var(--font); outline: none; transition: border-color .15s;
+  background: #fafbfc;
+}
+.form-group input:focus { border-color: var(--accent); background: white; }
+.btn-primary {
+  width: 100%; padding: 13px; background: var(--primary); color: white; border: none;
+  border-radius: 10px; font-size: 15px; font-weight: 600; cursor: pointer; margin-top: 8px;
+  transition: background .15s;
+}
+.btn-primary:hover { background: #0f0f20; }
+.auth-error { color: var(--danger); font-size: 13px; margin-top: 10px; text-align: center; display: none; }
+
+#app { display: none; }
+.header {
+  background: var(--primary); color: white; padding: 0 16px;
+  display: flex; align-items: center; height: 56px; position: sticky; top: 0; z-index: 100;
+  box-shadow: 0 2px 8px rgba(0,0,0,.2);
+}
+.header-logo { font-size: 15px; font-weight: 700; flex: 1; letter-spacing: -.2px; }
+.header-logo span { color: var(--accent); }
+.header-role {
+  background: rgba(200,151,58,.2); color: var(--accent); font-size: 11px; font-weight: 700;
+  padding: 4px 10px; border-radius: 20px; margin-right: 10px; letter-spacing: .3px; text-transform: uppercase;
+}
+.header-user { font-size: 13px; color: rgba(255,255,255,.7); margin-right: 12px; }
+.btn-logout {
+  background: rgba(255,255,255,.1); color: white; border: 1px solid rgba(255,255,255,.2);
+  padding: 6px 12px; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer;
+}
+
+.bottom-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; background: white;
+  border-top: 1px solid var(--border); display: flex; z-index: 100;
+  padding-bottom: env(safe-area-inset-bottom);
+}
+.nav-item {
+  flex: 1; display: flex; flex-direction: column; align-items: center; padding: 10px 0;
+  cursor: pointer; color: var(--muted); font-size: 10px; font-weight: 600; gap: 4px;
+  transition: color .15s; border: none; background: none; position: relative;
+}
+.nav-item.active { color: var(--primary); }
+.nav-item svg { width: 22px; height: 22px; }
+
+.main { padding: 0 0 80px; }
+
+.week-nav-btn {
+  width: 36px; height: 36px; border: 1.5px solid var(--border); background: white;
+  border-radius: 10px; display: flex; align-items: center; justify-content: center;
+  cursor: pointer; font-size: 18px; color: var(--text);
+}
+.dept-tab {
+  padding: 7px 16px; border-radius: 20px; font-size: 13px; font-weight: 600; cursor: pointer;
+  white-space: nowrap; border: 1.5px solid var(--border); background: white; color: var(--muted);
+  transition: all .15s;
+}
+.dept-tab.active { background: var(--primary); color: white; border-color: var(--primary); }
+
+.emp-card {
+  background: white; border-radius: var(--radius); border: 1px solid var(--border);
+  box-shadow: var(--shadow); overflow: hidden;
+}
+.emp-card-header {
+  padding: 14px 16px 10px; display: flex; align-items: center; gap: 12px;
+  border-bottom: 1px solid #f0f0f0;
+}
+.emp-avatar {
+  width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center;
+  justify-content: center; font-size: 15px; font-weight: 700; color: white; flex-shrink: 0;
+}
+.emp-name { font-size: 14px; font-weight: 700; }
+.emp-week-row {
+  display: grid; grid-template-columns: repeat(7, 1fr); gap: 1px;
+  background: var(--border);
+}
+.day-cell {
+  background: white; padding: 8px 4px; cursor: pointer; min-height: 56px;
+  display: flex; flex-direction: column; align-items: center; gap: 2px;
+  transition: background .1s; position: relative;
+}
+.day-cell:hover { background: #f0f4ff; }
+.day-cell.has-shift { background: #f0faf4; }
+.day-cell.today-col { background: #fff8f0; }
+.day-label { font-size: 9px; font-weight: 600; color: var(--muted); text-transform: uppercase; }
+.day-num { font-size: 11px; font-weight: 700; }
+.day-num.today-num { color: var(--accent); }
+.shift-badge {
+  background: var(--accent2); color: white; font-size: 8px; font-weight: 700;
+  padding: 2px 4px; border-radius: 4px; white-space: nowrap;
+}
+.shift-cost { font-size: 8px; color: var(--accent2); font-weight: 700; }
+.emp-week-summary {
+  padding: 10px 16px; display: flex; gap: 16px; background: #fafbfc;
+  border-top: 1px solid var(--border);
+}
+.wsumm { font-size: 11px; }
+.wsumm-val { font-weight: 700; font-size: 13px; }
+.wsumm-label { color: var(--muted); }
+
+.cost-banner {
+  background: var(--primary); color: white; padding: 14px 16px; margin: 0 16px 16px;
+  border-radius: var(--radius);
+}
+
+.stat-card {
+  background: var(--card); border-radius: var(--radius); padding: 16px;
+  box-shadow: var(--shadow); border: 1px solid var(--border);
+}
+.stat-card.accent { background: var(--primary); color: white; border-color: transparent; }
+.stat-card.accent .stat-label { color: rgba(255,255,255,.6); }
+.stat-label { font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .4px; margin-bottom: 6px; }
+.stat-value { font-size: 24px; font-weight: 800; letter-spacing: -.5px; }
+.stat-value small { font-size: 13px; font-weight: 500; opacity: .7; }
+.stat-sub { font-size: 11px; color: var(--muted); margin-top: 4px; }
+
+.badge-dept {
+  display: inline-block; padding: 2px 8px; border-radius: 20px; font-size: 10px; font-weight: 700;
+  letter-spacing: .3px; text-transform: uppercase;
+}
+.badge-kuchnia { background: #fef3c7; color: #92400e; }
+.badge-sala { background: #dbeafe; color: #1e40af; }
+
+.modal-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,.5); z-index: 200;
+  display: flex; align-items: flex-end; justify-content: center;
+  opacity: 0; pointer-events: none; transition: opacity .2s;
+}
+.modal-overlay.open { opacity: 1; pointer-events: all; }
+.modal {
+  background: white; border-radius: 20px 20px 0 0; width: 100%; max-width: 480px;
+  padding: 24px 20px 32px; transform: translateY(100%); transition: transform .25s cubic-bezier(.4,0,.2,1);
+  max-height: 85vh; overflow-y: auto;
+}
+.modal-overlay.open .modal { transform: translateY(0); }
+.modal-handle { width: 36px; height: 4px; background: var(--border); border-radius: 2px; margin: 0 auto 20px; }
+.modal-title { font-size: 18px; font-weight: 800; margin-bottom: 4px; }
+.modal-sub { font-size: 13px; color: var(--muted); margin-bottom: 20px; }
+.modal-field { margin-bottom: 14px; }
+.modal-field label { display: block; font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .4px; margin-bottom: 6px; }
+.modal-field input, .modal-field select {
+  width: 100%; padding: 12px 14px; border: 1.5px solid var(--border); border-radius: 10px;
+  font-size: 15px; font-family: var(--font); outline: none; background: #fafbfc;
+}
+.modal-field input:focus, .modal-field select:focus { border-color: var(--accent); background: white; }
+.modal-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.modal-actions { display: flex; gap: 10px; margin-top: 20px; }
+.btn-danger { flex: 1; padding: 13px; background: white; color: var(--danger); border: 1.5px solid var(--danger); border-radius: 10px; font-size: 14px; font-weight: 700; cursor: pointer; }
+.btn-save { flex: 2; padding: 13px; background: var(--primary); color: white; border: none; border-radius: 10px; font-size: 14px; font-weight: 700; cursor: pointer; }
+.btn-cancel { padding: 13px 20px; background: var(--bg); color: var(--muted); border: 1px solid var(--border); border-radius: 10px; font-size: 14px; font-weight: 600; cursor: pointer; }
+
+.edit-btn {
+  background: var(--bg); border: 1px solid var(--border); color: var(--muted);
+  padding: 7px 12px; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer;
+}
+
+.avail-day {
+  display: flex; flex-direction: column; align-items: center; gap: 3px;
+  padding: 6px 2px; border-radius: 8px; cursor: pointer; transition: background .1s;
+  font-size: 9px; font-weight: 600; text-transform: uppercase; color: var(--muted);
+}
+.avail-day.avail-yes { background: #f0faf4; color: var(--success); }
+.avail-day.avail-no { background: #fef2f2; color: var(--danger); }
+.avail-day-circle {
+  width: 28px; height: 28px; border-radius: 50%; border: 2px solid var(--border);
+  display: flex; align-items: center; justify-content: center; font-size: 13px; transition: all .1s;
+}
+.avail-yes .avail-day-circle { border-color: var(--success); background: var(--success); color: white; }
+.avail-no .avail-day-circle { border-color: var(--danger); background: var(--danger); color: white; }
+
+.toast {
+  position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%) translateY(20px);
+  background: var(--primary); color: white; padding: 10px 20px; border-radius: 20px;
+  font-size: 13px; font-weight: 600; z-index: 300; opacity: 0;
+  transition: all .25s; pointer-events: none; white-space: nowrap;
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+.empty { text-align: center; padding: 48px 24px; }
+.empty-icon { font-size: 40px; margin-bottom: 12px; }
+.empty-text { font-size: 15px; font-weight: 600; }
+.empty-sub { font-size: 13px; color: var(--muted); margin-top: 4px; }
+.spinner { width: 32px; height: 32px; border: 3px solid var(--border); border-top-color: var(--primary); border-radius: 50%; animation: spin .7s linear infinite; margin: 20px auto; }
+@keyframes spin { to { transform: rotate(360deg); } }
+</style>
+</head>
+<body>
+
+<div id="auth-screen">
+  <div class="auth-box">
+    <div class="auth-logo">
+      <h1>Osteria <span class="dot">Antonina</span></h1>
+      <p>System zarządzania pracownikami</p>
+    </div>
+    <div class="form-group">
+      <label>Email</label>
+      <input type="email" id="auth-email" placeholder="adres@email.com" autocomplete="email">
+    </div>
+    <div class="form-group">
+      <label>Hasło</label>
+      <input type="password" id="auth-pass" placeholder="••••••••" autocomplete="current-password">
+    </div>
+    <button class="btn-primary" id="login-btn" onclick="doLogin()">Zaloguj się</button>
+    <div class="auth-error" id="auth-error">Nieprawidłowy email lub hasło</div>
+  </div>
+</div>
+
+<div id="app">
+  <div class="header">
+    <div class="header-logo">Osteria <span>Antonina</span></div>
+    <span class="header-role" id="hdr-role">Właściciel</span>
+    <span class="header-user" id="hdr-user"></span>
+    <button class="btn-logout" onclick="doLogout()">Wyloguj</button>
+  </div>
+  <div class="main" id="main-content"><div class="spinner"></div></div>
+  <nav class="bottom-nav" id="bottom-nav">
+    <button class="nav-item active" id="nav-sched" onclick="showView('sched')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      Grafik
+    </button>
+    <button class="nav-item" id="nav-emps" onclick="showView('emps')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      Pracownicy
+    </button>
+    <button class="nav-item" id="nav-avail" onclick="showView('avail')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+      Dyspoz.
+    </button>
+    <button class="nav-item" id="nav-dash" onclick="showView('dash')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+      Dashboard
+    </button>
+  </nav>
+</div>
+
+<div class="modal-overlay" id="shift-modal">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title" id="sm-title">Dodaj zmianę</div>
+    <div class="modal-sub" id="sm-sub"></div>
+    <input type="hidden" id="sm-shift-id">
+    <div class="modal-field"><label>Godzina rozpoczęcia</label><input type="time" id="sm-start" value="10:00"></div>
+    <div class="modal-field"><label>Godzina zakończenia</label><input type="time" id="sm-end" value="18:00"></div>
+    <div class="modal-field"><label>Notatka (opcjonalnie)</label><input type="text" id="sm-note" placeholder="np. otwarcie, kuchnia..."></div>
+    <div id="sm-cost-preview" style="background:#f7f8fa;border-radius:10px;padding:12px;font-size:13px;color:var(--muted);display:none;">
+      Koszt zmiany: <strong id="sm-cost-val" style="color:var(--primary)"></strong>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal('shift-modal')">Anuluj</button>
+      <button class="btn-danger" id="sm-delete" onclick="deleteShift()" style="display:none;">Usuń</button>
+      <button class="btn-save" onclick="saveShift()">Zapisz</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="emp-modal">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">Edytuj pracownika</div>
+    <div class="modal-sub" id="em-sub"></div>
+    <input type="hidden" id="em-id">
+    <div class="modal-field"><label>Imię i nazwisko</label><input type="text" id="em-name"></div>
+    <div class="modal-row">
+      <div class="modal-field"><label>Dział</label>
+        <select id="em-dept"><option value="kuchnia">Kuchnia</option><option value="sala">Sala</option></select>
+      </div>
+      <div class="modal-field"><label>Stawka netto (zł/h)</label><input type="number" id="em-rate" step="0.5" min="0"></div>
+    </div>
+    <div class="modal-field"><label>Email</label><input type="email" id="em-email"></div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal('emp-modal')">Anuluj</button>
+      <button class="btn-save" onclick="saveEmp()">Zapisz zmiany</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const SB_URL = 'https://kplaunvegdjgkycirzhk.supabase.co';
+const SB_KEY = 'sb_publishable_DTD-TNu5Gjb0ug5Vxmpr6w_JVO_KgCF';
+
+let currentUser = null, currentRole = null;
+let employees = [], shifts = [], availability = [];
+let currentWeekOffset = 0, currentDept = 'all';
+let currentShiftEmpId = null, currentShiftDate = null;
+let currentView = 'sched';
+
+async function sbFetch(path, opts={}) {
+  const h = { 'apikey': SB_KEY, 'Content-Type': 'application/json' };
+  if (currentUser?.access_token) h['Authorization'] = 'Bearer ' + currentUser.access_token;
+  const r = await fetch(SB_URL + path, { headers: h, ...opts });
+  if (!r.ok) throw new Error(await r.text());
+  const ct = r.headers.get('content-type')||'';
+  return ct.includes('json') ? r.json() : r.text();
+}
+
+async function doLogin() {
+  const email = document.getElementById('auth-email').value.trim();
+  const pass = document.getElementById('auth-pass').value;
+  const btn = document.getElementById('login-btn');
+  btn.textContent = 'Logowanie...'; btn.disabled = true;
+  document.getElementById('auth-error').style.display = 'none';
+
+  try {
+    const r = await fetch(SB_URL + '/auth/v1/token?grant_type=password', {
+      method: 'POST',
+      headers: { 'apikey': SB_KEY, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password: pass })
+    });
+    const data = await r.json();
+    if (data.error || !data.access_token) throw new Error(data.error_description || 'Błąd logowania');
+    currentUser = data;
+
+    const rows = await sbFetch(`/rest/v1/user_roles?email=eq.${encodeURIComponent(email)}&select=role`).catch(() => []);
+    currentRole = rows?.[0]?.role || 'employee';
+
+    document.getElementById('auth-screen').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+    document.getElementById('hdr-role').textContent = {owner:'Właściciel',manager:'Manager',kitchen:'Kuchnia',front:'Sala',employee:'Pracownik'}[currentRole]||currentRole;
+    document.getElementById('hdr-user').textContent = email.split('@')[0];
+
+    if (!canEdit()) {
+      document.getElementById('nav-dash').style.display = 'none';
+      document.getElementById('nav-emps').style.display = 'none';
+    }
+    await loadAllData();
+    showView('sched');
+  } catch(e) {
+    document.getElementById('auth-error').style.display = 'block';
+    document.getElementById('auth-error').textContent = e.message;
+  }
+  btn.textContent = 'Zaloguj się'; btn.disabled = false;
+}
+
+function doLogout() {
+  currentUser = null; currentRole = null;
+  document.getElementById('app').style.display = 'none';
+  document.getElementById('auth-screen').style.display = 'flex';
+}
+
+function canEdit() { return ['owner','manager'].includes(currentRole); }
+
+async function loadAllData() {
+  employees = await sbFetch('/rest/v1/employees?select=*&active=eq.true&order=department,name').catch(() => []);
+  const {from, to} = getWeekRange(currentWeekOffset);
+  shifts = await sbFetch(`/rest/v1/shifts?select=*&date=gte.${from}&date=lte.${to}`).catch(() => []);
+  availability = await sbFetch('/rest/v1/availability?select=*').catch(() => []);
+}
+
+function getWeekRange(offset) {
+  const now = new Date();
+  const dow = now.getDay() === 0 ? 6 : now.getDay() - 1;
+  const mon = new Date(now); mon.setDate(now.getDate() - dow + offset * 7); mon.setHours(0,0,0,0);
+  const sun = new Date(mon); sun.setDate(mon.getDate() + 6);
+  return { from: fd(mon), to: fd(sun), monDate: mon };
+}
+
+function fd(d) { return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate()); }
+function pad(n) { return String(n).padStart(2,'0'); }
+function today() { return fd(new Date()); }
+function calcH(s, e) {
+  const [sh,sm] = s.split(':').map(Number), [eh,em] = e.split(':').map(Number);
+  let m = (eh*60+em)-(sh*60+sm); if(m<0)m+=1440; return m/60;
+}
+function avatarColor(n) {
+  const c=['#1a1a2e','#2d6a4f','#c8973a','#7c3aed','#1d4ed8','#065f46','#92400e','#991b1b'];
+  let h=0; for(let ch of n)h=ch.charCodeAt(0)+((h<<5)-h); return c[Math.abs(h)%c.length];
+}
+function initials(n) { return n.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2); }
+
+function showView(v) {
+  currentView = v;
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  const el = document.getElementById('nav-'+v);
+  if(el) el.classList.add('active');
+  renderView();
+}
+
+function renderView() {
+  const mc = document.getElementById('main-content');
+  if (currentView==='sched') renderSched(mc);
+  else if (currentView==='emps') renderEmps(mc);
+  else if (currentView==='avail') renderAvail(mc);
+  else if (currentView==='dash') renderDash(mc);
+}
+
+async function changeWeek(d) {
+  currentWeekOffset += d;
+  const {from,to} = getWeekRange(currentWeekOffset);
+  shifts = await sbFetch(`/rest/v1/shifts?select=*&date=gte.${from}&date=lte.${to}`).catch(()=>[]);
+  renderView();
+}
+
+function renderSched(mc) {
+  const {from,to,monDate} = getWeekRange(currentWeekOffset);
+  const tod = today();
+  const days = Array.from({length:7},(_,i)=>{
+    const d=new Date(monDate); d.setDate(monDate.getDate()+i);
+    return {date:fd(d),d,label:['Pon','Wt','Śr','Czw','Pt','Sob','Nd'][i],num:d.getDate()};
+  });
+
+  const viewEmps = canEdit()
+    ? (currentDept==='all' ? employees : employees.filter(e=>e.department===currentDept))
+    : employees.filter(e=>e.email===currentUser?.user?.email);
+
+  let totalCost=0,totalH=0;
+  shifts.forEach(s=>{
+    const emp=employees.find(e=>e.id===s.employee_id);
+    if(!emp)return;
+    const h=calcH(s.start_time||'10:00:00',s.end_time||'18:00:00');
+    totalCost+=h*(emp.rate_net||0); totalH+=h;
+  });
+
+  const sun=new Date(monDate); sun.setDate(monDate.getDate()+6);
+  const rangeStr=`${monDate.getDate()}.${pad(monDate.getMonth()+1)} — ${sun.getDate()}.${pad(sun.getMonth()+1)}.${sun.getFullYear()}`;
+
+  let html=`<div style="padding:16px 16px 0">
+    <div style="font-size:11px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.4px;margin-bottom:6px">Grafik tygodniowy</div>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+      <button class="week-nav-btn" onclick="changeWeek(-1)">‹</button>
+      <div style="text-align:center"><div style="font-size:15px;font-weight:800">${rangeStr}</div><div style="font-size:11px;color:var(--muted)">Tydzień ${wNum(monDate)}</div></div>
+      <button class="week-nav-btn" onclick="changeWeek(1)">›</button>
+    </div>
+  </div>`;
+
+  if(canEdit()){
+    html+=`<div style="display:flex;gap:8px;padding:0 16px 12px;overflow-x:auto">
+      <button class="dept-tab ${currentDept==='all'?'active':''}" onclick="setDept('all')">Wszyscy</button>
+      <button class="dept-tab ${currentDept==='kuchnia'?'active':''}" onclick="setDept('kuchnia')">🍳 Kuchnia</button>
+      <button class="dept-tab ${currentDept==='sala'?'active':''}" onclick="setDept('sala')">🍷 Sala</button>
+    </div>`;
+    if(totalH>0){
+      html+=`<div class="cost-banner" style="margin:0 16px 16px">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <div><div style="font-size:11px;opacity:.6">Koszt tygodnia</div><div style="font-size:22px;font-weight:800">${totalCost.toFixed(0)} zł netto</div></div>
+          <div style="text-align:right"><div style="font-size:11px;opacity:.6">Łącznie</div><div style="font-size:18px;font-weight:800">${totalH.toFixed(1)} h</div></div>
+        </div>
+      </div>`;
+    }
+  }
+
+  html+=`<div style="padding:0 16px;display:flex;flex-direction:column;gap:12px">`;
+
+  viewEmps.forEach(emp=>{
+    const eShifts=shifts.filter(s=>s.employee_id===emp.id);
+    let eH=0,eCost=0;
+    eShifts.forEach(s=>{const h=calcH(s.start_time||'10:00:00',s.end_time||'18:00:00');eH+=h;eCost+=h*(emp.rate_net||0);});
+
+    html+=`<div class="emp-card">
+      <div class="emp-card-header">
+        <div class="emp-avatar" style="background:${avatarColor(emp.name)}">${initials(emp.name)}</div>
+        <div style="flex:1">
+          <div class="emp-name">${emp.name}</div>
+          <div style="margin-top:3px"><span class="badge-dept badge-${emp.department}">${emp.department}</span></div>
+        </div>
+        <div style="text-align:right">
+          ${canEdit()?`<div style="font-size:15px;font-weight:800">${(emp.rate_net||0).toFixed(2)} zł</div><div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.3px">netto/h</div>`
+          :`<div style="font-size:14px;font-weight:700;color:var(--muted)">${eH.toFixed(1)}h</div><div style="font-size:10px;color:var(--muted)">ten tyg.</div>`}
+        </div>
+      </div>
+      <div class="emp-week-row">`;
+
+    days.forEach(day=>{
+      const shift=eShifts.find(s=>s.date===day.date);
+      const isT=day.date===tod;
+      const h=shift?calcH(shift.start_time||'10:00:00',shift.end_time||'18:00:00'):0;
+      const cost=h*(emp.rate_net||0);
+      const ca=canEdit()?`onclick="openShiftModal('${emp.id}','${emp.name}','${day.date}','${shift?.id||''}')"`:''
+      html+=`<div class="day-cell${shift?' has-shift':''}${isT?' today-col':''}" ${ca}>
+        <div class="day-label">${day.label}</div>
+        <div class="day-num${isT?' today-num':''}">${day.num}</div>
+        ${shift?`<div class="shift-badge">${(shift.start_time||'10:00').slice(0,5)}-${(shift.end_time||'18:00').slice(0,5)}</div>`:(canEdit()?'<div style="font-size:14px;color:#d1d5db;line-height:1">+</div>':'')}
+        ${shift&&canEdit()&&(emp.rate_net||0)>1?`<div class="shift-cost">${cost.toFixed(0)}zł</div>`:''}
+      </div>`;
+    });
+
+    html+=`</div>`;
+    if(eH>0){
+      html+=`<div class="emp-week-summary">
+        <div class="wsumm"><span class="wsumm-val">${eH.toFixed(1)}</span> <span class="wsumm-label">godz.</span></div>
+        ${canEdit()&&(emp.rate_net||0)>1?`<div class="wsumm"><span class="wsumm-val">${eCost.toFixed(0)} zł</span> <span class="wsumm-label">koszt tyg.</span></div>`:''}
+        <div class="wsumm"><span class="wsumm-val">${eShifts.length}</span> <span class="wsumm-label">zmian</span></div>
+      </div>`;
+    }
+    html+=`</div>`;
+  });
+
+  html+=`</div>`;
+  mc.innerHTML=html;
+}
+
+function wNum(d){const j4=new Date(d.getFullYear(),0,4);return Math.ceil((((d-j4)/86400000)+j4.getDay()+1)/7);}
+function setDept(d){currentDept=d;renderView();}
+
+function openShiftModal(empId,empName,date,shiftId){
+  const shift=shiftId?shifts.find(s=>s.id===shiftId):null;
+  const emp=employees.find(e=>e.id===empId);
+  currentShiftEmpId=empId; currentShiftDate=date;
+  document.getElementById('sm-title').textContent=shift?'Edytuj zmianę':'Dodaj zmianę';
+  const d=new Date(date+'T12:00:00');
+  document.getElementById('sm-sub').textContent=`${empName} · ${['Nd','Pon','Wt','Śr','Czw','Pt','Sob'][d.getDay()]} ${d.getDate()}.${pad(d.getMonth()+1)}`;
+  document.getElementById('sm-shift-id').value=shiftId||'';
+  document.getElementById('sm-start').value=(shift?.start_time||'10:00:00').slice(0,5);
+  document.getElementById('sm-end').value=(shift?.end_time||'18:00:00').slice(0,5);
+  document.getElementById('sm-note').value=shift?.note||'';
+  document.getElementById('sm-delete').style.display=shift?'flex':'none';
+  updateCostPreview(emp);
+  document.getElementById('sm-start').oninput=()=>updateCostPreview(emp);
+  document.getElementById('sm-end').oninput=()=>updateCostPreview(emp);
+  openModal('shift-modal');
+}
+
+function updateCostPreview(emp){
+  if(!emp||(emp.rate_net||0)<=1){document.getElementById('sm-cost-preview').style.display='none';return;}
+  const h=calcH(document.getElementById('sm-start').value,document.getElementById('sm-end').value);
+  document.getElementById('sm-cost-val').textContent=`${(h*(emp.rate_net||0)).toFixed(2)} zł (${h.toFixed(1)}h × ${emp.rate_net} zł/h)`;
+  document.getElementById('sm-cost-preview').style.display='block';
+}
+
+async function saveShift(){
+  const shiftId=document.getElementById('sm-shift-id').value;
+  const p={employee_id:currentShiftEmpId,date:currentShiftDate,start_time:document.getElementById('sm-start').value+':00',end_time:document.getElementById('sm-end').value+':00',note:document.getElementById('sm-note').value};
+  try{
+    if(shiftId){
+      await sbFetch(`/rest/v1/shifts?id=eq.${shiftId}`,{method:'PATCH',headers:{'Prefer':'return=representation'},body:JSON.stringify(p)});
+      const i=shifts.findIndex(s=>s.id===shiftId); if(i>=0)shifts[i]={...shifts[i],...p};
+    } else {
+      const r=await sbFetch('/rest/v1/shifts?select=*',{method:'POST',headers:{'Prefer':'return=representation'},body:JSON.stringify(p)});
+      if(Array.isArray(r))shifts.push(...r);
+    }
+    closeModal('shift-modal'); showToast('✓ Zmiana zapisana'); renderView();
+  } catch(e){showToast('Błąd: '+e.message.slice(0,60));}
+}
+
+async function deleteShift(){
+  const id=document.getElementById('sm-shift-id').value; if(!id)return;
+  try{
+    await sbFetch(`/rest/v1/shifts?id=eq.${id}`,{method:'DELETE'});
+    shifts=shifts.filter(s=>s.id!==id); closeModal('shift-modal'); showToast('Zmiana usunięta'); renderView();
+  } catch(e){showToast('Błąd: '+e.message.slice(0,60));}
+}
+
+function renderEmps(mc){
+  if(!canEdit()){mc.innerHTML='<div class="empty"><div class="empty-icon">🔒</div><div class="empty-text">Brak dostępu</div></div>';return;}
+  let html=`<div style="padding:16px 16px 12px"><div style="font-size:11px;color:var(--muted);font-weight:600;text-transform:uppercase;margin-bottom:4px">Pracownicy</div><div style="font-size:20px;font-weight:800">${employees.length} osób w zespole</div></div>`;
+  ['kuchnia','sala'].forEach(dept=>{
+    const list=employees.filter(e=>e.department===dept);
+    if(!list.length)return;
+    html+=`<div style="padding:12px 16px 8px;font-size:15px;font-weight:700">${dept==='kuchnia'?'🍳 Kuchnia':'🍷 Sala'} <span style="color:var(--muted);font-weight:400">(${list.length})</span></div><div style="padding:0 16px;display:flex;flex-direction:column;gap:10px">`;
+    list.forEach(emp=>{
+      const eS=shifts.filter(s=>s.employee_id===emp.id);
+      let wH=0; eS.forEach(s=>wH+=calcH(s.start_time||'10:00:00',s.end_time||'18:00:00'));
+      const wC=wH*(emp.rate_net||0);
+      html+=`<div style="background:white;border-radius:var(--radius);border:1px solid var(--border);padding:16px;display:flex;align-items:center;gap:12px;box-shadow:var(--shadow)">
+        <div class="emp-avatar" style="background:${avatarColor(emp.name)}">${initials(emp.name)}</div>
+        <div style="flex:1">
+          <div style="font-size:15px;font-weight:700">${emp.name}</div>
+          <div style="font-size:12px;color:var(--muted);margin-top:2px">${emp.email||'—'}</div>
+          ${wH>0?`<div style="font-size:11px;color:var(--success);font-weight:600;margin-top:3px">Ten tydzień: ${wH.toFixed(1)}h · ${wC.toFixed(0)} zł</div>`:''}
+        </div>
+        <div style="text-align:right;margin-right:8px">
+          <div style="font-size:18px;font-weight:800">${(emp.rate_net||0).toFixed(2)}</div>
+          <div style="font-size:11px;color:var(--muted)">zł netto/h</div>
+        </div>
+        <button class="edit-btn" onclick="openEmpModal('${emp.id}')">✏️</button>
+      </div>`;
+    });
+    html+=`</div>`;
+  });
+  mc.innerHTML=html;
+}
+
+function openEmpModal(id){
+  const emp=employees.find(e=>e.id===id); if(!emp)return;
+  document.getElementById('em-id').value=id;
+  document.getElementById('em-name').value=emp.name;
+  document.getElementById('em-dept').value=emp.department;
+  document.getElementById('em-rate').value=emp.rate_net||0;
+  document.getElementById('em-email').value=emp.email||'';
+  document.getElementById('em-sub').textContent=emp.department+' · '+(emp.email||'');
+  openModal('emp-modal');
+}
+
+async function saveEmp(){
+  const id=document.getElementById('em-id').value;
+  const p={name:document.getElementById('em-name').value,department:document.getElementById('em-dept').value,rate_net:parseFloat(document.getElementById('em-rate').value)||0,email:document.getElementById('em-email').value};
+  try{
+    await sbFetch(`/rest/v1/employees?id=eq.${id}`,{method:'PATCH',headers:{'Prefer':'return=representation'},body:JSON.stringify(p)});
+    const i=employees.findIndex(e=>e.id===id); if(i>=0)employees[i]={...employees[i],...p};
+    closeModal('emp-modal'); showToast('✓ Dane zaktualizowane'); renderView();
+  } catch(e){showToast('Błąd: '+e.message.slice(0,60));}
+}
+
+function renderAvail(mc){
+  const dow=['Pon','Wt','Śr','Czw','Pt','Sob','Nd'];
+  const myEmail=currentUser?.user?.email;
+  const viewEmps=canEdit()?employees:employees.filter(e=>e.email===myEmail);
+
+  let html=`<div style="padding:16px 16px 12px"><div style="font-size:11px;color:var(--muted);font-weight:600;text-transform:uppercase;margin-bottom:4px">${canEdit()?'Dyspozycyjność':'Moja dyspozycyjność'}</div><div style="font-size:20px;font-weight:800;margin-bottom:4px">${canEdit()?'Wszyscy pracownicy':'Zaznacz dostępne dni'}</div></div><div style="padding:0 16px;display:flex;flex-direction:column;gap:12px">`;
+
+  viewEmps.forEach(emp=>{
+    const avail=availability.filter(a=>a.employee_id===emp.id);
+    html+=`<div style="background:white;border-radius:var(--radius);border:1px solid var(--border);padding:16px;box-shadow:var(--shadow)">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
+        <div class="emp-avatar" style="background:${avatarColor(emp.name)};width:30px;height:30px;font-size:12px">${initials(emp.name)}</div>
+        <div style="font-size:14px;font-weight:700">${emp.name}</div>
+        <span class="badge-dept badge-${emp.department}" style="margin-left:auto">${emp.department}</span>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px">`;
+    for(let d=0;d<7;d++){
+      const a=avail.find(x=>x.day_of_week===d);
+      const cls=a?.available===false?'avail-no':a?.available===true?'avail-yes':'';
+      const icon=a?.available===false?'✕':a?.available===true?'✓':'·';
+      html+=`<div class="avail-day ${cls}" onclick="toggleAvail('${emp.id}',${d})" id="av-${emp.id}-${d}">
+        <div class="avail-day-circle">${icon}</div>${dow[d]}
+      </div>`;
+    }
+    html+=`</div></div>`;
+  });
+  html+=`</div>`;
+  mc.innerHTML=html;
+}
+
+async function toggleAvail(empId,day){
+  const ex=availability.find(a=>a.employee_id===empId&&a.day_of_week===day);
+  const nv=ex?.available===true?false:true;
+  try{
+    if(ex){
+      await sbFetch(`/rest/v1/availability?id=eq.${ex.id}`,{method:'PATCH',body:JSON.stringify({available:nv})});
+      ex.available=nv;
+    } else {
+      const r=await sbFetch('/rest/v1/availability?select=*',{method:'POST',headers:{'Prefer':'return=representation'},body:JSON.stringify({employee_id:empId,day_of_week:day,available:nv})});
+      if(Array.isArray(r))availability.push(...r);
+    }
+    const cell=document.getElementById(`av-${empId}-${day}`);
+    if(cell){cell.className='avail-day '+(nv?'avail-yes':'avail-no');cell.querySelector('.avail-day-circle').textContent=nv?'✓':'✕';}
+  } catch(e){showToast('Błąd: '+e.message.slice(0,60));}
+}
+
+function renderDash(mc){
+  if(!canEdit()){mc.innerHTML='<div class="empty"><div class="empty-icon">🔒</div><div class="empty-text">Brak dostępu</div></div>';return;}
+  let tc=0,th=0,kC=0,kH=0,sC=0,sH=0;
+  shifts.forEach(s=>{
+    const emp=employees.find(e=>e.id===s.employee_id); if(!emp)return;
+    const h=calcH(s.start_time||'10:00:00',s.end_time||'18:00:00');
+    const c=h*(emp.rate_net||0); tc+=c; th+=h;
+    if(emp.department==='kuchnia'){kC+=c;kH+=h;}else{sC+=c;sH+=h;}
+  });
+  const {monDate}=getWeekRange(currentWeekOffset);
+  const sun=new Date(monDate);sun.setDate(monDate.getDate()+6);
+
+  let html=`<div style="padding:16px 16px 0">
+    <div style="font-size:11px;color:var(--muted);font-weight:600;text-transform:uppercase;margin-bottom:4px">Dashboard</div>
+    <div style="font-size:20px;font-weight:800">Podsumowanie tygodnia</div>
+    <div style="font-size:13px;color:var(--muted);margin-top:2px">${monDate.getDate()}.${pad(monDate.getMonth()+1)} — ${sun.getDate()}.${pad(sun.getMonth()+1)}.${sun.getFullYear()}</div>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:16px">
+    <div class="stat-card accent">
+      <div class="stat-label">Koszt pracy</div>
+      <div class="stat-value">${tc.toFixed(0)}<small> zł</small></div>
+      <div class="stat-sub" style="color:rgba(255,255,255,.5)">${th.toFixed(1)} godz. łącznie</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Pracownicy</div>
+      <div class="stat-value">${employees.length}<small> os.</small></div>
+      <div class="stat-sub">${shifts.length} zmian w tyg.</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Kuchnia</div>
+      <div class="stat-value">${kC.toFixed(0)}<small> zł</small></div>
+      <div class="stat-sub">${kH.toFixed(1)}h · ${employees.filter(e=>e.department==='kuchnia').length} os.</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Sala</div>
+      <div class="stat-value">${sC.toFixed(0)}<small> zł</small></div>
+      <div class="stat-sub">${sH.toFixed(1)}h · ${employees.filter(e=>e.department==='sala').length} os.</div>
+    </div>
+  </div>
+  <div style="padding:0 16px 8px;font-size:15px;font-weight:700">Stawki i koszty tygodniowe</div>
+  <div style="padding:0 16px;display:flex;flex-direction:column;gap:8px">`;
+
+  [...employees].sort((a,b)=>(b.rate_net||0)-(a.rate_net||0)).forEach(emp=>{
+    const eS=shifts.filter(s=>s.employee_id===emp.id);
+    let wH=0; eS.forEach(s=>wH+=calcH(s.start_time||'10:00:00',s.end_time||'18:00:00'));
+    const wC=wH*(emp.rate_net||0);
+    html+=`<div style="background:white;border-radius:10px;border:1px solid var(--border);padding:12px 14px;display:flex;align-items:center;gap:10px">
+      <div class="emp-avatar" style="background:${avatarColor(emp.name)};width:34px;height:34px;font-size:13px">${initials(emp.name)}</div>
+      <div style="flex:1">
+        <div style="font-size:13px;font-weight:700">${emp.name}</div>
+        <div style="font-size:11px;color:var(--muted)">${emp.department} · ${wH.toFixed(1)}h ten tydzień</div>
+      </div>
+      <div style="text-align:right">
+        <div style="font-size:15px;font-weight:800">${(emp.rate_net||0).toFixed(2)} <span style="font-size:11px;font-weight:500;color:var(--muted)">zł/h</span></div>
+        ${wC>0?`<div style="font-size:11px;color:var(--accent2);font-weight:600">${wC.toFixed(0)} zł</div>`:'<div style="font-size:11px;color:var(--muted)">brak zmian</div>'}
+      </div>
+    </div>`;
+  });
+  html+=`</div><div style="height:20px"></div>`;
+  mc.innerHTML=html;
+}
+
+function openModal(id){document.getElementById(id).classList.add('open');}
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+function showToast(msg){
+  const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2500);
+}
+document.querySelectorAll('.modal-overlay').forEach(o=>{
+  o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('open');});
+});
+document.getElementById('auth-pass').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin();});
+</script>
+</body>
+</html>
