@@ -125,6 +125,8 @@ body { font-family: var(--font); background: var(--bg); color: var(--text); min-
 .wn-label { text-align: center; }
 .wn-range { font-size: 14px; font-weight: 600; }
 .wn-week { font-size: 11px; color: var(--text-3); margin-top: 1px; }
+.today-link { color: var(--accent); cursor: pointer; font-weight: 500; }
+.today-link:hover { text-decoration: underline; }
 
 /* ─── Dept tabs ─── */
 .dept-row {
@@ -164,6 +166,13 @@ body { font-family: var(--font); background: var(--bg); color: var(--text); min-
 .sched-tbl thead th.th-day .dn { font-size: 15px; font-weight: 600; color: var(--text); display: block; margin-top: 1px; }
 .sched-tbl thead th.th-day.today .dn { color: var(--accent); }
 .sched-tbl thead th.th-day.today { color: var(--accent); }
+.sched-tbl thead th.th-day.weekend { background: #FEF2F2; color: #DC2626; }
+.sched-tbl thead th.th-day.weekend .dn { color: #DC2626; }
+.td-day-cell.weekend { background: #FFF8F8; }
+.td-day-cell.weekend:hover { background: #FFE4E4; }
+.td-day-cell.weekend.filled { background: #FDE8E8; }
+.td-day-cell.weekend .shift-chip { background: #DC2626; }
+.td-day-cell.weekend .shift-cost-lbl { color: #DC2626; }
 .sched-tbl thead th.th-sum { min-width: 72px; text-align: right; padding-right: 14px; }
 .sched-tbl tbody tr { border-top: 1px solid var(--border); }
 .sched-tbl tbody tr:last-child td { }
@@ -276,7 +285,10 @@ body { font-family: var(--font); background: var(--bg); color: var(--text); min-
 .mtd-day:hover { background: #F0FDF4; }
 .mtd-day.mfilled { background: #F0FDF4; }
 .mtd-day.mtoday-cell { background: #ECFDF5; }
-.mtd-day.mweekend { background: #FAFAFA; }
+.mtd-day.mweekend { background: #FFF8F8; }
+.month-tbl thead th.mth-day.mweekend-h { background: #FEF2F2; color: #DC2626; }
+.month-tbl thead th.mth-day.mweekend-h .mdn { color: #DC2626; }
+.mtd-day.mweekend .mchip { background: #DC2626; }
 .mchip { display: inline-block; background: var(--accent); color: white; font-size: 8px; font-weight: 500; padding: 1px 4px; border-radius: 2px; white-space: nowrap; }
 
 /* ─── Employees list ─── */
@@ -641,6 +653,12 @@ async function changeWeek(d){
   renderView();
 }
 
+async function goToToday(){
+  currentWeekOffset=0; currentMonthOffset=0;
+  await loadShiftsForCurrentPeriod();
+  renderView();
+}
+
 async function changeMonth(d){
   currentMonthOffset+=d;
   await loadShiftsForCurrentPeriod();
@@ -691,7 +709,10 @@ function renderWeek(mc){
   </div>
   <div class="week-nav">
     <button class="wn-btn" onclick="changeWeek(-1)">‹</button>
-    <div class="wn-label"><div class="wn-range">${rng}</div><div class="wn-week">Tydzień ${wNum(monDate)}</div></div>
+    <div class="wn-label">
+      <div class="wn-range">${rng}</div>
+      <div class="wn-week">Tydzień ${wNum(monDate)}${currentWeekOffset!==0?` · <span class="today-link" onclick="goToToday()">Dziś</span>`:''}</div>
+    </div>
     <button class="wn-btn" onclick="changeWeek(1)">›</button>
   </div>`;
 
@@ -711,9 +732,10 @@ function renderWeek(mc){
 
   html+=`<div class="sched-wrap"><table class="sched-tbl"><thead><tr>
     <th class="th-emp">Pracownik</th>`;
-  days.forEach(day=>{
+  days.forEach((day,i)=>{
     const isT=day.date===tod;
-    html+=`<th class="th-day${isT?' today':''}"><span style="text-transform:uppercase;letter-spacing:.3px">${day.label}</span><span class="dn">${day.num}</span></th>`;
+    const isWe=i>=5; // Sat=5, Sun=6 (Mon=0 in our array)
+    html+=`<th class="th-day${isT?' today':''}${isWe?' weekend':''}"><span style="text-transform:uppercase;letter-spacing:.3px">${day.label}</span><span class="dn">${day.num}</span></th>`;
   });
   if(canEdit()) html+=`<th class="th-sum">Tyg.</th>`;
   html+=`</tr></thead><tbody>`;
@@ -732,9 +754,10 @@ function renderWeek(mc){
       </div>
     </div></td>`;
 
-    days.forEach(day=>{
+    days.forEach((day,di)=>{
       const shift=eS.find(s=>s.date===day.date);
       const isT=day.date===tod;
+      const isWe=di>=5;
       const h=shift?calcH(shift.start_time||'10:00:00',shift.end_time||'18:00:00'):0;
       const cost=h*(emp.rate_net||0);
       // Check date-based unavailability
@@ -743,6 +766,7 @@ function renderWeek(mc){
       let cellCls='td-day-cell';
       if(shift) cellCls+=' filled';
       if(isT) cellCls+=' is-today';
+      if(isWe) cellCls+=' weekend';
       if(unavail&&!shift) cellCls+=' unavail';
       html+=`<td class="${cellCls}" ${ca}>`;
       if(shift){
@@ -793,7 +817,10 @@ function renderMonth(mc){
   </div>
   <div class="week-nav">
     <button class="wn-btn" onclick="changeMonth(-1)">‹</button>
-    <div class="wn-label"><div class="wn-range">${monthName(month)} ${year}</div></div>
+    <div class="wn-label">
+      <div class="wn-range">${monthName(month)} ${year}</div>
+      ${currentMonthOffset!==0?`<div class="wn-week"><span class="today-link" onclick="goToToday()">Dziś</span></div>`:''}
+    </div>
     <button class="wn-btn" onclick="changeMonth(1)">›</button>
   </div>`;
 
@@ -811,7 +838,8 @@ function renderMonth(mc){
     <th class="mth-emp">Pracownik</th>`;
   days.forEach(day=>{
     const isT=day.date===tod;
-    html+=`<th class="mth-day${isT?' mtoday':''}">
+    const isWe=day.dow===0||day.dow===6;
+    html+=`<th class="mth-day${isT?' mtoday':''}${isWe?' mweekend-h':''}">
       <span>${dowLabels[day.dow].slice(0,2)}</span>
       <span class="mdn">${day.d}</span>
     </th>`;
@@ -832,7 +860,7 @@ function renderMonth(mc){
       const shift=eS.find(s=>s.date===day.date);
       const isT=day.date===tod;
       const ca=canEdit()?`onclick="openShiftModal('${emp.id}','${emp.name}','${day.date}','${shift?.id||''}')"`:''
-      html+=`<td class="mtd-day${shift?' mfilled':''}${isT?' mtoday-cell':''}${day.weekend&&!shift?' mweekend':''}" ${ca}>`;
+      html+=`<td class="mtd-day${shift?' mfilled':''}${isT?' mtoday-cell':''}${day.weekend?' mweekend':''}" ${ca}>`;
       if(shift){
         html+=`<div class="mchip">${(shift.start_time||'10:00').slice(0,5)}</div>`;
       } else if(canEdit()){
