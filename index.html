@@ -155,13 +155,15 @@ body { font-family: var(--font); background: var(--bg); color: var(--text); min-
   border: 1px solid var(--border);
 }
 .sched-tbl thead th {
-  background: var(--primary); color: rgba(255,255,255,.5); font-size: 10px; font-weight: 500;
+  background: #F8FAFC; color: var(--text-3); font-size: 10px; font-weight: 500;
   padding: 9px 8px; text-align: center; white-space: nowrap; letter-spacing: .3px;
+  border-bottom: 1px solid var(--border);
 }
 .sched-tbl thead th.th-emp { text-align: left; padding-left: 14px; min-width: 130px; }
 .sched-tbl thead th.th-day { min-width: 56px; }
-.sched-tbl thead th.th-day .dn { font-size: 15px; font-weight: 600; color: white; display: block; margin-top: 1px; }
-.sched-tbl thead th.th-day.today .dn { color: #4ADE80; }
+.sched-tbl thead th.th-day .dn { font-size: 15px; font-weight: 600; color: var(--text); display: block; margin-top: 1px; }
+.sched-tbl thead th.th-day.today .dn { color: var(--accent); }
+.sched-tbl thead th.th-day.today { color: var(--accent); }
 .sched-tbl thead th.th-sum { min-width: 72px; text-align: right; padding-right: 14px; }
 .sched-tbl tbody tr { border-top: 1px solid var(--border); }
 .sched-tbl tbody tr:last-child td { }
@@ -196,22 +198,36 @@ body { font-family: var(--font); background: var(--bg); color: var(--text); min-
 .sum-h { font-size: 13px; font-weight: 600; }
 .sum-cost { font-size: 11px; color: var(--text-3); font-weight: 400; margin-top: 1px; }
 
-/* ─── Month grid ─── */
-.month-wrap { padding: 10px 16px 0; }
-.month-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 1px; background: var(--border); border-radius: var(--radius); overflow: hidden; border: 1px solid var(--border); }
-.mg-head { background: var(--primary); color: rgba(255,255,255,.5); font-size: 10px; font-weight: 500; padding: 8px 4px; text-align: center; letter-spacing: .3px; }
-.mg-cell {
-  background: white; padding: 6px 7px; min-height: 64px; cursor: pointer;
-  transition: background .1s; display: flex; flex-direction: column; gap: 3px;
+/* ─── Month table ─── */
+.month-wrap { padding: 10px 16px 0; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.month-tbl {
+  width: 100%; border-collapse: collapse; min-width: 520px;
+  background: white; border-radius: var(--radius); overflow: hidden;
+  border: 1px solid var(--border);
 }
-.mg-cell:hover { background: #F8FAFC; }
-.mg-cell.empty-cell { background: #F8FAFC; cursor: default; }
-.mg-cell.today-cell { background: #ECFDF5; }
-.mg-cell.has-shifts { background: #F0FDF4; }
-.mg-num { font-size: 11px; font-weight: 500; color: var(--text-2); }
-.mg-num.today-num { color: var(--accent); font-weight: 600; }
-.mg-shift-dot { font-size: 8.5px; color: var(--accent); font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.mg-more { font-size: 8px; color: var(--text-3); }
+.month-tbl thead th {
+  background: #F8FAFC; color: var(--text-3); font-size: 10px; font-weight: 500;
+  padding: 9px 8px; text-align: center; white-space: nowrap; letter-spacing: .3px;
+  border-bottom: 1px solid var(--border);
+}
+.month-tbl thead th.mth-emp { text-align: left; padding-left: 14px; min-width: 130px; }
+.month-tbl thead th.mth-day { min-width: 32px; }
+.month-tbl thead th.mth-day .mdn { font-size: 13px; font-weight: 600; color: var(--text); display: block; margin-top: 1px; }
+.month-tbl thead th.mth-day.mtoday { color: var(--accent); }
+.month-tbl thead th.mth-day.mtoday .mdn { color: var(--accent); }
+.month-tbl tbody tr { border-top: 1px solid var(--border); }
+.month-tbl tbody td { border-right: 1px solid var(--border); padding: 0; }
+.month-tbl tbody td:last-child { border-right: none; }
+.mtd-emp { display: flex; align-items: center; gap: 9px; padding: 9px 14px; min-height: 44px; }
+.mtd-day {
+  text-align: center; cursor: pointer; padding: 6px 2px; min-height: 44px;
+  vertical-align: middle; transition: background .1s; font-size: 9px;
+}
+.mtd-day:hover { background: #F0FDF4; }
+.mtd-day.mfilled { background: #F0FDF4; }
+.mtd-day.mtoday-cell { background: #ECFDF5; }
+.mtd-day.mweekend { background: #FAFAFA; }
+.mchip { display: inline-block; background: var(--accent); color: white; font-size: 8px; font-weight: 500; padding: 1px 4px; border-radius: 2px; white-space: nowrap; }
 
 /* ─── Employees list ─── */
 .emp-list { padding: 10px 16px; display: flex; flex-direction: column; gap: 8px; }
@@ -694,6 +710,15 @@ function renderMonth(mc){
     ?(currentDept==='all'?employees:employees.filter(e=>e.department===currentDept))
     :employees.filter(e=>e.email===currentUser?.user?.email);
 
+  const daysInMonth=last.getDate();
+  // Build array of all days
+  const days=Array.from({length:daysInMonth},(_,i)=>{
+    const d=new Date(year,month,i+1);
+    const dow=d.getDay(); // 0=Sun
+    const dateStr=`${year}-${pad(month+1)}-${pad(i+1)}`;
+    return{d:i+1,date:dateStr,dow,weekend:dow===0||dow===6};
+  });
+
   let html=`<div class="page-bar">
     <div class="page-bar-title">Grafik</div>
     <div class="view-toggle">
@@ -715,39 +740,45 @@ function renderMonth(mc){
     </div>`;
   }
 
-  // Build calendar grid
-  const startDow=first.getDay()===0?6:first.getDay()-1; // 0=Mon
-  const daysInMonth=last.getDate();
-  const labels=['Pon','Wt','Śr','Czw','Pt','Sob','Nd'];
+  const dowLabels=['Nd','Pon','Wt','Śr','Czw','Pt','Sob'];
 
-  html+=`<div class="month-wrap"><div class="month-grid">`;
-  labels.forEach(l=>html+=`<div class="mg-head">${l}</div>`);
+  html+=`<div class="month-wrap"><table class="month-tbl"><thead><tr>
+    <th class="mth-emp">Pracownik</th>`;
+  days.forEach(day=>{
+    const isT=day.date===tod;
+    html+=`<th class="mth-day${isT?' mtoday':''}">
+      <span>${dowLabels[day.dow].slice(0,2)}</span>
+      <span class="mdn">${day.d}</span>
+    </th>`;
+  });
+  html+=`</tr></thead><tbody>`;
 
-  for(let i=0;i<startDow;i++) html+=`<div class="mg-cell empty-cell"></div>`;
-
-  for(let d=1;d<=daysInMonth;d++){
-    const dateStr=`${year}-${pad(month+1)}-${pad(d)}`;
-    const isT=dateStr===tod;
-    const dayShifts=shifts.filter(s=>{
-      if(s.date!==dateStr) return false;
-      const emp=employees.find(e=>e.id===s.employee_id);
-      if(!emp) return false;
-      if(!canEdit()&&emp.email!==currentUser?.user?.email) return false;
-      if(currentDept!=='all'&&emp.department!==currentDept) return false;
-      return true;
+  viewEmps.forEach(emp=>{
+    const eS=shifts.filter(s=>s.employee_id===emp.id);
+    let eH=0; eS.forEach(s=>eH+=calcH(s.start_time||'10:00:00',s.end_time||'18:00:00'));
+    html+=`<tr><td><div class="mtd-emp">
+      <div class="av" style="background:${avatarColor(emp.name)};width:24px;height:24px;font-size:9px;border-radius:5px">${initials(emp.name)}</div>
+      <div>
+        <div style="font-size:12px;font-weight:500">${emp.name.split(' ')[0]}</div>
+        ${eH>0?`<div style="font-size:10px;color:var(--accent)">${eH.toFixed(0)}h</div>`:''}
+      </div>
+    </div></td>`;
+    days.forEach(day=>{
+      const shift=eS.find(s=>s.date===day.date);
+      const isT=day.date===tod;
+      const ca=canEdit()?`onclick="openShiftModal('${emp.id}','${emp.name}','${day.date}','${shift?.id||''}')"`:''
+      html+=`<td class="mtd-day${shift?' mfilled':''}${isT?' mtoday-cell':''}${day.weekend&&!shift?' mweekend':''}" ${ca}>`;
+      if(shift){
+        html+=`<div class="mchip">${(shift.start_time||'10:00').slice(0,5)}</div>`;
+      } else if(canEdit()){
+        html+=`<span style="color:var(--border);font-size:12px">+</span>`;
+      }
+      html+=`</td>`;
     });
-    const hasS=dayShifts.length>0;
-    html+=`<div class="mg-cell${isT?' today-cell':''}${hasS?' has-shifts':''}">
-      <div class="mg-num${isT?' today-num':''}">${d}</div>`;
-    dayShifts.slice(0,2).forEach(s=>{
-      const emp=employees.find(e=>e.id===s.employee_id);
-      const name=emp?emp.name.split(' ')[0]:'?';
-      html+=`<div class="mg-shift-dot">${name} ${(s.start_time||'10:00').slice(0,5)}</div>`;
-    });
-    if(dayShifts.length>2) html+=`<div class="mg-more">+${dayShifts.length-2}</div>`;
-    html+=`</div>`;
-  }
-  html+=`</div></div>`;
+    html+=`</tr>`;
+  });
+
+  html+=`</tbody></table></div>`;
   mc.innerHTML=html;
 }
 
