@@ -113,51 +113,69 @@ body { font-family: var(--font); background: var(--bg); color: var(--text); min-
 }
 .dept-tab.active { background: var(--primary); color: white; border-color: var(--primary); }
 
-/* ── Employee schedule card ── */
-.emp-card {
-  background: white; border-radius: var(--radius); border: 1px solid var(--border);
-  box-shadow: var(--shadow); overflow: hidden;
+/* ── Schedule table ── */
+.sched-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.sched-table {
+  width: 100%; border-collapse: collapse; min-width: 520px;
+  background: white; border: 1px solid var(--border);
+  border-radius: var(--radius); overflow: hidden;
 }
-.emp-card-header {
-  padding: 12px 14px 10px; display: flex; align-items: center; gap: 10px;
-  border-bottom: 1px solid var(--border);
+.sched-table thead tr { background: var(--primary); }
+.sched-table thead th {
+  padding: 10px 8px; text-align: center; font-size: 11px; font-weight: 600;
+  color: rgba(255,255,255,.7); white-space: nowrap; border: none;
+}
+.sched-table thead th.col-emp {
+  text-align: left; padding-left: 14px; color: rgba(255,255,255,.5);
+  font-size: 10px; text-transform: uppercase; letter-spacing: .5px;
+  min-width: 140px;
+}
+.sched-table thead th.col-day { min-width: 60px; }
+.sched-table thead th.col-day.today-head { color: #34D399; }
+.sched-table thead th.col-sum {
+  color: rgba(255,255,255,.5); font-size: 10px; text-transform: uppercase;
+  letter-spacing: .5px; min-width: 70px;
+}
+.sched-table tbody tr { border-top: 1px solid var(--border); }
+.sched-table tbody tr:hover td { background: #FAFBFC; }
+.sched-table tbody td { padding: 0; vertical-align: middle; border-right: 1px solid var(--border); }
+.sched-table tbody td:last-child { border-right: none; }
+.td-emp {
+  padding: 10px 14px; display: flex; align-items: center; gap: 9px;
+  min-height: 52px;
 }
 .emp-avatar {
-  width: 34px; height: 34px; border-radius: 6px; display: flex; align-items: center;
-  justify-content: center; font-size: 13px; font-weight: 700; color: white; flex-shrink: 0;
+  width: 30px; height: 30px; border-radius: 6px; display: flex; align-items: center;
+  justify-content: center; font-size: 12px; font-weight: 700; color: white; flex-shrink: 0;
 }
-.emp-name { font-size: 13px; font-weight: 600; }
-.emp-week-row {
-  display: grid; grid-template-columns: repeat(7, 1fr); gap: 1px;
-  background: var(--border);
+.emp-name { font-size: 13px; font-weight: 600; line-height: 1.2; }
+.emp-dept-dot {
+  display: inline-block; width: 6px; height: 6px; border-radius: 50%;
+  margin-right: 4px; vertical-align: middle;
 }
-.day-cell {
-  background: white; padding: 7px 3px; cursor: pointer; min-height: 54px;
-  display: flex; flex-direction: column; align-items: center; gap: 2px;
-  transition: background .1s; position: relative;
+.td-day {
+  text-align: center; cursor: pointer; padding: 8px 4px; min-height: 52px;
+  display: table-cell; vertical-align: middle; transition: background .1s; position: relative;
 }
-.day-cell:hover { background: #F0FDF4; }
-.day-cell.has-shift { background: #F0FDF4; }
-.day-cell.today-col { background: #ECFDF5; }
-.day-label { font-size: 9px; font-weight: 500; color: var(--muted); }
-.day-num { font-size: 11px; font-weight: 700; color: var(--text); }
-.day-num.today-num { color: var(--accent); }
-.shift-badge {
-  background: var(--accent); color: white; font-size: 7.5px; font-weight: 600;
-  padding: 2px 4px; border-radius: 3px; white-space: nowrap;
+.td-day:hover { background: #F0FDF4 !important; }
+.td-day.has-shift { background: #F0FDF4; }
+.td-day.today-col { background: #F0FDF4; }
+.shift-pill {
+  display: inline-block; background: var(--accent); color: white;
+  font-size: 9px; font-weight: 600; padding: 2px 6px; border-radius: 3px;
+  white-space: nowrap; line-height: 1.4;
 }
-.shift-cost { font-size: 7.5px; color: var(--accent); font-weight: 600; }
-.emp-week-summary {
-  padding: 9px 14px; display: flex; gap: 16px; background: #FAFBFC;
-  border-top: 1px solid var(--border);
+.shift-cost-sm { font-size: 9px; color: var(--accent); font-weight: 600; margin-top: 2px; }
+.add-btn-cell { font-size: 16px; color: #CBD5E1; line-height: 1; }
+.td-sum {
+  text-align: right; padding: 10px 12px; white-space: nowrap;
+  font-size: 12px; font-weight: 700; color: var(--text);
 }
-.wsumm { font-size: 11px; }
-.wsumm-val { font-weight: 700; font-size: 12px; }
-.wsumm-label { color: var(--muted); }
+.td-sum-sub { font-size: 10px; color: var(--muted); font-weight: 400; margin-top: 1px; }
 
 /* ── Cost banner ── */
 .cost-banner {
-  background: var(--primary); color: white; padding: 14px 16px; margin: 0 16px 14px;
+  background: var(--primary); color: white; padding: 12px 16px; margin: 0 0 12px;
   border-radius: var(--radius);
 }
 
@@ -481,51 +499,56 @@ function renderSched(mc) {
   const sun=new Date(monDate); sun.setDate(monDate.getDate()+6);
   const rangeStr=`${monDate.getDate()}.${pad(monDate.getMonth()+1)} — ${sun.getDate()}.${pad(sun.getMonth()+1)}.${sun.getFullYear()}`;
 
-  let html=`<div style="padding:16px 16px 0">
-    <div style="font-size:11px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.4px;margin-bottom:6px">Grafik tygodniowy</div>
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
-      <button class="week-nav-btn" onclick="changeWeek(-1)">‹</button>
-      <div style="text-align:center"><div style="font-size:15px;font-weight:800">${rangeStr}</div><div style="font-size:11px;color:var(--muted)">Tydzień ${wNum(monDate)}</div></div>
-      <button class="week-nav-btn" onclick="changeWeek(1)">›</button>
+  let html=`<div style="padding:14px 16px 10px;display:flex;align-items:center;gap:10px">
+    <button class="week-nav-btn" onclick="changeWeek(-1)">‹</button>
+    <div style="flex:1;text-align:center">
+      <div style="font-size:15px;font-weight:700;letter-spacing:-.3px">${rangeStr}</div>
+      <div style="font-size:11px;color:var(--muted);margin-top:1px">Tydzień ${wNum(monDate)}</div>
     </div>
+    <button class="week-nav-btn" onclick="changeWeek(1)">›</button>
   </div>`;
 
   if(canEdit()){
-    html+=`<div style="display:flex;gap:8px;padding:0 16px 12px;overflow-x:auto">
+    html+=`<div style="display:flex;gap:6px;padding:0 16px 10px;overflow-x:auto">
       <button class="dept-tab ${currentDept==='all'?'active':''}" onclick="setDept('all')">Wszyscy</button>
-      <button class="dept-tab ${currentDept==='kuchnia'?'active':''}" onclick="setDept('kuchnia')">🍳 Kuchnia</button>
-      <button class="dept-tab ${currentDept==='sala'?'active':''}" onclick="setDept('sala')">🍷 Sala</button>
+      <button class="dept-tab ${currentDept==='kuchnia'?'active':''}" onclick="setDept('kuchnia')">Kuchnia</button>
+      <button class="dept-tab ${currentDept==='sala'?'active':''}" onclick="setDept('sala')">Sala</button>
     </div>`;
     if(totalH>0){
-      html+=`<div class="cost-banner" style="margin:0 16px 16px">
+      html+=`<div class="cost-banner" style="margin:0 16px 10px">
         <div style="display:flex;justify-content:space-between;align-items:center">
-          <div><div style="font-size:11px;opacity:.6">Koszt tygodnia</div><div style="font-size:22px;font-weight:800">${totalCost.toFixed(0)} zł netto</div></div>
-          <div style="text-align:right"><div style="font-size:11px;opacity:.6">Łącznie</div><div style="font-size:18px;font-weight:800">${totalH.toFixed(1)} h</div></div>
+          <div><div style="font-size:10px;opacity:.55;font-weight:600;text-transform:uppercase;letter-spacing:.4px">Koszt tygodnia</div><div style="font-size:20px;font-weight:700;margin-top:2px">${totalCost.toFixed(0)} zł netto</div></div>
+          <div style="text-align:right"><div style="font-size:10px;opacity:.55;font-weight:600;text-transform:uppercase;letter-spacing:.4px">Godziny</div><div style="font-size:20px;font-weight:700;margin-top:2px">${totalH.toFixed(1)} h</div></div>
         </div>
       </div>`;
     }
   }
 
-  html+=`<div style="padding:0 16px;display:flex;flex-direction:column;gap:12px">`;
+  // Table
+  html+=`<div style="padding:0 16px 16px"><div class="sched-wrap"><table class="sched-table"><thead><tr>
+    <th class="col-emp">Pracownik</th>`;
+  days.forEach(day=>{
+    const isT=day.date===tod;
+    html+=`<th class="col-day${isT?' today-head':''}">${day.label}<br><span style="font-size:14px;font-weight:${isT?'700':'500'}">${day.num}</span></th>`;
+  });
+  if(canEdit()) html+=`<th class="col-sum">Tydzień</th>`;
+  html+=`</tr></thead><tbody>`;
 
   viewEmps.forEach(emp=>{
     const eShifts=shifts.filter(s=>s.employee_id===emp.id);
     let eH=0,eCost=0;
     eShifts.forEach(s=>{const h=calcH(s.start_time||'10:00:00',s.end_time||'18:00:00');eH+=h;eCost+=h*(emp.rate_net||0);});
+    const deptColor=emp.department==='kuchnia'?'#B45309':'#1D4ED8';
 
-    html+=`<div class="emp-card">
-      <div class="emp-card-header">
-        <div class="emp-avatar" style="background:${avatarColor(emp.name)}">${initials(emp.name)}</div>
-        <div style="flex:1">
-          <div class="emp-name">${emp.name}</div>
-          <div style="margin-top:3px"><span class="badge-dept badge-${emp.department}">${emp.department}</span></div>
-        </div>
-        <div style="text-align:right">
-          ${canEdit()?`<div style="font-size:15px;font-weight:800">${(emp.rate_net||0).toFixed(2)} zł</div><div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.3px">netto/h</div>`
-          :`<div style="font-size:14px;font-weight:700;color:var(--muted)">${eH.toFixed(1)}h</div><div style="font-size:10px;color:var(--muted)">ten tyg.</div>`}
+    html+=`<tr><td><div class="td-emp">
+      <div class="emp-avatar" style="background:${avatarColor(emp.name)}">${initials(emp.name)}</div>
+      <div>
+        <div class="emp-name">${emp.name}</div>
+        <div style="font-size:11px;color:var(--muted);margin-top:1px">
+          <span class="emp-dept-dot" style="background:${deptColor}"></span>${emp.department}
         </div>
       </div>
-      <div class="emp-week-row">`;
+    </div></td>`;
 
     days.forEach(day=>{
       const shift=eShifts.find(s=>s.date===day.date);
@@ -533,26 +556,25 @@ function renderSched(mc) {
       const h=shift?calcH(shift.start_time||'10:00:00',shift.end_time||'18:00:00'):0;
       const cost=h*(emp.rate_net||0);
       const ca=canEdit()?`onclick="openShiftModal('${emp.id}','${emp.name}','${day.date}','${shift?.id||''}')"`:''
-      html+=`<div class="day-cell${shift?' has-shift':''}${isT?' today-col':''}" ${ca}>
-        <div class="day-label">${day.label}</div>
-        <div class="day-num${isT?' today-num':''}">${day.num}</div>
-        ${shift?`<div class="shift-badge">${(shift.start_time||'10:00').slice(0,5)}-${(shift.end_time||'18:00').slice(0,5)}</div>`:(canEdit()?'<div style="font-size:14px;color:#d1d5db;line-height:1">+</div>':'')}
-        ${shift&&canEdit()&&(emp.rate_net||0)>1?`<div class="shift-cost">${cost.toFixed(0)}zł</div>`:''}
-      </div>`;
+      html+=`<td class="td-day${shift?' has-shift':''}${isT?' today-col':''}" ${ca}>`;
+      if(shift){
+        html+=`<div class="shift-pill">${(shift.start_time||'10:00').slice(0,5)}–${(shift.end_time||'18:00').slice(0,5)}</div>`;
+        if(canEdit()&&(emp.rate_net||0)>1) html+=`<div class="shift-cost-sm">${cost.toFixed(0)} zł</div>`;
+      } else if(canEdit()){
+        html+=`<div class="add-btn-cell">+</div>`;
+      }
+      html+=`</td>`;
     });
 
-    html+=`</div>`;
-    if(eH>0){
-      html+=`<div class="emp-week-summary">
-        <div class="wsumm"><span class="wsumm-val">${eH.toFixed(1)}</span> <span class="wsumm-label">godz.</span></div>
-        ${canEdit()&&(emp.rate_net||0)>1?`<div class="wsumm"><span class="wsumm-val">${eCost.toFixed(0)} zł</span> <span class="wsumm-label">koszt tyg.</span></div>`:''}
-        <div class="wsumm"><span class="wsumm-val">${eShifts.length}</span> <span class="wsumm-label">zmian</span></div>
-      </div>`;
+    if(canEdit()){
+      html+=`<td class="td-sum">
+        ${eH>0?`<div>${eH.toFixed(1)} h</div><div class="td-sum-sub">${(emp.rate_net||0)>1?eCost.toFixed(0)+' zł':eShifts.length+' zm.'}</div>`:`<div style="color:var(--muted);font-weight:400">—</div>`}
+      </td>`;
     }
-    html+=`</div>`;
+    html+=`</tr>`;
   });
 
-  html+=`</div>`;
+  html+=`</tbody></table></div></div>`;
   mc.innerHTML=html;
 }
 
