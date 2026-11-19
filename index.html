@@ -193,6 +193,56 @@ body { font-family: var(--font); background: var(--bg); color: var(--text); min-
 }
 .shift-cost-lbl { font-size: 9px; color: var(--accent); font-weight: 500; margin-top: 2px; }
 .cell-add { font-size: 15px; color: var(--border); font-weight: 300; }
+.td-day-cell.unavail { background: #FEF2F2; }
+.cell-unavail { font-size: 10px; color: #FCA5A5; font-weight: 500; }
+
+/* ─── Auto-fill button ─── */
+.autofill-btn {
+  display: flex; align-items: center; gap: 7px; margin: 10px 16px 0;
+  background: white; border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 11px 14px; cursor: pointer; font-family: var(--font); font-size: 13px;
+  color: var(--text-2); font-weight: 400; width: calc(100% - 32px); transition: border-color .12s;
+}
+.autofill-btn:hover { border-color: var(--accent); color: var(--accent); }
+.autofill-btn svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 1.8; flex-shrink: 0; }
+.autofill-btn strong { font-weight: 600; color: var(--text); }
+
+/* ─── Avail month style ─── */
+.avail-month-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 16px 0; background: white; border-bottom: 1px solid var(--border); margin-bottom: 0;
+}
+.avail-month-title { font-size: 14px; font-weight: 600; }
+.avail-month-sub { font-size: 11px; color: var(--text-3); margin-top: 1px; }
+.avail-legend { display: flex; gap: 12px; padding: 8px 16px; align-items: center; font-size: 11px; color: var(--text-3); }
+.leg-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 3px; }
+
+/* ─── Date-based avail grid ─── */
+.avail-date-card { background: white; border-radius: var(--radius); border: 1px solid var(--border); padding: 12px 14px; }
+.avail-date-head { display: flex; align-items: center; gap: 9px; margin-bottom: 10px; }
+.avail-date-name { font-size: 13px; font-weight: 500; flex:1; }
+.avail-date-stats { font-size: 11px; color: var(--text-3); }
+.avail-cal { display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px; }
+.avail-cal-head { text-align: center; font-size: 9px; font-weight: 500; color: var(--text-3); padding: 2px 0; letter-spacing: .2px; }
+.adc {
+  text-align: center; padding: 4px 2px; border-radius: 5px; cursor: pointer;
+  font-size: 11px; font-weight: 400; color: var(--text-2); transition: all .1s; min-height: 28px;
+  display: flex; align-items: center; justify-content: center; border: 1px solid transparent;
+}
+.adc:hover { background: var(--bg); }
+.adc.avail-yes { background: #DCFCE7; color: #166534; border-color: #BBF7D0; font-weight: 500; }
+.adc.avail-no { background: #FEE2E2; color: #991B1B; border-color: #FECACA; font-weight: 500; }
+.adc.adc-empty { cursor: default; }
+.adc.adc-past { color: var(--text-3); cursor: default; opacity: .5; }
+
+/* ─── Add emp button ─── */
+.add-emp-btn {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  margin: 0 16px 16px; padding: 11px; background: white; border: 1px dashed var(--border);
+  border-radius: var(--radius); cursor: pointer; font-size: 13px; font-weight: 500;
+  color: var(--text-3); font-family: var(--font); transition: all .12s;
+}
+.add-emp-btn:hover { border-color: var(--accent); color: var(--accent); }
 
 .td-sum-cell { text-align: right; padding: 10px 14px; white-space: nowrap; }
 .sum-h { font-size: 13px; font-weight: 600; }
@@ -462,6 +512,8 @@ let employees=[], shifts=[], availability=[];
 let currentWeekOffset=0, currentDept='all', currentView='sched', schedView='week';
 let currentMonthOffset=0;
 let currentShiftEmpId=null, currentShiftDate=null;
+// availMonth: which month the availability tab is showing (offset from now)
+let availMonthOffset=1; // default: next month
 
 async function sbFetch(path, opts={}) {
   const h={'apikey':SB_KEY,'Content-Type':'application/json'};
@@ -516,8 +568,13 @@ function canEdit(){return['owner','manager'].includes(currentRole);}
 async function loadAllData(){
   employees=await sbFetch('/rest/v1/employees?select=*&active=eq.true&order=department,name').catch(()=>[]);
   await loadShiftsForCurrentPeriod();
+  // Load availability — now date-based (availability_dates table) + legacy day_of_week
   availability=await sbFetch('/rest/v1/availability?select=*').catch(()=>[]);
+  availDates=await sbFetch('/rest/v1/availability_dates?select=*').catch(()=>[]);
 }
+
+// availDates: [{id, employee_id, date, available}]
+let availDates=[];
 
 async function loadShiftsForCurrentPeriod(){
   let from,to;
@@ -680,11 +737,19 @@ function renderWeek(mc){
       const isT=day.date===tod;
       const h=shift?calcH(shift.start_time||'10:00:00',shift.end_time||'18:00:00'):0;
       const cost=h*(emp.rate_net||0);
+      // Check date-based unavailability
+      const unavail=availDates.find(a=>a.employee_id===emp.id&&a.date===day.date&&a.available===false);
       const ca=canEdit()?`onclick="openShiftModal('${emp.id}','${emp.name}','${day.date}','${shift?.id||''}')"`:''
-      html+=`<td class="td-day-cell${shift?' filled':''}${isT?' is-today':''}" ${ca}>`;
+      let cellCls='td-day-cell';
+      if(shift) cellCls+=' filled';
+      if(isT) cellCls+=' is-today';
+      if(unavail&&!shift) cellCls+=' unavail';
+      html+=`<td class="${cellCls}" ${ca}>`;
       if(shift){
         html+=`<div class="shift-chip">${(shift.start_time||'10:00').slice(0,5)}–${(shift.end_time||'18:00').slice(0,5)}</div>`;
         if(canEdit()&&(emp.rate_net||0)>1) html+=`<div class="shift-cost-lbl">${cost.toFixed(0)} zł</div>`;
+      } else if(unavail){
+        html+=`<div class="cell-unavail">✕</div>`;
       } else if(canEdit()){
         html+=`<div class="cell-add">+</div>`;
       }
@@ -837,33 +902,159 @@ async function saveEmp(){
   }catch(e){showToast('Błąd: '+e.message.slice(0,60));}
 }
 
-// ── AVAILABILITY ──
+// ── AVAILABILITY (date-based per month) ──
+function getAvailMonth(){
+  const now=new Date();
+  const y=now.getFullYear(), m=now.getMonth()+availMonthOffset;
+  const first=new Date(y,m,1); const last=new Date(y,m+1,0);
+  return{year:first.getFullYear(),month:first.getMonth(),first,last,daysInMonth:last.getDate()};
+}
+
 function renderAvail(mc){
-  const dow=['Pon','Wt','Śr','Czw','Pt','Sob','Nd'];
   const myEmail=currentUser?.user?.email;
   const viewEmps=canEdit()?employees:employees.filter(e=>e.email===myEmail);
-  let html=`<div class="page-bar"><div class="page-bar-title">${canEdit()?'Dyspozycyjność':'Moja dyspozycyjność'}</div></div><div class="avail-list">`;
+  const{year,month,first,daysInMonth}=getAvailMonth();
+  const tod=today();
+  const dowLabels=['Nd','Pn','Wt','Śr','Cz','Pt','Sb'];
+
+  // Legend + month nav
+  let html=`<div class="avail-month-nav">
+    <div>
+      <div class="avail-month-title">Dyspozycyjność — ${monthName(month)} ${year}</div>
+      <div class="avail-month-sub">Kliknij dzień: zielony = dostępny, czerwony = niedostępny</div>
+    </div>
+    <div style="display:flex;gap:6px">
+      <button class="wn-btn" onclick="changeAvailMonth(-1)">‹</button>
+      <button class="wn-btn" onclick="changeAvailMonth(1)">›</button>
+    </div>
+  </div>`;
+
+  if(canEdit()){
+    // Count how many have submitted for this month
+    const submitted=viewEmps.filter(emp=>availDates.some(a=>a.employee_id===emp.id&&a.date.startsWith(`${year}-${pad(month+1)}`))).length;
+    html+=`<div class="avail-legend">
+      <span><span class="leg-dot" style="background:#16A34A"></span>Dostępny</span>
+      <span><span class="leg-dot" style="background:#EF4444"></span>Niedostępny</span>
+      <span style="margin-left:auto;color:var(--text-2);font-weight:500">${submitted}/${viewEmps.length} zgłosiło</span>
+    </div>`;
+    // Auto-fill button — only show for future months
+    const isNextMonth=availMonthOffset>=1;
+    if(isNextMonth){
+      html+=`<button class="autofill-btn" onclick="autoFillFromAvail()">
+        <svg viewBox="0 0 24 24"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+        <span>Zaproponuj grafik na <strong>${monthName(month)}</strong> na podstawie dyspozycji</span>
+      </button>`;
+    }
+  }
+
+  html+=`<div class="avail-list">`;
+
   viewEmps.forEach(emp=>{
-    const avail=availability.filter(a=>a.employee_id===emp.id);
-    html+=`<div class="avail-card">
-      <div class="avail-card-head">
+    const empDates=availDates.filter(a=>a.employee_id===emp.id&&a.date.startsWith(`${year}-${pad(month+1)}`));
+    const yesCount=empDates.filter(a=>a.available===true).length;
+    const noCount=empDates.filter(a=>a.available===false).length;
+
+    html+=`<div class="avail-date-card">
+      <div class="avail-date-head">
         <div class="av" style="background:${avatarColor(emp.name)};width:26px;height:26px;font-size:10px">${initials(emp.name)}</div>
-        <div style="font-size:13px;font-weight:500">${emp.name}</div>
-      </div>
-      <div class="avail-days">`;
-    for(let d=0;d<7;d++){
-      const a=avail.find(x=>x.day_of_week===d);
-      const cls=a?.available===false?'no':a?.available===true?'yes':'';
-      const icon=a?.available===false?'✕':a?.available===true?'✓':'·';
-      html+=`<div class="aday ${cls}" onclick="toggleAvail('${emp.id}',${d})" id="av-${emp.id}-${d}">
-        <div class="aday-circle">${icon}</div>
-        <div class="aday-label">${dow[d]}</div>
-      </div>`;
+        <div class="avail-date-name">${emp.name}</div>
+        <div class="avail-date-stats">`;
+    if(yesCount||noCount) html+=`<span style="color:#16A34A">${yesCount}✓</span> <span style="color:#EF4444">${noCount}✕</span>`;
+    else html+=`<span>Brak zgłoszenia</span>`;
+    html+=`</div></div>
+      <div class="avail-cal">`;
+    // Day headers
+    dowLabels.forEach(l=>html+=`<div class="avail-cal-head">${l}</div>`);
+    // Empty cells before 1st
+    const startDow=first.getDay(); // 0=Sun
+    for(let i=0;i<startDow;i++) html+=`<div class="adc adc-empty"></div>`;
+    // Days
+    for(let d=1;d<=daysInMonth;d++){
+      const dateStr=`${year}-${pad(month+1)}-${pad(d)}`;
+      const rec=empDates.find(a=>a.date===dateStr);
+      const isPast=dateStr<tod;
+      let cls='adc';
+      if(isPast) cls+=' adc-past';
+      else if(rec?.available===true) cls+=' avail-yes';
+      else if(rec?.available===false) cls+=' avail-no';
+      const click=isPast?'':` onclick="toggleAvailDate('${emp.id}','${dateStr}')"`;
+      html+=`<div class="${cls}"${click} id="adc-${emp.id}-${dateStr}">${d}</div>`;
     }
     html+=`</div></div>`;
   });
   html+=`</div>`;
   mc.innerHTML=html;
+}
+
+function changeAvailMonth(d){ availMonthOffset+=d; renderView(); }
+
+async function toggleAvailDate(empId,date){
+  const ex=availDates.find(a=>a.employee_id===empId&&a.date===date);
+  // cycle: none→yes→no→none
+  let nv;
+  if(!ex) nv=true;
+  else if(ex.available===true) nv=false;
+  else { // remove
+    try{ await sbFetch(`/rest/v1/availability_dates?id=eq.${ex.id}`,{method:'DELETE'}); }catch(e){}
+    availDates=availDates.filter(a=>a.id!==ex.id);
+    const cell=document.getElementById(`adc-${empId}-${date}`);
+    if(cell){cell.className='adc';cell.style.fontWeight='';}
+    return;
+  }
+  try{
+    if(ex){
+      await sbFetch(`/rest/v1/availability_dates?id=eq.${ex.id}`,{method:'PATCH',body:JSON.stringify({available:nv})});
+      ex.available=nv;
+    } else {
+      const r=await sbFetch('/rest/v1/availability_dates?select=*',{method:'POST',headers:{'Prefer':'return=representation'},body:JSON.stringify({employee_id:empId,date,available:nv})});
+      if(Array.isArray(r))availDates.push(...r);
+    }
+    const cell=document.getElementById(`adc-${empId}-${date}`);
+    if(cell){
+      cell.className='adc '+(nv?'avail-yes':'avail-no');
+    }
+  }catch(e){
+    // Table may not exist yet — gracefully degrade
+    showToast('Tabela availability_dates niedostępna — sprawdź Supabase');
+  }
+}
+
+// Auto-fill: for the displayed month, insert shifts for employees on days they're available (skipping unavailable)
+async function autoFillFromAvail(){
+  const{year,month,daysInMonth}=getAvailMonth();
+  const prefix=`${year}-${pad(month+1)}`;
+  // Load existing shifts for that month
+  const mShifts=await sbFetch(`/rest/v1/shifts?select=*&date=gte.${prefix}-01&date=lte.${prefix}-${pad(daysInMonth)}`).catch(()=>[]);
+
+  let added=0, skipped=0;
+  const toInsert=[];
+
+  for(const emp of employees){
+    const empUnavail=availDates.filter(a=>a.employee_id===emp.id&&a.available===false&&a.date.startsWith(prefix));
+    const unavailSet=new Set(empUnavail.map(a=>a.date));
+
+    for(let d=1;d<=daysInMonth;d++){
+      const dateStr=`${prefix}-${pad(d)}`;
+      const dow=new Date(year,month,d).getDay();
+      // Skip Sundays (dow=0) unless specifically marked available
+      const isAvailable=availDates.find(a=>a.employee_id===emp.id&&a.date===dateStr&&a.available===true);
+      if(!isAvailable) continue; // only fill days employee explicitly said yes
+      if(unavailSet.has(dateStr)){skipped++;continue;}
+      if(mShifts.find(s=>s.employee_id===emp.id&&s.date===dateStr)){skipped++;continue;}
+      toInsert.push({employee_id:emp.id,date:dateStr,start_time:'10:00:00',end_time:'18:00:00',note:'auto'});
+    }
+  }
+
+  if(!toInsert.length){showToast('Brak dyspozycji do wstawienia — najpierw zaznacz dostępne dni');return;}
+
+  try{
+    const r=await sbFetch('/rest/v1/shifts?select=*',{method:'POST',headers:{'Prefer':'return=representation'},body:JSON.stringify(toInsert)});
+    if(Array.isArray(r)) shifts.push(...r);
+    showToast(`Dodano ${toInsert.length} zmian na ${monthName(month)}`);
+    schedView='month'; currentMonthOffset=availMonthOffset;
+    await loadShiftsForCurrentPeriod();
+    showView('sched');
+  }catch(e){showToast('Błąd: '+e.message.slice(0,60));}
 }
 
 async function toggleAvail(empId,day){
@@ -877,8 +1068,6 @@ async function toggleAvail(empId,day){
       const r=await sbFetch('/rest/v1/availability?select=*',{method:'POST',headers:{'Prefer':'return=representation'},body:JSON.stringify({employee_id:empId,day_of_week:day,available:nv})});
       if(Array.isArray(r))availability.push(...r);
     }
-    const cell=document.getElementById(`av-${empId}-${day}`);
-    if(cell){cell.className='aday '+(nv?'yes':'no');cell.querySelector('.aday-circle').textContent=nv?'✓':'✕';}
   }catch(e){showToast('Błąd: '+e.message.slice(0,60));}
 }
 
