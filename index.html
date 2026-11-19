@@ -4,356 +4,433 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>Osteria Antonina — Grafik</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root {
   --primary: #0F172A;
-  --accent: #059669;
-  --accent2: #059669;
-  --bg: #F8FAFC;
-  --card: #ffffff;
+  --accent: #16A34A;
+  --bg: #F1F5F9;
+  --surface: #ffffff;
   --border: #E2E8F0;
   --text: #0F172A;
-  --muted: #64748B;
-  --danger: #DC2626;
-  --success: #059669;
-  --warn: #D97706;
-  --shadow: 0 1px 2px rgba(0,0,0,.06), 0 2px 8px rgba(0,0,0,.04);
-  --radius: 8px;
-  --font: -apple-system, 'Inter', 'Segoe UI', sans-serif;
+  --text-2: #475569;
+  --text-3: #94A3B8;
+  --danger: #EF4444;
+  --warn: #F59E0B;
+  --radius: 10px;
+  --font: 'Inter', -apple-system, 'Segoe UI', sans-serif;
 }
-* { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: var(--font); background: var(--bg); color: var(--text); min-height: 100vh; }
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+body { font-family: var(--font); background: var(--bg); color: var(--text); min-height: 100vh; font-size: 14px; line-height: 1.5; -webkit-font-smoothing: antialiased; }
 
-/* ── Auth ── */
+/* ─── Auth ─── */
 #auth-screen {
   min-height: 100vh; display: flex; align-items: center; justify-content: center;
-  background: var(--primary);
-  padding: 24px;
+  background: var(--primary); padding: 24px;
 }
-.auth-box {
-  background: white; border-radius: 12px; padding: 36px 32px; width: 100%; max-width: 360px;
-  box-shadow: 0 8px 32px rgba(0,0,0,.18);
+.auth-card {
+  background: white; border-radius: 14px; padding: 40px 36px; width: 100%; max-width: 360px;
+  box-shadow: 0 20px 60px rgba(0,0,0,.25);
 }
-.auth-logo { text-align: center; margin-bottom: 28px; }
-.auth-logo h1 { font-size: 20px; font-weight: 700; color: var(--primary); letter-spacing: -.4px; }
-.auth-logo p { font-size: 13px; color: var(--muted); margin-top: 4px; }
-.auth-logo .dot { color: var(--accent); }
-.form-group { margin-bottom: 14px; }
-.form-group label { display: block; font-size: 12px; font-weight: 600; color: var(--muted); margin-bottom: 5px; }
-.form-group input {
-  width: 100%; padding: 11px 13px; border: 1px solid var(--border); border-radius: 6px;
-  font-size: 15px; font-family: var(--font); outline: none; transition: border-color .15s;
-  background: #fff; color: var(--text);
+.auth-brand { text-align: center; margin-bottom: 32px; }
+.auth-brand h1 { font-size: 18px; font-weight: 600; letter-spacing: -.3px; }
+.auth-brand h1 span { color: var(--accent); }
+.auth-brand p { font-size: 13px; color: var(--text-2); margin-top: 4px; font-weight: 400; }
+.field { margin-bottom: 14px; }
+.field label { display: block; font-size: 12px; font-weight: 500; color: var(--text-2); margin-bottom: 5px; }
+.field input {
+  width: 100%; padding: 10px 13px; border: 1px solid var(--border); border-radius: 7px;
+  font-size: 14px; font-family: var(--font); outline: none; color: var(--text);
+  transition: border-color .15s; background: #FAFBFC;
 }
-.form-group input:focus { border-color: var(--accent); }
-.btn-primary {
-  width: 100%; padding: 12px; background: var(--primary); color: white; border: none;
-  border-radius: 6px; font-size: 15px; font-weight: 600; cursor: pointer; margin-top: 6px;
-  transition: opacity .15s;
+.field input:focus { border-color: var(--accent); background: white; }
+.btn-login {
+  width: 100%; padding: 11px; background: var(--primary); color: white; border: none;
+  border-radius: 7px; font-size: 14px; font-weight: 500; cursor: pointer; margin-top: 6px;
+  font-family: var(--font); letter-spacing: -.1px; transition: opacity .15s;
 }
-.btn-primary:hover { opacity: .88; }
-.auth-error { color: var(--danger); font-size: 13px; margin-top: 10px; text-align: center; display: none; }
+.btn-login:hover { opacity: .85; }
+.auth-err { color: var(--danger); font-size: 12px; margin-top: 8px; text-align: center; display: none; }
 
-/* ── App shell ── */
+/* ─── App shell ─── */
 #app { display: none; }
 .header {
-  background: var(--primary); color: white; padding: 0 16px;
-  display: flex; align-items: center; height: 52px; position: sticky; top: 0; z-index: 100;
-  border-bottom: 1px solid rgba(255,255,255,.06);
+  background: var(--primary); color: white; height: 50px; padding: 0 16px;
+  display: flex; align-items: center; position: sticky; top: 0; z-index: 100;
 }
-.header-logo { font-size: 14px; font-weight: 700; flex: 1; letter-spacing: -.2px; }
-.header-logo span { color: var(--accent); }
-.header-role {
-  background: rgba(5,150,105,.18); color: #34D399; font-size: 11px; font-weight: 600;
-  padding: 3px 9px; border-radius: 4px; margin-right: 10px;
+.header-brand { font-size: 14px; font-weight: 500; flex: 1; letter-spacing: -.2px; }
+.header-brand em { color: var(--accent); font-style: normal; }
+.role-badge {
+  font-size: 10px; font-weight: 600; padding: 2px 8px; border-radius: 4px; margin-right: 10px;
+  background: rgba(22,163,74,.2); color: #4ADE80; letter-spacing: .2px;
 }
-.header-user { font-size: 12px; color: rgba(255,255,255,.5); margin-right: 12px; }
-.btn-logout {
-  background: transparent; color: rgba(255,255,255,.5); border: 1px solid rgba(255,255,255,.12);
-  padding: 5px 10px; border-radius: 5px; font-size: 12px; cursor: pointer;
+.header-name { font-size: 12px; color: rgba(255,255,255,.4); margin-right: 12px; }
+.btn-out {
+  font-size: 12px; color: rgba(255,255,255,.4); background: none; border: 1px solid rgba(255,255,255,.12);
+  padding: 4px 10px; border-radius: 5px; cursor: pointer; font-family: var(--font);
   transition: color .15s;
 }
-.btn-logout:hover { color: white; }
+.btn-out:hover { color: white; }
 
-/* ── Bottom nav ── */
-.bottom-nav {
-  position: fixed; bottom: 0; left: 0; right: 0; background: white;
+/* ─── Bottom nav ─── */
+.bnav {
+  position: fixed; bottom: 0; left: 0; right: 0; height: 56px; background: white;
   border-top: 1px solid var(--border); display: flex; z-index: 100;
   padding-bottom: env(safe-area-inset-bottom);
 }
-.nav-item {
-  flex: 1; display: flex; flex-direction: column; align-items: center; padding: 9px 0;
-  cursor: pointer; color: var(--muted); font-size: 10px; font-weight: 500; gap: 3px;
-  transition: color .15s; border: none; background: none; position: relative;
+.bnav-item {
+  flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 3px; cursor: pointer; color: var(--text-3); font-size: 10px; font-weight: 500;
+  border: none; background: none; font-family: var(--font); transition: color .12s; position: relative;
 }
-.nav-item.active { color: var(--primary); }
-.nav-item.active svg { stroke: var(--primary); }
-.nav-item svg { width: 20px; height: 20px; stroke: var(--muted); transition: stroke .15s; }
-
-/* active indicator bar */
-.nav-item.active::after {
-  content: ''; position: absolute; top: 0; left: 20%; right: 20%;
+.bnav-item.active { color: var(--primary); }
+.bnav-item.active svg { stroke: var(--primary); }
+.bnav-item svg { width: 20px; height: 20px; stroke: var(--text-3); fill: none; stroke-width: 1.8; transition: stroke .12s; }
+.bnav-item.active::before {
+  content: ''; position: absolute; top: 0; left: 25%; right: 25%;
   height: 2px; background: var(--accent); border-radius: 0 0 2px 2px;
 }
 
-.main { padding: 0 0 76px; }
+.main { padding-bottom: 64px; }
 
-/* ── Week nav ── */
-.week-nav-btn {
-  width: 32px; height: 32px; border: 1px solid var(--border); background: white;
-  border-radius: 6px; display: flex; align-items: center; justify-content: center;
-  cursor: pointer; font-size: 16px; color: var(--muted); transition: border-color .15s;
+/* ─── Page header bar ─── */
+.page-bar {
+  background: white; border-bottom: 1px solid var(--border);
+  padding: 10px 16px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
 }
-.week-nav-btn:hover { border-color: var(--accent); color: var(--accent); }
-
-.dept-tab {
-  padding: 6px 14px; border-radius: 6px; font-size: 13px; font-weight: 500; cursor: pointer;
-  white-space: nowrap; border: 1px solid var(--border); background: white; color: var(--muted);
+.page-bar-title { font-size: 15px; font-weight: 600; flex: 1; min-width: 120px; }
+.view-toggle {
+  display: flex; background: var(--bg); border-radius: 7px; padding: 2px; gap: 1px;
+}
+.vt-btn {
+  padding: 5px 12px; border-radius: 5px; font-size: 12px; font-weight: 500; cursor: pointer;
+  border: none; background: none; font-family: var(--font); color: var(--text-2);
   transition: all .12s;
 }
-.dept-tab.active { background: var(--primary); color: white; border-color: var(--primary); }
+.vt-btn.active { background: white; color: var(--text); box-shadow: 0 1px 3px rgba(0,0,0,.08); }
 
-/* ── Schedule table ── */
-.sched-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
-.sched-table {
-  width: 100%; border-collapse: collapse; min-width: 520px;
-  background: white; border: 1px solid var(--border);
-  border-radius: var(--radius); overflow: hidden;
+/* ─── Week nav ─── */
+.week-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 16px 0;
 }
-.sched-table thead tr { background: var(--primary); }
-.sched-table thead th {
-  padding: 10px 8px; text-align: center; font-size: 11px; font-weight: 600;
-  color: rgba(255,255,255,.7); white-space: nowrap; border: none;
+.wn-btn {
+  width: 30px; height: 30px; border: 1px solid var(--border); background: white;
+  border-radius: 6px; display: flex; align-items: center; justify-content: center;
+  cursor: pointer; color: var(--text-2); font-size: 15px; transition: border-color .12s;
 }
-.sched-table thead th.col-emp {
-  text-align: left; padding-left: 14px; color: rgba(255,255,255,.5);
-  font-size: 10px; text-transform: uppercase; letter-spacing: .5px;
-  min-width: 140px;
+.wn-btn:hover { border-color: var(--accent); }
+.wn-label { text-align: center; }
+.wn-range { font-size: 14px; font-weight: 600; }
+.wn-week { font-size: 11px; color: var(--text-3); margin-top: 1px; }
+
+/* ─── Dept tabs ─── */
+.dept-row {
+  display: flex; gap: 6px; padding: 10px 16px 0; overflow-x: auto;
+  scrollbar-width: none;
 }
-.sched-table thead th.col-day { min-width: 60px; }
-.sched-table thead th.col-day.today-head { color: #34D399; }
-.sched-table thead th.col-sum {
-  color: rgba(255,255,255,.5); font-size: 10px; text-transform: uppercase;
-  letter-spacing: .5px; min-width: 70px;
+.dept-row::-webkit-scrollbar { display: none; }
+.dtab {
+  padding: 5px 13px; border-radius: 6px; font-size: 12px; font-weight: 500;
+  white-space: nowrap; border: 1px solid var(--border); background: white;
+  color: var(--text-2); cursor: pointer; transition: all .1s; font-family: var(--font);
 }
-.sched-table tbody tr { border-top: 1px solid var(--border); }
-.sched-table tbody tr:hover td { background: #FAFBFC; }
-.sched-table tbody td { padding: 0; vertical-align: middle; border-right: 1px solid var(--border); }
-.sched-table tbody td:last-child { border-right: none; }
-.td-emp {
-  padding: 10px 14px; display: flex; align-items: center; gap: 9px;
-  min-height: 52px;
+.dtab.active { background: var(--primary); color: white; border-color: var(--primary); }
+
+/* ─── Cost strip ─── */
+.cost-strip {
+  margin: 10px 16px 0; background: var(--primary); border-radius: var(--radius);
+  padding: 12px 16px; display: flex; justify-content: space-between; align-items: center;
 }
-.emp-avatar {
-  width: 30px; height: 30px; border-radius: 6px; display: flex; align-items: center;
-  justify-content: center; font-size: 12px; font-weight: 700; color: white; flex-shrink: 0;
+.cs-label { font-size: 10px; color: rgba(255,255,255,.45); font-weight: 500; text-transform: uppercase; letter-spacing: .4px; margin-bottom: 2px; }
+.cs-val { font-size: 18px; font-weight: 600; color: white; letter-spacing: -.3px; }
+
+/* ─── Schedule table ─── */
+.sched-wrap { padding: 10px 16px 0; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.sched-tbl {
+  width: 100%; border-collapse: collapse; min-width: 480px;
+  background: white; border-radius: var(--radius); overflow: hidden;
+  border: 1px solid var(--border);
 }
-.emp-name { font-size: 13px; font-weight: 600; line-height: 1.2; }
-.emp-dept-dot {
-  display: inline-block; width: 6px; height: 6px; border-radius: 50%;
-  margin-right: 4px; vertical-align: middle;
+.sched-tbl thead th {
+  background: var(--primary); color: rgba(255,255,255,.5); font-size: 10px; font-weight: 500;
+  padding: 9px 8px; text-align: center; white-space: nowrap; letter-spacing: .3px;
 }
-.td-day {
-  text-align: center; cursor: pointer; padding: 8px 4px; min-height: 52px;
-  display: table-cell; vertical-align: middle; transition: background .1s; position: relative;
+.sched-tbl thead th.th-emp { text-align: left; padding-left: 14px; min-width: 130px; }
+.sched-tbl thead th.th-day { min-width: 56px; }
+.sched-tbl thead th.th-day .dn { font-size: 15px; font-weight: 600; color: white; display: block; margin-top: 1px; }
+.sched-tbl thead th.th-day.today .dn { color: #4ADE80; }
+.sched-tbl thead th.th-sum { min-width: 72px; text-align: right; padding-right: 14px; }
+.sched-tbl tbody tr { border-top: 1px solid var(--border); }
+.sched-tbl tbody tr:last-child td { }
+.sched-tbl tbody td { border-right: 1px solid var(--border); padding: 0; }
+.sched-tbl tbody td:last-child { border-right: none; }
+
+.td-emp-cell { display: flex; align-items: center; gap: 9px; padding: 10px 14px; min-height: 50px; }
+.av {
+  width: 28px; height: 28px; border-radius: 6px; display: flex; align-items: center;
+  justify-content: center; font-size: 11px; font-weight: 600; color: white; flex-shrink: 0;
 }
-.td-day:hover { background: #F0FDF4 !important; }
-.td-day.has-shift { background: #F0FDF4; }
-.td-day.today-col { background: #F0FDF4; }
-.shift-pill {
+.td-emp-name { font-size: 13px; font-weight: 500; }
+.td-emp-dept { font-size: 11px; color: var(--text-3); margin-top: 1px; display: flex; align-items: center; gap: 4px; }
+.dept-dot { width: 5px; height: 5px; border-radius: 50%; display: inline-block; }
+
+.td-day-cell {
+  text-align: center; cursor: pointer; padding: 8px 4px; min-height: 50px;
+  vertical-align: middle; transition: background .1s;
+}
+.td-day-cell:hover { background: #F0FDF4; }
+.td-day-cell.filled { background: #F0FDF4; }
+.td-day-cell.is-today { background: #ECFDF5; }
+.shift-chip {
   display: inline-block; background: var(--accent); color: white;
-  font-size: 9px; font-weight: 600; padding: 2px 6px; border-radius: 3px;
-  white-space: nowrap; line-height: 1.4;
+  font-size: 9px; font-weight: 500; padding: 2px 6px; border-radius: 3px;
+  white-space: nowrap; letter-spacing: -.1px;
 }
-.shift-cost-sm { font-size: 9px; color: var(--accent); font-weight: 600; margin-top: 2px; }
-.add-btn-cell { font-size: 16px; color: #CBD5E1; line-height: 1; }
-.td-sum {
-  text-align: right; padding: 10px 12px; white-space: nowrap;
-  font-size: 12px; font-weight: 700; color: var(--text);
-}
-.td-sum-sub { font-size: 10px; color: var(--muted); font-weight: 400; margin-top: 1px; }
+.shift-cost-lbl { font-size: 9px; color: var(--accent); font-weight: 500; margin-top: 2px; }
+.cell-add { font-size: 15px; color: var(--border); font-weight: 300; }
 
-/* ── Cost banner ── */
-.cost-banner {
-  background: var(--primary); color: white; padding: 12px 16px; margin: 0 0 12px;
-  border-radius: var(--radius);
-}
+.td-sum-cell { text-align: right; padding: 10px 14px; white-space: nowrap; }
+.sum-h { font-size: 13px; font-weight: 600; }
+.sum-cost { font-size: 11px; color: var(--text-3); font-weight: 400; margin-top: 1px; }
 
-/* ── Stat cards ── */
-.stat-card {
-  background: var(--card); border-radius: var(--radius); padding: 14px;
-  box-shadow: var(--shadow); border: 1px solid var(--border);
+/* ─── Month grid ─── */
+.month-wrap { padding: 10px 16px 0; }
+.month-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 1px; background: var(--border); border-radius: var(--radius); overflow: hidden; border: 1px solid var(--border); }
+.mg-head { background: var(--primary); color: rgba(255,255,255,.5); font-size: 10px; font-weight: 500; padding: 8px 4px; text-align: center; letter-spacing: .3px; }
+.mg-cell {
+  background: white; padding: 6px 7px; min-height: 64px; cursor: pointer;
+  transition: background .1s; display: flex; flex-direction: column; gap: 3px;
 }
-.stat-card.accent { background: var(--primary); color: white; border-color: transparent; }
-.stat-card.accent .stat-label { color: rgba(255,255,255,.5); }
-.stat-label { font-size: 11px; font-weight: 500; color: var(--muted); margin-bottom: 5px; }
-.stat-value { font-size: 22px; font-weight: 700; letter-spacing: -.5px; }
-.stat-value small { font-size: 12px; font-weight: 400; opacity: .6; }
-.stat-sub { font-size: 11px; color: var(--muted); margin-top: 3px; }
+.mg-cell:hover { background: #F8FAFC; }
+.mg-cell.empty-cell { background: #F8FAFC; cursor: default; }
+.mg-cell.today-cell { background: #ECFDF5; }
+.mg-cell.has-shifts { background: #F0FDF4; }
+.mg-num { font-size: 11px; font-weight: 500; color: var(--text-2); }
+.mg-num.today-num { color: var(--accent); font-weight: 600; }
+.mg-shift-dot { font-size: 8.5px; color: var(--accent); font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.mg-more { font-size: 8px; color: var(--text-3); }
 
-/* ── Dept badges ── */
-.badge-dept {
-  display: inline-block; padding: 2px 7px; border-radius: 4px; font-size: 10px; font-weight: 600;
+/* ─── Employees list ─── */
+.emp-list { padding: 10px 16px; display: flex; flex-direction: column; gap: 8px; }
+.emp-row {
+  background: white; border-radius: var(--radius); border: 1px solid var(--border);
+  padding: 13px 14px; display: flex; align-items: center; gap: 11px;
 }
-.badge-kuchnia { background: #FEF9C3; color: #854D0E; }
-.badge-sala { background: #DBEAFE; color: #1E40AF; }
+.emp-row-info { flex: 1; }
+.emp-row-name { font-size: 14px; font-weight: 500; }
+.emp-row-meta { font-size: 12px; color: var(--text-3); margin-top: 2px; font-weight: 400; }
+.emp-row-stat { font-size: 12px; color: var(--accent); font-weight: 500; margin-top: 2px; }
+.emp-rate { text-align: right; }
+.emp-rate-val { font-size: 15px; font-weight: 600; }
+.emp-rate-lbl { font-size: 10px; color: var(--text-3); font-weight: 400; }
+.icon-btn {
+  width: 30px; height: 30px; border-radius: 6px; background: var(--bg); border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0;
+  color: var(--text-3); font-size: 14px; transition: border-color .12s;
+}
+.icon-btn:hover { border-color: var(--accent); color: var(--accent); }
 
-/* ── Modal ── */
+/* ─── Availability ─── */
+.avail-list { padding: 10px 16px; display: flex; flex-direction: column; gap: 8px; }
+.avail-card { background: white; border-radius: var(--radius); border: 1px solid var(--border); padding: 13px 14px; }
+.avail-card-head { display: flex; align-items: center; gap: 9px; margin-bottom: 11px; }
+.avail-days { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+.aday {
+  display: flex; flex-direction: column; align-items: center; gap: 3px;
+  padding: 5px 2px; border-radius: 6px; cursor: pointer; transition: background .1s;
+}
+.aday-label { font-size: 9px; font-weight: 500; color: var(--text-3); }
+.aday-circle {
+  width: 24px; height: 24px; border-radius: 50%; border: 1.5px solid var(--border);
+  display: flex; align-items: center; justify-content: center; font-size: 11px; transition: all .12s;
+}
+.aday.yes .aday-circle { border-color: var(--accent); background: var(--accent); color: white; }
+.aday.no .aday-circle { border-color: var(--danger); background: var(--danger); color: white; }
+.aday.yes { background: #F0FDF4; }
+.aday.no { background: #FEF2F2; }
+
+/* ─── Dashboard ─── */
+.dash-wrap { padding: 12px 16px; }
+.dash-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 16px; }
+.stat-box { background: white; border-radius: var(--radius); border: 1px solid var(--border); padding: 14px 14px 12px; }
+.stat-box.dark { background: var(--primary); border-color: transparent; }
+.stat-box-label { font-size: 11px; color: var(--text-3); font-weight: 400; margin-bottom: 5px; }
+.stat-box.dark .stat-box-label { color: rgba(255,255,255,.4); }
+.stat-box-val { font-size: 22px; font-weight: 600; letter-spacing: -.5px; }
+.stat-box.dark .stat-box-val { color: white; }
+.stat-box-sub { font-size: 11px; color: var(--text-3); margin-top: 3px; font-weight: 400; }
+.stat-box.dark .stat-box-sub { color: rgba(255,255,255,.35); }
+.dash-section-title { font-size: 12px; font-weight: 500; color: var(--text-2); margin-bottom: 8px; text-transform: uppercase; letter-spacing: .4px; }
+.dash-emp-rows { display: flex; flex-direction: column; gap: 6px; }
+.dash-emp-row {
+  background: white; border-radius: var(--radius); border: 1px solid var(--border);
+  padding: 11px 14px; display: flex; align-items: center; gap: 10px;
+}
+.der-info { flex: 1; }
+.der-name { font-size: 13px; font-weight: 500; }
+.der-meta { font-size: 11px; color: var(--text-3); margin-top: 1px; }
+.der-right { text-align: right; }
+.der-rate { font-size: 13px; font-weight: 600; }
+.der-cost { font-size: 11px; color: var(--accent); font-weight: 500; }
+
+/* ─── Employee dashboard (non-manager view) ─── */
+.emp-dash { padding: 12px 16px; }
+.cta-card {
+  background: var(--accent); border-radius: var(--radius); padding: 16px 18px; margin-bottom: 10px; color: white;
+}
+.cta-title { font-size: 15px; font-weight: 600; margin-bottom: 4px; }
+.cta-sub { font-size: 13px; opacity: .8; font-weight: 400; }
+.cta-btn {
+  display: inline-block; margin-top: 12px; background: white; color: var(--accent);
+  border: none; border-radius: 6px; padding: 8px 16px; font-size: 13px; font-weight: 600;
+  cursor: pointer; font-family: var(--font);
+}
+.info-card {
+  background: white; border-radius: var(--radius); border: 1px solid var(--border);
+  padding: 14px; margin-bottom: 10px;
+}
+.info-card-title { font-size: 12px; font-weight: 500; color: var(--text-2); text-transform: uppercase; letter-spacing: .4px; margin-bottom: 10px; }
+.my-shifts-list { display: flex; flex-direction: column; gap: 6px; }
+.my-shift-row { display: flex; align-items: center; justify-content: space-between; padding: 9px 12px; background: var(--bg); border-radius: 7px; }
+.msr-date { font-size: 13px; font-weight: 500; }
+.msr-time { font-size: 13px; color: var(--accent); font-weight: 500; }
+.msr-h { font-size: 11px; color: var(--text-3); }
+
+/* ─── Modal ─── */
 .modal-overlay {
-  position: fixed; inset: 0; background: rgba(15,23,42,.55); z-index: 200;
+  position: fixed; inset: 0; background: rgba(15,23,42,.5); z-index: 200;
   display: flex; align-items: flex-end; justify-content: center;
   opacity: 0; pointer-events: none; transition: opacity .2s;
 }
 .modal-overlay.open { opacity: 1; pointer-events: all; }
 .modal {
   background: white; border-radius: 16px 16px 0 0; width: 100%; max-width: 480px;
-  padding: 20px 20px 32px; transform: translateY(100%); transition: transform .22s cubic-bezier(.4,0,.2,1);
-  max-height: 85vh; overflow-y: auto;
+  padding: 18px 20px 32px; transform: translateY(100%);
+  transition: transform .22s cubic-bezier(.4,0,.2,1); max-height: 88vh; overflow-y: auto;
 }
 .modal-overlay.open .modal { transform: translateY(0); }
-.modal-handle { width: 32px; height: 3px; background: var(--border); border-radius: 2px; margin: 0 auto 18px; }
-.modal-title { font-size: 17px; font-weight: 700; margin-bottom: 3px; }
-.modal-sub { font-size: 13px; color: var(--muted); margin-bottom: 18px; }
-.modal-field { margin-bottom: 13px; }
-.modal-field label { display: block; font-size: 12px; font-weight: 600; color: var(--muted); margin-bottom: 5px; }
-.modal-field input, .modal-field select {
-  width: 100%; padding: 11px 13px; border: 1px solid var(--border); border-radius: 6px;
-  font-size: 15px; font-family: var(--font); outline: none; background: white; color: var(--text);
+.modal-pill { width: 30px; height: 3px; background: var(--border); border-radius: 2px; margin: 0 auto 16px; }
+.modal-title { font-size: 16px; font-weight: 600; margin-bottom: 2px; }
+.modal-sub { font-size: 13px; color: var(--text-2); margin-bottom: 16px; font-weight: 400; }
+.mfield { margin-bottom: 13px; }
+.mfield label { display: block; font-size: 12px; font-weight: 500; color: var(--text-2); margin-bottom: 5px; }
+.mfield input, .mfield select {
+  width: 100%; padding: 10px 12px; border: 1px solid var(--border); border-radius: 7px;
+  font-size: 14px; font-family: var(--font); outline: none; color: var(--text); background: white;
 }
-.modal-field input:focus, .modal-field select:focus { border-color: var(--accent); }
-.modal-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-.modal-actions { display: flex; gap: 8px; margin-top: 18px; }
-.btn-danger { flex: 1; padding: 12px; background: white; color: var(--danger); border: 1px solid var(--danger); border-radius: 6px; font-size: 14px; font-weight: 600; cursor: pointer; }
-.btn-save { flex: 2; padding: 12px; background: var(--primary); color: white; border: none; border-radius: 6px; font-size: 14px; font-weight: 600; cursor: pointer; }
-.btn-cancel { padding: 12px 18px; background: var(--bg); color: var(--muted); border: 1px solid var(--border); border-radius: 6px; font-size: 14px; font-weight: 500; cursor: pointer; }
+.mfield input:focus, .mfield select:focus { border-color: var(--accent); }
+.mrow { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.modal-actions { display: flex; gap: 8px; margin-top: 16px; }
+.mbtn-cancel { padding: 11px 16px; background: var(--bg); color: var(--text-2); border: 1px solid var(--border); border-radius: 7px; font-size: 13px; font-weight: 500; cursor: pointer; font-family: var(--font); }
+.mbtn-delete { flex: 1; padding: 11px; background: white; color: var(--danger); border: 1px solid var(--danger); border-radius: 7px; font-size: 13px; font-weight: 500; cursor: pointer; font-family: var(--font); }
+.mbtn-save { flex: 2; padding: 11px; background: var(--primary); color: white; border: none; border-radius: 7px; font-size: 13px; font-weight: 500; cursor: pointer; font-family: var(--font); }
+.cost-preview { background: var(--bg); border-radius: 7px; padding: 11px 12px; font-size: 12px; color: var(--text-2); margin-top: 4px; display: none; }
+.cost-preview strong { color: var(--text); font-weight: 600; }
 
-.edit-btn {
-  background: var(--bg); border: 1px solid var(--border); color: var(--muted);
-  padding: 6px 11px; border-radius: 6px; font-size: 12px; font-weight: 500; cursor: pointer;
-  transition: border-color .12s;
-}
-.edit-btn:hover { border-color: var(--accent); color: var(--accent); }
-
-/* ── Availability ── */
-.avail-day {
-  display: flex; flex-direction: column; align-items: center; gap: 3px;
-  padding: 6px 2px; border-radius: 6px; cursor: pointer; transition: background .1s;
-  font-size: 9px; font-weight: 600; color: var(--muted);
-}
-.avail-day.avail-yes { background: #F0FDF4; color: var(--success); }
-.avail-day.avail-no { background: #FEF2F2; color: var(--danger); }
-.avail-day-circle {
-  width: 26px; height: 26px; border-radius: 50%; border: 1.5px solid var(--border);
-  display: flex; align-items: center; justify-content: center; font-size: 12px; transition: all .1s;
-}
-.avail-yes .avail-day-circle { border-color: var(--success); background: var(--success); color: white; }
-.avail-no .avail-day-circle { border-color: var(--danger); background: var(--danger); color: white; }
-
-/* ── Toast ── */
+/* ─── Toast ─── */
 .toast {
-  position: fixed; bottom: 88px; left: 50%; transform: translateX(-50%) translateY(12px);
-  background: var(--primary); color: white; padding: 9px 18px; border-radius: 6px;
-  font-size: 13px; font-weight: 500; z-index: 300; opacity: 0;
-  transition: all .2s; pointer-events: none; white-space: nowrap;
-  box-shadow: 0 4px 16px rgba(0,0,0,.2);
+  position: fixed; bottom: 76px; left: 50%; transform: translateX(-50%) translateY(8px);
+  background: var(--primary); color: white; padding: 8px 16px; border-radius: 6px;
+  font-size: 12px; font-weight: 500; z-index: 300; opacity: 0; pointer-events: none;
+  white-space: nowrap; transition: all .18s; box-shadow: 0 4px 16px rgba(0,0,0,.2);
 }
 .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
-/* ── Empty / spinner ── */
-.empty { text-align: center; padding: 48px 24px; }
-.empty-icon { font-size: 36px; margin-bottom: 10px; opacity: .4; }
-.empty-text { font-size: 15px; font-weight: 600; }
-.empty-sub { font-size: 13px; color: var(--muted); margin-top: 4px; }
-.spinner { width: 28px; height: 28px; border: 2px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin .7s linear infinite; margin: 24px auto; }
+/* ─── Misc ─── */
+.empty-state { text-align: center; padding: 48px 24px; color: var(--text-3); }
+.empty-state svg { width: 40px; height: 40px; stroke: var(--border); margin-bottom: 12px; }
+.empty-state p { font-size: 14px; font-weight: 500; color: var(--text-2); }
+.empty-state span { font-size: 12px; }
+.spinner { width: 24px; height: 24px; border: 2px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin .6s linear infinite; margin: 32px auto; }
 @keyframes spin { to { transform: rotate(360deg); } }
+.sect-label { padding: 14px 16px 6px; font-size: 11px; font-weight: 500; color: var(--text-3); text-transform: uppercase; letter-spacing: .5px; }
 </style>
 </head>
 <body>
 
+<!-- AUTH -->
 <div id="auth-screen">
-  <div class="auth-box">
-    <div class="auth-logo">
-      <h1>Osteria <span class="dot">Antonina</span></h1>
+  <div class="auth-card">
+    <div class="auth-brand">
+      <h1>Osteria <span>Antonina</span></h1>
       <p>System zarządzania pracownikami</p>
     </div>
-    <div class="form-group">
-      <label>Email</label>
-      <input type="email" id="auth-email" placeholder="adres@email.com" autocomplete="email">
-    </div>
-    <div class="form-group">
-      <label>Hasło</label>
-      <input type="password" id="auth-pass" placeholder="••••••••" autocomplete="current-password">
-    </div>
-    <button class="btn-primary" id="login-btn" onclick="doLogin()">Zaloguj się</button>
-    <div class="auth-error" id="auth-error">Nieprawidłowy email lub hasło</div>
+    <div class="field"><label>Email</label><input type="email" id="auth-email" placeholder="adres@email.com" autocomplete="email"></div>
+    <div class="field"><label>Hasło</label><input type="password" id="auth-pass" placeholder="••••••••" autocomplete="current-password"></div>
+    <button class="btn-login" id="login-btn" onclick="doLogin()">Zaloguj się</button>
+    <div class="auth-err" id="auth-err"></div>
   </div>
 </div>
 
+<!-- APP -->
 <div id="app">
   <div class="header">
-    <div class="header-logo">Osteria <span>Antonina</span></div>
-    <span class="header-role" id="hdr-role">Właściciel</span>
-    <span class="header-user" id="hdr-user"></span>
-    <button class="btn-logout" onclick="doLogout()">Wyloguj</button>
+    <div class="header-brand">Osteria <em>Antonina</em></div>
+    <span class="role-badge" id="hdr-role"></span>
+    <span class="header-name" id="hdr-user"></span>
+    <button class="btn-out" onclick="doLogout()">Wyloguj</button>
   </div>
   <div class="main" id="main-content"><div class="spinner"></div></div>
-  <nav class="bottom-nav" id="bottom-nav">
-    <button class="nav-item active" id="nav-sched" onclick="showView('sched')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+  <nav class="bnav" id="bottom-nav">
+    <button class="bnav-item active" id="nav-sched" onclick="showView('sched')">
+      <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
       Grafik
     </button>
-    <button class="nav-item" id="nav-emps" onclick="showView('emps')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+    <button class="bnav-item" id="nav-emps" onclick="showView('emps')">
+      <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
       Pracownicy
     </button>
-    <button class="nav-item" id="nav-avail" onclick="showView('avail')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+    <button class="bnav-item" id="nav-avail" onclick="showView('avail')">
+      <svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
       Dyspoz.
     </button>
-    <button class="nav-item" id="nav-dash" onclick="showView('dash')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+    <button class="bnav-item" id="nav-dash" onclick="showView('dash')">
+      <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
       Dashboard
     </button>
   </nav>
 </div>
 
+<!-- SHIFT MODAL -->
 <div class="modal-overlay" id="shift-modal">
   <div class="modal">
-    <div class="modal-handle"></div>
+    <div class="modal-pill"></div>
     <div class="modal-title" id="sm-title">Dodaj zmianę</div>
     <div class="modal-sub" id="sm-sub"></div>
     <input type="hidden" id="sm-shift-id">
-    <div class="modal-field"><label>Godzina rozpoczęcia</label><input type="time" id="sm-start" value="10:00"></div>
-    <div class="modal-field"><label>Godzina zakończenia</label><input type="time" id="sm-end" value="18:00"></div>
-    <div class="modal-field"><label>Notatka (opcjonalnie)</label><input type="text" id="sm-note" placeholder="np. otwarcie, kuchnia..."></div>
-    <div id="sm-cost-preview" style="background:#f7f8fa;border-radius:10px;padding:12px;font-size:13px;color:var(--muted);display:none;">
-      Koszt zmiany: <strong id="sm-cost-val" style="color:var(--primary)"></strong>
-    </div>
+    <div class="mfield"><label>Godzina rozpoczęcia</label><input type="time" id="sm-start" value="10:00"></div>
+    <div class="mfield"><label>Godzina zakończenia</label><input type="time" id="sm-end" value="18:00"></div>
+    <div class="mfield"><label>Notatka (opcjonalnie)</label><input type="text" id="sm-note" placeholder="np. otwarcie, kuchnia..."></div>
+    <div class="cost-preview" id="sm-cost-preview">Koszt zmiany: <strong id="sm-cost-val"></strong></div>
     <div class="modal-actions">
-      <button class="btn-cancel" onclick="closeModal('shift-modal')">Anuluj</button>
-      <button class="btn-danger" id="sm-delete" onclick="deleteShift()" style="display:none;">Usuń</button>
-      <button class="btn-save" onclick="saveShift()">Zapisz</button>
+      <button class="mbtn-cancel" onclick="closeModal('shift-modal')">Anuluj</button>
+      <button class="mbtn-delete" id="sm-delete" onclick="deleteShift()" style="display:none">Usuń</button>
+      <button class="mbtn-save" onclick="saveShift()">Zapisz</button>
     </div>
   </div>
 </div>
 
+<!-- EMP MODAL -->
 <div class="modal-overlay" id="emp-modal">
   <div class="modal">
-    <div class="modal-handle"></div>
+    <div class="modal-pill"></div>
     <div class="modal-title">Edytuj pracownika</div>
     <div class="modal-sub" id="em-sub"></div>
     <input type="hidden" id="em-id">
-    <div class="modal-field"><label>Imię i nazwisko</label><input type="text" id="em-name"></div>
-    <div class="modal-row">
-      <div class="modal-field"><label>Dział</label>
+    <div class="mfield"><label>Imię i nazwisko</label><input type="text" id="em-name"></div>
+    <div class="mrow">
+      <div class="mfield"><label>Dział</label>
         <select id="em-dept"><option value="kuchnia">Kuchnia</option><option value="sala">Sala</option></select>
       </div>
-      <div class="modal-field"><label>Stawka netto (zł/h)</label><input type="number" id="em-rate" step="0.5" min="0"></div>
+      <div class="mfield"><label>Stawka netto (zł/h)</label><input type="number" id="em-rate" step="0.5" min="0"></div>
     </div>
-    <div class="modal-field"><label>Email</label><input type="email" id="em-email"></div>
+    <div class="mfield"><label>Email</label><input type="email" id="em-email"></div>
     <div class="modal-actions">
-      <button class="btn-cancel" onclick="closeModal('emp-modal')">Anuluj</button>
-      <button class="btn-save" onclick="saveEmp()">Zapisz zmiany</button>
+      <button class="mbtn-cancel" onclick="closeModal('emp-modal')">Anuluj</button>
+      <button class="mbtn-save" onclick="saveEmp()">Zapisz zmiany</button>
     </div>
   </div>
 </div>
@@ -364,228 +441,521 @@ body { font-family: var(--font); background: var(--bg); color: var(--text); min-
 const SB_URL = 'https://kplaunvegdjgkycirzhk.supabase.co';
 const SB_KEY = 'sb_publishable_DTD-TNu5Gjb0ug5Vxmpr6w_JVO_KgCF';
 
-let currentUser = null, currentRole = null;
-let employees = [], shifts = [], availability = [];
-let currentWeekOffset = 0, currentDept = 'all';
-let currentShiftEmpId = null, currentShiftDate = null;
-let currentView = 'sched';
+let currentUser=null, currentRole=null;
+let employees=[], shifts=[], availability=[];
+let currentWeekOffset=0, currentDept='all', currentView='sched', schedView='week';
+let currentMonthOffset=0;
+let currentShiftEmpId=null, currentShiftDate=null;
 
 async function sbFetch(path, opts={}) {
-  const h = { 'apikey': SB_KEY, 'Content-Type': 'application/json' };
-  if (currentUser?.access_token) h['Authorization'] = 'Bearer ' + currentUser.access_token;
-  const r = await fetch(SB_URL + path, { headers: h, ...opts });
-  if (!r.ok) throw new Error(await r.text());
-  const ct = r.headers.get('content-type')||'';
-  return ct.includes('json') ? r.json() : r.text();
+  const h={'apikey':SB_KEY,'Content-Type':'application/json'};
+  if(currentUser?.access_token) h['Authorization']='Bearer '+currentUser.access_token;
+  const r=await fetch(SB_URL+path,{headers:h,...opts});
+  if(!r.ok) throw new Error(await r.text());
+  const ct=r.headers.get('content-type')||'';
+  return ct.includes('json')?r.json():r.text();
 }
 
 async function doLogin() {
-  const email = document.getElementById('auth-email').value.trim();
-  const pass = document.getElementById('auth-pass').value;
-  const btn = document.getElementById('login-btn');
-  btn.textContent = 'Logowanie...'; btn.disabled = true;
-  document.getElementById('auth-error').style.display = 'none';
-
+  const email=document.getElementById('auth-email').value.trim();
+  const pass=document.getElementById('auth-pass').value;
+  const btn=document.getElementById('login-btn');
+  btn.textContent='Logowanie...'; btn.disabled=true;
+  document.getElementById('auth-err').style.display='none';
   try {
-    const r = await fetch(SB_URL + '/auth/v1/token?grant_type=password', {
-      method: 'POST',
-      headers: { 'apikey': SB_KEY, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password: pass })
+    const r=await fetch(SB_URL+'/auth/v1/token?grant_type=password',{
+      method:'POST',headers:{'apikey':SB_KEY,'Content-Type':'application/json'},
+      body:JSON.stringify({email,password:pass})
     });
-    const data = await r.json();
-    if (data.error || !data.access_token) throw new Error(data.error_description || 'Błąd logowania');
-    currentUser = data;
-
-    const rows = await sbFetch(`/rest/v1/user_roles?email=eq.${encodeURIComponent(email)}&select=role`).catch(() => []);
-    currentRole = rows?.[0]?.role || 'employee';
-
-    document.getElementById('auth-screen').style.display = 'none';
-    document.getElementById('app').style.display = 'block';
-    document.getElementById('hdr-role').textContent = {owner:'Właściciel',manager:'Manager',kitchen:'Kuchnia',front:'Sala',employee:'Pracownik'}[currentRole]||currentRole;
-    document.getElementById('hdr-user').textContent = email.split('@')[0];
-
-    if (!canEdit()) {
-      document.getElementById('nav-dash').style.display = 'none';
-      document.getElementById('nav-emps').style.display = 'none';
+    const data=await r.json();
+    if(data.error||!data.access_token) throw new Error(data.error_description||'Błąd logowania');
+    currentUser=data;
+    const rows=await sbFetch(`/rest/v1/user_roles?email=eq.${encodeURIComponent(email)}&select=role`).catch(()=>[]);
+    currentRole=rows?.[0]?.role||'employee';
+    document.getElementById('auth-screen').style.display='none';
+    document.getElementById('app').style.display='block';
+    document.getElementById('hdr-role').textContent={owner:'Właściciel',manager:'Manager',kitchen:'Kuchnia',front:'Sala',employee:'Pracownik'}[currentRole]||currentRole;
+    document.getElementById('hdr-user').textContent=email.split('@')[0];
+    if(!canEdit()){
+      document.getElementById('nav-dash').style.display='none';
+      document.getElementById('nav-emps').style.display='none';
     }
     await loadAllData();
     showView('sched');
   } catch(e) {
-    document.getElementById('auth-error').style.display = 'block';
-    document.getElementById('auth-error').textContent = e.message;
+    const el=document.getElementById('auth-err');
+    el.textContent=e.message; el.style.display='block';
   }
-  btn.textContent = 'Zaloguj się'; btn.disabled = false;
+  btn.textContent='Zaloguj się'; btn.disabled=false;
 }
 
-function doLogout() {
-  currentUser = null; currentRole = null;
-  document.getElementById('app').style.display = 'none';
-  document.getElementById('auth-screen').style.display = 'flex';
+function doLogout(){
+  currentUser=null; currentRole=null;
+  document.getElementById('app').style.display='none';
+  document.getElementById('auth-screen').style.display='flex';
 }
 
-function canEdit() { return ['owner','manager'].includes(currentRole); }
+function canEdit(){return['owner','manager'].includes(currentRole);}
 
-async function loadAllData() {
-  employees = await sbFetch('/rest/v1/employees?select=*&active=eq.true&order=department,name').catch(() => []);
-  const {from, to} = getWeekRange(currentWeekOffset);
-  shifts = await sbFetch(`/rest/v1/shifts?select=*&date=gte.${from}&date=lte.${to}`).catch(() => []);
-  availability = await sbFetch('/rest/v1/availability?select=*').catch(() => []);
+async function loadAllData(){
+  employees=await sbFetch('/rest/v1/employees?select=*&active=eq.true&order=department,name').catch(()=>[]);
+  await loadShiftsForCurrentPeriod();
+  availability=await sbFetch('/rest/v1/availability?select=*').catch(()=>[]);
 }
 
-function getWeekRange(offset) {
-  const now = new Date();
-  const dow = now.getDay() === 0 ? 6 : now.getDay() - 1;
-  const mon = new Date(now); mon.setDate(now.getDate() - dow + offset * 7); mon.setHours(0,0,0,0);
-  const sun = new Date(mon); sun.setDate(mon.getDate() + 6);
-  return { from: fd(mon), to: fd(sun), monDate: mon };
+async function loadShiftsForCurrentPeriod(){
+  let from,to;
+  if(schedView==='week'){
+    const w=getWeekRange(currentWeekOffset);
+    from=w.from; to=w.to;
+  } else {
+    const m=getMonthRange(currentMonthOffset);
+    from=m.from; to=m.to;
+  }
+  shifts=await sbFetch(`/rest/v1/shifts?select=*&date=gte.${from}&date=lte.${to}`).catch(()=>[]);
 }
 
-function fd(d) { return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate()); }
-function pad(n) { return String(n).padStart(2,'0'); }
-function today() { return fd(new Date()); }
-function calcH(s, e) {
-  const [sh,sm] = s.split(':').map(Number), [eh,em] = e.split(':').map(Number);
-  let m = (eh*60+em)-(sh*60+sm); if(m<0)m+=1440; return m/60;
+function getWeekRange(offset){
+  const now=new Date();
+  const dow=now.getDay()===0?6:now.getDay()-1;
+  const mon=new Date(now); mon.setDate(now.getDate()-dow+offset*7); mon.setHours(0,0,0,0);
+  const sun=new Date(mon); sun.setDate(mon.getDate()+6);
+  return{from:fd(mon),to:fd(sun),monDate:mon};
 }
-function avatarColor(n) {
-  const c=['#1a1a2e','#2d6a4f','#c8973a','#7c3aed','#1d4ed8','#065f46','#92400e','#991b1b'];
+
+function getMonthRange(offset){
+  const now=new Date();
+  const y=now.getFullYear(), m=now.getMonth()+offset;
+  const first=new Date(y,m,1);
+  const last=new Date(y,m+1,0);
+  return{from:fd(first),to:fd(last),first,last,year:first.getFullYear(),month:first.getMonth()};
+}
+
+function fd(d){return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());}
+function pad(n){return String(n).padStart(2,'0');}
+function today(){return fd(new Date());}
+function calcH(s,e){
+  const[sh,sm]=s.split(':').map(Number),[eh,em]=e.split(':').map(Number);
+  let m=(eh*60+em)-(sh*60+sm); if(m<0)m+=1440; return m/60;
+}
+function avatarColor(n){
+  const c=['#334155','#166534','#92400E','#5B21B6','#1E40AF','#065F46','#9A3412','#881337'];
   let h=0; for(let ch of n)h=ch.charCodeAt(0)+((h<<5)-h); return c[Math.abs(h)%c.length];
 }
-function initials(n) { return n.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2); }
+function initials(n){return n.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);}
+function wNum(d){const j4=new Date(d.getFullYear(),0,4);return Math.ceil((((d-j4)/86400000)+j4.getDay()+1)/7);}
+function monthName(m){return['Styczeń','Luty','Marzec','Kwiecień','Maj','Czerwiec','Lipiec','Sierpień','Wrzesień','Październik','Listopad','Grudzień'][m];}
 
-function showView(v) {
-  currentView = v;
-  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
-  const el = document.getElementById('nav-'+v);
+function showView(v){
+  currentView=v;
+  document.querySelectorAll('.bnav-item').forEach(n=>n.classList.remove('active'));
+  const el=document.getElementById('nav-'+v);
   if(el) el.classList.add('active');
   renderView();
 }
 
-function renderView() {
-  const mc = document.getElementById('main-content');
-  if (currentView==='sched') renderSched(mc);
-  else if (currentView==='emps') renderEmps(mc);
-  else if (currentView==='avail') renderAvail(mc);
-  else if (currentView==='dash') renderDash(mc);
+function renderView(){
+  const mc=document.getElementById('main-content');
+  if(currentView==='sched') renderSched(mc);
+  else if(currentView==='emps') renderEmps(mc);
+  else if(currentView==='avail') renderAvail(mc);
+  else if(currentView==='dash') renderDash(mc);
 }
 
-async function changeWeek(d) {
-  currentWeekOffset += d;
-  const {from,to} = getWeekRange(currentWeekOffset);
-  shifts = await sbFetch(`/rest/v1/shifts?select=*&date=gte.${from}&date=lte.${to}`).catch(()=>[]);
+async function changeWeek(d){
+  currentWeekOffset+=d;
+  await loadShiftsForCurrentPeriod();
   renderView();
 }
 
-function renderSched(mc) {
-  const {from,to,monDate} = getWeekRange(currentWeekOffset);
-  const tod = today();
-  const days = Array.from({length:7},(_,i)=>{
+async function changeMonth(d){
+  currentMonthOffset+=d;
+  await loadShiftsForCurrentPeriod();
+  renderView();
+}
+
+async function switchSchedView(v){
+  schedView=v;
+  await loadShiftsForCurrentPeriod();
+  renderView();
+}
+
+function setDept(d){currentDept=d;renderView();}
+
+// ── SCHEDULE ──
+function renderSched(mc){
+  if(schedView==='week') renderWeek(mc);
+  else renderMonth(mc);
+}
+
+function renderWeek(mc){
+  const{from,to,monDate}=getWeekRange(currentWeekOffset);
+  const tod=today();
+  const days=Array.from({length:7},(_,i)=>{
     const d=new Date(monDate); d.setDate(monDate.getDate()+i);
-    return {date:fd(d),d,label:['Pon','Wt','Śr','Czw','Pt','Sob','Nd'][i],num:d.getDate()};
+    return{date:fd(d),label:['Pon','Wt','Śr','Czw','Pt','Sob','Nd'][i],num:d.getDate()};
   });
+  const viewEmps=canEdit()
+    ?(currentDept==='all'?employees:employees.filter(e=>e.department===currentDept))
+    :employees.filter(e=>e.email===currentUser?.user?.email);
 
-  const viewEmps = canEdit()
-    ? (currentDept==='all' ? employees : employees.filter(e=>e.department===currentDept))
-    : employees.filter(e=>e.email===currentUser?.user?.email);
-
-  let totalCost=0,totalH=0;
+  let tc=0,th=0;
   shifts.forEach(s=>{
-    const emp=employees.find(e=>e.id===s.employee_id);
-    if(!emp)return;
+    const emp=employees.find(e=>e.id===s.employee_id); if(!emp)return;
     const h=calcH(s.start_time||'10:00:00',s.end_time||'18:00:00');
-    totalCost+=h*(emp.rate_net||0); totalH+=h;
+    tc+=h*(emp.rate_net||0); th+=h;
   });
 
   const sun=new Date(monDate); sun.setDate(monDate.getDate()+6);
-  const rangeStr=`${monDate.getDate()}.${pad(monDate.getMonth()+1)} — ${sun.getDate()}.${pad(sun.getMonth()+1)}.${sun.getFullYear()}`;
+  const rng=`${monDate.getDate()}.${pad(monDate.getMonth()+1)} — ${sun.getDate()}.${pad(sun.getMonth()+1)}.${sun.getFullYear()}`;
 
-  let html=`<div style="padding:14px 16px 10px;display:flex;align-items:center;gap:10px">
-    <button class="week-nav-btn" onclick="changeWeek(-1)">‹</button>
-    <div style="flex:1;text-align:center">
-      <div style="font-size:15px;font-weight:700;letter-spacing:-.3px">${rangeStr}</div>
-      <div style="font-size:11px;color:var(--muted);margin-top:1px">Tydzień ${wNum(monDate)}</div>
+  let html=`<div class="page-bar">
+    <div class="page-bar-title">Grafik</div>
+    <div class="view-toggle">
+      <button class="vt-btn active" onclick="switchSchedView('week')">Tydzień</button>
+      <button class="vt-btn" onclick="switchSchedView('month')">Miesiąc</button>
     </div>
-    <button class="week-nav-btn" onclick="changeWeek(1)">›</button>
+  </div>
+  <div class="week-nav">
+    <button class="wn-btn" onclick="changeWeek(-1)">‹</button>
+    <div class="wn-label"><div class="wn-range">${rng}</div><div class="wn-week">Tydzień ${wNum(monDate)}</div></div>
+    <button class="wn-btn" onclick="changeWeek(1)">›</button>
   </div>`;
 
   if(canEdit()){
-    html+=`<div style="display:flex;gap:6px;padding:0 16px 10px;overflow-x:auto">
-      <button class="dept-tab ${currentDept==='all'?'active':''}" onclick="setDept('all')">Wszyscy</button>
-      <button class="dept-tab ${currentDept==='kuchnia'?'active':''}" onclick="setDept('kuchnia')">Kuchnia</button>
-      <button class="dept-tab ${currentDept==='sala'?'active':''}" onclick="setDept('sala')">Sala</button>
+    html+=`<div class="dept-row">
+      <button class="dtab ${currentDept==='all'?'active':''}" onclick="setDept('all')">Wszyscy</button>
+      <button class="dtab ${currentDept==='kuchnia'?'active':''}" onclick="setDept('kuchnia')">Kuchnia</button>
+      <button class="dtab ${currentDept==='sala'?'active':''}" onclick="setDept('sala')">Sala</button>
     </div>`;
-    if(totalH>0){
-      html+=`<div class="cost-banner" style="margin:0 16px 10px">
-        <div style="display:flex;justify-content:space-between;align-items:center">
-          <div><div style="font-size:10px;opacity:.55;font-weight:600;text-transform:uppercase;letter-spacing:.4px">Koszt tygodnia</div><div style="font-size:20px;font-weight:700;margin-top:2px">${totalCost.toFixed(0)} zł netto</div></div>
-          <div style="text-align:right"><div style="font-size:10px;opacity:.55;font-weight:600;text-transform:uppercase;letter-spacing:.4px">Godziny</div><div style="font-size:20px;font-weight:700;margin-top:2px">${totalH.toFixed(1)} h</div></div>
-        </div>
+    if(th>0){
+      html+=`<div class="cost-strip">
+        <div><div class="cs-label">Koszt tygodnia</div><div class="cs-val">${tc.toFixed(0)} zł</div></div>
+        <div style="text-align:right"><div class="cs-label">Godziny</div><div class="cs-val">${th.toFixed(1)} h</div></div>
       </div>`;
     }
   }
 
-  // Table
-  html+=`<div style="padding:0 16px 16px"><div class="sched-wrap"><table class="sched-table"><thead><tr>
-    <th class="col-emp">Pracownik</th>`;
+  html+=`<div class="sched-wrap"><table class="sched-tbl"><thead><tr>
+    <th class="th-emp">Pracownik</th>`;
   days.forEach(day=>{
     const isT=day.date===tod;
-    html+=`<th class="col-day${isT?' today-head':''}">${day.label}<br><span style="font-size:14px;font-weight:${isT?'700':'500'}">${day.num}</span></th>`;
+    html+=`<th class="th-day${isT?' today':''}"><span style="text-transform:uppercase;letter-spacing:.3px">${day.label}</span><span class="dn">${day.num}</span></th>`;
   });
-  if(canEdit()) html+=`<th class="col-sum">Tydzień</th>`;
+  if(canEdit()) html+=`<th class="th-sum">Tyg.</th>`;
   html+=`</tr></thead><tbody>`;
 
   viewEmps.forEach(emp=>{
-    const eShifts=shifts.filter(s=>s.employee_id===emp.id);
-    let eH=0,eCost=0;
-    eShifts.forEach(s=>{const h=calcH(s.start_time||'10:00:00',s.end_time||'18:00:00');eH+=h;eCost+=h*(emp.rate_net||0);});
-    const deptColor=emp.department==='kuchnia'?'#B45309':'#1D4ED8';
+    const eS=shifts.filter(s=>s.employee_id===emp.id);
+    let eH=0,eC=0;
+    eS.forEach(s=>{const h=calcH(s.start_time||'10:00:00',s.end_time||'18:00:00');eH+=h;eC+=h*(emp.rate_net||0);});
+    const dc=emp.department==='kuchnia'?'#B45309':'#1D4ED8';
 
-    html+=`<tr><td><div class="td-emp">
-      <div class="emp-avatar" style="background:${avatarColor(emp.name)}">${initials(emp.name)}</div>
+    html+=`<tr><td><div class="td-emp-cell">
+      <div class="av" style="background:${avatarColor(emp.name)}">${initials(emp.name)}</div>
       <div>
-        <div class="emp-name">${emp.name}</div>
-        <div style="font-size:11px;color:var(--muted);margin-top:1px">
-          <span class="emp-dept-dot" style="background:${deptColor}"></span>${emp.department}
-        </div>
+        <div class="td-emp-name">${emp.name}</div>
+        <div class="td-emp-dept"><span class="dept-dot" style="background:${dc}"></span>${emp.department}</div>
       </div>
     </div></td>`;
 
     days.forEach(day=>{
-      const shift=eShifts.find(s=>s.date===day.date);
+      const shift=eS.find(s=>s.date===day.date);
       const isT=day.date===tod;
       const h=shift?calcH(shift.start_time||'10:00:00',shift.end_time||'18:00:00'):0;
       const cost=h*(emp.rate_net||0);
       const ca=canEdit()?`onclick="openShiftModal('${emp.id}','${emp.name}','${day.date}','${shift?.id||''}')"`:''
-      html+=`<td class="td-day${shift?' has-shift':''}${isT?' today-col':''}" ${ca}>`;
+      html+=`<td class="td-day-cell${shift?' filled':''}${isT?' is-today':''}" ${ca}>`;
       if(shift){
-        html+=`<div class="shift-pill">${(shift.start_time||'10:00').slice(0,5)}–${(shift.end_time||'18:00').slice(0,5)}</div>`;
-        if(canEdit()&&(emp.rate_net||0)>1) html+=`<div class="shift-cost-sm">${cost.toFixed(0)} zł</div>`;
+        html+=`<div class="shift-chip">${(shift.start_time||'10:00').slice(0,5)}–${(shift.end_time||'18:00').slice(0,5)}</div>`;
+        if(canEdit()&&(emp.rate_net||0)>1) html+=`<div class="shift-cost-lbl">${cost.toFixed(0)} zł</div>`;
       } else if(canEdit()){
-        html+=`<div class="add-btn-cell">+</div>`;
+        html+=`<div class="cell-add">+</div>`;
       }
       html+=`</td>`;
     });
 
     if(canEdit()){
-      html+=`<td class="td-sum">
-        ${eH>0?`<div>${eH.toFixed(1)} h</div><div class="td-sum-sub">${(emp.rate_net||0)>1?eCost.toFixed(0)+' zł':eShifts.length+' zm.'}</div>`:`<div style="color:var(--muted);font-weight:400">—</div>`}
+      html+=`<td class="td-sum-cell">
+        ${eH>0?`<div class="sum-h">${eH.toFixed(1)}h</div><div class="sum-cost">${(emp.rate_net||0)>1?eC.toFixed(0)+' zł':eS.length+' zm.'}</div>`:`<span style="color:var(--border)">—</span>`}
       </td>`;
     }
     html+=`</tr>`;
   });
 
-  html+=`</tbody></table></div></div>`;
+  html+=`</tbody></table></div>`;
   mc.innerHTML=html;
 }
 
-function wNum(d){const j4=new Date(d.getFullYear(),0,4);return Math.ceil((((d-j4)/86400000)+j4.getDay()+1)/7);}
-function setDept(d){currentDept=d;renderView();}
+function renderMonth(mc){
+  const{from,to,first,last,year,month}=getMonthRange(currentMonthOffset);
+  const tod=today();
+  const viewEmps=canEdit()
+    ?(currentDept==='all'?employees:employees.filter(e=>e.department===currentDept))
+    :employees.filter(e=>e.email===currentUser?.user?.email);
 
+  let html=`<div class="page-bar">
+    <div class="page-bar-title">Grafik</div>
+    <div class="view-toggle">
+      <button class="vt-btn" onclick="switchSchedView('week')">Tydzień</button>
+      <button class="vt-btn active" onclick="switchSchedView('month')">Miesiąc</button>
+    </div>
+  </div>
+  <div class="week-nav">
+    <button class="wn-btn" onclick="changeMonth(-1)">‹</button>
+    <div class="wn-label"><div class="wn-range">${monthName(month)} ${year}</div></div>
+    <button class="wn-btn" onclick="changeMonth(1)">›</button>
+  </div>`;
+
+  if(canEdit()){
+    html+=`<div class="dept-row">
+      <button class="dtab ${currentDept==='all'?'active':''}" onclick="setDept('all')">Wszyscy</button>
+      <button class="dtab ${currentDept==='kuchnia'?'active':''}" onclick="setDept('kuchnia')">Kuchnia</button>
+      <button class="dtab ${currentDept==='sala'?'active':''}" onclick="setDept('sala')">Sala</button>
+    </div>`;
+  }
+
+  // Build calendar grid
+  const startDow=first.getDay()===0?6:first.getDay()-1; // 0=Mon
+  const daysInMonth=last.getDate();
+  const labels=['Pon','Wt','Śr','Czw','Pt','Sob','Nd'];
+
+  html+=`<div class="month-wrap"><div class="month-grid">`;
+  labels.forEach(l=>html+=`<div class="mg-head">${l}</div>`);
+
+  for(let i=0;i<startDow;i++) html+=`<div class="mg-cell empty-cell"></div>`;
+
+  for(let d=1;d<=daysInMonth;d++){
+    const dateStr=`${year}-${pad(month+1)}-${pad(d)}`;
+    const isT=dateStr===tod;
+    const dayShifts=shifts.filter(s=>{
+      if(s.date!==dateStr) return false;
+      const emp=employees.find(e=>e.id===s.employee_id);
+      if(!emp) return false;
+      if(!canEdit()&&emp.email!==currentUser?.user?.email) return false;
+      if(currentDept!=='all'&&emp.department!==currentDept) return false;
+      return true;
+    });
+    const hasS=dayShifts.length>0;
+    html+=`<div class="mg-cell${isT?' today-cell':''}${hasS?' has-shifts':''}">
+      <div class="mg-num${isT?' today-num':''}">${d}</div>`;
+    dayShifts.slice(0,2).forEach(s=>{
+      const emp=employees.find(e=>e.id===s.employee_id);
+      const name=emp?emp.name.split(' ')[0]:'?';
+      html+=`<div class="mg-shift-dot">${name} ${(s.start_time||'10:00').slice(0,5)}</div>`;
+    });
+    if(dayShifts.length>2) html+=`<div class="mg-more">+${dayShifts.length-2}</div>`;
+    html+=`</div>`;
+  }
+  html+=`</div></div>`;
+  mc.innerHTML=html;
+}
+
+// ── EMPLOYEES ──
+function renderEmps(mc){
+  if(!canEdit()){mc.innerHTML='<div class="empty-state"><p>Brak dostępu</p></div>';return;}
+  let html=`<div class="page-bar"><div class="page-bar-title">Pracownicy <span style="color:var(--text-3);font-weight:400">${employees.length}</span></div></div>`;
+  ['kuchnia','sala'].forEach(dept=>{
+    const list=employees.filter(e=>e.department===dept);
+    if(!list.length) return;
+    const dc=dept==='kuchnia'?'#B45309':'#1D4ED8';
+    html+=`<div class="sect-label">${dept.charAt(0).toUpperCase()+dept.slice(1)}</div><div class="emp-list" style="padding-top:0">`;
+    list.forEach(emp=>{
+      const eS=shifts.filter(s=>s.employee_id===emp.id);
+      let wH=0; eS.forEach(s=>wH+=calcH(s.start_time||'10:00:00',s.end_time||'18:00:00'));
+      const wC=wH*(emp.rate_net||0);
+      html+=`<div class="emp-row">
+        <div class="av" style="background:${avatarColor(emp.name)}">${initials(emp.name)}</div>
+        <div class="emp-row-info">
+          <div class="emp-row-name">${emp.name}</div>
+          <div class="emp-row-meta"><span class="dept-dot" style="background:${dc};display:inline-block;width:5px;height:5px;border-radius:50%;margin-right:4px;vertical-align:middle"></span>${emp.email||'—'}</div>
+          ${wH>0?`<div class="emp-row-stat">${wH.toFixed(1)}h · ${wC.toFixed(0)} zł ten tydzień</div>`:''}
+        </div>
+        <div class="emp-rate">
+          <div class="emp-rate-val">${(emp.rate_net||0).toFixed(2)}</div>
+          <div class="emp-rate-lbl">zł / h</div>
+        </div>
+        <div class="icon-btn" onclick="openEmpModal('${emp.id}')">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+        </div>
+      </div>`;
+    });
+    html+=`</div>`;
+  });
+  mc.innerHTML=html;
+}
+
+function openEmpModal(id){
+  const emp=employees.find(e=>e.id===id); if(!emp)return;
+  document.getElementById('em-id').value=id;
+  document.getElementById('em-name').value=emp.name;
+  document.getElementById('em-dept').value=emp.department;
+  document.getElementById('em-rate').value=emp.rate_net||0;
+  document.getElementById('em-email').value=emp.email||'';
+  document.getElementById('em-sub').textContent=emp.department+' · '+(emp.email||'');
+  openModal('emp-modal');
+}
+
+async function saveEmp(){
+  const id=document.getElementById('em-id').value;
+  const p={name:document.getElementById('em-name').value,department:document.getElementById('em-dept').value,rate_net:parseFloat(document.getElementById('em-rate').value)||0,email:document.getElementById('em-email').value};
+  try{
+    await sbFetch(`/rest/v1/employees?id=eq.${id}`,{method:'PATCH',headers:{'Prefer':'return=representation'},body:JSON.stringify(p)});
+    const i=employees.findIndex(e=>e.id===id); if(i>=0)employees[i]={...employees[i],...p};
+    closeModal('emp-modal'); showToast('Dane zaktualizowane'); renderView();
+  }catch(e){showToast('Błąd: '+e.message.slice(0,60));}
+}
+
+// ── AVAILABILITY ──
+function renderAvail(mc){
+  const dow=['Pon','Wt','Śr','Czw','Pt','Sob','Nd'];
+  const myEmail=currentUser?.user?.email;
+  const viewEmps=canEdit()?employees:employees.filter(e=>e.email===myEmail);
+  let html=`<div class="page-bar"><div class="page-bar-title">${canEdit()?'Dyspozycyjność':'Moja dyspozycyjność'}</div></div><div class="avail-list">`;
+  viewEmps.forEach(emp=>{
+    const avail=availability.filter(a=>a.employee_id===emp.id);
+    html+=`<div class="avail-card">
+      <div class="avail-card-head">
+        <div class="av" style="background:${avatarColor(emp.name)};width:26px;height:26px;font-size:10px">${initials(emp.name)}</div>
+        <div style="font-size:13px;font-weight:500">${emp.name}</div>
+      </div>
+      <div class="avail-days">`;
+    for(let d=0;d<7;d++){
+      const a=avail.find(x=>x.day_of_week===d);
+      const cls=a?.available===false?'no':a?.available===true?'yes':'';
+      const icon=a?.available===false?'✕':a?.available===true?'✓':'·';
+      html+=`<div class="aday ${cls}" onclick="toggleAvail('${emp.id}',${d})" id="av-${emp.id}-${d}">
+        <div class="aday-circle">${icon}</div>
+        <div class="aday-label">${dow[d]}</div>
+      </div>`;
+    }
+    html+=`</div></div>`;
+  });
+  html+=`</div>`;
+  mc.innerHTML=html;
+}
+
+async function toggleAvail(empId,day){
+  const ex=availability.find(a=>a.employee_id===empId&&a.day_of_week===day);
+  const nv=ex?.available===true?false:true;
+  try{
+    if(ex){
+      await sbFetch(`/rest/v1/availability?id=eq.${ex.id}`,{method:'PATCH',body:JSON.stringify({available:nv})});
+      ex.available=nv;
+    } else {
+      const r=await sbFetch('/rest/v1/availability?select=*',{method:'POST',headers:{'Prefer':'return=representation'},body:JSON.stringify({employee_id:empId,day_of_week:day,available:nv})});
+      if(Array.isArray(r))availability.push(...r);
+    }
+    const cell=document.getElementById(`av-${empId}-${day}`);
+    if(cell){cell.className='aday '+(nv?'yes':'no');cell.querySelector('.aday-circle').textContent=nv?'✓':'✕';}
+  }catch(e){showToast('Błąd: '+e.message.slice(0,60));}
+}
+
+// ── DASHBOARD ──
+function renderDash(mc){
+  if(!canEdit()){renderEmpDash(mc);return;}
+  let tc=0,th=0,kC=0,kH=0,sC=0,sH=0;
+  shifts.forEach(s=>{
+    const emp=employees.find(e=>e.id===s.employee_id); if(!emp)return;
+    const h=calcH(s.start_time||'10:00:00',s.end_time||'18:00:00');
+    const c=h*(emp.rate_net||0); tc+=c; th+=h;
+    if(emp.department==='kuchnia'){kC+=c;kH+=h;}else{sC+=c;sH+=h;}
+  });
+  const{monDate}=getWeekRange(currentWeekOffset);
+  const sun=new Date(monDate);sun.setDate(monDate.getDate()+6);
+
+  let html=`<div class="page-bar"><div class="page-bar-title">Dashboard</div></div>
+  <div class="dash-wrap">
+    <div class="dash-grid">
+      <div class="stat-box dark">
+        <div class="stat-box-label">Koszt pracy</div>
+        <div class="stat-box-val">${tc.toFixed(0)} <span style="font-size:14px;font-weight:400">zł</span></div>
+        <div class="stat-box-sub">${th.toFixed(1)} godz. łącznie</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-box-label">Pracownicy</div>
+        <div class="stat-box-val">${employees.length}</div>
+        <div class="stat-box-sub">${shifts.length} zmian w tyg.</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-box-label">Kuchnia</div>
+        <div class="stat-box-val">${kC.toFixed(0)} <span style="font-size:12px;font-weight:400">zł</span></div>
+        <div class="stat-box-sub">${kH.toFixed(1)}h · ${employees.filter(e=>e.department==='kuchnia').length} os.</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-box-label">Sala</div>
+        <div class="stat-box-val">${sC.toFixed(0)} <span style="font-size:12px;font-weight:400">zł</span></div>
+        <div class="stat-box-sub">${sH.toFixed(1)}h · ${employees.filter(e=>e.department==='sala').length} os.</div>
+      </div>
+    </div>
+    <div class="dash-section-title">Stawki i koszty tygodniowe</div>
+    <div class="dash-emp-rows">`;
+
+  [...employees].sort((a,b)=>(b.rate_net||0)-(a.rate_net||0)).forEach(emp=>{
+    const eS=shifts.filter(s=>s.employee_id===emp.id);
+    let wH=0; eS.forEach(s=>wH+=calcH(s.start_time||'10:00:00',s.end_time||'18:00:00'));
+    const wC=wH*(emp.rate_net||0);
+    html+=`<div class="dash-emp-row">
+      <div class="av" style="background:${avatarColor(emp.name)}">${initials(emp.name)}</div>
+      <div class="der-info">
+        <div class="der-name">${emp.name}</div>
+        <div class="der-meta">${emp.department} · ${wH.toFixed(1)}h</div>
+      </div>
+      <div class="der-right">
+        <div class="der-rate">${(emp.rate_net||0).toFixed(2)} zł/h</div>
+        ${wC>0?`<div class="der-cost">${wC.toFixed(0)} zł</div>`:`<div style="font-size:11px;color:var(--text-3)">brak zmian</div>`}
+      </div>
+    </div>`;
+  });
+  html+=`</div></div>`;
+  mc.innerHTML=html;
+}
+
+function renderEmpDash(mc){
+  const myEmail=currentUser?.user?.email;
+  const emp=employees.find(e=>e.email===myEmail);
+  const myShifts=shifts.filter(s=>s.employee_id===emp?.id).sort((a,b)=>a.date.localeCompare(b.date));
+  const now=new Date(); const nextMonth=new Date(now.getFullYear(),now.getMonth()+1,1);
+  const nextMonthName=monthName(nextMonth.getMonth());
+
+  let html=`<div class="page-bar"><div class="page-bar-title">Mój panel</div></div>
+  <div class="emp-dash">
+    <div class="cta-card">
+      <div class="cta-title">Zgłoś dyspozycyjność</div>
+      <div class="cta-sub">Podaj dostępne dni na ${nextMonthName} — manager ułoży grafik na podstawie Twoich preferencji.</div>
+      <button class="cta-btn" onclick="showView('avail')">Uzupełnij dyspozycyjność →</button>
+    </div>
+    <div class="info-card">
+      <div class="info-card-title">Mój grafik — ten tydzień</div>`;
+
+  if(myShifts.length===0){
+    html+=`<div style="font-size:13px;color:var(--text-3);padding:8px 0">Brak zaplanowanych zmian</div>`;
+  } else {
+    html+=`<div class="my-shifts-list">`;
+    myShifts.forEach(s=>{
+      const d=new Date(s.date+'T12:00:00');
+      const h=calcH(s.start_time||'10:00:00',s.end_time||'18:00:00');
+      const dayLabel=['Nd','Pon','Wt','Śr','Czw','Pt','Sob'][d.getDay()];
+      html+=`<div class="my-shift-row">
+        <div>
+          <div class="msr-date">${dayLabel} ${d.getDate()}.${pad(d.getMonth()+1)}</div>
+          <div class="msr-h">${h.toFixed(1)} godz.</div>
+        </div>
+        <div class="msr-time">${(s.start_time||'10:00').slice(0,5)} – ${(s.end_time||'18:00').slice(0,5)}</div>
+      </div>`;
+    });
+    html+=`</div>`;
+  }
+  html+=`</div></div>`;
+  mc.innerHTML=html;
+}
+
+// ── SHIFT MODAL ──
 function openShiftModal(empId,empName,date,shiftId){
   const shift=shiftId?shifts.find(s=>s.id===shiftId):null;
   const emp=employees.find(e=>e.id===empId);
   currentShiftEmpId=empId; currentShiftDate=date;
-  document.getElementById('sm-title').textContent=shift?'Edytuj zmianę':'Dodaj zmianę';
+  document.getElementById('sm-title').textContent=shift?'Edytuj zmianę':'Nowa zmiana';
   const d=new Date(date+'T12:00:00');
   document.getElementById('sm-sub').textContent=`${empName} · ${['Nd','Pon','Wt','Śr','Czw','Pt','Sob'][d.getDay()]} ${d.getDate()}.${pad(d.getMonth()+1)}`;
   document.getElementById('sm-shift-id').value=shiftId||'';
@@ -617,8 +987,8 @@ async function saveShift(){
       const r=await sbFetch('/rest/v1/shifts?select=*',{method:'POST',headers:{'Prefer':'return=representation'},body:JSON.stringify(p)});
       if(Array.isArray(r))shifts.push(...r);
     }
-    closeModal('shift-modal'); showToast('✓ Zmiana zapisana'); renderView();
-  } catch(e){showToast('Błąd: '+e.message.slice(0,60));}
+    closeModal('shift-modal'); showToast('Zmiana zapisana'); renderView();
+  }catch(e){showToast('Błąd: '+e.message.slice(0,60));}
 }
 
 async function deleteShift(){
@@ -626,166 +996,7 @@ async function deleteShift(){
   try{
     await sbFetch(`/rest/v1/shifts?id=eq.${id}`,{method:'DELETE'});
     shifts=shifts.filter(s=>s.id!==id); closeModal('shift-modal'); showToast('Zmiana usunięta'); renderView();
-  } catch(e){showToast('Błąd: '+e.message.slice(0,60));}
-}
-
-function renderEmps(mc){
-  if(!canEdit()){mc.innerHTML='<div class="empty"><div class="empty-icon">🔒</div><div class="empty-text">Brak dostępu</div></div>';return;}
-  let html=`<div style="padding:16px 16px 12px"><div style="font-size:11px;color:var(--muted);font-weight:600;text-transform:uppercase;margin-bottom:4px">Pracownicy</div><div style="font-size:20px;font-weight:800">${employees.length} osób w zespole</div></div>`;
-  ['kuchnia','sala'].forEach(dept=>{
-    const list=employees.filter(e=>e.department===dept);
-    if(!list.length)return;
-    html+=`<div style="padding:12px 16px 8px;font-size:15px;font-weight:700">${dept==='kuchnia'?'🍳 Kuchnia':'🍷 Sala'} <span style="color:var(--muted);font-weight:400">(${list.length})</span></div><div style="padding:0 16px;display:flex;flex-direction:column;gap:10px">`;
-    list.forEach(emp=>{
-      const eS=shifts.filter(s=>s.employee_id===emp.id);
-      let wH=0; eS.forEach(s=>wH+=calcH(s.start_time||'10:00:00',s.end_time||'18:00:00'));
-      const wC=wH*(emp.rate_net||0);
-      html+=`<div style="background:white;border-radius:var(--radius);border:1px solid var(--border);padding:16px;display:flex;align-items:center;gap:12px;box-shadow:var(--shadow)">
-        <div class="emp-avatar" style="background:${avatarColor(emp.name)}">${initials(emp.name)}</div>
-        <div style="flex:1">
-          <div style="font-size:15px;font-weight:700">${emp.name}</div>
-          <div style="font-size:12px;color:var(--muted);margin-top:2px">${emp.email||'—'}</div>
-          ${wH>0?`<div style="font-size:11px;color:var(--success);font-weight:600;margin-top:3px">Ten tydzień: ${wH.toFixed(1)}h · ${wC.toFixed(0)} zł</div>`:''}
-        </div>
-        <div style="text-align:right;margin-right:8px">
-          <div style="font-size:18px;font-weight:800">${(emp.rate_net||0).toFixed(2)}</div>
-          <div style="font-size:11px;color:var(--muted)">zł netto/h</div>
-        </div>
-        <button class="edit-btn" onclick="openEmpModal('${emp.id}')">✏️</button>
-      </div>`;
-    });
-    html+=`</div>`;
-  });
-  mc.innerHTML=html;
-}
-
-function openEmpModal(id){
-  const emp=employees.find(e=>e.id===id); if(!emp)return;
-  document.getElementById('em-id').value=id;
-  document.getElementById('em-name').value=emp.name;
-  document.getElementById('em-dept').value=emp.department;
-  document.getElementById('em-rate').value=emp.rate_net||0;
-  document.getElementById('em-email').value=emp.email||'';
-  document.getElementById('em-sub').textContent=emp.department+' · '+(emp.email||'');
-  openModal('emp-modal');
-}
-
-async function saveEmp(){
-  const id=document.getElementById('em-id').value;
-  const p={name:document.getElementById('em-name').value,department:document.getElementById('em-dept').value,rate_net:parseFloat(document.getElementById('em-rate').value)||0,email:document.getElementById('em-email').value};
-  try{
-    await sbFetch(`/rest/v1/employees?id=eq.${id}`,{method:'PATCH',headers:{'Prefer':'return=representation'},body:JSON.stringify(p)});
-    const i=employees.findIndex(e=>e.id===id); if(i>=0)employees[i]={...employees[i],...p};
-    closeModal('emp-modal'); showToast('✓ Dane zaktualizowane'); renderView();
-  } catch(e){showToast('Błąd: '+e.message.slice(0,60));}
-}
-
-function renderAvail(mc){
-  const dow=['Pon','Wt','Śr','Czw','Pt','Sob','Nd'];
-  const myEmail=currentUser?.user?.email;
-  const viewEmps=canEdit()?employees:employees.filter(e=>e.email===myEmail);
-
-  let html=`<div style="padding:16px 16px 12px"><div style="font-size:11px;color:var(--muted);font-weight:600;text-transform:uppercase;margin-bottom:4px">${canEdit()?'Dyspozycyjność':'Moja dyspozycyjność'}</div><div style="font-size:20px;font-weight:800;margin-bottom:4px">${canEdit()?'Wszyscy pracownicy':'Zaznacz dostępne dni'}</div></div><div style="padding:0 16px;display:flex;flex-direction:column;gap:12px">`;
-
-  viewEmps.forEach(emp=>{
-    const avail=availability.filter(a=>a.employee_id===emp.id);
-    html+=`<div style="background:white;border-radius:var(--radius);border:1px solid var(--border);padding:16px;box-shadow:var(--shadow)">
-      <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
-        <div class="emp-avatar" style="background:${avatarColor(emp.name)};width:30px;height:30px;font-size:12px">${initials(emp.name)}</div>
-        <div style="font-size:14px;font-weight:700">${emp.name}</div>
-        <span class="badge-dept badge-${emp.department}" style="margin-left:auto">${emp.department}</span>
-      </div>
-      <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px">`;
-    for(let d=0;d<7;d++){
-      const a=avail.find(x=>x.day_of_week===d);
-      const cls=a?.available===false?'avail-no':a?.available===true?'avail-yes':'';
-      const icon=a?.available===false?'✕':a?.available===true?'✓':'·';
-      html+=`<div class="avail-day ${cls}" onclick="toggleAvail('${emp.id}',${d})" id="av-${emp.id}-${d}">
-        <div class="avail-day-circle">${icon}</div>${dow[d]}
-      </div>`;
-    }
-    html+=`</div></div>`;
-  });
-  html+=`</div>`;
-  mc.innerHTML=html;
-}
-
-async function toggleAvail(empId,day){
-  const ex=availability.find(a=>a.employee_id===empId&&a.day_of_week===day);
-  const nv=ex?.available===true?false:true;
-  try{
-    if(ex){
-      await sbFetch(`/rest/v1/availability?id=eq.${ex.id}`,{method:'PATCH',body:JSON.stringify({available:nv})});
-      ex.available=nv;
-    } else {
-      const r=await sbFetch('/rest/v1/availability?select=*',{method:'POST',headers:{'Prefer':'return=representation'},body:JSON.stringify({employee_id:empId,day_of_week:day,available:nv})});
-      if(Array.isArray(r))availability.push(...r);
-    }
-    const cell=document.getElementById(`av-${empId}-${day}`);
-    if(cell){cell.className='avail-day '+(nv?'avail-yes':'avail-no');cell.querySelector('.avail-day-circle').textContent=nv?'✓':'✕';}
-  } catch(e){showToast('Błąd: '+e.message.slice(0,60));}
-}
-
-function renderDash(mc){
-  if(!canEdit()){mc.innerHTML='<div class="empty"><div class="empty-icon">🔒</div><div class="empty-text">Brak dostępu</div></div>';return;}
-  let tc=0,th=0,kC=0,kH=0,sC=0,sH=0;
-  shifts.forEach(s=>{
-    const emp=employees.find(e=>e.id===s.employee_id); if(!emp)return;
-    const h=calcH(s.start_time||'10:00:00',s.end_time||'18:00:00');
-    const c=h*(emp.rate_net||0); tc+=c; th+=h;
-    if(emp.department==='kuchnia'){kC+=c;kH+=h;}else{sC+=c;sH+=h;}
-  });
-  const {monDate}=getWeekRange(currentWeekOffset);
-  const sun=new Date(monDate);sun.setDate(monDate.getDate()+6);
-
-  let html=`<div style="padding:16px 16px 0">
-    <div style="font-size:11px;color:var(--muted);font-weight:600;text-transform:uppercase;margin-bottom:4px">Dashboard</div>
-    <div style="font-size:20px;font-weight:800">Podsumowanie tygodnia</div>
-    <div style="font-size:13px;color:var(--muted);margin-top:2px">${monDate.getDate()}.${pad(monDate.getMonth()+1)} — ${sun.getDate()}.${pad(sun.getMonth()+1)}.${sun.getFullYear()}</div>
-  </div>
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:16px">
-    <div class="stat-card accent">
-      <div class="stat-label">Koszt pracy</div>
-      <div class="stat-value">${tc.toFixed(0)}<small> zł</small></div>
-      <div class="stat-sub" style="color:rgba(255,255,255,.5)">${th.toFixed(1)} godz. łącznie</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-label">Pracownicy</div>
-      <div class="stat-value">${employees.length}<small> os.</small></div>
-      <div class="stat-sub">${shifts.length} zmian w tyg.</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-label">Kuchnia</div>
-      <div class="stat-value">${kC.toFixed(0)}<small> zł</small></div>
-      <div class="stat-sub">${kH.toFixed(1)}h · ${employees.filter(e=>e.department==='kuchnia').length} os.</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-label">Sala</div>
-      <div class="stat-value">${sC.toFixed(0)}<small> zł</small></div>
-      <div class="stat-sub">${sH.toFixed(1)}h · ${employees.filter(e=>e.department==='sala').length} os.</div>
-    </div>
-  </div>
-  <div style="padding:0 16px 8px;font-size:15px;font-weight:700">Stawki i koszty tygodniowe</div>
-  <div style="padding:0 16px;display:flex;flex-direction:column;gap:8px">`;
-
-  [...employees].sort((a,b)=>(b.rate_net||0)-(a.rate_net||0)).forEach(emp=>{
-    const eS=shifts.filter(s=>s.employee_id===emp.id);
-    let wH=0; eS.forEach(s=>wH+=calcH(s.start_time||'10:00:00',s.end_time||'18:00:00'));
-    const wC=wH*(emp.rate_net||0);
-    html+=`<div style="background:white;border-radius:10px;border:1px solid var(--border);padding:12px 14px;display:flex;align-items:center;gap:10px">
-      <div class="emp-avatar" style="background:${avatarColor(emp.name)};width:34px;height:34px;font-size:13px">${initials(emp.name)}</div>
-      <div style="flex:1">
-        <div style="font-size:13px;font-weight:700">${emp.name}</div>
-        <div style="font-size:11px;color:var(--muted)">${emp.department} · ${wH.toFixed(1)}h ten tydzień</div>
-      </div>
-      <div style="text-align:right">
-        <div style="font-size:15px;font-weight:800">${(emp.rate_net||0).toFixed(2)} <span style="font-size:11px;font-weight:500;color:var(--muted)">zł/h</span></div>
-        ${wC>0?`<div style="font-size:11px;color:var(--accent2);font-weight:600">${wC.toFixed(0)} zł</div>`:'<div style="font-size:11px;color:var(--muted)">brak zmian</div>'}
-      </div>
-    </div>`;
-  });
-  html+=`</div><div style="height:20px"></div>`;
-  mc.innerHTML=html;
+  }catch(e){showToast('Błąd: '+e.message.slice(0,60));}
 }
 
 function openModal(id){document.getElementById(id).classList.add('open');}
