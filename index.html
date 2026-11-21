@@ -238,45 +238,141 @@ body { font-family: var(--font); background: var(--bg); color: var(--text); min-
 .autofill-btn svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2; flex-shrink: 0; }
 .autofill-btn strong { font-weight: 700; color: var(--text); }
 
-/* ─── Avail month style ─── */
-.avail-month-nav {
+/* ─── Avail header ─── */
+.avail-header {
   display: flex; align-items: center; justify-content: space-between;
-  padding: 12px 20px; background: white; border-bottom: 1px solid var(--border);
+  padding: 14px 20px 10px; border-bottom: 1px solid var(--border);
 }
-.avail-month-title { font-size: 15px; font-weight: 700; letter-spacing: -.3px; }
-.avail-month-sub { font-size: 11px; color: var(--text-3); margin-top: 2px; }
-.avail-legend { display: flex; gap: 14px; padding: 8px 20px; align-items: center; font-size: 11px; color: var(--text-3); font-weight: 500; }
-.leg-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 4px; }
+.avail-header-title { font-size: 16px; font-weight: 700; letter-spacing: -.4px; }
+.avail-header-month { font-size: 13px; color: var(--text-3); margin-top: 1px; }
+.avail-nav { display: flex; gap: 4px; }
+.avail-nav button {
+  width: 32px; height: 32px; border-radius: 6px; border: 1px solid var(--border);
+  background: white; color: var(--text-2); font-size: 15px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center; transition: all .1s;
+}
+.avail-nav button:hover { border-color: var(--accent); color: var(--accent); }
 
-/* ─── Date-based avail grid ─── */
-.avail-date-card { background: white; border-radius: var(--radius-lg); border: 1.5px solid var(--border); padding: 14px 16px; box-shadow: var(--shadow-sm); }
-.avail-date-head { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+/* ─── Employee avail form ─── */
+.avail-intro {
+  padding: 16px 20px 8px; font-size: 13px; color: var(--text-2); line-height: 1.6;
+  border-bottom: 1px solid var(--border);
+}
+.avail-intro strong { color: var(--text); font-weight: 600; }
+.avail-status-bar {
+  display: flex; align-items: center; gap: 8px; padding: 10px 20px;
+  background: #F0FDF4; border-bottom: 1px solid #BBF7D0;
+  font-size: 12px; color: #166534; font-weight: 500;
+}
+.avail-status-bar.empty { background: #F8FAFC; border-color: var(--border); color: var(--text-3); }
+.avail-days-list { padding: 0 20px 100px; }
+.avail-week-label {
+  font-size: 10px; font-weight: 700; letter-spacing: .8px; text-transform: uppercase;
+  color: var(--text-3); padding: 14px 0 6px; border-bottom: 1px solid var(--border);
+  margin-bottom: 2px;
+}
+.avail-day-row {
+  display: flex; align-items: center; padding: 11px 0;
+  border-bottom: 1px solid var(--border); gap: 12px; cursor: pointer;
+}
+.avail-day-row:last-child { border-bottom: none; }
+.avail-day-row.past { opacity: .35; cursor: default; }
+.avail-day-row.blocked { opacity: .5; cursor: not-allowed; }
+.avail-day-num {
+  width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center;
+  justify-content: center; font-size: 15px; font-weight: 600; flex-shrink: 0;
+  background: var(--bg); color: var(--text);
+}
+.avail-day-row.unavail .avail-day-num { background: #FEE2E2; color: #991B1B; }
+.avail-day-row.blocked .avail-day-num { background: #F1F5F9; color: #94A3B8; }
+.avail-day-info { flex: 1; }
+.avail-day-name { font-size: 13px; font-weight: 600; color: var(--text); }
+.avail-day-sub { font-size: 11px; color: var(--text-3); margin-top: 1px; }
+.avail-day-row.unavail .avail-day-name { color: #991B1B; }
+.avail-toggle {
+  width: 44px; height: 24px; border-radius: 12px; background: #E2E8F0;
+  position: relative; transition: background .15s; flex-shrink: 0;
+}
+.avail-toggle::after {
+  content: ''; position: absolute; width: 18px; height: 18px; border-radius: 50%;
+  background: white; top: 3px; left: 3px; transition: transform .15s;
+  box-shadow: 0 1px 3px rgba(0,0,0,.2);
+}
+.avail-day-row.unavail .avail-toggle { background: #EF4444; }
+.avail-day-row.unavail .avail-toggle::after { transform: translateX(20px); }
+.avail-blocked-badge {
+  font-size: 10px; font-weight: 600; color: #94A3B8; padding: 3px 8px;
+  border: 1px solid #E2E8F0; border-radius: 4px; white-space: nowrap;
+}
+.avail-save-bar {
+  position: fixed; bottom: 60px; left: 0; right: 0; padding: 12px 20px;
+  background: white; border-top: 1px solid var(--border);
+  display: flex; gap: 10px; align-items: center; z-index: 50;
+}
+.avail-save-btn {
+  flex: 1; padding: 13px; background: var(--accent); color: white;
+  border: none; border-radius: 8px; font-size: 14px; font-weight: 600;
+  font-family: var(--font); cursor: pointer; transition: background .12s;
+}
+.avail-save-btn:hover { background: var(--accent-hover); }
+.avail-save-btn:disabled { background: var(--border); color: var(--text-3); cursor: default; }
+.avail-clear-btn {
+  padding: 13px 16px; background: none; color: var(--text-3); border: 1px solid var(--border);
+  border-radius: 8px; font-size: 13px; font-weight: 500; font-family: var(--font); cursor: pointer;
+}
+
+/* ─── Manager overview ─── */
+.avail-manager-wrap { padding: 0 20px 20px; }
+.avail-overview-title { font-size: 11px; font-weight: 700; letter-spacing: .6px; text-transform: uppercase; color: var(--text-3); padding: 14px 0 10px; }
+.avail-emp-row {
+  display: flex; align-items: center; gap: 10px; padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+}
+.avail-emp-row:last-child { border-bottom: none; }
+.avail-emp-name { font-size: 13px; font-weight: 600; flex: 1; }
+.avail-emp-dept { font-size: 11px; color: var(--text-3); }
+.avail-emp-badges { display: flex; gap: 4px; align-items: center; }
+.abadge {
+  font-size: 11px; font-weight: 600; padding: 3px 8px; border-radius: 4px;
+  white-space: nowrap;
+}
+.abadge-yes { background: #F0FDF4; color: #166534; }
+.abadge-no { background: #FEF2F2; color: #991B1B; }
+.abadge-none { background: var(--bg); color: var(--text-3); border: 1px solid var(--border); }
+
+/* ─── Blocked panel manager ─── */
+.blocked-section { padding: 0 20px 16px; border-bottom: 1px solid var(--border); margin-bottom: 4px; }
+.blocked-section-title { font-size: 11px; font-weight: 700; letter-spacing: .6px; text-transform: uppercase; color: var(--text-3); padding: 14px 0 10px; }
+.blocked-days-row { display: flex; flex-wrap: wrap; gap: 6px; }
+.bday {
+  width: 36px; height: 36px; border-radius: 6px; border: 1px solid var(--border);
+  background: white; font-size: 12px; font-weight: 500; color: var(--text-2);
+  cursor: pointer; transition: all .1s; display: flex; align-items: center; justify-content: center;
+}
+.bday:hover { border-color: var(--border-2); background: var(--bg); }
+.bday.bday-on { background: #1E293B; color: white; border-color: #1E293B; font-weight: 700; }
+
+/* ─── Avail legend ─── */
+.avail-legend { display: flex; gap: 14px; padding: 8px 20px 10px; align-items: center; font-size: 11px; color: var(--text-3); font-weight: 500; border-bottom: 1px solid var(--border); }
+.leg-dot { width: 7px; height: 7px; border-radius: 50%; display: inline-block; margin-right: 4px; }
+
+/* legacy adc — kept for manager calendar view */
+.avail-cal { display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px; }
+.avail-cal-head { text-align: center; font-size: 9px; font-weight: 600; color: var(--text-3); padding: 3px 0; }
+.adc {
+  text-align: center; padding: 5px 2px; border-radius: 4px; cursor: pointer;
+  font-size: 11px; font-weight: 500; color: var(--text-2); transition: all .1s; min-height: 28px;
+  display: flex; align-items: center; justify-content: center;
+}
+.adc.avail-yes { background: #F0FDF4; color: #166534; font-weight: 700; }
+.adc.avail-no { background: #FEF2F2; color: #991B1B; font-weight: 700; }
+.adc.adc-empty { cursor: default; }
+.adc.adc-past { color: var(--border); cursor: default; }
+.adc.adc-blocked { background: #F1F5F9; color: #CBD5E1; cursor: not-allowed; }
+.avail-date-card { padding: 12px 0; border-bottom: 1px solid var(--border); }
+.avail-date-head { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
 .avail-date-name { font-size: 13px; font-weight: 600; flex:1; }
 .avail-date-stats { font-size: 11px; color: var(--text-3); font-weight: 500; display: flex; gap: 6px; }
-.avail-cal { display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px; }
-.avail-cal-head { text-align: center; font-size: 9px; font-weight: 600; color: var(--text-3); padding: 3px 0; letter-spacing: .3px; text-transform: uppercase; }
-.adc {
-  text-align: center; padding: 5px 2px; border-radius: 6px; cursor: pointer;
-  font-size: 11px; font-weight: 500; color: var(--text-2); transition: all .12s; min-height: 30px;
-  display: flex; align-items: center; justify-content: center; border: 1.5px solid transparent;
-}
-.adc:hover { background: rgba(59,130,246,.08); border-color: rgba(59,130,246,.2); }
-.adc.avail-yes { background: #DCFCE7; color: #166534; border-color: #86EFAC; font-weight: 600; }
-.adc.avail-no { background: #FEE2E2; color: #991B1B; border-color: #FCA5A5; font-weight: 600; }
-.adc.adc-empty { cursor: default; border-color: transparent !important; background: none !important; }
-.adc.adc-past { color: var(--border); cursor: default; border-color: transparent !important; background: none !important; }
-.adc.adc-blocked { background: #F1F5F9; color: #CBD5E1; cursor: not-allowed; border-color: #E2E8F0 !important; position: relative; }
-.adc.adc-blocked::after { content: '🔒'; font-size: 7px; position: absolute; top: 1px; right: 2px; }
-
-/* ─── Blocked panel ─── */
-.blocked-panel { background: #FFFBEB; border: 1.5px solid #FDE68A; border-radius: var(--radius-lg); padding: 14px; margin-bottom: 14px; }
-.blocked-panel-title { font-size: 12px; font-weight: 600; color: #92400E; margin-bottom: 10px; }
-.blocked-cal-grid { display: flex; flex-wrap: wrap; gap: 4px; }
-.bday { width: 32px; height: 28px; border-radius: 6px; border: 1.5px solid #E2E8F0; background: white; font-size: 11px; font-weight: 500; color: var(--text-2); cursor: pointer; transition: all .12s; }
-.bday:hover { border-color: #94A3B8; background: #F8FAFC; }
-.bday.bday-on { background: #94A3B8; color: white; border-color: #64748B; font-weight: 600; }
-.blocked-list { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 8px; }
-.blocked-tag { background: #64748B; color: white; font-size: 11px; padding: 2px 8px; border-radius: 20px; }
 
 /* ─── Add emp button ─── */
 .add-emp-btn {
@@ -349,7 +445,8 @@ body { font-family: var(--font); background: var(--bg); color: var(--text); min-
 .icon-btn:hover { border-color: var(--accent); color: var(--accent); background: rgba(59,130,246,.05); }
 
 /* ─── Availability ─── */
-.avail-list { padding: 10px 20px; display: flex; flex-direction: column; gap: 8px; }
+.bday-we { color: var(--accent); }
+.bday-we.bday-on { background: #1E293B; color: white; }
 .avail-card { background: white; border-radius: var(--radius-lg); border: 1.5px solid var(--border); padding: 14px 16px; }
 .avail-card-head { display: flex; align-items: center; gap: 9px; margin-bottom: 11px; }
 .avail-days { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
@@ -1009,6 +1106,10 @@ async function saveEmp(){
 }
 
 // ── AVAILABILITY (date-based per month) ──
+// pendingUnavail = set of date strings the employee marked but hasn't saved yet
+let pendingUnavail = new Set();
+let pendingUnavailDirty = false;
+
 function getAvailMonth(){
   const now=new Date();
   const y=now.getFullYear(), m=now.getMonth()+availMonthOffset;
@@ -1018,106 +1119,247 @@ function getAvailMonth(){
 
 function renderAvail(mc){
   const myEmail=currentUser?.user?.email;
-  const viewEmps=canEdit()?employees:employees.filter(e=>e.email===myEmail);
+  const meEmp=employees.find(e=>e.email===myEmail);
   const{year,month,first,daysInMonth}=getAvailMonth();
   const tod=today();
-  const dowLabels=['Nd','Pn','Wt','Śr','Cz','Pt','Sb'];
+  const prefix=`${year}-${pad(month+1)}`;
+  const dowPL=['Nd','Pn','Wt','Śr','Cz','Pt','Sb'];
+  const monthBlocked=blockedDates.filter(b=>b.date.startsWith(prefix));
 
-  // Legend + month nav
-  let html=`<div class="avail-month-nav">
+  // ── Header ──
+  let html=`<div class="avail-header">
     <div>
-      <div class="avail-month-title">Dyspozycyjność — ${monthName(month)} ${year}</div>
-      <div class="avail-month-sub">Kliknij dzień: zielony = dostępny, czerwony = niedostępny</div>
+      <div class="avail-header-title">${monthName(month)} ${year}</div>
+      <div class="avail-header-month">Dyspozycyjność</div>
     </div>
-    <div style="display:flex;gap:6px">
-      <button class="wn-btn" onclick="changeAvailMonth(-1)">‹</button>
-      <button class="wn-btn" onclick="changeAvailMonth(1)">›</button>
+    <div class="avail-nav">
+      <button onclick="changeAvailMonth(-1)">‹</button>
+      <button onclick="changeAvailMonth(1)">›</button>
     </div>
-  </div>`;
-
-  // Legend always visible
-  html+=`<div class="avail-legend">
-    <span><span class="leg-dot" style="background:#16A34A"></span>Dostępny</span>
-    <span><span class="leg-dot" style="background:#EF4444"></span>Niedostępny</span>
-    <span><span class="leg-dot" style="background:#94A3B8"></span>Zablokowany</span>
   </div>`;
 
   if(canEdit()){
-    // Count how many have submitted for this month
-    const submitted=viewEmps.filter(emp=>availDates.some(a=>a.employee_id===emp.id&&a.date.startsWith(`${year}-${pad(month+1)}`))).length;
-    html+=`<div style="text-align:right;font-size:12px;color:var(--text-2);margin-bottom:8px;font-weight:500">${submitted}/${viewEmps.length} pracowników zgłosiło dyspozycję</div>`;
+    // ── MANAGER VIEW ──
+    const viewEmps=employees;
+    const submitted=viewEmps.filter(emp=>availDates.some(a=>a.employee_id===emp.id&&a.date.startsWith(prefix))).length;
 
-    // Blocked dates manager panel
-    const monthBlocked=blockedDates.filter(b=>b.date.startsWith(`${year}-${pad(month+1)}`));
-    html+=`<div class="blocked-panel">
-      <div class="blocked-panel-title">🔒 Zablokowane dni (pracownicy nie mogą zgłaszać dyspozycji)</div>
-      <div class="blocked-cal">`;
-    // Show mini calendar for manager to toggle blocked days
-    html+=`<div class="blocked-cal-grid">`;
+    // Blocked panel
+    html+=`<div class="blocked-section">
+      <div class="blocked-section-title">Zablokowane dni</div>
+      <div class="blocked-days-row">`;
     for(let d=1;d<=daysInMonth;d++){
-      const dateStr=`${year}-${pad(month+1)}-${pad(d)}`;
+      const dateStr=`${prefix}-${pad(d)}`;
       const isB=monthBlocked.some(b=>b.date===dateStr);
-      html+=`<button class="bday${isB?' bday-on':''}" onclick="toggleBlockedDate('${dateStr}')">${d}</button>`;
-    }
-    html+=`</div>`;
-    if(monthBlocked.length){
-      html+=`<div class="blocked-list">${monthBlocked.map(b=>`<span class="blocked-tag">${b.date.slice(5)} ${b.reason?'— '+b.reason:''}</span>`).join('')}</div>`;
-    }
-    html+=`</div>`;
-
-    // Auto-fill button — only show for future months
-    const isNextMonth=availMonthOffset>=1;
-    if(isNextMonth){
-      html+=`<button class="autofill-btn" onclick="autoFillFromAvail()">
-        <svg viewBox="0 0 24 24"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
-        <span>Zaproponuj grafik na <strong>${monthName(month)}</strong> na podstawie dyspozycji</span>
-      </button>`;
-    }
-  }
-
-  html+=`<div class="avail-list">`;
-
-  viewEmps.forEach(emp=>{
-    const empDates=availDates.filter(a=>a.employee_id===emp.id&&a.date.startsWith(`${year}-${pad(month+1)}`));
-    const yesCount=empDates.filter(a=>a.available===true).length;
-    const noCount=empDates.filter(a=>a.available===false).length;
-
-    html+=`<div class="avail-date-card">
-      <div class="avail-date-head">
-        <div class="av" style="background:${avatarColor(emp.name)};width:26px;height:26px;font-size:10px">${initials(emp.name)}</div>
-        <div class="avail-date-name">${emp.name}</div>
-        <div class="avail-date-stats">`;
-    if(yesCount||noCount) html+=`<span style="color:#16A34A">${yesCount}✓</span> <span style="color:#EF4444">${noCount}✕</span>`;
-    else html+=`<span>Brak zgłoszenia</span>`;
-    html+=`</div></div>
-      <div class="avail-cal">`;
-    // Day headers
-    dowLabels.forEach(l=>html+=`<div class="avail-cal-head">${l}</div>`);
-    // Empty cells before 1st
-    const startDow=first.getDay(); // 0=Sun
-    for(let i=0;i<startDow;i++) html+=`<div class="adc adc-empty"></div>`;
-    // Days
-    for(let d=1;d<=daysInMonth;d++){
-      const dateStr=`${year}-${pad(month+1)}-${pad(d)}`;
-      const rec=empDates.find(a=>a.date===dateStr);
-      const isPast=dateStr<tod;
-      const isBlocked=blockedDates.some(b=>b.date===dateStr);
-      let cls='adc';
-      if(isBlocked) cls+=' adc-blocked';
-      else if(isPast) cls+=' adc-past';
-      else if(rec?.available===true) cls+=' avail-yes';
-      else if(rec?.available===false) cls+=' avail-no';
-      const canClick=!isPast&&!isBlocked;
-      const click=canClick?` onclick="toggleAvailDate('${emp.id}','${dateStr}')"`:' title="Dzień zablokowany"';
-      html+=`<div class="${cls}"${click} id="adc-${emp.id}-${dateStr}">${d}</div>`;
+      const dow=new Date(year,month,d).getDay();
+      const isWe=dow===0||dow===6;
+      html+=`<button class="bday${isB?' bday-on':''}${isWe?' bday-we':''}" onclick="toggleBlockedDate('${dateStr}')" title="${dateStr}">${d}</button>`;
     }
     html+=`</div></div>`;
-  });
-  html+=`</div>`;
+
+    // Autofill
+    if(availMonthOffset>=1){
+      html+=`<div style="padding:0 20px 10px"><button class="autofill-btn" onclick="autoFillFromAvail()">
+        <svg viewBox="0 0 24 24"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+        <span>Zaproponuj grafik na <strong>${monthName(month)}</strong> na podstawie dyspozycji</span>
+      </button></div>`;
+    }
+
+    // Overview table
+    html+=`<div class="avail-manager-wrap">
+      <div class="avail-overview-title">${submitted}/${viewEmps.length} pracowników — zgłoszenia</div>`;
+
+    viewEmps.forEach(emp=>{
+      const empDates=availDates.filter(a=>a.employee_id===emp.id&&a.date.startsWith(prefix));
+      const noCount=empDates.filter(a=>a.available===false).length;
+      const hasSubmitted=empDates.length>0;
+      const dc=emp.department==='kuchnia'?'#B45309':'#1D4ED8';
+      html+=`<div class="avail-emp-row">
+        <div class="av" style="background:${avatarColor(emp.name)};width:30px;height:30px;font-size:11px;flex-shrink:0">${initials(emp.name)}</div>
+        <div style="flex:1;min-width:0">
+          <div class="avail-emp-name">${emp.name}</div>
+          <div class="avail-emp-dept"><span style="display:inline-block;width:5px;height:5px;border-radius:50%;background:${dc};margin-right:4px;vertical-align:middle"></span>${emp.department}</div>
+        </div>
+        <div class="avail-emp-badges">`;
+      if(!hasSubmitted){
+        html+=`<span class="abadge abadge-none">Brak zgłoszenia</span>`;
+      } else {
+        if(noCount) html+=`<span class="abadge abadge-no">${noCount} niedost.</span>`;
+        html+=`<span class="abadge abadge-yes">${daysInMonth-noCount-monthBlocked.length} dni dostępny</span>`;
+      }
+      html+=`</div></div>`;
+
+      // Calendar mini view — small grid per employee
+      if(hasSubmitted){
+        html+=`<div style="padding:0 0 10px 42px"><div class="avail-cal" style="max-width:220px">`;
+        dowPL.forEach(l=>html+=`<div class="avail-cal-head">${l}</div>`);
+        const startDow=first.getDay();
+        for(let i=0;i<startDow;i++) html+=`<div class="adc adc-empty"></div>`;
+        for(let d=1;d<=daysInMonth;d++){
+          const dateStr=`${prefix}-${pad(d)}`;
+          const rec=empDates.find(a=>a.date===dateStr);
+          const isBlocked=monthBlocked.some(b=>b.date===dateStr);
+          let cls='adc';
+          if(isBlocked) cls+=' adc-blocked';
+          else if(rec?.available===false) cls+=' avail-no';
+          else if(dateStr<tod) cls+=' adc-past';
+          html+=`<div class="${cls}">${d}</div>`;
+        }
+        html+=`</div></div>`;
+      }
+    });
+    html+=`</div>`;
+
+  } else {
+    // ── EMPLOYEE VIEW ──
+    if(!meEmp){
+      html+=`<div class="empty-state"><p>Nie znaleziono Twojego konta w bazie pracowników.</p></div>`;
+      mc.innerHTML=html; return;
+    }
+    const empId=meEmp.id;
+    // Load saved unavail for this month
+    const savedUnavail=new Set(
+      availDates.filter(a=>a.employee_id===empId&&a.date.startsWith(prefix)&&a.available===false).map(a=>a.date)
+    );
+    // On first render of a month, seed pending from saved
+    if(!pendingUnavailDirty){
+      pendingUnavail=new Set(savedUnavail);
+    }
+    const unavailSet=pendingUnavail;
+    const noCount=unavailSet.size;
+
+    // Status bar
+    if(noCount>0){
+      html+=`<div class="avail-status-bar">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
+        Zaznaczono ${noCount} ${noCount===1?'dzień':'dni'} niedostępności
+      </div>`;
+    } else {
+      html+=`<div class="avail-status-bar empty">Nie zaznaczono żadnych dni niedostępności — jesteś dostępny cały miesiąc</div>`;
+    }
+
+    html+=`<div style="padding:10px 20px 6px;font-size:12px;color:var(--text-3)">Zaznacz dni, kiedy <strong style="color:var(--text)">NIE możesz</strong> pracować. Reszta jest uznana za dostępną.</div>`;
+    html+=`<div class="avail-days-list">`;
+
+    // Build weeks
+    let weekDays=[];
+    const startDow=first.getDay();
+    // pad start
+    for(let i=0;i<startDow;i++) weekDays.push(null);
+    for(let d=1;d<=daysInMonth;d++) weekDays.push(d);
+    // pad end to multiple of 7
+    while(weekDays.length%7!==0) weekDays.push(null);
+
+    const fullDowPL=['Niedziela','Poniedziałek','Wtorek','Środa','Czwartek','Piątek','Sobota'];
+    for(let w=0;w<weekDays.length;w+=7){
+      const week=weekDays.slice(w,w+7);
+      const hasReal=week.some(d=>d!==null);
+      if(!hasReal) continue;
+      // Week label: show range
+      const firstDay=week.find(d=>d!==null);
+      const lastDay=[...week].reverse().find(d=>d!==null);
+      html+=`<div class="avail-week-label">${monthName(month).slice(0,3).toUpperCase()} ${firstDay}–${lastDay}</div>`;
+      week.forEach((d,wi)=>{
+        if(!d) return;
+        const dateStr=`${prefix}-${pad(d)}`;
+        const isBlocked=monthBlocked.some(b=>b.date===dateStr);
+        const isPast=dateStr<tod;
+        const isUnavail=unavailSet.has(dateStr);
+        const dowName=fullDowPL[wi];
+        let rowCls='avail-day-row';
+        if(isPast) rowCls+=' past';
+        else if(isBlocked) rowCls+=' blocked';
+        else if(isUnavail) rowCls+=' unavail';
+        const clickable=!isPast&&!isBlocked;
+        html+=`<div class="${rowCls}"${clickable?` onclick="togglePendingUnavail('${dateStr}')"`:''}>
+          <div class="avail-day-num">${d}</div>
+          <div class="avail-day-info">
+            <div class="avail-day-name">${dowName}</div>
+            <div class="avail-day-sub">${isBlocked?'Dzień zablokowany':isUnavail?'Niedostępny':isPast?'Miniony':'Dostępny'}</div>
+          </div>`;
+        if(isBlocked){
+          html+=`<span class="avail-blocked-badge">🔒 blokada</span>`;
+        } else if(!isPast){
+          html+=`<div class="avail-toggle"></div>`;
+        }
+        html+=`</div>`;
+      });
+    }
+    html+=`</div>`;
+
+    // Save bar
+    html+=`<div class="avail-save-bar">
+      <button class="avail-clear-btn" onclick="clearPendingUnavail()">Wyczyść</button>
+      <button class="avail-save-btn" onclick="saveAvailability('${empId}','${prefix}')">Zapisz dyspozycję</button>
+    </div>`;
+  }
+
   mc.innerHTML=html;
 }
 
-function changeAvailMonth(d){ availMonthOffset+=d; renderView(); }
+function changeAvailMonth(d){
+  availMonthOffset+=d;
+  pendingUnavailDirty=false; // reset pending on month change
+  renderView();
+}
+
+function togglePendingUnavail(date){
+  if(pendingUnavail.has(date)) pendingUnavail.delete(date);
+  else pendingUnavail.add(date);
+  pendingUnavailDirty=true;
+  // Update row visually without full re-render
+  const rows=document.querySelectorAll('.avail-day-row');
+  rows.forEach(row=>{
+    const onclick=row.getAttribute('onclick')||'';
+    if(!onclick.includes(date)) return;
+    const isNow=pendingUnavail.has(date);
+    row.classList.toggle('unavail',isNow);
+    const sub=row.querySelector('.avail-day-sub');
+    if(sub) sub.textContent=isNow?'Niedostępny':'Dostępny';
+  });
+  // Update status bar count
+  const sb=document.querySelector('.avail-status-bar');
+  if(sb){
+    const n=pendingUnavail.size;
+    if(n>0){
+      sb.className='avail-status-bar';
+      sb.innerHTML=`<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg> Zaznaczono ${n} ${n===1?'dzień':'dni'} niedostępności`;
+    } else {
+      sb.className='avail-status-bar empty';
+      sb.innerHTML='Nie zaznaczono żadnych dni niedostępności — jesteś dostępny cały miesiąc';
+    }
+  }
+}
+
+function clearPendingUnavail(){
+  pendingUnavail.clear();
+  pendingUnavailDirty=true;
+  renderView();
+}
+
+async function saveAvailability(empId,prefix){
+  const btn=document.querySelector('.avail-save-btn');
+  if(btn){btn.disabled=true;btn.textContent='Zapisywanie...';}
+  try{
+    // 1. Delete all existing availability_dates for this employee & month
+    await sbFetch(`/rest/v1/availability_dates?employee_id=eq.${empId}&date=gte.${prefix}-01&date=lte.${prefix}-31`,{method:'DELETE'});
+    // 2. Insert unavail records for each pending date
+    if(pendingUnavail.size>0){
+      const rows=[...pendingUnavail].map(date=>({employee_id:empId,date,available:false}));
+      const inserted=await sbFetch('/rest/v1/availability_dates?select=*',{method:'POST',headers:{'Prefer':'return=representation'},body:JSON.stringify(rows)});
+      // Update local cache
+      availDates=availDates.filter(a=>!(a.employee_id===empId&&a.date.startsWith(prefix)));
+      if(Array.isArray(inserted)) availDates.push(...inserted);
+    } else {
+      availDates=availDates.filter(a=>!(a.employee_id===empId&&a.date.startsWith(prefix)));
+    }
+    pendingUnavailDirty=false;
+    showToast('✓ Dyspozycja zapisana');
+    renderView();
+  }catch(e){
+    showToast('Błąd zapisu: '+e.message.slice(0,60));
+    if(btn){btn.disabled=false;btn.textContent='Zapisz dyspozycję';}
+  }
+}
 
 async function toggleBlockedDate(date){
   const ex=blockedDates.find(b=>b.date===date);
@@ -1134,37 +1376,6 @@ async function toggleBlockedDate(date){
     renderView();
   } catch(e){
     showToast('Błąd przy blokowaniu dnia');
-  }
-}
-
-async function toggleAvailDate(empId,date){
-  const ex=availDates.find(a=>a.employee_id===empId&&a.date===date);
-  // cycle: none→yes→no→none
-  let nv;
-  if(!ex) nv=true;
-  else if(ex.available===true) nv=false;
-  else { // remove
-    try{ await sbFetch(`/rest/v1/availability_dates?id=eq.${ex.id}`,{method:'DELETE'}); }catch(e){}
-    availDates=availDates.filter(a=>a.id!==ex.id);
-    const cell=document.getElementById(`adc-${empId}-${date}`);
-    if(cell){cell.className='adc';cell.style.fontWeight='';}
-    return;
-  }
-  try{
-    if(ex){
-      await sbFetch(`/rest/v1/availability_dates?id=eq.${ex.id}`,{method:'PATCH',body:JSON.stringify({available:nv})});
-      ex.available=nv;
-    } else {
-      const r=await sbFetch('/rest/v1/availability_dates?select=*',{method:'POST',headers:{'Prefer':'return=representation'},body:JSON.stringify({employee_id:empId,date,available:nv})});
-      if(Array.isArray(r))availDates.push(...r);
-    }
-    const cell=document.getElementById(`adc-${empId}-${date}`);
-    if(cell){
-      cell.className='adc '+(nv?'avail-yes':'avail-no');
-    }
-  }catch(e){
-    // Table may not exist yet — gracefully degrade
-    showToast('Tabela availability_dates niedostępna — sprawdź Supabase');
   }
 }
 
