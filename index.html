@@ -2589,6 +2589,18 @@ function buildClockHTML(emp, isManager){
     }
     html+=`</div>`;
 
+    // Export ewidencji czasu pracy
+    html+=`<div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button class="export-btn" onclick="exportWorkSessions(0)" style="flex:1">
+        <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+        Ewidencja — ten miesiąc
+      </button>
+      <button class="export-btn" onclick="exportWorkSessions(-1)" style="flex:1">
+        <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+        Ewidencja — poprzedni miesiąc
+      </button>
+    </div>`;
+
     // Historia wszystkich sesji — edytowalna (tylko manager/właściciel)
     const allRecent=workSessions.filter(s=>s.clock_out).slice(0,30);
     html+=`<div class="clock-history-card">
@@ -2647,6 +2659,70 @@ function buildClockHTML(emp, isManager){
 
   html+=`</div></div>`;
   return html;
+}
+
+async function exportWorkSessions(monthOff){
+  const now=new Date();
+  const y=now.getFullYear(), m=now.getMonth()+monthOff;
+  const first=new Date(y,m,1), last=new Date(y,m+1,0);
+  const pad2=n=>String(n).padStart(2,'0');
+  const from=`${first.getFullYear()}-${pad2(first.getMonth()+1)}-01`;
+  const to=`${last.getFullYear()}-${pad2(last.getMonth()+1)}-${pad2(last.getDate())}`;
+  const mLabel=first.toLocaleDateString('pl-PL',{month:'long',year:'numeric'});
+
+  showToast('Pobieranie danych…');
+  let sessions=[];
+  try{
+    sessions=await sbFetch(`/rest/v1/work_sessions?select=*,employees(name,department,rate_net)&clock_in=gte.${from}T00:00:00&clock_in=lte.${to}T23:59:59&order=clock_in.asc`);
+    if(!Array.isArray(sessions)) sessions=[];
+  }catch(e){showToast('Błąd pobierania: '+e.message.slice(0,60));return;}
+
+  // Buduj CSV z BOM (Excel go lubi)
+  let csv='﻿';
+  csv+='Pracownik;Dział;Data;Dzień tygodnia;Przyjście;Wyjście;Przerwa start;Przerwa koniec;Przerwa (min);Czas pracy (h);Czas pracy (min)\n';
+
+  const days=['Niedziela','Poniedziałek','Wtorek','Środa','Czwartek','Piątek','Sobota'];
+  const fmtDT=iso=>{if(!iso)return'';const d=new Date(iso);return`${pad2(d.getHours())}:${pad2(d.getMinutes())}`;};
+  const fmtD=iso=>{if(!iso)return'';const d=new Date(iso);return`${pad2(d.getDate())}.${pad2(d.getMonth()+1)}.${d.getFullYear()}`;};
+
+  // Zbierz podsumowanie per pracownik
+  const summary={};
+
+  for(const s of sessions){
+    const name=s.employees?.name||employees.find(e=>e.id===s.employee_id)?.name||'—';
+    const dept=s.employees?.department||employees.find(e=>e.id===s.employee_id)?.department||'—';
+    const rate=parseFloat(s.employees?.rate_net||employees.find(e=>e.id===s.employee_id)?.rate_net||0);
+    const dateD=new Date(s.clock_in);
+    const dateStr=fmtD(s.clock_in);
+    const dow=days[dateD.getDay()];
+    const brk=s.break_minutes||0;
+    const totalMin=s.total_minutes||0;
+    const totalH=(totalMin/60).toFixed(2).replace('.',',');
+    csv+=`${name};${dept};${dateStr};${dow};${fmtDT(s.clock_in)};${fmtDT(s.clock_out)};${fmtDT(s.break_start)};${fmtDT(s.break_end)};${brk};${totalH};${totalMin}\n`;
+    if(!summary[name]) summary[name]={dept,rate,sessions:0,totalMin:0};
+    summary[name].sessions++;
+    summary[name].totalMin+=totalMin;
+  }
+
+  // Podsumowanie per pracownik
+  csv+='\n;;PODSUMOWANIE MIESIĄCA;'+mLabel+'\n';
+  csv+='Pracownik;Dział;Liczba sesji;Łączne godziny;Stawka zł/h;Koszt netto zł\n';
+  let grandMin=0,grandCost=0;
+  for(const[name,s] of Object.entries(summary)){
+    const h=(s.totalMin/60).toFixed(2).replace('.',',');
+    const cost=(s.totalMin/60*s.rate).toFixed(2).replace('.',',');
+    csv+=`${name};${s.dept};${s.sessions};${h};${s.rate.toFixed(2).replace('.',',')};${cost}\n`;
+    grandMin+=s.totalMin; grandCost+=s.totalMin/60*s.rate;
+  }
+  csv+=`ŁĄCZNIE;;;${(grandMin/60).toFixed(2).replace('.',',')};;${grandCost.toFixed(2).replace('.',',')}\n`;
+
+  const blob=new Blob([csv],{type:'text/csv;charset=utf-8'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url; a.download=`ewidencja-czasu-${mLabel.replace(' ','-')}.csv`;
+  document.body.appendChild(a); a.click();
+  document.body.removeChild(a); URL.revokeObjectURL(url);
+  showToast(`✓ Pobrano ewidencję — ${sessions.length} sesji`);
 }
 
 function toLocalDT(isoStr){
