@@ -407,6 +407,28 @@ body { font-family: var(--font); background: var(--bg); color: var(--text); min-
 .msr-time { font-size: 13px; color: var(--accent); font-weight: 700; }
 .msr-h { font-size: 11px; color: var(--text-3); }
 
+/* ─── Stats grid (emp) ─── */
+.emp-stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 10px; }
+.estat { background: white; border-radius: var(--radius-lg); border: 1.5px solid var(--border); padding: 12px 10px; text-align: center; box-shadow: var(--shadow-sm); }
+.estat-val { font-size: 20px; font-weight: 700; letter-spacing: -.5px; }
+.estat-lbl { font-size: 10px; color: var(--text-3); font-weight: 500; margin-top: 3px; }
+
+/* ─── Export button ─── */
+.export-btn {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  width: 100%; padding: 12px; background: white; border: 1.5px solid var(--border);
+  border-radius: var(--radius-lg); cursor: pointer; font-size: 13px; font-weight: 600;
+  color: var(--text-2); font-family: var(--font); transition: all .15s; margin-bottom: 10px;
+}
+.export-btn:hover { border-color: var(--accent); color: var(--accent); background: rgba(59,130,246,.03); }
+.export-btn svg { width: 15px; height: 15px; stroke: currentColor; fill: none; stroke-width: 2; flex-shrink: 0; }
+
+/* ─── Month selector for export ─── */
+.month-sel-row { display: flex; gap: 6px; margin-bottom: 12px; overflow-x: auto; scrollbar-width: none; }
+.month-sel-row::-webkit-scrollbar { display: none; }
+.msel-btn { padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 500; white-space: nowrap; border: 1.5px solid var(--border); background: white; color: var(--text-2); cursor: pointer; transition: all .15s; font-family: var(--font); flex-shrink: 0; }
+.msel-btn.active { background: var(--accent); color: white; border-color: var(--accent); }
+
 /* ─── Modal ─── */
 .modal-overlay {
   position: fixed; inset: 0; background: rgba(15,23,42,.45); z-index: 200;
@@ -501,7 +523,7 @@ body { font-family: var(--font); background: var(--bg); color: var(--text); min-
     </button>
     <button class="bnav-item" id="nav-dash" onclick="showView('dash')">
       <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
-      Dashboard
+      <span>Dashboard</span>
     </button>
   </nav>
 </div>
@@ -591,8 +613,12 @@ async function doLogin() {
     document.getElementById('hdr-role').textContent={owner:'Właściciel',manager:'Manager',kitchen:'Kuchnia',front:'Sala',employee:'Pracownik'}[currentRole]||currentRole;
     document.getElementById('hdr-user').textContent=email.split('@')[0];
     if(!canEdit()){
-      document.getElementById('nav-dash').style.display='none';
+      document.getElementById('nav-dash').style.display='flex'; // show "Mój panel" for employees too
       document.getElementById('nav-emps').style.display='none';
+      // rename dash label for employees
+      const dashLabel = document.querySelector('#nav-dash span') || document.querySelector('#nav-dash');
+      const dashBtn = document.getElementById('nav-dash');
+      if(dashBtn) dashBtn.querySelector('span:last-child') && (dashBtn.querySelector('span:last-child').textContent = 'Mój panel');
     }
     await loadAllData();
     showView('sched');
@@ -678,8 +704,10 @@ function renderView(){
   if(currentView==='sched') renderSched(mc);
   else if(currentView==='emps') renderEmps(mc);
   else if(currentView==='avail') renderAvail(mc);
-  else if(currentView==='dash') renderDash(mc);
+  else if(currentView==='dash') renderDash(mc).catch(e=>console.error(e));
 }
+
+async function renderDashAsync(mc){ await renderDash(mc); }
 
 async function changeWeek(d){
   currentWeekOffset+=d;
@@ -1133,9 +1161,77 @@ async function toggleAvail(empId,day){
   }catch(e){showToast('Błąd: '+e.message.slice(0,60));}
 }
 
+// ── EXPORT ──
+let exportMonthOffset = 0; // relative to current month
+
+async function exportMonthReport(monthOff) {
+  exportMonthOffset = monthOff;
+  const now = new Date();
+  const y = now.getFullYear(), m = now.getMonth() + monthOff;
+  const first = new Date(y, m, 1);
+  const last = new Date(y, m+1, 0);
+  const from = fd(first), to = fd(last);
+  const mName = monthName(first.getMonth()) + ' ' + first.getFullYear();
+
+  showToast('Pobieranie danych...');
+  const mShifts = await sbFetch(`/rest/v1/shifts?select=*&date=gte.${from}&date=lte.${to}`).catch(()=>[]);
+
+  // Build CSV
+  let csv = '﻿'; // BOM for Excel
+  csv += 'Pracownik;Dział;Email;Data;Dzień;Godzina start;Godzina koniec;Godziny;Stawka netto (zł/h);Koszt netto (zł);Notatka\n';
+
+  const rows = [];
+  mShifts.forEach(s => {
+    const emp = employees.find(e => e.id === s.employee_id);
+    if (!emp) return;
+    const h = calcH(s.start_time || '10:00:00', s.end_time || '18:00:00');
+    const cost = h * (emp.rate_net || 0);
+    const d = new Date(s.date + 'T12:00:00');
+    const dayNames = ['Niedziela','Poniedziałek','Wtorek','Środa','Czwartek','Piątek','Sobota'];
+    rows.push({
+      name: emp.name, dept: emp.department, email: emp.email || '',
+      date: s.date, day: dayNames[d.getDay()],
+      start: (s.start_time || '10:00:00').slice(0,5),
+      end: (s.end_time || '18:00:00').slice(0,5),
+      hours: h.toFixed(2), rate: (emp.rate_net || 0).toFixed(2),
+      cost: cost.toFixed(2), note: s.note || ''
+    });
+  });
+
+  rows.sort((a,b) => a.name.localeCompare(b.name) || a.date.localeCompare(b.date));
+  rows.forEach(r => {
+    csv += `${r.name};${r.dept};${r.email};${r.date};${r.day};${r.start};${r.end};${r.hours};${r.rate};${r.cost};${r.note}\n`;
+  });
+
+  // Summary per employee
+  csv += '\n--- PODSUMOWANIE ---\n';
+  csv += 'Pracownik;Dział;Email;Liczba zmian;Łączne godziny;Stawka zł/h;Koszt netto zł\n';
+  const summary = {};
+  rows.forEach(r => {
+    if (!summary[r.name]) summary[r.name] = {dept:r.dept, email:r.email, shifts:0, hours:0, rate:parseFloat(r.rate), cost:0};
+    summary[r.name].shifts++;
+    summary[r.name].hours += parseFloat(r.hours);
+    summary[r.name].cost += parseFloat(r.cost);
+  });
+  Object.entries(summary).forEach(([name, s]) => {
+    csv += `${name};${s.dept};${s.email};${s.shifts};${s.hours.toFixed(2)};${s.rate.toFixed(2)};${s.cost.toFixed(2)}\n`;
+  });
+  const totalH = rows.reduce((a,r)=>a+parseFloat(r.hours),0);
+  const totalC = rows.reduce((a,r)=>a+parseFloat(r.cost),0);
+  csv += `RAZEM;;;${rows.length};${totalH.toFixed(2)};;${totalC.toFixed(2)}\n`;
+
+  // Download
+  const blob = new Blob([csv], {type:'text/csv;charset=utf-8'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = `osteria-grafik-${mName.replace(' ','-')}.csv`;
+  a.click(); URL.revokeObjectURL(url);
+  showToast(`Pobrano raport: ${mName}`);
+}
+
 // ── DASHBOARD ──
-function renderDash(mc){
-  if(!canEdit()){renderEmpDash(mc);return;}
+async function renderDash(mc){
+  if(!canEdit()){await renderEmpDash(mc);return;}
   let tc=0,th=0,kC=0,kH=0,sC=0,sH=0;
   shifts.forEach(s=>{
     const emp=employees.find(e=>e.id===s.employee_id); if(!emp)return;
@@ -1143,8 +1239,13 @@ function renderDash(mc){
     const c=h*(emp.rate_net||0); tc+=c; th+=h;
     if(emp.department==='kuchnia'){kC+=c;kH+=h;}else{sC+=c;sH+=h;}
   });
-  const{monDate}=getWeekRange(currentWeekOffset);
-  const sun=new Date(monDate);sun.setDate(monDate.getDate()+6);
+
+  // Build export month options (current + 2 past months)
+  const now = new Date();
+  const exportMonths = [-2,-1,0].map(off => {
+    const d = new Date(now.getFullYear(), now.getMonth()+off, 1);
+    return {off, label: monthName(d.getMonth())+' '+d.getFullYear()};
+  });
 
   let html=`<div class="page-bar"><div class="page-bar-title">Dashboard</div></div>
   <div class="dash-wrap">
@@ -1157,7 +1258,7 @@ function renderDash(mc){
       <div class="stat-box">
         <div class="stat-box-label">Pracownicy</div>
         <div class="stat-box-val">${employees.length}</div>
-        <div class="stat-box-sub">${shifts.length} zmian w tyg.</div>
+        <div class="stat-box-sub">${shifts.length} zmian</div>
       </div>
       <div class="stat-box">
         <div class="stat-box-label">Kuchnia</div>
@@ -1170,7 +1271,17 @@ function renderDash(mc){
         <div class="stat-box-sub">${sH.toFixed(1)}h · ${employees.filter(e=>e.department==='sala').length} os.</div>
       </div>
     </div>
-    <div class="dash-section-title">Stawki i koszty tygodniowe</div>
+
+    <div class="dash-section-title" style="margin-bottom:6px">Eksport raportu miesięcznego</div>
+    <div class="month-sel-row">
+      ${exportMonths.map(m=>`<button class="msel-btn" onclick="exportMonthReport(${m.off})">${m.label}</button>`).join('')}
+    </div>
+    <button class="export-btn" onclick="exportMonthReport(exportMonthOffset)">
+      <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      Pobierz CSV (Excel) — pełen raport z godzinami
+    </button>
+
+    <div class="dash-section-title">Stawki i koszty — bieżący okres</div>
     <div class="dash-emp-rows">`;
 
   [...employees].sort((a,b)=>(b.rate_net||0)-(a.rate_net||0)).forEach(emp=>{
@@ -1181,7 +1292,7 @@ function renderDash(mc){
       <div class="av" style="background:${avatarColor(emp.name)}">${initials(emp.name)}</div>
       <div class="der-info">
         <div class="der-name">${emp.name}</div>
-        <div class="der-meta">${emp.department} · ${wH.toFixed(1)}h</div>
+        <div class="der-meta">${emp.department} · ${wH.toFixed(1)}h · ${eS.length} zm.</div>
       </div>
       <div class="der-right">
         <div class="der-rate">${(emp.rate_net||0).toFixed(2)} zł/h</div>
@@ -1193,22 +1304,72 @@ function renderDash(mc){
   mc.innerHTML=html;
 }
 
-function renderEmpDash(mc){
+async function renderEmpDash(mc){
   const myEmail=currentUser?.user?.email;
   const emp=employees.find(e=>e.email===myEmail);
   const myShifts=shifts.filter(s=>s.employee_id===emp?.id).sort((a,b)=>a.date.localeCompare(b.date));
-  const now=new Date(); const nextMonth=new Date(now.getFullYear(),now.getMonth()+1,1);
+  const now=new Date();
+  const nextMonth=new Date(now.getFullYear(),now.getMonth()+1,1);
   const nextMonthName=monthName(nextMonth.getMonth());
+
+  // Load this month's shifts for stats
+  const {from: mFrom, to: mTo} = getMonthRange(0);
+  const thisMonthShifts = await sbFetch(`/rest/v1/shifts?select=*&employee_id=eq.${emp?.id}&date=gte.${mFrom}&date=lte.${mTo}`).catch(()=>[]);
+  let mH=0, mC=0;
+  thisMonthShifts.forEach(s=>{
+    const h=calcH(s.start_time||'10:00:00',s.end_time||'18:00:00');
+    mH+=h; mC+=h*(emp?.rate_net||0);
+  });
+
+  // Last month
+  const {from: lmFrom, to: lmTo} = getMonthRange(-1);
+  const lastMonthShifts = await sbFetch(`/rest/v1/shifts?select=*&employee_id=eq.${emp?.id}&date=gte.${lmFrom}&date=lte.${lmTo}`).catch(()=>[]);
+  let lmH=0, lmC=0;
+  lastMonthShifts.forEach(s=>{
+    const h=calcH(s.start_time||'10:00:00',s.end_time||'18:00:00');
+    lmH+=h; lmC+=h*(emp?.rate_net||0);
+  });
+
+  const hasRate=(emp?.rate_net||0)>1;
 
   let html=`<div class="page-bar"><div class="page-bar-title">Mój panel</div></div>
   <div class="emp-dash">
+
+    <div class="emp-stats-grid">
+      <div class="estat">
+        <div class="estat-val" style="color:var(--accent)">${thisMonthShifts.length}</div>
+        <div class="estat-lbl">zmian w tym miesiącu</div>
+      </div>
+      <div class="estat">
+        <div class="estat-val">${mH.toFixed(1)}<span style="font-size:13px;font-weight:400">h</span></div>
+        <div class="estat-lbl">godz. ten miesiąc</div>
+      </div>
+      <div class="estat">
+        <div class="estat-val" style="color:var(--green)">${lastMonthShifts.length}</div>
+        <div class="estat-lbl">zmian poprz. miesiąc</div>
+      </div>
+    </div>
+
+    ${hasRate?`<div class="info-card" style="margin-bottom:10px">
+      <div class="info-card-title">Zarobki netto</div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+        <span style="font-size:13px;color:var(--text-2)">${monthName(now.getMonth())} ${now.getFullYear()}</span>
+        <span style="font-size:18px;font-weight:700;color:var(--accent)">${mC.toFixed(0)} zł</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <span style="font-size:12px;color:var(--text-3)">${monthName(new Date(now.getFullYear(),now.getMonth()-1,1).getMonth())} (poprzedni)</span>
+        <span style="font-size:14px;font-weight:600;color:var(--text-3)">${lmC.toFixed(0)} zł</span>
+      </div>
+    </div>`:''}
+
     <div class="cta-card">
       <div class="cta-title">Zgłoś dyspozycyjność</div>
       <div class="cta-sub">Podaj dostępne dni na ${nextMonthName} — manager ułoży grafik na podstawie Twoich preferencji.</div>
       <button class="cta-btn" onclick="showView('avail')">Uzupełnij dyspozycyjność →</button>
     </div>
+
     <div class="info-card">
-      <div class="info-card-title">Mój grafik — ten tydzień</div>`;
+      <div class="info-card-title">Mój grafik — bieżący tydzień</div>`;
 
   if(myShifts.length===0){
     html+=`<div style="font-size:13px;color:var(--text-3);padding:8px 0">Brak zaplanowanych zmian</div>`;
@@ -1228,6 +1389,27 @@ function renderEmpDash(mc){
     });
     html+=`</div>`;
   }
+
+  // Upcoming shifts (this month beyond current week)
+  const tod = today();
+  const upcoming = thisMonthShifts.filter(s=>s.date>tod).sort((a,b)=>a.date.localeCompare(b.date)).slice(0,5);
+  if(upcoming.length>0){
+    html+=`</div><div class="info-card"><div class="info-card-title">Nadchodzące zmiany</div><div class="my-shifts-list">`;
+    upcoming.forEach(s=>{
+      const d=new Date(s.date+'T12:00:00');
+      const h=calcH(s.start_time||'10:00:00',s.end_time||'18:00:00');
+      const dayLabel=['Nd','Pon','Wt','Śr','Czw','Pt','Sob'][d.getDay()];
+      html+=`<div class="my-shift-row">
+        <div>
+          <div class="msr-date">${dayLabel} ${d.getDate()}.${pad(d.getMonth()+1)}</div>
+          <div class="msr-h">${h.toFixed(1)} godz.</div>
+        </div>
+        <div class="msr-time">${(s.start_time||'10:00').slice(0,5)} – ${(s.end_time||'18:00').slice(0,5)}</div>
+      </div>`;
+    });
+    html+=`</div>`;
+  }
+
   html+=`</div></div>`;
   mc.innerHTML=html;
 }
