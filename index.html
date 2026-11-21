@@ -265,6 +265,18 @@ body { font-family: var(--font); background: var(--bg); color: var(--text); min-
 .adc.avail-no { background: #FEE2E2; color: #991B1B; border-color: #FCA5A5; font-weight: 600; }
 .adc.adc-empty { cursor: default; border-color: transparent !important; background: none !important; }
 .adc.adc-past { color: var(--border); cursor: default; border-color: transparent !important; background: none !important; }
+.adc.adc-blocked { background: #F1F5F9; color: #CBD5E1; cursor: not-allowed; border-color: #E2E8F0 !important; position: relative; }
+.adc.adc-blocked::after { content: '🔒'; font-size: 7px; position: absolute; top: 1px; right: 2px; }
+
+/* ─── Blocked panel ─── */
+.blocked-panel { background: #FFFBEB; border: 1.5px solid #FDE68A; border-radius: var(--radius-lg); padding: 14px; margin-bottom: 14px; }
+.blocked-panel-title { font-size: 12px; font-weight: 600; color: #92400E; margin-bottom: 10px; }
+.blocked-cal-grid { display: flex; flex-wrap: wrap; gap: 4px; }
+.bday { width: 32px; height: 28px; border-radius: 6px; border: 1.5px solid #E2E8F0; background: white; font-size: 11px; font-weight: 500; color: var(--text-2); cursor: pointer; transition: all .12s; }
+.bday:hover { border-color: #94A3B8; background: #F8FAFC; }
+.bday.bday-on { background: #94A3B8; color: white; border-color: #64748B; font-weight: 600; }
+.blocked-list { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 8px; }
+.blocked-tag { background: #64748B; color: white; font-size: 11px; padding: 2px 8px; border-radius: 20px; }
 
 /* ─── Add emp button ─── */
 .add-emp-btn {
@@ -643,10 +655,13 @@ async function loadAllData(){
   // Load availability — now date-based (availability_dates table) + legacy day_of_week
   availability=await sbFetch('/rest/v1/availability?select=*').catch(()=>[]);
   availDates=await sbFetch('/rest/v1/availability_dates?select=*').catch(()=>[]);
+  blockedDates=await sbFetch('/rest/v1/blocked_dates?select=*').catch(()=>[]);
 }
 
 // availDates: [{id, employee_id, date, available}]
 let availDates=[];
+// blockedDates: [{id, date, reason}]
+let blockedDates=[];
 
 async function loadShiftsForCurrentPeriod(){
   let from,to;
@@ -1019,14 +1034,36 @@ function renderAvail(mc){
     </div>
   </div>`;
 
+  // Legend always visible
+  html+=`<div class="avail-legend">
+    <span><span class="leg-dot" style="background:#16A34A"></span>Dostępny</span>
+    <span><span class="leg-dot" style="background:#EF4444"></span>Niedostępny</span>
+    <span><span class="leg-dot" style="background:#94A3B8"></span>Zablokowany</span>
+  </div>`;
+
   if(canEdit()){
     // Count how many have submitted for this month
     const submitted=viewEmps.filter(emp=>availDates.some(a=>a.employee_id===emp.id&&a.date.startsWith(`${year}-${pad(month+1)}`))).length;
-    html+=`<div class="avail-legend">
-      <span><span class="leg-dot" style="background:#16A34A"></span>Dostępny</span>
-      <span><span class="leg-dot" style="background:#EF4444"></span>Niedostępny</span>
-      <span style="margin-left:auto;color:var(--text-2);font-weight:500">${submitted}/${viewEmps.length} zgłosiło</span>
-    </div>`;
+    html+=`<div style="text-align:right;font-size:12px;color:var(--text-2);margin-bottom:8px;font-weight:500">${submitted}/${viewEmps.length} pracowników zgłosiło dyspozycję</div>`;
+
+    // Blocked dates manager panel
+    const monthBlocked=blockedDates.filter(b=>b.date.startsWith(`${year}-${pad(month+1)}`));
+    html+=`<div class="blocked-panel">
+      <div class="blocked-panel-title">🔒 Zablokowane dni (pracownicy nie mogą zgłaszać dyspozycji)</div>
+      <div class="blocked-cal">`;
+    // Show mini calendar for manager to toggle blocked days
+    html+=`<div class="blocked-cal-grid">`;
+    for(let d=1;d<=daysInMonth;d++){
+      const dateStr=`${year}-${pad(month+1)}-${pad(d)}`;
+      const isB=monthBlocked.some(b=>b.date===dateStr);
+      html+=`<button class="bday${isB?' bday-on':''}" onclick="toggleBlockedDate('${dateStr}')">${d}</button>`;
+    }
+    html+=`</div>`;
+    if(monthBlocked.length){
+      html+=`<div class="blocked-list">${monthBlocked.map(b=>`<span class="blocked-tag">${b.date.slice(5)} ${b.reason?'— '+b.reason:''}</span>`).join('')}</div>`;
+    }
+    html+=`</div>`;
+
     // Auto-fill button — only show for future months
     const isNextMonth=availMonthOffset>=1;
     if(isNextMonth){
@@ -1063,11 +1100,14 @@ function renderAvail(mc){
       const dateStr=`${year}-${pad(month+1)}-${pad(d)}`;
       const rec=empDates.find(a=>a.date===dateStr);
       const isPast=dateStr<tod;
+      const isBlocked=blockedDates.some(b=>b.date===dateStr);
       let cls='adc';
-      if(isPast) cls+=' adc-past';
+      if(isBlocked) cls+=' adc-blocked';
+      else if(isPast) cls+=' adc-past';
       else if(rec?.available===true) cls+=' avail-yes';
       else if(rec?.available===false) cls+=' avail-no';
-      const click=isPast?'':` onclick="toggleAvailDate('${emp.id}','${dateStr}')"`;
+      const canClick=!isPast&&!isBlocked;
+      const click=canClick?` onclick="toggleAvailDate('${emp.id}','${dateStr}')"`:' title="Dzień zablokowany"';
       html+=`<div class="${cls}"${click} id="adc-${emp.id}-${dateStr}">${d}</div>`;
     }
     html+=`</div></div>`;
@@ -1077,6 +1117,24 @@ function renderAvail(mc){
 }
 
 function changeAvailMonth(d){ availMonthOffset+=d; renderView(); }
+
+async function toggleBlockedDate(date){
+  const ex=blockedDates.find(b=>b.date===date);
+  try{
+    if(ex){
+      await sbFetch(`/rest/v1/blocked_dates?id=eq.${ex.id}`,{method:'DELETE'});
+      blockedDates=blockedDates.filter(b=>b.id!==ex.id);
+      showToast('Odblokowano '+date.slice(5));
+    } else {
+      const r=await sbFetch('/rest/v1/blocked_dates?select=*',{method:'POST',headers:{'Prefer':'return=representation'},body:JSON.stringify({date,reason:''})});
+      if(Array.isArray(r))blockedDates.push(...r);
+      showToast('Zablokowano '+date.slice(5));
+    }
+    renderView();
+  } catch(e){
+    showToast('Błąd przy blokowaniu dnia');
+  }
+}
 
 async function toggleAvailDate(empId,date){
   const ex=availDates.find(a=>a.employee_id===empId&&a.date===date);
