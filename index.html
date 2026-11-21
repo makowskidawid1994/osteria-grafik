@@ -178,20 +178,25 @@ body { font-family: var(--font); background: var(--bg); color: var(--text); min-
 }
 .bnav-item {
   flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
-  gap: 4px; cursor: pointer; color: var(--text-3); font-size: 10px; font-weight: 500;
-  border: none; background: none; font-family: var(--font); transition: color .15s; position: relative;
-  padding: 8px 4px 4px;
+  gap: 3px; cursor: pointer; color: var(--text-3); font-size: 10px; font-weight: 500;
+  border: none; background: none; font-family: var(--font); transition: color .2s; position: relative;
+  padding: 4px 4px 2px;
 }
 .bnav-item.active { color: var(--brand); }
 .bnav-item.active .bnav-icon-wrap { background: var(--brand-soft); }
 .bnav-item.active svg { stroke: var(--brand); }
 .bnav-icon-wrap {
   width: 44px; height: 28px; display: flex; align-items: center; justify-content: center;
-  border-radius: 14px; transition: background .15s;
+  border-radius: 14px; transition: background .2s;
 }
-.bnav-item svg { width: 20px; height: 20px; stroke: var(--text-3); fill: none; stroke-width: 1.8; transition: stroke .15s; }
+.bnav-item svg { width: 20px; height: 20px; stroke: var(--text-3); fill: none; stroke-width: 1.8; transition: stroke .2s; }
 
 .main { padding-bottom: calc(62px + env(safe-area-inset-bottom) + 8px); }
+.main.view-transition { animation: viewFadeIn .18s ease-out; }
+@keyframes viewFadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
 
 /* ─── Page header bar ─── */
 .page-bar {
@@ -1303,6 +1308,8 @@ function showView(v){
   document.querySelectorAll('.bnav-item').forEach(n=>n.classList.remove('active'));
   const el=document.getElementById('nav-'+v);
   if(el) el.classList.add('active');
+  const mc=document.getElementById('main-content');
+  if(mc){ mc.classList.remove('view-transition'); void mc.offsetWidth; mc.classList.add('view-transition'); }
   renderView();
 }
 
