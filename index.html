@@ -174,27 +174,28 @@ body { font-family: var(--font); background: var(--bg); color: var(--text); min-
   position: fixed; bottom: 0; left: 0; right: 0; background: white;
   border-top: 1px solid var(--border); display: flex; z-index: 100;
   padding-bottom: env(safe-area-inset-bottom);
-  height: calc(62px + env(safe-area-inset-bottom));
+  padding-top: 6px;
+  height: calc(54px + env(safe-area-inset-bottom));
 }
 .bnav-item {
-  flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-start;
   gap: 3px; cursor: pointer; color: var(--text-3); font-size: 10px; font-weight: 500;
-  border: none; background: none; font-family: var(--font); transition: color .2s; position: relative;
-  padding: 4px 4px 2px;
+  border: none; background: none; font-family: var(--font); transition: color .25s cubic-bezier(.4,0,.2,1); position: relative;
+  padding: 0 4px;
 }
 .bnav-item.active { color: var(--brand); }
 .bnav-item.active .bnav-icon-wrap { background: var(--brand-soft); }
 .bnav-item.active svg { stroke: var(--brand); }
 .bnav-icon-wrap {
   width: 44px; height: 28px; display: flex; align-items: center; justify-content: center;
-  border-radius: 14px; transition: background .2s;
+  border-radius: 14px; transition: background .25s cubic-bezier(.4,0,.2,1);
 }
-.bnav-item svg { width: 20px; height: 20px; stroke: var(--text-3); fill: none; stroke-width: 1.8; transition: stroke .2s; }
+.bnav-item svg { width: 22px; height: 22px; stroke: var(--text-3); fill: none; stroke-width: 1.8; transition: stroke .25s cubic-bezier(.4,0,.2,1); }
 
-.main { padding-bottom: calc(62px + env(safe-area-inset-bottom) + 8px); }
-.main.view-transition { animation: viewFadeIn .18s ease-out; }
+.main { padding-bottom: calc(54px + env(safe-area-inset-bottom) + 8px); }
+.main.view-transition { animation: viewFadeIn .22s cubic-bezier(.4,0,.2,1); }
 @keyframes viewFadeIn {
-  from { opacity: 0; transform: translateY(6px); }
+  from { opacity: 0; transform: translateY(8px); }
   to   { opacity: 1; transform: translateY(0); }
 }
 
@@ -805,38 +806,45 @@ body { font-family: var(--font); background: var(--bg); color: var(--text); min-
   display: flex; flex-direction: column; gap: 10px;
   -webkit-overflow-scrolling: touch;
 }
-.chat-bubble-wrap { display: flex; gap: 8px; align-items: flex-end; }
-.chat-bubble-wrap.mine { flex-direction: row-reverse; }
+.chat-bubble-wrap-UNUSED { display: flex; }
 .chat-av {
   width: 28px; height: 28px; border-radius: 50%; flex-shrink: 0;
   display: flex; align-items: center; justify-content: center;
   font-size: 10px; font-weight: 700; color: white;
 }
-.chat-bubble-wrap { display: flex; gap: 8px; align-items: flex-end; margin-bottom: 2px; }
+/* ─── Chat bubbles — WhatsApp style ─── */
+.chat-bubble-wrap { display: flex; gap: 8px; align-items: flex-end; margin-bottom: 2px; padding: 0 12px; }
 .chat-bubble-wrap.mine { flex-direction: row-reverse; }
 .chat-bubble-wrap.grouped { margin-bottom: 1px; }
-.chat-av-col { display: flex; align-items: flex-end; }
-.chat-msg-col { display: flex; flex-direction: column; max-width: 72%; }
+.chat-av-col { width: 32px; flex-shrink: 0; display: flex; align-items: flex-end; }
+.chat-av { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; color: white; }
+.chat-av-placeholder { width: 32px; }
+.chat-msg-col { display: flex; flex-direction: column; max-width: 75%; }
 .chat-bubble-wrap.mine .chat-msg-col { align-items: flex-end; }
+.chat-sender { font-weight: 600; font-size: 11px; color: var(--brand); margin-bottom: 3px; padding-left: 4px; }
 .chat-bubble {
-  padding: 10px 14px; border-radius: 20px;
-  font-size: 15px; line-height: 1.45; word-break: break-word;
-  position: relative;
+  padding: 8px 12px 6px; word-break: break-word; position: relative;
+  font-size: 15px; line-height: 1.45;
 }
+/* Wiadomości innych — szare po lewej */
 .chat-bubble.other {
-  background: white; border: 1px solid var(--border);
-  border-bottom-left-radius: 5px; color: var(--text);
+  background: white; border: 1px solid var(--border); color: var(--text);
+  border-radius: 18px 18px 18px 4px;
 }
+/* Wiadomości własne — bordowe po prawej */
 .chat-bubble-wrap.mine .chat-bubble {
   background: var(--brand); color: white;
-  border-bottom-right-radius: 5px;
+  border-radius: 18px 18px 4px 18px;
 }
-.chat-bubble.grouped-top { border-radius: 20px; }
-.chat-bubble.grouped-top.other { border-bottom-left-radius: 5px; }
-.chat-bubble-wrap.mine .chat-bubble.grouped-top { border-bottom-right-radius: 5px; }
-.chat-meta { font-size: 10px; color: var(--text-3); margin-top: 4px; padding: 0 2px; }
-.mine-meta { text-align: right; }
-.chat-sender { font-weight: 600; font-size: 11px; color: var(--text-2); margin-bottom: 3px; padding-left: 2px; }
+/* Grupowanie — zaokrąglenia dla środkowych w grupie */
+.chat-bubble.other.in-group { border-radius: 4px 18px 18px 4px; }
+.chat-bubble-wrap.mine .chat-bubble.in-group { border-radius: 18px 4px 4px 18px; }
+.chat-bubble.other.group-last { border-radius: 4px 18px 18px 18px; }
+.chat-bubble-wrap.mine .chat-bubble.group-last { border-radius: 18px 4px 18px 18px; }
+.chat-meta { font-size: 10px; color: var(--text-3); margin-top: 3px; padding: 0 4px; }
+.chat-bubble-wrap.mine .chat-meta { text-align: right; color: rgba(255,255,255,.6); }
+/* Znacznik czasu w bańce */
+.chat-time-inline { font-size: 10px; opacity: .6; margin-left: 6px; float: right; margin-top: 3px; }
 .chat-input-bar {
   display: flex; gap: 8px; padding: 10px 12px calc(env(safe-area-inset-bottom) + 10px);
   background: white; border-top: 1px solid var(--border); align-items: flex-end;
@@ -2842,8 +2850,7 @@ function renderChatMessages(){
 
   let html='';
   let lastDay='';
-  let lastSender='';
-  let lastTime=0;
+  const GAP=5*60*1000; // 5 minut = nowa grupa
 
   chatMessages.forEach((msg,idx)=>{
     const isMe=msg.sender_email===myEmail;
@@ -2855,40 +2862,42 @@ function renderChatMessages(){
     const time=ts.toLocaleTimeString('pl-PL',{hour:'2-digit',minute:'2-digit'});
     const tsMs=ts.getTime();
 
+    // Separator dzienny
     if(day!==lastDay){
       html+=`<div class="chat-day-label">${day}</div>`;
       lastDay=day;
-      lastSender='';
     }
 
-    // Grupowanie: pokaż avatar/sender tylko gdy inny nadawca lub >3 min przerwy
-    const sameSender=lastSender===msg.sender_email;
-    const closeInTime=(tsMs-lastTime)<3*60*1000;
-    const isGrouped=sameSender&&closeInTime;
-    lastSender=msg.sender_email;
-    lastTime=tsMs;
-
-    // Określ kształt bańki w grupie
+    // Sprawdź sąsiadów dla grupowania
+    const prev=chatMessages[idx-1];
     const next=chatMessages[idx+1];
-    const nextSame=next&&next.sender_email===msg.sender_email&&(new Date(next.created_at)-ts)<3*60*1000;
+    const samePrev=prev&&prev.sender_email===msg.sender_email&&(tsMs-new Date(prev.created_at).getTime())<GAP;
+    const sameNext=next&&next.sender_email===msg.sender_email&&(new Date(next.created_at).getTime()-tsMs)<GAP;
+
+    // Klasa kształtu bańki
+    let shapeClass='';
+    if(samePrev&&sameNext) shapeClass=' in-group';
+    else if(samePrev&&!sameNext) shapeClass=' group-last';
+
+    // Czy pokazywać avatar/imię — tylko pierwsza w grupie
+    const showMeta=!samePrev;
+    // Czy pokazywać godzinę — tylko ostatnia w grupie
+    const showTime=!sameNext;
 
     if(isMe){
-      html+=`<div class="chat-bubble-wrap mine${isGrouped?' grouped':''}">
+      html+=`<div class="chat-bubble-wrap mine${samePrev?' grouped':''}">
         <div class="chat-msg-col">
-          <div class="chat-bubble${isGrouped?' grouped-top':''}${nextSame?' grouped-bot':''}">${escHtml(msg.content)}</div>
-          ${!nextSame?`<div class="chat-meta mine-meta">${time}</div>`:''}
+          <div class="chat-bubble${shapeClass}">${escHtml(msg.content)}${showTime?`<span class="chat-time-inline">${time}</span>`:''}</div>
         </div>
       </div>`;
     } else {
-      html+=`<div class="chat-bubble-wrap${isGrouped?' grouped':''}">
+      html+=`<div class="chat-bubble-wrap${samePrev?' grouped':''}">
         <div class="chat-av-col">
-          ${!isGrouped?`<div class="chat-av" style="background:${color}">${ini}</div>`:
-          `<div style="width:28px;flex-shrink:0"></div>`}
+          ${showMeta?`<div class="chat-av" style="background:${color}">${ini}</div>`:`<div class="chat-av-placeholder"></div>`}
         </div>
         <div class="chat-msg-col">
-          ${!isGrouped?`<div class="chat-sender">${empName}</div>`:''}
-          <div class="chat-bubble other${isGrouped?' grouped-top':''}${nextSame?' grouped-bot':''}">${escHtml(msg.content)}</div>
-          ${!nextSame?`<div class="chat-meta">${time}</div>`:''}
+          ${showMeta?`<div class="chat-sender">${escHtml(empName)}</div>`:''}
+          <div class="chat-bubble other${shapeClass}">${escHtml(msg.content)}${showTime?`<span class="chat-time-inline" style="color:var(--text-3)">${time}</span>`:''}</div>
         </div>
       </div>`;
     }
