@@ -2801,7 +2801,7 @@ async function loadChatMessages(){
 
 function renderChat(mc){
   const emp=getCurrentEmployee();
-  const myEmail=currentUser?.email||'';
+  const myEmail=currentUser?.user?.email||currentUser?.email||'';
 
   mc.innerHTML=`
   <div class="page-bar" style="position:sticky;top:0;z-index:10;">
@@ -2842,7 +2842,7 @@ function renderChat(mc){
 function renderChatMessages(){
   const list=document.getElementById('chat-msgs-list');
   if(!list) return;
-  const myEmail=currentUser?.email||'';
+  const myEmail=currentUser?.user?.email||currentUser?.email||'';
   if(!chatMessages.length){
     list.innerHTML=`<div class="chat-empty">
       <div style="font-size:36px;margin-bottom:12px">💬</div>
@@ -2936,13 +2936,15 @@ async function sendChatMsg(){
       headers:{'Prefer':'return=representation'},
       body:JSON.stringify({
         content,
-        sender_email:currentUser?.email||'',
+        sender_email:currentUser?.user?.email||currentUser?.email||'',
         employee_id:emp?.id||null
       })
     });
     const newMsg=Array.isArray(msg)?msg[0]:msg;
     // Dociągnij employees info
-    newMsg.employees={name:emp?.name||currentUser?.email?.split('@')[0],department:emp?.department};
+    const _myEmail2=currentUser?.user?.email||currentUser?.email||'';
+    newMsg.sender_email=_myEmail2;
+    newMsg.employees={name:emp?.name||_myEmail2.split('@')[0],department:emp?.department};
     chatMessages.push(newMsg);
     renderChatMessages();
     setTimeout(()=>{
