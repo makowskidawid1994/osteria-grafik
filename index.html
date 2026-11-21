@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="/icon-192.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root {
   --brand: #7B1D2E;
@@ -149,20 +149,13 @@ body { font-family: var(--font); background: var(--bg); color: var(--text); min-
   border-bottom: 1px solid var(--border); gap: 10px;
   transition: background .2s, border-color .2s;
 }
-/* Dark header when on home screen */
+/* Na home — header przezroczysty, app bar schowany (mamy własny nagłówek) */
 body.view-home .header {
-  background: #0A0608;
-  border-bottom-color: rgba(255,255,255,.06);
+  background: transparent;
+  border-bottom-color: transparent;
+  box-shadow: none;
 }
-body.view-home .header-brand { color: rgba(255,255,255,.9); }
-body.view-home .header-brand em { color: rgba(255,255,255,.35); }
-body.view-home .header-brand-dot { background: var(--brand); }
-body.view-home .role-badge {
-  background: rgba(255,255,255,.07); color: rgba(255,255,255,.5);
-  border-color: rgba(255,255,255,.1);
-}
-body.view-home .header-avatar { border-color: rgba(255,255,255,.15); }
-body.view-home #main-content { background: #0A0608; }
+body.view-home #main-content { background: #F5F0EE; }
 
 .header-brand { font-size: 15px; font-weight: 800; flex: 1; letter-spacing: -.5px; color: var(--text); display: flex; align-items: center; gap: 6px; transition: color .2s; }
 .header-brand em { color: var(--text-3); font-style: normal; font-weight: 400; transition: color .2s; }
@@ -217,152 +210,205 @@ body.view-home #main-content { background: #0A0608; }
   to   { opacity: 1; transform: translateY(0); }
 }
 
-/* ─── Home screen ─── */
 /* ════════════════════════════════════════
-   HOME — FULLSCREEN DARK TOUCH DESIGN
+   HOME — OSTERIA ANTONINA
 ════════════════════════════════════════ */
 .hw-wrap {
   min-height: 100vh;
-  background: #0A0608;
+  background: #F5F0EE;
   display: flex; flex-direction: column;
-  padding-bottom: max(env(safe-area-inset-bottom), 24px);
+  padding-bottom: max(env(safe-area-inset-bottom), 28px);
   -webkit-tap-highlight-color: transparent;
 }
-.hw-top {
-  padding: max(env(safe-area-inset-top), 16px) 20px 0;
-  display: flex; align-items: baseline; justify-content: space-between;
-  flex-wrap: wrap; gap: 2px;
-}
-.hw-name {
-  font-size: 22px; font-weight: 800; color: #fff; letter-spacing: -.6px;
-}
-.hw-role {
-  font-size: 12px; font-weight: 500; color: rgba(255,255,255,.3);
-  letter-spacing: .2px; margin-left: 8px;
-}
-.hw-date {
-  font-size: 11px; color: rgba(255,255,255,.25); font-weight: 400; letter-spacing: .3px;
-}
-.hw-shift {
-  margin: 10px 20px 16px;
-  font-size: 12px; font-weight: 500; color: rgba(255,255,255,.3);
-  display: flex; align-items: center; gap: 7px;
-}
-.hw-shift::before {
-  content:''; width:6px; height:6px; border-radius:50%;
-  background: rgba(255,255,255,.2); flex-shrink:0;
-}
-.hw-shift-active { color: rgba(123,245,170,.7); }
-.hw-shift-active::before { background:#22C55E; box-shadow:0 0 0 3px rgba(34,197,94,.2); }
 
-/* Block grid */
+/* Header z nazwą restauracji */
+.hw-header {
+  padding: 28px 22px 0;
+  display: flex; flex-direction: column;
+  position: relative;
+}
+.hw-restaurant {
+  font-family: 'DM Serif Display', Georgia, serif;
+  font-size: 11px; letter-spacing: 3px; text-transform: uppercase;
+  color: #9E6B6B; font-weight: 400; font-style: italic;
+}
+.hw-greeting {
+  font-family: 'DM Serif Display', Georgia, serif;
+  font-size: 32px; color: #1C0C0E; line-height: 1.1; margin-top: 2px;
+}
+.hw-greeting em {
+  font-style: italic; color: #7B1D2E;
+}
+.hw-meta {
+  margin-top: 6px;
+  display: flex; align-items: center; gap: 10px;
+}
+.hw-role-chip {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px; letter-spacing: 1.5px; text-transform: uppercase;
+  color: #9E6B6B; background: rgba(123,29,46,.07);
+  border: 1px solid rgba(123,29,46,.12);
+  padding: 2px 8px; border-radius: 2px;
+}
+.hw-date-str {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px; letter-spacing: .5px; color: #BEA0A0;
+}
+
+/* Pasek statusu zmiany */
+.hw-shift-bar {
+  margin: 16px 22px 0;
+  padding: 10px 14px;
+  background: rgba(255,255,255,.7);
+  border: 1px solid rgba(123,29,46,.1);
+  border-radius: 6px;
+  display: flex; align-items: center; gap: 10px;
+  backdrop-filter: blur(4px);
+}
+.hw-shift-dot {
+  width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0;
+  background: #D9B8BE;
+}
+.hw-shift-bar.active .hw-shift-dot {
+  background: #16A34A;
+  box-shadow: 0 0 0 3px rgba(34,197,94,.18);
+  animation: pulse-ring 1.8s ease-out infinite;
+}
+.hw-shift-text {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px; color: #7B5050; letter-spacing: .2px; flex: 1;
+}
+.hw-shift-bar.active .hw-shift-text { color: #15803D; font-weight: 500; }
+.hw-shift-cta {
+  font-family: 'Inter', sans-serif;
+  font-size: 10px; font-weight: 700; letter-spacing: .5px;
+  color: #7B1D2E; text-decoration: none; text-transform: uppercase;
+  cursor: pointer; padding: 4px 10px;
+  background: rgba(123,29,46,.08); border-radius: 4px;
+  border: none; outline: none;
+  -webkit-tap-highlight-color: transparent;
+  transition: background .15s;
+}
+.hw-shift-cta:active { background: rgba(123,29,46,.15); }
+
+/* Bloki nawigacji */
 .hw-blocks {
   flex: 1;
   display: flex; flex-direction: column;
-  gap: 3px;
-  padding: 0 10px;
+  padding: 18px 14px 0;
+  gap: 6px;
 }
 
-/* Hero — big primary block */
-.hb-hero {
+/* Pojedynczy blok */
+.hb-row {
   position: relative; overflow: hidden;
-  border-radius: 18px;
-  min-height: 128px;
+  border-radius: 4px;
+  min-height: 72px;
   cursor: pointer;
-  display: flex; align-items: flex-end;
-  padding: 0 22px 22px;
-  transition: transform .15s cubic-bezier(.4,0,.2,1);
-  margin-bottom: 1px;
+  display: flex; align-items: center;
+  justify-content: space-between;
+  padding: 0 18px;
+  background: rgba(255,255,255,.75);
+  border: 1px solid rgba(188,152,152,.25);
+  border-left: 3px solid rgba(123,29,46,.12);
+  -webkit-tap-highlight-color: transparent;
+  transition: transform .1s cubic-bezier(.4,0,.2,1), background .1s;
+  will-change: transform;
+  backdrop-filter: blur(2px);
 }
-.hb-hero:active { transform: scale(.975); }
-.hb-hero-bg {
-  position: absolute; inset: 0; border-radius: inherit;
-  transition: filter .15s;
-}
-.hb-hero:active .hb-hero-bg { filter: brightness(.85); }
-.hb-hero-inner { position: relative; z-index: 1; flex: 1; }
-.hb-hero-title {
-  font-size: 32px; font-weight: 800; color: #fff;
-  letter-spacing: -1.2px; line-height: 1; margin-top: 2px;
-}
-.hb-arrow {
-  font-size: 20px; color: rgba(255,255,255,.4);
-  margin-top: 6px; display: block;
-  transition: transform .2s cubic-bezier(.4,0,.2,1), opacity .2s;
-}
-.hb-hero:active .hb-arrow { transform: translateX(4px); opacity:.7; }
+.hb-row:active { transform: scale(.98); background: rgba(249,240,242,.9); border-left-color: rgba(123,29,46,.35); }
 
-/* Pulse ring for active session */
+/* Pierwszy — start pracy */
+.hb-row.hb-primary {
+  min-height: 90px;
+  background: #7B1D2E;
+  border: none;
+  border-radius: 6px;
+  margin-bottom: 4px;
+}
+.hb-row.hb-primary:active { background: #6A1826; transform: scale(.985); }
+.hb-row.hb-primary .hb-row-label { color: rgba(255,255,255,.45); }
+.hb-row.hb-primary .hb-row-title { color: #fff; }
+.hb-row.hb-primary .hb-row-arrow { color: rgba(255,255,255,.35); }
+.hb-row.hb-primary.working { background: #1C3A1E; border: none; }
+.hb-row.hb-primary.working:active { background: #152D18; }
+
+.hb-row-left { position: relative; z-index: 1; }
+.hb-row-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px; letter-spacing: 1.8px; text-transform: uppercase;
+  color: #9E7070; margin-bottom: 5px;
+}
+.hb-row-title {
+  font-family: 'DM Serif Display', Georgia, serif;
+  font-size: 26px; font-weight: 400;
+  color: #1C0C0E; line-height: 1;
+}
+.hb-row-title em { font-style: italic; }
+
+.hb-row-arrow {
+  font-size: 20px; color: rgba(123,29,46,.2); z-index: 1;
+  font-family: 'DM Serif Display', Georgia, serif;
+  transition: transform .12s;
+}
+.hb-row:active .hb-row-arrow { transform: translateX(3px); }
+
+/* Aktywna zmiana — zielony primary */
+.hb-row.hb-primary.working .hb-row-label { color: rgba(255,255,255,.45); }
+.hb-row.hb-primary.working .hb-row-title { color: #fff; }
+.hb-row.hb-primary.working .hb-row-arrow { color: rgba(255,255,255,.3); }
+
+/* Pulsujący wskaźnik aktywnej zmiany */
 .hb-pulse {
-  position: absolute; top: 18px; right: 18px; z-index: 2;
-  width: 10px; height: 10px;
+  position: absolute; top: 50%; right: 52px; z-index: 2;
+  width: 8px; height: 8px; margin-top: -4px;
 }
 .hb-pulse::before, .hb-pulse::after {
   content:''; position:absolute; inset:0; border-radius:50%;
 }
-.hb-pulse::before { background:#22C55E; }
+.hb-pulse::before { background:#4ADE80; }
 .hb-pulse::after {
-  background: rgba(34,197,94,.4);
-  animation: pulse-ring 1.8s ease-out infinite;
+  background:rgba(74,222,128,.35);
+  animation: pulse-ring 2s ease-out infinite;
 }
 @keyframes pulse-ring {
-  0%   { transform:scale(1);  opacity:.7; }
-  100% { transform:scale(3.5);opacity:0; }
+  0%   { transform:scale(1); opacity:.8; }
+  100% { transform:scale(4); opacity:0; }
 }
 
-/* Pair row */
-.hb-pair {
-  display: flex; gap: 3px;
-}
-.hb-block {
-  flex: 1;
-  position: relative; overflow: hidden;
-  border-radius: 18px;
-  min-height: 100px;
-  cursor: pointer;
-  display: flex; align-items: flex-end;
-  padding: 0 16px 16px;
-  transition: transform .15s cubic-bezier(.4,0,.2,1);
-}
-.hb-block:active { transform: scale(.96); }
-.hb-block-bg {
-  position: absolute; inset: 0; border-radius: inherit;
-  transition: filter .15s;
-}
-.hb-block:active .hb-block-bg { filter: brightness(.8); }
-.hb-block-inner { position: relative; z-index: 1; }
-.hb-block-title {
-  font-size: 18px; font-weight: 800; color: #fff;
-  letter-spacing: -.5px; line-height: 1; margin-top: 2px;
-}
-
-/* Shared */
-.hb-sup {
-  font-size: 10px; font-weight: 600; color: rgba(255,255,255,.35);
-  letter-spacing: .5px; text-transform: uppercase;
-}
+/* Badge na chat */
 .hb-badge {
-  position: absolute; top: 12px; right: 12px; z-index: 3;
-  background: var(--brand); color: white; font-size: 10px; font-weight: 700;
-  min-width: 20px; height: 20px; border-radius: 10px;
-  display: flex; align-items: center; justify-content: center; padding: 0 6px;
+  position: absolute; top: 50%; right: 44px; margin-top: -10px; z-index: 3;
+  background: #7B1D2E; color: white;
+  font-family: 'DM Mono', monospace;
+  font-size: 9px; font-weight: 500;
+  min-width: 20px; height: 20px; border-radius: 2px;
+  display: flex; align-items: center; justify-content: center; padding: 0 5px;
 }
 
 /* Ripple */
 .hb-ripple-wrap {
   position: absolute; inset: 0; border-radius: inherit;
-  overflow: hidden; pointer-events: none; z-index: 2;
+  overflow: hidden; pointer-events: none; z-index: 4;
 }
 .hb-ripple {
   position: absolute; left: 50%; top: 50%;
   transform: translate(-50%,-50%) scale(0);
-  width: 100%; padding-bottom: 100%;
+  width: 300%; padding-bottom: 300%;
   border-radius: 50%;
-  background: rgba(255,255,255,.12);
-  animation: ripple-anim .55s cubic-bezier(.4,0,.2,1) forwards;
+  background: rgba(123,29,46,.06);
+  animation: ripple-anim .45s cubic-bezier(.4,0,.2,1) forwards;
 }
+.hb-row.hb-primary .hb-ripple { background: rgba(255,255,255,.1); }
 @keyframes ripple-anim {
-  to { transform: translate(-50%,-50%) scale(2.6); opacity: 0; }
+  to { transform: translate(-50%,-50%) scale(1); opacity: 0; }
+}
+
+/* Separator kategorii */
+.hb-sep {
+  font-family: 'DM Mono', monospace;
+  font-size: 8px; letter-spacing: 2.5px; text-transform: uppercase;
+  color: #C4A0A0; padding: 8px 4px 4px; margin-top: 2px;
 }
 
 /* Back button w sekcjach */
@@ -1596,7 +1642,7 @@ function renderStub(mc, title, backView, msg){
 }
 
 /* ═══════════════════════════════════════════════
-   HOME SCREEN
+   HOME SCREEN — vertical stack
 ═══════════════════════════════════════════════ */
 function renderHome(mc){
   const emp=getCurrentEmployee();
@@ -1605,128 +1651,94 @@ function renderHome(mc){
   const firstName=name.split(' ')[0];
   const role=currentRole==='owner'?'Właściciel':currentRole==='manager'?'Manager':emp?.department==='kuchnia'?'Kucharz':'Pracownik';
   const isKitchen=emp?.department==='kuchnia';
+  const isOwnerOrMgr=canEdit();
 
   const tod=today();
   const myShiftToday=shifts.find(s=>s.employee_id===emp?.id&&s.date===tod);
   const active=workSessions.find(s=>s.employee_id===emp?.id&&!s.clock_out);
-  const shiftStr=active
-    ?`Zmiana trwa — od ${fmtTime(active.clock_in)}`
-    :myShiftToday
-      ?`Dziś ${(myShiftToday.start_time||'').slice(0,5)}–${(myShiftToday.end_time||'').slice(0,5)}`
-      :`Brak zmiany dziś`;
 
-  const unread=chatUnread>0?String(chatUnread):null;
-
+  const unread=chatUnread>0?chatUnread:null;
   const now=new Date();
-  const dateLabel=now.toLocaleDateString('pl-PL',{weekday:'long',day:'numeric',month:'long'});
+  const dStr=now.toLocaleDateString('pl-PL',{weekday:'short',day:'numeric',month:'short'});
 
-  // Build section rows — ordered for visual weight
-  // Row 1: biggest block (primary CTA — Zacznij / Zakończ pracę)
-  // Row 2: two equal blocks (Grafik, Chat)
-  // Row 3: two equal blocks (role-dependent)
-  // Row 4: two equal blocks (role-dependent)
+  // Pasek zmiany
+  let shiftText, shiftActive=false;
+  if(active){
+    shiftActive=true;
+    shiftText=`Zmiana trwa od ${fmtTime(active.clock_in)}`;
+  } else if(myShiftToday){
+    shiftText=`Zmiana: ${(myShiftToday.start_time||'').slice(0,5)}–${(myShiftToday.end_time||'').slice(0,5)}`;
+  } else {
+    shiftText='Brak zmiany w grafiku';
+  }
 
-  const isOwnerOrMgr=canEdit();
-
-  // Blocks config: id, label, sublabel, bg gradient, accent color
+  // Blok główny — start/stop pracy
   const clockLabel=active?'Zakończ pracę':'Zacznij pracę';
-  const clockSub=active?`od ${fmtTime(active.clock_in)}`:'Rejestracja godzin';
+  const clockSub=active?'kliknij, żeby zakończyć':'Zarejestruj rozpoczęcie';
+  const clockClass=active?'hb-primary working':'hb-primary';
+
+  const rowHTML=b=>`
+    <div class="hb-row${b.cls?' '+b.cls:''}" onclick="hbTap(this,'${b.id}')">
+      ${b.pulse?`<span class="hb-pulse"></span>`:''}
+      ${b.badge?`<span class="hb-badge">${b.badge}</span>`:''}
+      <div class="hb-row-left">
+        <div class="hb-row-label">${b.sub}</div>
+        <div class="hb-row-title">${b.em?`<em>${b.label}</em>`:b.label}</div>
+      </div>
+      <div class="hb-row-arrow">→</div>
+      <div class="hb-ripple-wrap"></div>
+    </div>`;
 
   const rows=[];
-
-  // Primary hero block — clock in/out
-  rows.push({type:'hero', id:'clock',
-    label: clockLabel, sub: clockSub,
-    grad:'linear-gradient(145deg,#7B1D2E 0%,#3D0E18 100%)',
-    pulse: active
-  });
-
-  // Row of 2
-  rows.push({type:'pair', blocks:[
-    {id:'sched', label:'Grafik', sub:'Harmonogram zmian', grad:'linear-gradient(145deg,#1A2535 0%,#0D1520 100%)'},
-    {id:'chat',  label:'Chat',   sub:'Wiadomości', grad:'linear-gradient(145deg,#1A1225 0%,#0D0A18 100%)', badge: unread},
-  ]});
-
-  if(isOwnerOrMgr||isKitchen){
-    rows.push({type:'pair', blocks:[
-      {id:'kitchen', label:'Kuchnia', sub:'Receptury & straty', grad:'linear-gradient(145deg,#201408 0%,#120A02 100%)'},
-      {id:'board',   label:'Tablica', sub:'Ogłoszenia', grad:'linear-gradient(145deg,#0E1F14 0%,#070F0A 100%)'},
-    ]});
-  } else {
-    rows.push({type:'pair', blocks:[
-      {id:'board',  label:'Tablica', sub:'Ogłoszenia', grad:'linear-gradient(145deg,#0E1F14 0%,#070F0A 100%)'},
-      {id:'events', label:'Wydarzenia', sub:'Eventy & menu', grad:'linear-gradient(145deg,#0B1929 0%,#060F18 100%)'},
-    ]});
-  }
-
+  rows.push({id:'clock', cls:clockClass, pulse:!!active, em:true,
+    label: clockLabel, sub: clockSub});
+  rows.push({id:'sched',  label:'Grafik',      sub:'harmonogram zmian'});
+  rows.push({id:'chat',   label:'Chat',         sub:'wiadomości zespołu', badge:unread});
+  if(isOwnerOrMgr||isKitchen)
+    rows.push({id:'kitchen',label:'Kuchnia',    sub:'receptury & straty'});
+  rows.push({id:'board',  label:'Tablica',      sub:'ogłoszenia'});
+  rows.push({id:'events', label:'Wydarzenia',   sub:'eventy & menu'});
+  rows.push({id:'avail',  label:'Dyspozycja',   sub:'dostępność w miesiącu'});
   if(isOwnerOrMgr){
-    rows.push({type:'pair', blocks:[
-      {id:'emps',   label:'Pracownicy', sub:'Zarządzanie', grad:'linear-gradient(145deg,#130D22 0%,#09060F 100%)'},
-      {id:'events', label:'Wydarzenia', sub:'Eventy & menu', grad:'linear-gradient(145deg,#0B1929 0%,#060F18 100%)'},
-    ]});
-    rows.push({type:'pair', blocks:[
-      {id:'avail',  label:'Dyspozycja', sub:'Dostępność', grad:'linear-gradient(145deg,#1C1407 0%,#0E0A02 100%)'},
-      {id:'dash',   label:'Panel',      sub:'Raporty', grad:'linear-gradient(145deg,#1A0A10 0%,#0D050A 100%)'},
-    ]});
-  } else {
-    rows.push({type:'pair', blocks:[
-      {id:'avail',  label:'Dyspozycja', sub:'Dostępność', grad:'linear-gradient(145deg,#1C1407 0%,#0E0A02 100%)'},
-    ]});
+    rows.push({id:'emps', label:'Pracownicy',   sub:'zarządzanie zespołem'});
+    rows.push({id:'dash', label:'Panel',         sub:'raporty & rozliczenia'});
   }
 
-  const heroHTML=b=>`
-    <div class="hb-hero" data-view="${b.id}" onclick="hbTap(this,'${b.id}')">
-      <div class="hb-hero-bg" style="background:${b.grad}"></div>
-      ${b.pulse?`<span class="hb-pulse"></span>`:''}
-      <div class="hb-hero-inner">
-        <div class="hb-sup">${b.sub}</div>
-        <div class="hb-hero-title">${b.label}</div>
-        <div class="hb-arrow">→</div>
-      </div>
-      <div class="hb-ripple-wrap"></div>
-    </div>`;
-
-  const blockHTML=b=>`
-    <div class="hb-block" data-view="${b.id}" onclick="hbTap(this,'${b.id}')">
-      <div class="hb-block-bg" style="background:${b.grad}"></div>
-      ${b.badge?`<span class="hb-badge">${b.badge}</span>`:''}
-      <div class="hb-block-inner">
-        <div class="hb-sup">${b.sub}</div>
-        <div class="hb-block-title">${b.label}</div>
-      </div>
-      <div class="hb-ripple-wrap"></div>
-    </div>`;
-
-  const pairHTML=blocks=>`
-    <div class="hb-pair">${blocks.map(blockHTML).join('')}</div>`;
-
-  const bodyHTML=rows.map(r=>
-    r.type==='hero'?heroHTML(r):pairHTML(r.blocks)
-  ).join('');
+  const ctaBtn=!active&&myShiftToday
+    ?`<button class="hw-shift-cta" onclick="hbTap(document.querySelector('.hb-primary'),'clock')">Start →</button>`
+    :'';
 
   mc.innerHTML=`
   <div class="hw-wrap">
-    <div class="hw-top">
-      <div class="hw-name">${firstName} <span class="hw-role">${role}</span></div>
-      <div class="hw-date">${dateLabel}</div>
+    <div class="hw-header">
+      <div class="hw-restaurant">Osteria Antonina</div>
+      <div class="hw-greeting">Cześć, <em>${firstName}</em></div>
+      <div class="hw-meta">
+        <span class="hw-role-chip">${role}</span>
+        <span class="hw-date-str">${dStr}</span>
+      </div>
     </div>
-    <div class="hw-shift ${active?'hw-shift-active':''}">${shiftStr}</div>
-    <div class="hw-blocks">${bodyHTML}</div>
+    <div class="hw-shift-bar${shiftActive?' active':''}">
+      <span class="hw-shift-dot"></span>
+      <span class="hw-shift-text">${shiftText}</span>
+      ${ctaBtn}
+    </div>
+    <div class="hw-blocks">
+      ${rows.map(rowHTML).join('')}
+    </div>
   </div>`;
 }
 
 function hbTap(el, view){
-  // Ripple
+  if(!el) return;
   const wrap=el.querySelector('.hb-ripple-wrap');
   if(wrap){
     const r=document.createElement('span');
     r.className='hb-ripple';
     wrap.innerHTML=''; wrap.appendChild(r);
-    setTimeout(()=>r.remove(),600);
+    setTimeout(()=>r.remove(),500);
   }
-  // Navigate after micro-delay (feels intentional)
-  el.style.transform='scale(.97)';
-  setTimeout(()=>{el.style.transform='';showView(view);},120);
+  setTimeout(()=>showView(view), 110);
 }
 
 /* ═══════════════════════════════════════════════
