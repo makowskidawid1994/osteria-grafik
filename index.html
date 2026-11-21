@@ -658,10 +658,10 @@ body { font-family: var(--font); background: var(--bg); color: var(--text); min-
 .cost-preview { background: var(--bg); border-radius: var(--radius); padding: 10px 12px; font-size: 12px; color: var(--text-2); margin-top: 4px; display: none; border: 1px solid var(--border); }
 .cost-preview strong { color: var(--text); font-weight: 700; }
 
-/* ─── Toast ─── */
+/* ─── Toast — minimalny ─── */
 .toast {
   position: fixed; bottom: 76px; left: 50%; transform: translateX(-50%) translateY(6px);
-  background: var(--text); color: white; padding: 9px 16px; border-radius: 6px;
+  background: rgba(0,0,0,.72); color: white; padding: 7px 14px; border-radius: 20px;
   font-size: 12px; font-weight: 500; z-index: 300; opacity: 0; pointer-events: none;
   white-space: nowrap; transition: all .18s cubic-bezier(.32,.72,0,1); box-shadow: 0 4px 16px rgba(0,0,0,.2);
 }
@@ -994,14 +994,18 @@ body { font-family: var(--font); background: var(--bg); color: var(--text); min-
 .anim-in:nth-child(3) { animation-delay: .1s; }
 .anim-in:nth-child(4) { animation-delay: .15s; }
 
-/* ─── Pull to refresh ─── */
+/* ─── Pull to refresh — iOS style ─── */
 .ptr-indicator {
-  display: flex; align-items: center; justify-content: center; gap: 8px;
-  padding: 12px; font-size: 12px; color: var(--text-3);
-  overflow: hidden; height: 0; transition: height .2s;
+  display: flex; align-items: center; justify-content: center;
+  overflow: hidden; height: 0;
+  transition: height .3s cubic-bezier(.4,0,.2,1);
 }
-.ptr-indicator.visible { height: 44px; }
-.ptr-spinner { width: 16px; height: 16px; border: 2px solid var(--border); border-top-color: var(--text); border-radius: 50%; animation: spin .6s linear infinite; }
+.ptr-indicator.visible { height: 48px; }
+.ptr-spinner {
+  width: 20px; height: 20px; border-radius: 50%;
+  border: 2px solid var(--border-2); border-top-color: var(--brand);
+  animation: spin .7s cubic-bezier(.5,0,.5,1) infinite;
+}
 @keyframes spin { to { transform: rotate(360deg); } }
 </style>
 </head>
@@ -3078,32 +3082,34 @@ function toggleAvatarMenu(e){
     const el=mc(); if(!el) return;
     if(el.scrollTop>0){startY=0;return;}
     const dy=e.touches[0].clientY-startY;
-    if(dy>10&&startY>0){
+    if(dy>8&&startY>0){
       pulling=true;
       let ind=document.getElementById('ptr-ind');
       if(!ind){
         ind=document.createElement('div');
         ind.id='ptr-ind'; ind.className='ptr-indicator';
-        ind.innerHTML=`<div class="ptr-spinner"></div><span>Odświeżanie…</span>`;
+        ind.innerHTML=`<div class="ptr-spinner"></div>`;
         el.prepend(ind);
       }
-      ind.classList.toggle('visible',dy>threshold);
+      // Elastyczny opór — im dalej, tym wolniej
+      const resistance=Math.min(dy*0.5, threshold*1.2);
+      ind.style.height=(resistance>threshold?'48px':'0');
+      ind.classList.toggle('visible', dy>threshold);
     }
   },{passive:true});
 
   document.addEventListener('touchend',async e=>{
     if(!pulling) return; pulling=false;
     const ind=document.getElementById('ptr-ind');
-    const el=mc();
     const dy=e.changedTouches[0].clientY-startY;
     if(dy>threshold){
       if(ind) ind.classList.add('visible');
       await loadAllData();
       const curView=currentView;
       if(curView) showView(curView);
-      showToast('Odświeżono ✓');
+      // Bez toastu — samo odświeżenie jest oczywiste
     }
-    if(ind){ ind.classList.remove('visible'); setTimeout(()=>ind.remove(),300); }
+    if(ind){ ind.classList.remove('visible'); setTimeout(()=>ind.remove(),250); }
     startY=0;
   });
 })();
