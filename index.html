@@ -1165,7 +1165,13 @@ async function sbFetch(path, opts={}) {
   if(currentUser?.access_token) h['Authorization']='Bearer '+currentUser.access_token;
   const {headers:extraH, ...restOpts}=opts;
   const r=await fetch(SB_URL+path,{headers:{...h,...(extraH||{})}, ...restOpts});
-  if(!r.ok) throw new Error(await r.text());
+  if(!r.ok){
+    const txt=await r.text();
+    let msg=txt;
+    try{const j=JSON.parse(txt);msg=j.message||j.hint||txt;}catch(_){}
+    throw new Error(msg);
+  }
+  if(r.status===204) return [];
   const ct=r.headers.get('content-type')||'';
   return ct.includes('json')?r.json():r.text();
 }
@@ -2050,13 +2056,36 @@ async function autoFillFromAvail(){
   if(!toInsert.length){showToast('Brak dyspozycji do wstawienia — najpierw zaznacz dostępne dni');return;}
 
   try{
-    const r=await sbFetch('/rest/v1/shifts?select=*',{method:'POST',headers:{'Prefer':'return=representation'},body:JSON.stringify(toInsert)});
-    if(Array.isArray(r)) shifts.push(...r);
+    // Wstawiamy wszystkie naraz z on-conflict ignore
+    const r=await sbFetch('/rest/v1/shifts?select=*',{
+      method:'POST',
+      headers:{'Prefer':'return=representation,resolution=ignore-duplicates'},
+      body:JSON.stringify(toInsert)
+    });
+    if(Array.isArray(r)&&r.length) shifts.push(...r);
     showToast(`Dodano ${toInsert.length} zmian na ${monthName(month)}`);
     schedView='month'; currentMonthOffset=availMonthOffset;
     await loadShiftsForCurrentPeriod();
     showView('sched');
-  }catch(e){showToast('Błąd: '+e.message.slice(0,60));}
+  }catch(e){
+    // Fallback: wstawiaj pojedynczo żeby pominąć konflikty
+    let added=0;
+    for(const row of toInsert){
+      try{
+        const r=await sbFetch('/rest/v1/shifts?select=*',{method:'POST',headers:{'Prefer':'return=representation'},body:JSON.stringify(row)});
+        if(Array.isArray(r)&&r.length) shifts.push(...r);
+        added++;
+      }catch(_){}
+    }
+    if(added>0){
+      showToast(`Dodano ${added} zmian na ${monthName(month)}`);
+      schedView='month'; currentMonthOffset=availMonthOffset;
+      await loadShiftsForCurrentPeriod();
+      showView('sched');
+    } else {
+      showToast('Błąd: '+e.message.slice(0,80));
+    }
+  }
 }
 
 async function toggleAvail(empId,day){
