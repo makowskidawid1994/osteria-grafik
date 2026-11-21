@@ -837,11 +837,11 @@ async function loadWorkSessions(){
   const fromStr=fd(from)+'T00:00:00';
   workSessions=await sbFetch(`/rest/v1/work_sessions?select=*,employees(name,department)&clock_in=gte.${fromStr}&order=clock_in.desc`).catch(()=>[]);
   // Find active session for current user
-  if(currentUser){
-    const me=employees.find(e=>e.email===currentUser.email);
-    if(me){
-      activeSession=workSessions.find(s=>s.employee_id===me.id && !s.clock_out)||null;
-    }
+  const me=getCurrentEmployee();
+  if(me){
+    activeSession=workSessions.find(s=>s.employee_id===me.id && !s.clock_out)||null;
+  } else {
+    activeSession=null;
   }
 }
 
@@ -1892,7 +1892,21 @@ function fmtDuration(min){
 
 // Aktualny pracownik (zalogowany)
 function getCurrentEmployee(){
-  return employees.find(e=>e.email===currentUser?.email)||null;
+  if(!currentUser) return null;
+  const email=currentUser.email||currentUser.user?.email||'';
+  // Dopasowanie po emailu z Supabase Auth
+  let emp=employees.find(e=>e.email&&e.email.toLowerCase()===email.toLowerCase());
+  if(!emp){
+    // Fallback: dopasowanie po username (część emaila przed @)
+    const username=email.split('@')[0].toLowerCase();
+    emp=employees.find(e=>e.email&&e.email.split('@')[0].toLowerCase()===username);
+  }
+  if(!emp){
+    // Fallback: szukaj po nazwie wyświetlanej w headerze
+    const displayName=document.getElementById('hdr-user')?.textContent?.toLowerCase()||'';
+    emp=employees.find(e=>e.name&&e.name.toLowerCase().includes(displayName));
+  }
+  return emp||null;
 }
 
 // Zatrzymanie timera
@@ -1905,7 +1919,16 @@ function renderClock(mc){
   stopClockTimer();
   const emp=getCurrentEmployee();
   if(!emp && !canEdit()){
-    mc.innerHTML=`<div class="clock-wrap"><div class="clock-hero"><div style="color:var(--text-3);font-size:13px;">Twój profil pracownika nie jest skonfigurowany.<br>Skontaktuj się z managerem.</div></div></div>`;
+    // Pracownik bez powiązanego profilu — pokaż info + debug
+    const userEmail=currentUser?.email||'';
+    mc.innerHTML=`<div class="clock-wrap"><div class="clock-hero" style="gap:12px;">
+      <div style="font-size:32px">⚠️</div>
+      <div style="font-size:14px;font-weight:600;color:var(--text)">Profil nie znaleziony</div>
+      <div style="color:var(--text-3);font-size:12px;line-height:1.6;text-align:center;">
+        Zalogowano jako: <strong>${userEmail}</strong><br>
+        Upewnij się, że w tabeli pracowników<br>wpisano dokładnie ten adres email.
+      </div>
+    </div></div>`;
     return;
   }
 
