@@ -34,82 +34,107 @@
 * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 body { font-family: var(--font); background: var(--bg); color: var(--text); min-height: 100vh; font-size: 14px; line-height: 1.5; -webkit-font-smoothing: antialiased; }
 
-/* ─── Auth ─── */
+/* ─── Auth — mobile app style ─── */
 #auth-screen {
-  min-height: 100vh; display: flex; align-items: center; justify-content: center;
-  background: #FAFAFA; padding: 24px;
+  min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: flex-end;
+  background: #09090B; padding: 0; position: relative; overflow: hidden;
 }
-.auth-card {
-  background: white; border-radius: var(--radius-lg); padding: 36px 32px; width: 100%; max-width: 340px;
-  border: 1px solid var(--border); box-shadow: var(--shadow);
+.auth-bg-gradient {
+  position: absolute; inset: 0; pointer-events: none;
+  background: radial-gradient(ellipse 80% 50% at 50% 10%, rgba(255,255,255,.07) 0%, transparent 70%);
 }
-.auth-brand { text-align: center; margin-bottom: 28px; }
-.auth-logo {
-  width: 40px; height: 40px; background: var(--text); border-radius: 8px;
-  display: flex; align-items: center; justify-content: center; margin: 0 auto 12px;
-  font-size: 18px;
+.auth-top {
+  flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  padding: 48px 24px 32px; width: 100%;
 }
-.auth-brand h1 { font-size: 16px; font-weight: 700; letter-spacing: -.3px; color: var(--text); }
-.auth-brand p { font-size: 12px; color: var(--text-3); margin-top: 3px; }
-.field { margin-bottom: 12px; }
-.field label { display: block; font-size: 11px; font-weight: 500; color: var(--text-2); margin-bottom: 5px; letter-spacing: .1px; }
+.auth-logo-wrap {
+  width: 72px; height: 72px; background: white; border-radius: 20px;
+  display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;
+  box-shadow: 0 8px 32px rgba(0,0,0,.4);
+}
+.auth-logo-wrap svg { width: 40px; height: 40px; }
+.auth-app-name {
+  font-size: 26px; font-weight: 800; letter-spacing: -.8px; color: white; text-align: center;
+  margin-bottom: 6px;
+}
+.auth-app-name span { color: rgba(255,255,255,.4); font-weight: 400; }
+.auth-tagline { font-size: 13px; color: rgba(255,255,255,.35); text-align: center; letter-spacing: .1px; }
+
+.auth-sheet {
+  background: white; width: 100%; border-radius: 24px 24px 0 0;
+  padding: 32px 24px calc(env(safe-area-inset-bottom) + 32px);
+  box-shadow: 0 -4px 40px rgba(0,0,0,.3);
+}
+.auth-sheet-title { font-size: 18px; font-weight: 700; letter-spacing: -.4px; margin-bottom: 6px; }
+.auth-sheet-sub { font-size: 13px; color: var(--text-3); margin-bottom: 24px; }
+.field { margin-bottom: 14px; }
+.field label { display: block; font-size: 11px; font-weight: 600; color: var(--text-2); margin-bottom: 6px; letter-spacing: .3px; text-transform: uppercase; }
 .field input {
-  width: 100%; padding: 9px 12px; border: 1px solid var(--border); border-radius: var(--radius);
-  font-size: 14px; font-family: var(--font); outline: none; color: var(--text);
-  transition: border-color .12s; background: white;
+  width: 100%; padding: 13px 16px; border: 1.5px solid var(--border); border-radius: 12px;
+  font-size: 15px; font-family: var(--font); outline: none; color: var(--text);
+  transition: border-color .15s; background: var(--bg);
 }
-.field input:focus { border-color: var(--text); box-shadow: 0 0 0 2px rgba(0,0,0,.06); }
+.field input:focus { border-color: var(--text); background: white; box-shadow: 0 0 0 3px rgba(0,0,0,.06); }
 .btn-login {
-  width: 100%; padding: 10px; background: var(--text); color: white; border: none;
-  border-radius: var(--radius); font-size: 13px; font-weight: 600; cursor: pointer; margin-top: 6px;
-  font-family: var(--font); letter-spacing: -.1px; transition: background .12s;
+  width: 100%; padding: 15px; background: var(--text); color: white; border: none;
+  border-radius: 14px; font-size: 15px; font-weight: 700; cursor: pointer; margin-top: 8px;
+  font-family: var(--font); letter-spacing: -.2px; transition: all .15s;
+  box-shadow: 0 4px 16px rgba(0,0,0,.2);
 }
-.btn-login:hover { background: #27272A; }
-.auth-err { color: var(--danger); font-size: 12px; margin-top: 8px; text-align: center; display: none; }
+.btn-login:hover { background: #27272A; transform: translateY(-1px); }
+.btn-login:active { transform: translateY(0); }
+.auth-err { color: var(--danger); font-size: 12px; margin-top: 10px; text-align: center; display: none; padding: 10px; background: var(--danger-bg); border-radius: 8px; }
 
 /* ─── App shell ─── */
 #app { display: none; }
 .header {
-  background: white; color: var(--text); height: 48px; padding: 0 16px;
+  background: white; color: var(--text); height: 56px; padding: 0 16px;
   display: flex; align-items: center; position: sticky; top: 0; z-index: 100;
   border-bottom: 1px solid var(--border); gap: 10px;
 }
-.header-brand { font-size: 14px; font-weight: 700; flex: 1; letter-spacing: -.3px; color: var(--text); }
+.header-brand { font-size: 15px; font-weight: 800; flex: 1; letter-spacing: -.5px; color: var(--text); }
 .header-brand em { color: var(--text-3); font-style: normal; font-weight: 400; }
+.header-avatar {
+  width: 32px; height: 32px; border-radius: 50%; background: var(--text);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 700; color: white; letter-spacing: -.3px; cursor: pointer;
+  flex-shrink: 0;
+}
 .role-badge {
-  font-size: 10px; font-weight: 500; padding: 2px 8px; border-radius: 4px;
+  font-size: 10px; font-weight: 600; padding: 3px 9px; border-radius: 20px;
   background: var(--accent-soft); color: var(--text-2); letter-spacing: .1px; border: 1px solid var(--border);
 }
-.header-name { font-size: 12px; color: var(--text-3); }
+.header-name { font-size: 12px; color: var(--text-3); display: none; }
 .btn-out {
   font-size: 11px; color: var(--text-3); background: none; border: 1px solid var(--border);
-  padding: 4px 10px; border-radius: var(--radius); cursor: pointer; font-family: var(--font);
+  padding: 5px 10px; border-radius: 20px; cursor: pointer; font-family: var(--font);
   transition: all .12s; font-weight: 500;
 }
 .btn-out:hover { color: var(--text-2); border-color: var(--border-2); }
 
-/* ─── Bottom nav ─── */
+/* ─── Bottom nav — app style ─── */
 .bnav {
   position: fixed; bottom: 0; left: 0; right: 0; background: white;
   border-top: 1px solid var(--border); display: flex; z-index: 100;
   padding-bottom: env(safe-area-inset-bottom);
-  height: calc(56px + env(safe-area-inset-bottom));
+  height: calc(62px + env(safe-area-inset-bottom));
 }
 .bnav-item {
   flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
-  gap: 3px; cursor: pointer; color: var(--text-3); font-size: 10px; font-weight: 500;
-  border: none; background: none; font-family: var(--font); transition: color .12s; position: relative;
-  padding-top: 2px;
+  gap: 4px; cursor: pointer; color: var(--text-3); font-size: 10px; font-weight: 500;
+  border: none; background: none; font-family: var(--font); transition: color .15s; position: relative;
+  padding: 8px 4px 4px;
 }
 .bnav-item.active { color: var(--text); }
+.bnav-item.active .bnav-icon-wrap { background: var(--accent-soft); }
 .bnav-item.active svg { stroke: var(--text); }
-.bnav-item svg { width: 20px; height: 20px; stroke: var(--text-3); fill: none; stroke-width: 1.7; transition: stroke .12s; }
-.bnav-item.active::after {
-  content: ''; position: absolute; top: 0; left: 24%; right: 24%;
-  height: 2px; background: var(--text); border-radius: 0 0 2px 2px;
+.bnav-icon-wrap {
+  width: 44px; height: 28px; display: flex; align-items: center; justify-content: center;
+  border-radius: 14px; transition: background .15s;
 }
+.bnav-item svg { width: 20px; height: 20px; stroke: var(--text-3); fill: none; stroke-width: 1.8; transition: stroke .15s; }
 
-.main { padding-bottom: 68px; }
+.main { padding-bottom: 74px; }
 
 /* ─── Page header bar ─── */
 .page-bar {
@@ -588,42 +613,98 @@ body { font-family: var(--font); background: var(--bg); color: var(--text); min-
 @keyframes spin { to { transform: rotate(360deg); } }
 .sect-label { padding: 14px 16px 5px; font-size: 10px; font-weight: 600; color: var(--text-3); text-transform: uppercase; letter-spacing: .5px; }
 
-/* ─── Ewidencja (Clock) ─── */
-.clock-wrap { padding: 16px 16px 100px; display: flex; flex-direction: column; gap: 12px; }
+/* ─── Ewidencja (Clock) — Connecteam style ─── */
+.clock-wrap { padding: 0 0 90px; display: flex; flex-direction: column; gap: 0; }
+
+/* Hero — ciemny panel z dużym przyciskiem */
 .clock-hero {
-  background: white; border: 1px solid var(--border); border-radius: var(--radius-lg);
-  padding: 28px 20px 24px; text-align: center; display: flex; flex-direction: column; align-items: center;
+  background: #09090B; color: white;
+  padding: 32px 24px 36px; text-align: center; display: flex; flex-direction: column; align-items: center;
+  position: relative; overflow: hidden;
 }
-.clock-time-big { font-size: 48px; font-weight: 700; letter-spacing: -2px; color: var(--text); font-variant-numeric: tabular-nums; line-height: 1; margin-bottom: 4px; }
-.clock-date { font-size: 13px; color: var(--text-3); margin-bottom: 24px; }
-.clock-status-pill {
-  display: inline-flex; align-items: center; gap: 6px;
-  font-size: 12px; font-weight: 600; padding: 5px 12px; border-radius: 20px;
-  margin-bottom: 20px;
+.clock-hero::before {
+  content: ''; position: absolute; inset: 0;
+  background: radial-gradient(ellipse 100% 80% at 50% -20%, rgba(255,255,255,.06) 0%, transparent 70%);
+  pointer-events: none;
 }
-.clock-status-pill.idle { background: var(--bg); color: var(--text-3); border: 1px solid var(--border); }
-.clock-status-pill.working { background: var(--green-bg); color: var(--green); border: 1px solid #BBF7D0; }
-.clock-status-pill.working::before { content: ''; width: 7px; height: 7px; border-radius: 50%; background: var(--green); animation: pulse-dot 1.4s infinite; }
-.clock-status-pill.break { background: #FFF7ED; color: var(--warn); border: 1px solid #FED7AA; }
-.clock-status-pill.break::before { content: ''; width: 7px; height: 7px; border-radius: 50%; background: var(--warn); }
+.clock-time-big {
+  font-size: 56px; font-weight: 800; letter-spacing: -3px; color: white;
+  font-variant-numeric: tabular-nums; line-height: 1; margin-bottom: 4px;
+}
+.clock-date { font-size: 13px; color: rgba(255,255,255,.4); margin-bottom: 28px; letter-spacing: .2px; }
+
+/* Wielki okrągły przycisk clock-in jak w Connecteam */
+.clock-big-btn-wrap { position: relative; margin-bottom: 20px; }
+.clock-ring {
+  width: 160px; height: 160px; border-radius: 50%;
+  border: 2px solid rgba(255,255,255,.12);
+  display: flex; align-items: center; justify-content: center;
+  position: relative;
+}
+.clock-ring::before {
+  content: ''; position: absolute; inset: 6px; border-radius: 50%;
+  border: 2px solid rgba(255,255,255,.08);
+}
+.clock-btn-round {
+  width: 120px; height: 120px; border-radius: 50%; border: none; cursor: pointer;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 6px; font-family: var(--font); font-weight: 700; font-size: 13px; letter-spacing: -.2px;
+  transition: all .2s; position: relative; z-index: 1;
+}
+.clock-btn-round:active { transform: scale(.95); }
+.clock-btn-round svg { width: 28px; height: 28px; }
+
+.clock-btn-round.state-idle {
+  background: white; color: #09090B;
+  box-shadow: 0 8px 32px rgba(255,255,255,.15), 0 2px 8px rgba(0,0,0,.3);
+}
+.clock-btn-round.state-idle:hover { box-shadow: 0 12px 40px rgba(255,255,255,.2); }
+.clock-btn-round.state-idle svg { stroke: #09090B; fill: none; stroke-width: 2; }
+
+.clock-btn-round.state-working {
+  background: #16A34A; color: white;
+  box-shadow: 0 8px 32px rgba(22,163,74,.4), 0 2px 8px rgba(0,0,0,.3);
+  animation: working-glow 2s ease-in-out infinite;
+}
+.clock-btn-round.state-working svg { stroke: white; fill: none; stroke-width: 2; }
+@keyframes working-glow {
+  0%,100% { box-shadow: 0 8px 32px rgba(22,163,74,.4), 0 2px 8px rgba(0,0,0,.3); }
+  50% { box-shadow: 0 8px 48px rgba(22,163,74,.6), 0 2px 8px rgba(0,0,0,.3); }
+}
+
+.clock-btn-round.state-break {
+  background: #D97706; color: white;
+  box-shadow: 0 8px 32px rgba(217,119,6,.4), 0 2px 8px rgba(0,0,0,.3);
+}
+.clock-btn-round.state-break svg { stroke: white; fill: none; stroke-width: 2; }
+.clock-btn-round:disabled { opacity: .5; cursor: not-allowed; }
+
+.clock-elapsed {
+  font-size: 28px; font-weight: 700; letter-spacing: -1px; color: white;
+  font-variant-numeric: tabular-nums; display: none; margin-bottom: 4px;
+}
+.clock-status-label { font-size: 12px; color: rgba(255,255,255,.5); letter-spacing: .2px; margin-bottom: 20px; }
+
+/* Przyciski pomocnicze (przerwa / zakończ) w hero */
+.clock-secondary-row { display: flex; gap: 10px; width: 100%; }
+.clock-sec-btn {
+  flex: 1; padding: 12px; border-radius: 12px; font-size: 13px; font-weight: 600;
+  cursor: pointer; font-family: var(--font); border: 1.5px solid rgba(255,255,255,.15);
+  color: white; background: rgba(255,255,255,.08); transition: all .15s; letter-spacing: -.1px;
+}
+.clock-sec-btn:hover { background: rgba(255,255,255,.14); }
+.clock-sec-btn.danger { border-color: rgba(220,38,38,.4); color: #FCA5A5; background: rgba(220,38,38,.12); }
+.clock-sec-btn.danger:hover { background: rgba(220,38,38,.2); }
+
+.clock-geo-status { font-size: 11px; margin-top: 16px; display: flex; align-items: center; gap: 5px; }
+.clock-geo-ok { color: #4ADE80; }
+.clock-geo-err { color: #F87171; }
+.clock-geo-loading { color: rgba(255,255,255,.35); }
+
+/* Reszta widoku — jasna sekcja */
+.clock-body { background: var(--bg); padding: 16px; display: flex; flex-direction: column; gap: 12px; }
+
 @keyframes pulse-dot { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.5;transform:scale(.8)} }
-.clock-elapsed { font-size: 15px; font-weight: 700; letter-spacing: -.5px; margin-bottom: 20px; color: var(--text); font-variant-numeric: tabular-nums; }
-.clock-btn-row { display: flex; gap: 8px; width: 100%; }
-.clock-btn {
-  flex: 1; padding: 14px; border: none; border-radius: var(--radius-lg); font-size: 14px; font-weight: 700;
-  cursor: pointer; font-family: var(--font); transition: all .15s; letter-spacing: -.2px;
-}
-.clock-btn-in { background: var(--text); color: white; }
-.clock-btn-in:hover { background: #27272A; }
-.clock-btn-in:disabled { background: var(--border); color: var(--text-3); cursor: not-allowed; }
-.clock-btn-out { background: var(--red-soft); color: var(--danger); border: 1px solid #FECACA; }
-.clock-btn-out:hover { background: #FEE2E2; }
-.clock-btn-break { flex: none; padding: 14px 16px; background: #FFF7ED; color: var(--warn); border: 1px solid #FED7AA; }
-.clock-btn-break:hover { background: #FFEDD5; }
-.clock-geo-status { font-size: 11px; margin-top: 12px; display: flex; align-items: center; gap: 5px; }
-.clock-geo-ok { color: var(--green); }
-.clock-geo-err { color: var(--danger); }
-.clock-geo-loading { color: var(--text-3); }
 
 .clock-history-card {
   background: white; border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden;
@@ -659,12 +740,22 @@ body { font-family: var(--font); background: var(--bg); color: var(--text); min-
 
 <!-- AUTH -->
 <div id="auth-screen">
-  <div class="auth-card">
-    <div class="auth-brand">
-      <div class="auth-logo">🍽️</div>
-      <h1>Osteria Antonina</h1>
-      <p>System zarządzania pracownikami</p>
+  <div class="auth-bg-gradient"></div>
+  <div class="auth-top">
+    <div class="auth-logo-wrap">
+      <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="20" cy="20" r="20" fill="#09090B"/>
+        <path d="M12 28c0-4.4 3.6-8 8-8s8 3.6 8 8" stroke="white" stroke-width="2" stroke-linecap="round"/>
+        <circle cx="20" cy="14" r="4" stroke="white" stroke-width="2"/>
+        <path d="M20 20v3M17 23h6" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
     </div>
+    <div class="auth-app-name">Osteria <span>Antonina</span></div>
+    <div class="auth-tagline">System zarządzania pracownikami</div>
+  </div>
+  <div class="auth-sheet">
+    <div class="auth-sheet-title">Zaloguj się</div>
+    <div class="auth-sheet-sub">Witaj z powrotem 👋</div>
     <div class="field"><label>Email</label><input type="email" id="auth-email" placeholder="adres@email.com" autocomplete="email"></div>
     <div class="field"><label>Hasło</label><input type="password" id="auth-pass" placeholder="••••••••" autocomplete="current-password"></div>
     <button class="btn-login" id="login-btn" onclick="doLogin()">Zaloguj się</button>
@@ -677,30 +768,30 @@ body { font-family: var(--font); background: var(--bg); color: var(--text); min-
   <div class="header">
     <div class="header-brand">Osteria <em>Antonina</em></div>
     <span class="role-badge" id="hdr-role"></span>
+    <div class="header-avatar" id="hdr-avatar" onclick="doLogout()" title="Wyloguj"></div>
     <span class="header-name" id="hdr-user"></span>
-    <button class="btn-out" onclick="doLogout()">Wyloguj</button>
   </div>
   <div class="main" id="main-content"><div class="spinner"></div></div>
   <nav class="bnav" id="bottom-nav">
     <button class="bnav-item active" id="nav-sched" onclick="showView('sched')">
-      <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      <div class="bnav-icon-wrap"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
       Grafik
     </button>
     <button class="bnav-item" id="nav-emps" onclick="showView('emps')">
-      <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      <div class="bnav-icon-wrap"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
       Pracownicy
     </button>
     <button class="bnav-item" id="nav-avail" onclick="showView('avail')">
-      <svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+      <div class="bnav-icon-wrap"><svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div>
       Dyspoz.
     </button>
     <button class="bnav-item" id="nav-dash" onclick="showView('dash')">
-      <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
-      <span>Dashboard</span>
+      <div class="bnav-icon-wrap"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg></div>
+      <span>Panel</span>
     </button>
     <button class="bnav-item" id="nav-clock" onclick="showView('clock')">
-      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-      Ewidencja
+      <div class="bnav-icon-wrap"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+      Czas pracy
     </button>
   </nav>
 </div>
@@ -795,7 +886,11 @@ async function doLogin() {
     document.getElementById('auth-screen').style.display='none';
     document.getElementById('app').style.display='block';
     document.getElementById('hdr-role').textContent={owner:'Właściciel',manager:'Manager',kitchen:'Kuchnia',front:'Sala',employee:'Pracownik'}[currentRole]||currentRole;
-    document.getElementById('hdr-user').textContent=email.split('@')[0];
+    const username=email.split('@')[0];
+    document.getElementById('hdr-user').textContent=username;
+    // Awatar z inicjałami
+    const av=document.getElementById('hdr-avatar');
+    if(av){ const ini=username.slice(0,2).toUpperCase(); av.textContent=ini; av.title=`${username} — kliknij aby wylogować`; }
     if(!canEdit()){
       document.getElementById('nav-dash').style.display='flex'; // show "Mój panel" for employees too
       document.getElementById('nav-emps').style.display='none';
@@ -1948,67 +2043,75 @@ function buildClockHTML(emp, isManager){
   const mySessions=workSessions.filter(s=>s.employee_id===myId && s.clock_out);
   const recentSessions=mySessions.slice(0,5);
 
-  // Live panel dla managera
-  const liveRows=buildLivePanelRows();
-
   let html=`<div class="clock-wrap">`;
 
-  // Karta z zegarem (tylko gdy jest pracownik)
+  // Hero — ciemny panel z dużym przyciskiem (zawsze — dla pracownika i managera)
   if(emp){
     html+=`
     <div class="clock-hero">
       <div class="clock-time-big" id="clock-time-now">${pad(now.getHours())}:${pad(now.getMinutes())}</div>
       <div class="clock-date">${dateStr}</div>
-      <div class="clock-status-pill idle" id="clock-status-pill">Poza pracą</div>
-      <div class="clock-elapsed" id="clock-elapsed" style="display:none"></div>
-      <div class="clock-btn-row" id="clock-btn-row">
-        <button class="clock-btn clock-btn-in" id="btn-clock-in" onclick="doClockin()">▶ Rozpocznij zmianę</button>
+      <div class="clock-elapsed" id="clock-elapsed"></div>
+      <div class="clock-status-label" id="clock-status-label">Naciśnij aby rozpocząć zmianę</div>
+      <div class="clock-big-btn-wrap">
+        <div class="clock-ring">
+          <button class="clock-btn-round state-idle" id="btn-clock-main" onclick="onMainClockBtn()">
+            <svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+            Zacznij
+          </button>
+        </div>
       </div>
+      <div class="clock-secondary-row" id="clock-secondary-row" style="display:none"></div>
       <div class="clock-geo-status" id="clock-geo-status">
         <span class="clock-geo-loading">● Sprawdzanie lokalizacji…</span>
       </div>
     </div>`;
-
-    // Historia sesji
-    if(recentSessions.length>0){
-      html+=`<div class="clock-history-card">
-        <div class="clock-history-title">Ostatnie zmiany</div>`;
-      for(const s of recentSessions){
-        const dur=s.total_minutes;
-        const brk=s.break_minutes;
-        html+=`<div class="clock-session-row">
-          <div class="csr-date">${fmtDate(s.clock_in)}</div>
-          <div class="csr-times">
-            <div>${fmtTime(s.clock_in)} – ${fmtTime(s.clock_out)}</div>
-            ${brk>0?`<div class="csr-break">przerwa ${fmtDuration(brk)}</div>`:''}
-          </div>
-          <div class="csr-dur">
-            <div class="csr-dur-h">${fmtDuration(dur)}</div>
-            <div class="csr-dur-min">przepracowane</div>
-          </div>
-        </div>`;
-      }
-      html+=`</div>`;
-    }
   }
+
+  html+=`<div class="clock-body">`;
 
   // Panel managera — kto jest teraz w pracy
   if(isManager){
     const activeSessions=workSessions.filter(s=>!s.clock_out);
+    const liveRows=buildLivePanelRows();
     html+=`<div class="clock-live-card">
       <div class="clock-live-title">
         <span>Teraz w pracy</span>
         <span style="font-size:12px;font-weight:600;color:var(--green)">${activeSessions.length} os.</span>
       </div>`;
     if(liveRows.length===0){
-      html+=`<div style="padding:16px;text-align:center;font-size:12px;color:var(--text-3)">Nikt nie jest teraz zalogowany</div>`;
+      html+=`<div style="padding:20px;text-align:center;font-size:13px;color:var(--text-3)">Nikt nie jest teraz w pracy</div>`;
     } else {
       html+=liveRows.join('');
     }
     html+=`</div>`;
   }
 
-  html+=`</div>`;
+  // Historia sesji pracownika
+  if(emp && recentSessions.length>0){
+    html+=`<div class="clock-history-card">
+      <div class="clock-history-title">Ostatnie zmiany</div>`;
+    for(const s of recentSessions){
+      const dur=s.total_minutes;
+      const brk=s.break_minutes;
+      html+=`<div class="clock-session-row">
+        <div class="csr-date">${fmtDate(s.clock_in)}</div>
+        <div class="csr-times">
+          <div>${fmtTime(s.clock_in)} – ${fmtTime(s.clock_out)}</div>
+          ${brk>0?`<div class="csr-break">przerwa ${fmtDuration(brk)}</div>`:''}
+        </div>
+        <div class="csr-dur">
+          <div class="csr-dur-h">${fmtDuration(dur)}</div>
+          <div class="csr-dur-min">przepracowane</div>
+        </div>
+      </div>`;
+    }
+    html+=`</div>`;
+  } else if(emp && recentSessions.length===0){
+    html+=`<div style="padding:24px;text-align:center;font-size:13px;color:var(--text-3)">Brak zarejestrowanych zmian</div>`;
+  }
+
+  html+=`</div></div>`;
   return html;
 }
 
@@ -2055,27 +2158,39 @@ function updateElapsed(){
 }
 
 function updateClockUI(){
-  const pill=document.getElementById('clock-status-pill');
+  const mainBtn=document.getElementById('btn-clock-main');
   const elDiv=document.getElementById('clock-elapsed');
-  const btnRow=document.getElementById('clock-btn-row');
-  if(!pill||!btnRow) return;
+  const statusLabel=document.getElementById('clock-status-label');
+  const secRow=document.getElementById('clock-secondary-row');
+  if(!mainBtn) return;
 
   if(!activeSession){
-    pill.className='clock-status-pill idle'; pill.textContent='Poza pracą';
-    if(elDiv){elDiv.style.display='none';}
-    btnRow.innerHTML=`<button class="clock-btn clock-btn-in" id="btn-clock-in" onclick="doClockin()">▶ Rozpocznij zmianę</button>`;
+    mainBtn.className='clock-btn-round state-idle';
+    mainBtn.innerHTML=`<svg viewBox="0 0 24 24" stroke="#09090B" fill="none" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>Zacznij`;
+    mainBtn.onclick=()=>doClockin();
+    if(elDiv){elDiv.style.display='none'; elDiv.textContent='';}
+    if(statusLabel){statusLabel.textContent='Naciśnij aby rozpocząć zmianę';}
+    if(secRow){secRow.style.display='none'; secRow.innerHTML='';}
   } else if(activeSession.break_start && !activeSession.break_end){
-    pill.className='clock-status-pill break'; pill.textContent='Przerwa';
+    mainBtn.className='clock-btn-round state-break';
+    mainBtn.innerHTML=`<svg viewBox="0 0 24 24" stroke="white" fill="none" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>Wznów`;
+    mainBtn.onclick=()=>doEndBreak();
     if(elDiv){elDiv.style.display='block'; updateElapsed();}
-    btnRow.innerHTML=`
-      <button class="clock-btn clock-btn-in" onclick="doEndBreak()" style="flex:1">▶ Zakończ przerwę</button>
-      <button class="clock-btn clock-btn-out" onclick="doClockout()" style="flex:1">■ Zakończ zmianę</button>`;
+    if(statusLabel){statusLabel.textContent='Na przerwie';}
+    if(secRow){
+      secRow.style.display='flex';
+      secRow.innerHTML=`<button class="clock-sec-btn danger" onclick="doClockout()">■ Zakończ zmianę</button>`;
+    }
   } else {
-    pill.className='clock-status-pill working'; pill.textContent='W pracy';
+    mainBtn.className='clock-btn-round state-working';
+    mainBtn.innerHTML=`<svg viewBox="0 0 24 24" stroke="white" fill="none" stroke-width="2"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>Stop`;
+    mainBtn.onclick=()=>doClockout();
     if(elDiv){elDiv.style.display='block'; updateElapsed();}
-    btnRow.innerHTML=`
-      <button class="clock-btn clock-btn-break" onclick="doStartBreak()">⏸ Przerwa</button>
-      <button class="clock-btn clock-btn-out" onclick="doClockout()" style="flex:1">■ Zakończ zmianę</button>`;
+    if(statusLabel){statusLabel.textContent='Zmiana trwa';}
+    if(secRow){
+      secRow.style.display='flex';
+      secRow.innerHTML=`<button class="clock-sec-btn" onclick="doStartBreak()">⏸ Przerwa</button>`;
+    }
   }
 }
 
@@ -2094,23 +2209,26 @@ async function updateGeoIndicator(){
   }
 }
 
+// Dispatcher dla głównego przycisku (stan idle → clock in)
+function onMainClockBtn(){ doClockin(); }
+
 // CLOCK IN
 async function doClockin(){
   const emp=getCurrentEmployee();
   if(!emp){showToast('Brak profilu pracownika');return;}
-  const btn=document.getElementById('btn-clock-in');
-  if(btn){btn.disabled=true;btn.textContent='Sprawdzanie GPS…';}
+  const btn=document.getElementById('btn-clock-main');
+  if(btn){btn.disabled=true; const lbl=btn.querySelector('svg'); btn.innerHTML=`<span style="font-size:12px">Sprawdzanie GPS…</span>`;}
 
   const geo=await checkGeofence();
   if(!geo.ok){
-    if(btn){btn.disabled=false;btn.textContent='▶ Rozpocznij zmianę';}
-    const msg=geo.error?`Błąd GPS: ${geo.error}`:`Jesteś za daleko od restauracji (${geo.dist}m). Wymagane: <${GEO_RADIUS}m.`;
+    updateClockUI();
+    const msg=geo.error?`Błąd GPS: ${geo.error}`:`Jesteś ${geo.dist}m od restauracji. Wymagane: <${GEO_RADIUS}m.`;
     showToast(msg);
     return;
   }
 
   try{
-    if(btn){btn.textContent='Zapisywanie…';}
+    if(btn){btn.innerHTML=`<span style="font-size:12px">Zapisywanie…</span>`;}
     const sess=await sbFetch('/rest/v1/work_sessions',{
       method:'POST',
       headers:{'Prefer':'return=representation'},
@@ -2127,7 +2245,7 @@ async function doClockin(){
     updateClockUI();
   }catch(e){
     showToast('Błąd: '+e.message.slice(0,60));
-    if(btn){btn.disabled=false;btn.textContent='▶ Rozpocznij zmianę';}
+    updateClockUI();
   }
 }
 
