@@ -193,11 +193,105 @@ body { font-family: var(--font); background: var(--bg); color: var(--text); min-
 .bnav-item svg { width: 22px; height: 22px; stroke: var(--text-3); fill: none; stroke-width: 1.8; transition: stroke .25s cubic-bezier(.4,0,.2,1); }
 
 .main { padding-bottom: calc(62px + max(env(safe-area-inset-bottom), 12px) + 8px); }
-.main.view-transition { animation: viewFadeIn .22s cubic-bezier(.4,0,.2,1); }
+.main.no-bnav { padding-bottom: 0; }
+.main.view-transition { animation: viewFadeIn .28s cubic-bezier(.4,0,.2,1); }
 @keyframes viewFadeIn {
-  from { opacity: 0; transform: translateY(8px); }
+  from { opacity: 0; transform: translateY(10px); }
   to   { opacity: 1; transform: translateY(0); }
 }
+
+/* ─── Home screen ─── */
+.home-wrap {
+  min-height: 100vh;
+  padding: 0 0 32px;
+  background: var(--bg);
+}
+.home-greeting {
+  padding: 24px 20px 20px;
+}
+.home-greeting-sup {
+  font-size: 11px; font-weight: 600; color: var(--text-3); letter-spacing: .6px; text-transform: uppercase; margin-bottom: 4px;
+}
+.home-greeting-name {
+  font-size: 24px; font-weight: 800; letter-spacing: -.6px; color: var(--text); line-height: 1.1;
+}
+.home-greeting-role {
+  font-size: 12px; color: var(--text-3); margin-top: 4px; font-weight: 500;
+}
+.home-today-bar {
+  margin: 0 20px 20px;
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px 16px;
+  display: flex; align-items: center; gap: 12px;
+}
+.home-today-dot {
+  width: 8px; height: 8px; border-radius: 50%; background: var(--green); flex-shrink: 0;
+  box-shadow: 0 0 0 3px rgba(22,163,74,.15);
+}
+.home-today-txt { font-size: 13px; color: var(--text-2); flex: 1; line-height: 1.4; }
+.home-today-txt strong { color: var(--text); font-weight: 600; }
+.home-tiles-label {
+  font-size: 10px; font-weight: 700; letter-spacing: .8px; text-transform: uppercase;
+  color: var(--text-3); padding: 0 20px 10px;
+}
+.home-tiles {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  padding: 0 20px;
+}
+.home-tile {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 18px 16px 16px;
+  cursor: pointer;
+  display: flex; flex-direction: column; gap: 10px;
+  transition: transform .15s cubic-bezier(.4,0,.2,1), box-shadow .15s cubic-bezier(.4,0,.2,1);
+  -webkit-tap-highlight-color: transparent;
+  position: relative; overflow: hidden;
+  min-height: 110px;
+}
+.home-tile:active { transform: scale(.97); box-shadow: 0 1px 4px rgba(0,0,0,.06); }
+.home-tile-icon {
+  width: 36px; height: 36px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.home-tile-icon svg { width: 18px; height: 18px; fill: none; stroke-width: 1.8; }
+.home-tile-label {
+  font-size: 13px; font-weight: 700; color: var(--text); letter-spacing: -.2px; line-height: 1.2;
+}
+.home-tile-sub {
+  font-size: 11px; color: var(--text-3); font-weight: 400; margin-top: 1px;
+}
+.home-tile-badge {
+  position: absolute; top: 12px; right: 12px;
+  background: var(--brand); color: white; font-size: 10px; font-weight: 700;
+  min-width: 18px; height: 18px; border-radius: 9px; display: flex; align-items: center; justify-content: center; padding: 0 5px;
+}
+/* Kolory ikon kafelków */
+.tile-col-sched   { background: #EEF2FF; } .tile-col-sched   svg { stroke: #4F46E5; }
+.tile-col-kitchen { background: #FFF7ED; } .tile-col-kitchen svg { stroke: #C2410C; }
+.tile-col-events  { background: #F0FDF4; } .tile-col-events  svg { stroke: #16A34A; }
+.tile-col-board   { background: #FEFCE8; } .tile-col-board   svg { stroke: #A16207; }
+.tile-col-clock   { background: #F0F9FF; } .tile-col-clock   svg { stroke: #0369A1; }
+.tile-col-chat    { background: var(--brand-soft); } .tile-col-chat    svg { stroke: var(--brand); }
+.tile-col-staff   { background: #F5F3FF; } .tile-col-staff   svg { stroke: #7C3AED; }
+.tile-col-dash    { background: #FDF2F8; } .tile-col-dash    svg { stroke: #9D174D; }
+
+/* Back button w sekcjach */
+.section-back-btn {
+  display: flex; align-items: center; gap: 6px;
+  background: none; border: none; font-family: var(--font); font-size: 14px; font-weight: 600;
+  color: var(--brand); cursor: pointer; padding: 0; letter-spacing: -.2px;
+}
+.section-back-btn svg { width: 18px; height: 18px; stroke: var(--brand); fill: none; stroke-width: 2; }
+.home-today-txt { font-size: 13px; color: var(--text-2); flex: 1; line-height: 1.4; }
+.home-tiles-label { font-size: 10px; font-weight: 700; letter-spacing: .6px; text-transform: uppercase; color: var(--text-3); padding: 0 20px 10px; }
+.btn-sm { padding: 6px 14px; font-size: 12px; border-radius: 8px; }
+.home-tile { position: relative; }
 
 /* ─── Page header bar ─── */
 .page-bar {
@@ -1164,7 +1258,7 @@ const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJ
 
 let currentUser=null, currentRole=null;
 let employees=[], shifts=[], availability=[];
-let currentWeekOffset=0, currentDept='all', currentView='sched', schedView='week';
+let currentWeekOffset=0, currentDept='all', currentView='home', schedView='week';
 let currentMonthOffset=0;
 let currentShiftEmpId=null, currentShiftDate=null;
 // availMonth: which month the availability tab is showing (offset from now)
@@ -1229,7 +1323,7 @@ async function doLogin() {
     await loadAllData();
     // Załaduj chat w tle i startuj polling
     loadChatMessages().then(()=>startGlobalPolling()).catch(()=>{});
-    showView('sched');
+    showView('home');
   } catch(e) {
     const el=document.getElementById('auth-err');
     el.textContent=e.message; el.style.display='block';
@@ -1337,31 +1431,59 @@ function initials(n){return n.split(' ').map(w=>w[0]).join('').toUpperCase().sli
 function wNum(d){const j4=new Date(d.getFullYear(),0,4);return Math.ceil((((d-j4)/86400000)+j4.getDay()+1)/7);}
 function monthName(m){return['Styczeń','Luty','Marzec','Kwiecień','Maj','Czerwiec','Lipiec','Sierpień','Wrzesień','Październik','Listopad','Grudzień'][m];}
 
-function showView(v){
+// Widoki które mają dolny nav (stare sekcje)
+const VIEWS_WITH_BNAV = new Set(['sched','emps','avail','dash','clock','chat']);
+
+function showView(v, pushHistory=true){
+  const prev=currentView;
   currentView=v;
-  document.querySelectorAll('.bnav-item').forEach(n=>n.classList.remove('active'));
-  const el=document.getElementById('nav-'+v);
-  if(el) el.classList.add('active');
+  if(pushHistory && prev!==v) history.pushState({view:v},'',`#${v}`);
+
+  // Dolny nav — tylko w starych widokach
+  const bnav=document.getElementById('bottom-nav');
   const mc=document.getElementById('main-content');
+  if(VIEWS_WITH_BNAV.has(v)){
+    bnav.style.display='flex';
+    mc.classList.remove('no-bnav');
+    document.querySelectorAll('.bnav-item').forEach(n=>n.classList.remove('active'));
+    const el=document.getElementById('nav-'+v);
+    if(el) el.classList.add('active');
+  } else {
+    bnav.style.display='none';
+    mc.classList.add('no-bnav');
+  }
   if(mc){ mc.classList.remove('view-transition'); void mc.offsetWidth; mc.classList.add('view-transition'); }
   renderView();
 }
 
+function goHome(){showView('home');}
+
+// Obsługa przycisku wstecz przeglądarki
+window.addEventListener('popstate',e=>{
+  const v=e.state?.view||'home';
+  showView(v, false);
+});
+
 function renderView(){
   const mc=document.getElementById('main-content');
-  if(currentView==='sched') renderSched(mc);
+  if(currentView==='home') renderHome(mc);
+  else if(currentView==='sched') renderSched(mc);
   else if(currentView==='emps') renderEmps(mc);
   else if(currentView==='avail') renderAvail(mc);
   else if(currentView==='dash') renderDash(mc).catch(e=>console.error(e));
   else if(currentView==='clock') renderClock(mc);
+  else if(currentView==='kitchen') renderKitchen(mc);
+  else if(currentView==='events') renderEvents(mc);
+  else if(currentView==='board') renderBoard(mc);
+  else if(currentView==='recipes') renderStub(mc,'Receptury','kitchen','Karty technologiczne będą dostępne wkrótce.');
+  else if(currentView==='waste') renderStub(mc,'Zeszyt strat','kitchen','Rejestracja strat będzie dostępna wkrótce.');
+  else if(currentView==='handover') renderStub(mc,'Przekazanie zmiany','kitchen','Przekazanie zmiany będzie dostępne wkrótce.');
   else if(currentView==='chat'){
-    // Reset badge przy wejściu
     chatUnread=0; updateChatBadge();
     loadChatMessages().then(ok=>{
       if(ok) renderChat(mc);
       else {
         mc.innerHTML=`<div class="page-bar"><div class="page-bar-title">Chat zespołowy</div></div><div style="padding:40px;text-align:center;color:var(--text-3)"><p style="font-size:14px">Inicjalizacja chatu…</p><p style="font-size:12px;margin-top:8px">Trwa konfiguracja bazy danych.</p></div>`;
-        // Spróbuj utworzyć tabelę przez SQL
         createChatTable().then(()=>loadChatMessages().then(()=>renderChat(mc)));
       }
     });
@@ -1369,6 +1491,367 @@ function renderView(){
 }
 
 async function renderDashAsync(mc){ await renderDash(mc); }
+
+function renderStub(mc, title, backView, msg){
+  mc.innerHTML=`<div class="page-bar">
+    <button class="section-back-btn" onclick="showView('${backView}')">
+      <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+      Wróć
+    </button>
+    <div class="page-bar-title">${title}</div>
+  </div>
+  <div style="padding:60px 20px;text-align:center;color:var(--text-3)">
+    <svg viewBox="0 0 24 24" style="width:40px;height:40px;stroke:var(--border);fill:none;stroke-width:1.5;margin-bottom:16px"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+    <div style="font-size:14px;font-weight:600;color:var(--text-2);margin-bottom:6px">${title}</div>
+    <div style="font-size:13px">${msg}</div>
+  </div>`;
+}
+
+/* ═══════════════════════════════════════════════
+   HOME SCREEN
+═══════════════════════════════════════════════ */
+function renderHome(mc){
+  const emp=getCurrentEmployee();
+  const myEmail=currentUser?.user?.email||'';
+  const name=emp?.name||(myEmail.split('@')[0])||'';
+  const firstName=name.split(' ')[0];
+  const role=currentRole==='owner'?'Właściciel':currentRole==='manager'?'Manager':emp?.department==='kuchnia'?'Kucharz':'Pracownik';
+  const isKitchen=emp?.department==='kuchnia';
+  const isSala=emp?.department==='sala';
+
+  // Dzisiejsza zmiana
+  const tod=today();
+  const myShiftToday=shifts.find(s=>s.employee_id===emp?.id&&s.date===tod);
+  const shiftTxt=myShiftToday
+    ?`Twoja zmiana dziś: <strong>${(myShiftToday.start_time||'').slice(0,5)}–${(myShiftToday.end_time||'').slice(0,5)}</strong>`
+    :`Brak zmiany w grafiku na dziś`;
+
+  // Aktywna sesja clock
+  const active=workSessions.find(s=>s.employee_id===emp?.id&&!s.clock_out);
+
+  // Kafelki wg roli
+  const tiles=[];
+
+  // Grafik — wszyscy
+  tiles.push({id:'sched',label:'Grafik',sub:'Zmiany & harmonogram',col:'tile-col-sched',
+    icon:`<svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>`});
+
+  // Kuchnia — kuchniarze i managerowie
+  if(canEdit()||isKitchen){
+    tiles.push({id:'kitchen',label:'Kuchnia',sub:'Receptury & straty',col:'tile-col-kitchen',
+      icon:`<svg viewBox="0 0 24 24"><path d="M6 2v6a3 3 0 0 0 3 3h1v11h2V11h1a3 3 0 0 0 3-3V2"/><line x1="6" y1="6" x2="18" y2="6"/></svg>`});
+  }
+
+  // Czas pracy — wszyscy
+  tiles.push({id:'clock',label:'Czas pracy',sub:active?'Trwa zmiana…':'Rejestracja godzin',col:'tile-col-clock',badge:active?'●':null,
+    icon:`<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>`});
+
+  // Chat — wszyscy
+  const unread=chatUnread>0?String(chatUnread):null;
+  tiles.push({id:'chat',label:'Chat',sub:'Komunikacja zespołu',col:'tile-col-chat',badge:unread,
+    icon:`<svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>`});
+
+  // Tablica — wszyscy
+  tiles.push({id:'board',label:'Tablica',sub:'Ogłoszenia & zadania',col:'tile-col-board',
+    icon:`<svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="9" x2="15" y2="9"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="12" y2="17"/></svg>`});
+
+  // Wydarzenia — wszyscy
+  tiles.push({id:'events',label:'Wydarzenia',sub:'Eventy & menu imprez',col:'tile-col-events',
+    icon:`<svg viewBox="0 0 24 24"><path d="M8 2v4M16 2v4M3 10h18M5 4h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/><circle cx="12" cy="16" r="1" fill="currentColor"/></svg>`});
+
+  // Dyspozycja — wszyscy
+  tiles.push({id:'avail',label:'Dyspozycja',sub:'Dostępność w miesiącu',col:'tile-col-staff',
+    icon:`<svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>`});
+
+  // Panel & Pracownicy — tylko manager/owner
+  if(canEdit()){
+    tiles.push({id:'emps',label:'Pracownicy',sub:'Zarządzanie zespołem',col:'tile-col-staff',
+      icon:`<svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>`});
+    tiles.push({id:'dash',label:'Panel',sub:'Raporty & rozliczenia',col:'tile-col-dash',
+      icon:`<svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>`});
+  }
+
+  const now=new Date();
+  const dateLabel=now.toLocaleDateString('pl-PL',{weekday:'long',day:'numeric',month:'long'});
+
+  mc.innerHTML=`<div class="home-wrap">
+    <div class="home-greeting">
+      <div class="home-greeting-sup">${dateLabel}</div>
+      <div class="home-greeting-name">Hej, ${firstName}</div>
+      <div class="home-greeting-role">${role}</div>
+    </div>
+    ${emp?`<div class="home-today-bar">
+      <div class="home-today-dot" style="${active?'background:var(--brand)':''}"></div>
+      <div class="home-today-txt">${active?`Rejestracja trwa — zalogowano o <strong>${fmtTime(active.clock_in)}</strong>`:shiftTxt}</div>
+      ${active?`<button onclick="showView('clock')" style="background:var(--brand);color:white;border:none;border-radius:8px;padding:6px 12px;font-size:12px;font-weight:600;font-family:var(--font);cursor:pointer;white-space:nowrap">Stop</button>`:''}
+    </div>`:''}
+    <div class="home-tiles-label">Sekcje</div>
+    <div class="home-tiles">
+      ${tiles.map(t=>`<div class="home-tile" onclick="showView('${t.id}')">
+        <div class="home-tile-icon ${t.col}">${t.icon}</div>
+        <div>
+          <div class="home-tile-label">${t.label}</div>
+          <div class="home-tile-sub">${t.sub}</div>
+        </div>
+        ${t.badge?`<div class="home-tile-badge">${t.badge}</div>`:''}
+      </div>`).join('')}
+    </div>
+  </div>`;
+}
+
+/* ═══════════════════════════════════════════════
+   KUCHNIA — Receptury & Zeszyt Strat
+═══════════════════════════════════════════════ */
+function renderKitchen(mc){
+  mc.innerHTML=`<div class="page-bar" style="gap:12px">
+    <button class="section-back-btn" onclick="goHome()">
+      <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+      Wróć
+    </button>
+    <div class="page-bar-title">Kuchnia</div>
+  </div>
+  <div style="padding:16px;display:flex;flex-direction:column;gap:12px">
+    <div class="home-tile" style="flex-direction:row;align-items:center;gap:14px;min-height:auto;padding:16px" onclick="showView('recipes')">
+      <div class="home-tile-icon tile-col-kitchen"><svg viewBox="0 0 24 24" style="width:18px;height:18px;stroke:#C2410C;fill:none;stroke-width:1.8"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg></div>
+      <div style="flex:1">
+        <div class="home-tile-label">Receptury</div>
+        <div class="home-tile-sub">Karty technologiczne, gramatura, alergeny</div>
+      </div>
+      <svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:var(--text-3);fill:none;stroke-width:2;flex-shrink:0"><polyline points="9 18 15 12 9 6"/></svg>
+    </div>
+    <div class="home-tile" style="flex-direction:row;align-items:center;gap:14px;min-height:auto;padding:16px" onclick="showView('waste')">
+      <div class="home-tile-icon" style="background:#FEF2F2"><svg viewBox="0 0 24 24" style="width:18px;height:18px;stroke:#DC2626;fill:none;stroke-width:1.8"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg></div>
+      <div style="flex:1">
+        <div class="home-tile-label">Zeszyt strat</div>
+        <div class="home-tile-sub">Rejestracja odpadów i wyrzuconych produktów</div>
+      </div>
+      <svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:var(--text-3);fill:none;stroke-width:2;flex-shrink:0"><polyline points="9 18 15 12 9 6"/></svg>
+    </div>
+    <div class="home-tile" style="flex-direction:row;align-items:center;gap:14px;min-height:auto;padding:16px" onclick="showView('handover')">
+      <div class="home-tile-icon" style="background:#F0F9FF"><svg viewBox="0 0 24 24" style="width:18px;height:18px;stroke:#0369A1;fill:none;stroke-width:1.8"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg></div>
+      <div style="flex:1">
+        <div class="home-tile-label">Przekazanie zmiany</div>
+        <div class="home-tile-sub">Raport zdającego zmianę</div>
+      </div>
+      <svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:var(--text-3);fill:none;stroke-width:2;flex-shrink:0"><polyline points="9 18 15 12 9 6"/></svg>
+    </div>
+  </div>`;
+}
+
+/* ═══════════════════════════════════════════════
+   TABLICA OGŁOSZEŃ
+═══════════════════════════════════════════════ */
+function renderBoard(mc){
+  mc.innerHTML=`<div class="page-bar">
+    <button class="section-back-btn" onclick="goHome()">
+      <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+      Wróć
+    </button>
+    <div class="page-bar-title">Tablica</div>
+    ${canEdit()?`<button class="btn-primary btn-sm" onclick="openAddBoard()">+ Dodaj</button>`:''}
+  </div>
+  <div id="board-list" style="padding:16px;display:flex;flex-direction:column;gap:10px">
+    <div class="spinner" style="margin:40px auto"></div>
+  </div>`;
+  loadBoard();
+}
+
+async function loadBoard(){
+  const list=document.getElementById('board-list');
+  if(!list) return;
+  try{
+    const rows=await sbFetch('/rest/v1/board_items?select=*,employees(name)&order=pinned.desc,created_at.desc&limit=50');
+    if(!Array.isArray(rows)||rows.length===0){
+      list.innerHTML=`<div style="text-align:center;padding:40px 20px;color:var(--text-3);font-size:13px">Brak ogłoszeń</div>`;
+      return;
+    }
+    list.innerHTML=rows.map(r=>{
+      const pinIcon=r.pinned?`<svg viewBox="0 0 24 24" style="width:12px;height:12px;stroke:var(--brand);fill:none;stroke-width:2;flex-shrink:0"><line x1="12" y1="17" x2="12" y2="22"/><path d="M5 17h14v-1.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V6h1a2 2 0 0 0 0-4H8a2 2 0 0 0 0 4h1v4.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24z"/></svg>`:'';
+      const catColor={'info':'#1D4ED8','urgent':'#DC2626','task':'#16A34A'}[r.category]||'#64748B';
+      const catLabel={'info':'Info','urgent':'Pilne','task':'Zadanie'}[r.category]||r.category||'Info';
+      return`<div class="info-card" style="padding:14px 16px;${r.pinned?'border-color:var(--brand-mid)':''}">
+        <div style="display:flex;align-items:flex-start;gap:8px;margin-bottom:6px">
+          ${pinIcon}
+          <span style="font-size:10px;font-weight:700;color:${catColor};background:${catColor}18;padding:2px 7px;border-radius:4px;letter-spacing:.3px">${catLabel}</span>
+          <span style="font-size:11px;color:var(--text-3);margin-left:auto">${fmtDate(r.created_at)}</span>
+        </div>
+        <div style="font-size:14px;font-weight:600;color:var(--text);margin-bottom:4px">${r.title}</div>
+        ${r.body?`<div style="font-size:13px;color:var(--text-2);line-height:1.5">${r.body}</div>`:''}
+        <div style="font-size:11px;color:var(--text-3);margin-top:8px">${r.employees?.name||''}</div>
+      </div>`;
+    }).join('');
+  }catch(e){
+    list.innerHTML=`<div style="text-align:center;padding:40px;color:var(--text-3);font-size:13px">Trwa konfiguracja tablicy…<br><small style="font-size:11px;margin-top:4px;display:block">Tabela zostanie utworzona przy pierwszym wpisie</small></div>`;
+  }
+}
+
+function openAddBoard(){
+  const overlay=document.createElement('div');
+  overlay.className='modal-overlay active'; overlay.id='board-modal';
+  overlay.innerHTML=`<div class="modal">
+    <div class="modal-pill"></div>
+    <div class="modal-title">Nowe ogłoszenie</div>
+    <div class="mfield"><label>Tytuł</label><input type="text" id="bm-title" placeholder="Temat ogłoszenia…"></div>
+    <div class="mfield"><label>Treść (opcjonalnie)</label><textarea id="bm-body" rows="3" style="width:100%;border:1px solid var(--border);border-radius:8px;padding:10px 12px;font-family:var(--font);font-size:14px;resize:none" placeholder="Szczegóły…"></textarea></div>
+    <div class="mfield"><label>Kategoria</label>
+      <select id="bm-cat" style="width:100%;border:1px solid var(--border);border-radius:8px;padding:10px 12px;font-family:var(--font);font-size:14px;background:white">
+        <option value="info">Info</option>
+        <option value="task">Zadanie</option>
+        <option value="urgent">Pilne</option>
+      </select>
+    </div>
+    <div class="mfield" style="display:flex;align-items:center;gap:10px">
+      <input type="checkbox" id="bm-pin" style="width:18px;height:18px;accent-color:var(--brand)">
+      <label for="bm-pin" style="font-size:13px;font-weight:500;color:var(--text);cursor:pointer">Przypnij na górze</label>
+    </div>
+    <div class="modal-actions">
+      <button class="mbtn-cancel" onclick="document.getElementById('board-modal').remove()">Anuluj</button>
+      <button class="mbtn-save" onclick="saveBoardItem()">Dodaj</button>
+    </div>
+  </div>`;
+  overlay.addEventListener('click',e=>{if(e.target===overlay)overlay.remove();});
+  document.body.appendChild(overlay);
+}
+
+async function saveBoardItem(){
+  const title=document.getElementById('bm-title').value.trim();
+  if(!title){showToast('Podaj tytuł');return;}
+  const emp=getCurrentEmployee();
+  const body={
+    title,
+    body:document.getElementById('bm-body').value.trim()||null,
+    category:document.getElementById('bm-cat').value,
+    pinned:document.getElementById('bm-pin').checked,
+    employee_id:emp?.id||null
+  };
+  try{
+    await sbFetch('/rest/v1/board_items',{method:'POST',headers:{'Prefer':'return=minimal'},body:JSON.stringify(body)});
+    document.getElementById('board-modal')?.remove();
+    showToast('✓ Ogłoszenie dodane');
+    renderView();
+  }catch(e){showToast('Błąd: '+e.message.slice(0,80));}
+}
+
+/* ═══════════════════════════════════════════════
+   WYDARZENIA
+═══════════════════════════════════════════════ */
+function renderEvents(mc){
+  mc.innerHTML=`<div class="page-bar">
+    <button class="section-back-btn" onclick="goHome()">
+      <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+      Wróć
+    </button>
+    <div class="page-bar-title">Wydarzenia</div>
+    ${canEdit()?`<button class="btn-primary btn-sm" onclick="openAddEvent()">+ Dodaj</button>`:''}
+  </div>
+  <div id="events-list" style="padding:16px;display:flex;flex-direction:column;gap:10px">
+    <div class="spinner" style="margin:40px auto"></div>
+  </div>`;
+  loadEvents();
+}
+
+async function loadEvents(){
+  const list=document.getElementById('events-list');
+  if(!list) return;
+  try{
+    const rows=await sbFetch('/rest/v1/events?select=*&order=date.asc&limit=60');
+    if(!Array.isArray(rows)||rows.length===0){
+      list.innerHTML=`<div style="text-align:center;padding:40px 20px;color:var(--text-3);font-size:13px">Brak zaplanowanych wydarzeń</div>`;
+      return;
+    }
+    const tod=today();
+    const upcoming=rows.filter(r=>r.date>=tod);
+    const past=rows.filter(r=>r.date<tod);
+    let html='';
+    if(upcoming.length){
+      html+=`<div style="font-size:10px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--text-3);padding:4px 0 8px">Nadchodzące</div>`;
+      html+=upcoming.map(r=>eventCard(r,false)).join('');
+    }
+    if(past.length){
+      html+=`<div style="font-size:10px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--text-3);padding:12px 0 8px">Archiwum</div>`;
+      html+=past.slice(0,10).map(r=>eventCard(r,true)).join('');
+    }
+    list.innerHTML=html;
+  }catch(e){
+    list.innerHTML=`<div style="text-align:center;padding:40px;color:var(--text-3);font-size:13px">Trwa konfiguracja sekcji wydarzeń…</div>`;
+  }
+}
+
+function eventCard(r,past){
+  const d=new Date(r.date+'T12:00:00');
+  const dStr=d.toLocaleDateString('pl-PL',{weekday:'short',day:'numeric',month:'short'});
+  const typeColors={'event':'#7C3AED','menu':'#C2410C','note':'#0369A1'};
+  const typeLabel={'event':'Wydarzenie','menu':'Menu','note':'Info'};
+  const col=typeColors[r.type]||'#64748B';
+  return`<div class="info-card" style="padding:14px 16px;${past?'opacity:.55':''}">
+    <div style="display:flex;gap:10px;align-items:flex-start">
+      <div style="text-align:center;min-width:42px;padding:6px 4px;background:${past?'var(--bg)':'var(--brand-soft)'};border-radius:8px;flex-shrink:0">
+        <div style="font-size:18px;font-weight:800;color:${past?'var(--text-3)':'var(--brand)'};line-height:1">${d.getDate()}</div>
+        <div style="font-size:9px;font-weight:600;color:${past?'var(--text-3)':'var(--brand)'};text-transform:uppercase">${dStr.split(' ')[0]}</div>
+      </div>
+      <div style="flex:1;min-width:0">
+        <div style="display:flex;align-items:center;gap:6px;margin-bottom:3px">
+          <span style="font-size:10px;font-weight:700;color:${col};background:${col}18;padding:2px 7px;border-radius:4px">${typeLabel[r.type]||r.type}</span>
+        </div>
+        <div style="font-size:14px;font-weight:700;color:var(--text);letter-spacing:-.2px">${r.title}</div>
+        ${r.description?`<div style="font-size:12px;color:var(--text-2);margin-top:3px;line-height:1.5">${r.description}</div>`:''}
+        ${r.guests?`<div style="font-size:11px;color:var(--text-3);margin-top:4px">Gości: <strong>${r.guests}</strong></div>`:''}
+      </div>
+      ${canEdit()?`<button onclick="deleteEvent('${r.id}')" style="background:none;border:none;padding:4px;cursor:pointer;color:var(--text-3)"><svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg></button>`:''}
+    </div>
+  </div>`;
+}
+
+function openAddEvent(){
+  const overlay=document.createElement('div');
+  overlay.className='modal-overlay active'; overlay.id='event-modal';
+  overlay.innerHTML=`<div class="modal">
+    <div class="modal-pill"></div>
+    <div class="modal-title">Nowe wydarzenie</div>
+    <div class="mfield"><label>Nazwa</label><input type="text" id="ev-title" placeholder="np. Seafood Night, Sylwester…"></div>
+    <div class="mfield"><label>Data</label><input type="date" id="ev-date" value="${today()}"></div>
+    <div class="mfield"><label>Typ</label>
+      <select id="ev-type" style="width:100%;border:1px solid var(--border);border-radius:8px;padding:10px 12px;font-family:var(--font);font-size:14px;background:white">
+        <option value="event">Wydarzenie</option>
+        <option value="menu">Menu specjalne</option>
+        <option value="note">Info dla zespołu</option>
+      </select>
+    </div>
+    <div class="mrow">
+      <div class="mfield"><label>Liczba gości</label><input type="number" id="ev-guests" placeholder="0" min="0"></div>
+    </div>
+    <div class="mfield"><label>Opis / menu (opcjonalnie)</label><textarea id="ev-desc" rows="3" style="width:100%;border:1px solid var(--border);border-radius:8px;padding:10px 12px;font-family:var(--font);font-size:14px;resize:none" placeholder="Szczegóły, dania, notatki…"></textarea></div>
+    <div class="modal-actions">
+      <button class="mbtn-cancel" onclick="document.getElementById('event-modal').remove()">Anuluj</button>
+      <button class="mbtn-save" onclick="saveEvent()">Dodaj</button>
+    </div>
+  </div>`;
+  overlay.addEventListener('click',e=>{if(e.target===overlay)overlay.remove();});
+  document.body.appendChild(overlay);
+}
+
+async function saveEvent(){
+  const title=document.getElementById('ev-title').value.trim();
+  const date=document.getElementById('ev-date').value;
+  if(!title||!date){showToast('Podaj nazwę i datę');return;}
+  const body={title,date,type:document.getElementById('ev-type').value,
+    description:document.getElementById('ev-desc').value.trim()||null,
+    guests:parseInt(document.getElementById('ev-guests').value)||null};
+  try{
+    await sbFetch('/rest/v1/events',{method:'POST',headers:{'Prefer':'return=minimal'},body:JSON.stringify(body)});
+    document.getElementById('event-modal')?.remove();
+    showToast('✓ Wydarzenie dodane');
+    renderView();
+  }catch(e){showToast('Błąd: '+e.message.slice(0,80));}
+}
+
+async function deleteEvent(id){
+  if(!confirm('Usunąć wydarzenie?')) return;
+  try{
+    await sbFetch(`/rest/v1/events?id=eq.${id}`,{method:'DELETE'});
+    showToast('Usunięto'); renderView();
+  }catch(e){showToast('Błąd: '+e.message.slice(0,60));}
+}
 
 async function changeWeek(d){
   currentWeekOffset+=d;
