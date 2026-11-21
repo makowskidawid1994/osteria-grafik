@@ -134,7 +134,7 @@ body { font-family: var(--font); background: var(--bg); color: var(--text); min-
 }
 .bnav-item svg { width: 20px; height: 20px; stroke: var(--text-3); fill: none; stroke-width: 1.8; transition: stroke .15s; }
 
-.main { padding-bottom: 74px; }
+.main { padding-bottom: calc(62px + env(safe-area-inset-bottom) + 8px); }
 
 /* ─── Page header bar ─── */
 .page-bar {
@@ -195,7 +195,7 @@ body { font-family: var(--font); background: var(--bg); color: var(--text); min-
 .cs-val { font-size: 19px; font-weight: 700; color: var(--text); letter-spacing: -.5px; }
 
 /* ─── Schedule table ─── */
-.sched-wrap { padding: 10px 16px 0; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.sched-wrap { padding: 10px 16px 16px; overflow-x: auto; -webkit-overflow-scrolling: touch; }
 .sched-tbl {
   width: 100%; border-collapse: collapse; min-width: 480px;
   background: white; border-radius: var(--radius-lg); overflow: hidden;
@@ -768,7 +768,14 @@ body { font-family: var(--font); background: var(--bg); color: var(--text); min-
   <div class="header">
     <div class="header-brand">Osteria <em>Antonina</em></div>
     <span class="role-badge" id="hdr-role"></span>
-    <div class="header-avatar" id="hdr-avatar" onclick="doLogout()" title="Wyloguj"></div>
+    <div class="header-avatar" id="hdr-avatar" onclick="toggleAvatarMenu(event)" title="Menu"></div>
+    <!-- Avatar dropdown -->
+    <div id="avatar-menu" style="display:none;position:fixed;top:56px;right:12px;background:white;border:1px solid var(--border);border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,.14);z-index:300;min-width:200px;overflow:hidden;">
+      <div id="avatar-menu-name" style="padding:14px 16px 10px;border-bottom:1px solid var(--border);font-size:12px;color:var(--text-3);font-weight:500;"></div>
+      <button onclick="startChangeEmail()" style="width:100%;padding:13px 16px;text-align:left;background:none;border:none;font-family:var(--font);font-size:14px;font-weight:500;cursor:pointer;color:var(--text);border-bottom:1px solid var(--border);">✉️ Zmień e-mail</button>
+      <button onclick="startChangePassword()" style="width:100%;padding:13px 16px;text-align:left;background:none;border:none;font-family:var(--font);font-size:14px;font-weight:500;cursor:pointer;color:var(--text);border-bottom:1px solid var(--border);">🔒 Zmień hasło</button>
+      <button onclick="doLogout()" style="width:100%;padding:13px 16px;text-align:left;background:none;border:none;font-family:var(--font);font-size:14px;font-weight:500;cursor:pointer;color:var(--danger);">← Wyloguj</button>
+    </div>
     <span class="header-name" id="hdr-user"></span>
   </div>
   <div class="main" id="main-content"><div class="spinner"></div></div>
@@ -890,7 +897,9 @@ async function doLogin() {
     document.getElementById('hdr-user').textContent=username;
     // Awatar z inicjałami
     const av=document.getElementById('hdr-avatar');
-    if(av){ const ini=username.slice(0,2).toUpperCase(); av.textContent=ini; av.title=`${username} — kliknij aby wylogować`; }
+    if(av){ const ini=username.slice(0,2).toUpperCase(); av.textContent=ini; av.title='Menu'; }
+    const menuName=document.getElementById('avatar-menu-name');
+    if(menuName) menuName.textContent=email;
     if(!canEdit()){
       document.getElementById('nav-dash').style.display='flex'; // show "Mój panel" for employees too
       document.getElementById('nav-emps').style.display='none';
@@ -906,6 +915,35 @@ async function doLogin() {
     el.textContent=e.message; el.style.display='block';
   }
   btn.textContent='Zaloguj się'; btn.disabled=false;
+}
+
+function toggleAvatarMenu(e){
+  e.stopPropagation();
+  const m=document.getElementById('avatar-menu');
+  m.style.display=m.style.display==='none'?'block':'none';
+}
+// Close menu on outside click
+document.addEventListener('click',()=>{
+  const m=document.getElementById('avatar-menu');
+  if(m) m.style.display='none';
+});
+
+function startChangeEmail(){
+  document.getElementById('avatar-menu').style.display='none';
+  const newEmail=prompt('Podaj nowy adres e-mail:');
+  if(!newEmail||!newEmail.includes('@')){showToast('Nieprawidłowy e-mail');return;}
+  sbFetch('/auth/v1/user',{method:'PUT',body:JSON.stringify({email:newEmail})})
+    .then(()=>showToast('E-mail zmieniony. Sprawdź skrzynkę.'))
+    .catch(e=>showToast('Błąd: '+e.message.slice(0,60)));
+}
+
+function startChangePassword(){
+  document.getElementById('avatar-menu').style.display='none';
+  const newPwd=prompt('Podaj nowe hasło (min. 8 znaków):');
+  if(!newPwd||newPwd.length<8){showToast('Hasło musi mieć min. 8 znaków');return;}
+  sbFetch('/auth/v1/user',{method:'PUT',body:JSON.stringify({password:newPwd})})
+    .then(()=>showToast('Hasło zmienione ✓'))
+    .catch(e=>showToast('Błąd: '+e.message.slice(0,60)));
 }
 
 function doLogout(){
@@ -1920,9 +1958,10 @@ async function deleteShift(){
 
 function openModal(id){document.getElementById(id).classList.add('open');}
 function closeModal(id){document.getElementById(id).classList.remove('open');}
-function showToast(msg){
+function showToast(msg,duration=2500){
   const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show');
-  setTimeout(()=>t.classList.remove('show'),2500);
+  clearTimeout(t._tid);
+  t._tid=setTimeout(()=>t.classList.remove('show'),duration);
 }
 document.querySelectorAll('.modal-overlay').forEach(o=>{
   o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('open');});
@@ -2164,6 +2203,7 @@ function updateClockUI(){
   const secRow=document.getElementById('clock-secondary-row');
   if(!mainBtn) return;
 
+  mainBtn.disabled=false; // zawsze zdejmuj disabled przy aktualizacji UI
   if(!activeSession){
     mainBtn.className='clock-btn-round state-idle';
     mainBtn.innerHTML=`<svg viewBox="0 0 24 24" stroke="#09090B" fill="none" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>Zacznij`;
@@ -2217,13 +2257,16 @@ async function doClockin(){
   const emp=getCurrentEmployee();
   if(!emp){showToast('Brak profilu pracownika');return;}
   const btn=document.getElementById('btn-clock-main');
-  if(btn){btn.disabled=true; const lbl=btn.querySelector('svg'); btn.innerHTML=`<span style="font-size:12px">Sprawdzanie GPS…</span>`;}
+  // Zapisz oryginalne innerHTML żeby przywrócić je przy błędzie
+  const origHTML=btn?btn.innerHTML:'';
+  if(btn){btn.disabled=true; btn.innerHTML=`<span style="font-size:12px">Sprawdzanie GPS…</span>`;}
 
   const geo=await checkGeofence();
   if(!geo.ok){
-    updateClockUI();
-    const msg=geo.error?`Błąd GPS: ${geo.error}`:`Jesteś ${geo.dist}m od restauracji. Wymagane: <${GEO_RADIUS}m.`;
-    showToast(msg);
+    // Pełny reset — przywróć przycisk do stanu idle ręcznie
+    if(btn){btn.disabled=false; btn.innerHTML=origHTML; btn.className='clock-btn-round state-idle'; btn.onclick=()=>doClockin();}
+    const msg=geo.error?`Błąd GPS: ${geo.error}`:`Poza restauracją (${geo.dist}m). Wymagane: <${GEO_RADIUS}m`;
+    showToast(msg,4000);
     return;
   }
 
