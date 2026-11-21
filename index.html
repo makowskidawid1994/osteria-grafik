@@ -1069,16 +1069,7 @@ async function doLogin() {
   btn.textContent='Zaloguj się'; btn.disabled=false;
 }
 
-function toggleAvatarMenu(e){
-  e.stopPropagation();
-  const m=document.getElementById('avatar-menu');
-  m.style.display=m.style.display==='none'?'block':'none';
-}
-// Close menu on outside click
-document.addEventListener('click',()=>{
-  const m=document.getElementById('avatar-menu');
-  if(m) m.style.display='none';
-});
+// toggleAvatarMenu defined below (opens profile sheet)
 
 function startChangeEmail(){
   document.getElementById('avatar-menu').style.display='none';
