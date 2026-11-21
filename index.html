@@ -598,7 +598,8 @@ let availMonthOffset=1; // default: next month
 async function sbFetch(path, opts={}) {
   const h={'apikey':SB_KEY,'Content-Type':'application/json'};
   if(currentUser?.access_token) h['Authorization']='Bearer '+currentUser.access_token;
-  const r=await fetch(SB_URL+path,{headers:h,...opts});
+  const {headers:extraH, ...restOpts}=opts;
+  const r=await fetch(SB_URL+path,{headers:{...h,...(extraH||{})}, ...restOpts});
   if(!r.ok) throw new Error(await r.text());
   const ct=r.headers.get('content-type')||'';
   return ct.includes('json')?r.json():r.text();
