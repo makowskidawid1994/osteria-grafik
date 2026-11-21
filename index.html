@@ -587,6 +587,72 @@ body { font-family: var(--font); background: var(--bg); color: var(--text); min-
 .spinner { width: 22px; height: 22px; border: 2px solid var(--border); border-top-color: var(--text); border-radius: 50%; animation: spin .65s linear infinite; margin: 40px auto; }
 @keyframes spin { to { transform: rotate(360deg); } }
 .sect-label { padding: 14px 16px 5px; font-size: 10px; font-weight: 600; color: var(--text-3); text-transform: uppercase; letter-spacing: .5px; }
+
+/* ─── Ewidencja (Clock) ─── */
+.clock-wrap { padding: 16px 16px 100px; display: flex; flex-direction: column; gap: 12px; }
+.clock-hero {
+  background: white; border: 1px solid var(--border); border-radius: var(--radius-lg);
+  padding: 28px 20px 24px; text-align: center; display: flex; flex-direction: column; align-items: center;
+}
+.clock-time-big { font-size: 48px; font-weight: 700; letter-spacing: -2px; color: var(--text); font-variant-numeric: tabular-nums; line-height: 1; margin-bottom: 4px; }
+.clock-date { font-size: 13px; color: var(--text-3); margin-bottom: 24px; }
+.clock-status-pill {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 12px; font-weight: 600; padding: 5px 12px; border-radius: 20px;
+  margin-bottom: 20px;
+}
+.clock-status-pill.idle { background: var(--bg); color: var(--text-3); border: 1px solid var(--border); }
+.clock-status-pill.working { background: var(--green-bg); color: var(--green); border: 1px solid #BBF7D0; }
+.clock-status-pill.working::before { content: ''; width: 7px; height: 7px; border-radius: 50%; background: var(--green); animation: pulse-dot 1.4s infinite; }
+.clock-status-pill.break { background: #FFF7ED; color: var(--warn); border: 1px solid #FED7AA; }
+.clock-status-pill.break::before { content: ''; width: 7px; height: 7px; border-radius: 50%; background: var(--warn); }
+@keyframes pulse-dot { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.5;transform:scale(.8)} }
+.clock-elapsed { font-size: 15px; font-weight: 700; letter-spacing: -.5px; margin-bottom: 20px; color: var(--text); font-variant-numeric: tabular-nums; }
+.clock-btn-row { display: flex; gap: 8px; width: 100%; }
+.clock-btn {
+  flex: 1; padding: 14px; border: none; border-radius: var(--radius-lg); font-size: 14px; font-weight: 700;
+  cursor: pointer; font-family: var(--font); transition: all .15s; letter-spacing: -.2px;
+}
+.clock-btn-in { background: var(--text); color: white; }
+.clock-btn-in:hover { background: #27272A; }
+.clock-btn-in:disabled { background: var(--border); color: var(--text-3); cursor: not-allowed; }
+.clock-btn-out { background: var(--red-soft); color: var(--danger); border: 1px solid #FECACA; }
+.clock-btn-out:hover { background: #FEE2E2; }
+.clock-btn-break { flex: none; padding: 14px 16px; background: #FFF7ED; color: var(--warn); border: 1px solid #FED7AA; }
+.clock-btn-break:hover { background: #FFEDD5; }
+.clock-geo-status { font-size: 11px; margin-top: 12px; display: flex; align-items: center; gap: 5px; }
+.clock-geo-ok { color: var(--green); }
+.clock-geo-err { color: var(--danger); }
+.clock-geo-loading { color: var(--text-3); }
+
+.clock-history-card {
+  background: white; border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden;
+}
+.clock-history-title { font-size: 10px; font-weight: 600; color: var(--text-3); text-transform: uppercase; letter-spacing: .5px; padding: 12px 14px 8px; border-bottom: 1px solid var(--border); }
+.clock-session-row {
+  display: flex; align-items: center; gap: 10px; padding: 10px 14px;
+  border-bottom: 1px solid var(--border);
+}
+.clock-session-row:last-child { border-bottom: none; }
+.csr-date { font-size: 12px; font-weight: 600; color: var(--text-2); min-width: 70px; }
+.csr-times { flex: 1; font-size: 13px; font-weight: 600; }
+.csr-break { font-size: 11px; color: var(--warn); font-weight: 500; margin-top: 1px; }
+.csr-dur { text-align: right; }
+.csr-dur-h { font-size: 15px; font-weight: 700; letter-spacing: -.3px; }
+.csr-dur-min { font-size: 10px; color: var(--text-3); }
+
+/* Manager live panel */
+.clock-live-card { background: white; border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; }
+.clock-live-title { font-size: 10px; font-weight: 600; color: var(--text-3); text-transform: uppercase; letter-spacing: .5px; padding: 12px 14px 8px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+.clock-live-row { display: flex; align-items: center; gap: 10px; padding: 10px 14px; border-bottom: 1px solid var(--border); }
+.clock-live-row:last-child { border-bottom: none; }
+.clr-name { flex: 1; font-size: 13px; font-weight: 600; }
+.clr-dept { font-size: 11px; color: var(--text-3); margin-top: 1px; }
+.clr-badge { font-size: 11px; font-weight: 600; padding: 3px 8px; border-radius: 4px; white-space: nowrap; }
+.clr-badge-in { background: var(--green-bg); color: var(--green); }
+.clr-badge-break { background: #FFF7ED; color: var(--warn); }
+.clr-badge-out { background: var(--bg); color: var(--text-3); border: 1px solid var(--border); }
+.clr-time { font-size: 12px; color: var(--text-3); min-width: 60px; text-align: right; }
 </style>
 </head>
 <body>
@@ -631,6 +697,10 @@ body { font-family: var(--font); background: var(--bg); color: var(--text); min-
     <button class="bnav-item" id="nav-dash" onclick="showView('dash')">
       <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
       <span>Dashboard</span>
+    </button>
+    <button class="bnav-item" id="nav-clock" onclick="showView('clock')">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      Ewidencja
     </button>
   </nav>
 </div>
@@ -689,6 +759,12 @@ let currentMonthOffset=0;
 let currentShiftEmpId=null, currentShiftDate=null;
 // availMonth: which month the availability tab is showing (offset from now)
 let availMonthOffset=1; // default: next month
+
+// Ewidencja czasu pracy
+let workSessions=[], activeSession=null;
+let clockTimerInterval=null;
+// Geofence: Osteria Antonina, Solna 11c, Kołobrzeg
+const GEO_LAT = 54.17528, GEO_LON = 15.57647, GEO_RADIUS = 25; // metry
 
 async function sbFetch(path, opts={}) {
   const h={'apikey':SB_KEY,'Content-Type':'application/json'};
@@ -752,6 +828,21 @@ async function loadAllData(){
   availability=await sbFetch('/rest/v1/availability?select=*').catch(()=>[]);
   availDates=await sbFetch('/rest/v1/availability_dates?select=*').catch(()=>[]);
   blockedDates=await sbFetch('/rest/v1/blocked_dates?select=*').catch(()=>[]);
+  // Load work sessions (today + last 7 days)
+  await loadWorkSessions();
+}
+
+async function loadWorkSessions(){
+  const from=new Date(); from.setDate(from.getDate()-7);
+  const fromStr=fd(from)+'T00:00:00';
+  workSessions=await sbFetch(`/rest/v1/work_sessions?select=*,employees(name,department)&clock_in=gte.${fromStr}&order=clock_in.desc`).catch(()=>[]);
+  // Find active session for current user
+  if(currentUser){
+    const me=employees.find(e=>e.email===currentUser.email);
+    if(me){
+      activeSession=workSessions.find(s=>s.employee_id===me.id && !s.clock_out)||null;
+    }
+  }
 }
 
 // availDates: [{id, employee_id, date, available}]
@@ -816,6 +907,7 @@ function renderView(){
   else if(currentView==='emps') renderEmps(mc);
   else if(currentView==='avail') renderAvail(mc);
   else if(currentView==='dash') renderDash(mc).catch(e=>console.error(e));
+  else if(currentView==='clock') renderClock(mc);
 }
 
 async function renderDashAsync(mc){ await renderDash(mc); }
@@ -1741,6 +1833,343 @@ document.querySelectorAll('.modal-overlay').forEach(o=>{
   o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('open');});
 });
 document.getElementById('auth-pass').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin();});
+
+/* ═══════════════════════════════════════════════
+   EWIDENCJA CZASU PRACY
+═══════════════════════════════════════════════ */
+
+// Haversine — odległość w metrach między dwoma punktami GPS
+function haversine(lat1,lon1,lat2,lon2){
+  const R=6371000,r=Math.PI/180;
+  const dLat=(lat2-lat1)*r, dLon=(lon2-lon1)*r;
+  const a=Math.sin(dLat/2)**2+Math.cos(lat1*r)*Math.cos(lat2*r)*Math.sin(dLon/2)**2;
+  return R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
+}
+
+// Pobranie pozycji GPS jako Promise
+function getPosition(){
+  return new Promise((res,rej)=>{
+    if(!navigator.geolocation) return rej(new Error('Brak GPS w tej przeglądarce'));
+    navigator.geolocation.getCurrentPosition(res,rej,{enableHighAccuracy:true,timeout:10000,maximumAge:0});
+  });
+}
+
+// Sprawdzenie geofence — zwraca {ok, lat, lon, dist, error}
+async function checkGeofence(){
+  try{
+    const p=await getPosition();
+    const {latitude:lat,longitude:lon}=p.coords;
+    const dist=haversine(lat,lon,GEO_LAT,GEO_LON);
+    return{ok:dist<=GEO_RADIUS,lat,lon,dist:Math.round(dist)};
+  }catch(e){
+    return{ok:false,lat:null,lon:null,dist:null,error:e.message||'Błąd GPS'};
+  }
+}
+
+// Formatowanie czasu elapsed
+function fmtElapsed(ms){
+  const s=Math.floor(ms/1000),m=Math.floor(s/60),h=Math.floor(m/60);
+  return`${pad(h)}:${pad(m%60)}:${pad(s%60)}`;
+}
+
+function fmtTime(ts){
+  if(!ts) return '—';
+  const d=new Date(ts);
+  return`${pad(d.getHours())}:${pad(d.getMinutes())}`;
+}
+
+function fmtDate(ts){
+  if(!ts) return '';
+  const d=new Date(ts);
+  return`${pad(d.getDate())}.${pad(d.getMonth()+1)}`;
+}
+
+function fmtDuration(min){
+  if(min==null) return '—';
+  const h=Math.floor(min/60),m=min%60;
+  return h>0?`${h}h ${m>0?m+'m':''}`:`${m}m`;
+}
+
+// Aktualny pracownik (zalogowany)
+function getCurrentEmployee(){
+  return employees.find(e=>e.email===currentUser?.email)||null;
+}
+
+// Zatrzymanie timera
+function stopClockTimer(){
+  if(clockTimerInterval){clearInterval(clockTimerInterval);clockTimerInterval=null;}
+}
+
+// Render głównego widoku ewidencji
+function renderClock(mc){
+  stopClockTimer();
+  const emp=getCurrentEmployee();
+  if(!emp && !canEdit()){
+    mc.innerHTML=`<div class="clock-wrap"><div class="clock-hero"><div style="color:var(--text-3);font-size:13px;">Twój profil pracownika nie jest skonfigurowany.<br>Skontaktuj się z managerem.</div></div></div>`;
+    return;
+  }
+
+  const isManager=canEdit();
+  mc.innerHTML=buildClockHTML(emp, isManager);
+  updateClockUI();
+  startClockTimer();
+  updateGeoIndicator();
+}
+
+function buildClockHTML(emp, isManager){
+  const now=new Date();
+  const dateStr=now.toLocaleDateString('pl-PL',{weekday:'long',day:'numeric',month:'long'});
+
+  // Sesje historyczne (ukończone, ostatnie 7 dni)
+  const myId=emp?.id;
+  const mySessions=workSessions.filter(s=>s.employee_id===myId && s.clock_out);
+  const recentSessions=mySessions.slice(0,5);
+
+  // Live panel dla managera
+  const liveRows=buildLivePanelRows();
+
+  let html=`<div class="clock-wrap">`;
+
+  // Karta z zegarem (tylko gdy jest pracownik)
+  if(emp){
+    html+=`
+    <div class="clock-hero">
+      <div class="clock-time-big" id="clock-time-now">${pad(now.getHours())}:${pad(now.getMinutes())}</div>
+      <div class="clock-date">${dateStr}</div>
+      <div class="clock-status-pill idle" id="clock-status-pill">Poza pracą</div>
+      <div class="clock-elapsed" id="clock-elapsed" style="display:none"></div>
+      <div class="clock-btn-row" id="clock-btn-row">
+        <button class="clock-btn clock-btn-in" id="btn-clock-in" onclick="doClockin()">▶ Rozpocznij zmianę</button>
+      </div>
+      <div class="clock-geo-status" id="clock-geo-status">
+        <span class="clock-geo-loading">● Sprawdzanie lokalizacji…</span>
+      </div>
+    </div>`;
+
+    // Historia sesji
+    if(recentSessions.length>0){
+      html+=`<div class="clock-history-card">
+        <div class="clock-history-title">Ostatnie zmiany</div>`;
+      for(const s of recentSessions){
+        const dur=s.total_minutes;
+        const brk=s.break_minutes;
+        html+=`<div class="clock-session-row">
+          <div class="csr-date">${fmtDate(s.clock_in)}</div>
+          <div class="csr-times">
+            <div>${fmtTime(s.clock_in)} – ${fmtTime(s.clock_out)}</div>
+            ${brk>0?`<div class="csr-break">przerwa ${fmtDuration(brk)}</div>`:''}
+          </div>
+          <div class="csr-dur">
+            <div class="csr-dur-h">${fmtDuration(dur)}</div>
+            <div class="csr-dur-min">przepracowane</div>
+          </div>
+        </div>`;
+      }
+      html+=`</div>`;
+    }
+  }
+
+  // Panel managera — kto jest teraz w pracy
+  if(isManager){
+    const activeSessions=workSessions.filter(s=>!s.clock_out);
+    html+=`<div class="clock-live-card">
+      <div class="clock-live-title">
+        <span>Teraz w pracy</span>
+        <span style="font-size:12px;font-weight:600;color:var(--green)">${activeSessions.length} os.</span>
+      </div>`;
+    if(liveRows.length===0){
+      html+=`<div style="padding:16px;text-align:center;font-size:12px;color:var(--text-3)">Nikt nie jest teraz zalogowany</div>`;
+    } else {
+      html+=liveRows.join('');
+    }
+    html+=`</div>`;
+  }
+
+  html+=`</div>`;
+  return html;
+}
+
+function buildLivePanelRows(){
+  const activeSessions=workSessions.filter(s=>!s.clock_out);
+  const now=Date.now();
+  return activeSessions.map(s=>{
+    const emp=employees.find(e=>e.id===s.employee_id);
+    const name=emp?.name||s.employees?.name||'—';
+    const dept=emp?.department||s.employees?.department||'';
+    const onBreak=s.break_start&&!s.break_end;
+    const elapsed=Math.max(0,now-new Date(s.clock_in).getTime());
+    const elStr=fmtElapsed(elapsed);
+    const badgeClass=onBreak?'clr-badge-break':'clr-badge-in';
+    const badgeText=onBreak?'Przerwa':'W pracy';
+    return`<div class="clock-live-row">
+      <div>
+        <div class="clr-name">${name}</div>
+        <div class="clr-dept">${dept}</div>
+      </div>
+      <div class="clr-badge ${badgeClass}">${badgeText}</div>
+      <div class="clr-time">${elStr}</div>
+    </div>`;
+  });
+}
+
+// Uruchomienie timera odświeżającego clock UI
+function startClockTimer(){
+  clockTimerInterval=setInterval(()=>{
+    const tn=document.getElementById('clock-time-now');
+    if(tn){const n=new Date();tn.textContent=`${pad(n.getHours())}:${pad(n.getMinutes())}`;}
+    updateElapsed();
+  },1000);
+}
+
+function updateElapsed(){
+  if(!activeSession) return;
+  const el=document.getElementById('clock-elapsed');
+  if(!el) return;
+  const onBreak=activeSession.break_start&&!activeSession.break_end;
+  const start=onBreak?new Date(activeSession.break_start):new Date(activeSession.clock_in);
+  const elapsed=Date.now()-start.getTime();
+  el.textContent=(onBreak?'Przerwa: ':'Czas pracy: ')+fmtElapsed(elapsed);
+}
+
+function updateClockUI(){
+  const pill=document.getElementById('clock-status-pill');
+  const elDiv=document.getElementById('clock-elapsed');
+  const btnRow=document.getElementById('clock-btn-row');
+  if(!pill||!btnRow) return;
+
+  if(!activeSession){
+    pill.className='clock-status-pill idle'; pill.textContent='Poza pracą';
+    if(elDiv){elDiv.style.display='none';}
+    btnRow.innerHTML=`<button class="clock-btn clock-btn-in" id="btn-clock-in" onclick="doClockin()">▶ Rozpocznij zmianę</button>`;
+  } else if(activeSession.break_start && !activeSession.break_end){
+    pill.className='clock-status-pill break'; pill.textContent='Przerwa';
+    if(elDiv){elDiv.style.display='block'; updateElapsed();}
+    btnRow.innerHTML=`
+      <button class="clock-btn clock-btn-in" onclick="doEndBreak()" style="flex:1">▶ Zakończ przerwę</button>
+      <button class="clock-btn clock-btn-out" onclick="doClockout()" style="flex:1">■ Zakończ zmianę</button>`;
+  } else {
+    pill.className='clock-status-pill working'; pill.textContent='W pracy';
+    if(elDiv){elDiv.style.display='block'; updateElapsed();}
+    btnRow.innerHTML=`
+      <button class="clock-btn clock-btn-break" onclick="doStartBreak()">⏸ Przerwa</button>
+      <button class="clock-btn clock-btn-out" onclick="doClockout()" style="flex:1">■ Zakończ zmianę</button>`;
+  }
+}
+
+// Aktualizacja wskaźnika GPS
+async function updateGeoIndicator(){
+  const geo=document.getElementById('clock-geo-status');
+  if(!geo) return;
+  const result=await checkGeofence();
+  if(!geo.isConnected) return; // widok mógł się zmienić
+  if(result.error){
+    geo.innerHTML=`<span class="clock-geo-err">● ${result.error}</span>`;
+  } else if(result.ok){
+    geo.innerHTML=`<span class="clock-geo-ok">● Jesteś w restauracji (${result.dist}m)</span>`;
+  } else {
+    geo.innerHTML=`<span class="clock-geo-err">● Poza restauracją (${result.dist}m, wymagane <${GEO_RADIUS}m)</span>`;
+  }
+}
+
+// CLOCK IN
+async function doClockin(){
+  const emp=getCurrentEmployee();
+  if(!emp){showToast('Brak profilu pracownika');return;}
+  const btn=document.getElementById('btn-clock-in');
+  if(btn){btn.disabled=true;btn.textContent='Sprawdzanie GPS…';}
+
+  const geo=await checkGeofence();
+  if(!geo.ok){
+    if(btn){btn.disabled=false;btn.textContent='▶ Rozpocznij zmianę';}
+    const msg=geo.error?`Błąd GPS: ${geo.error}`:`Jesteś za daleko od restauracji (${geo.dist}m). Wymagane: <${GEO_RADIUS}m.`;
+    showToast(msg);
+    return;
+  }
+
+  try{
+    if(btn){btn.textContent='Zapisywanie…';}
+    const sess=await sbFetch('/rest/v1/work_sessions',{
+      method:'POST',
+      headers:{'Prefer':'return=representation'},
+      body:JSON.stringify({
+        employee_id:emp.id,
+        clock_in:new Date().toISOString(),
+        geo_lat_in:geo.lat,
+        geo_lon_in:geo.lon
+      })
+    });
+    activeSession=Array.isArray(sess)?sess[0]:sess;
+    workSessions.unshift(activeSession);
+    showToast('Zmiana rozpoczęta ✓');
+    updateClockUI();
+  }catch(e){
+    showToast('Błąd: '+e.message.slice(0,60));
+    if(btn){btn.disabled=false;btn.textContent='▶ Rozpocznij zmianę';}
+  }
+}
+
+// CLOCK OUT
+async function doClockout(){
+  if(!activeSession){return;}
+  const geo=await checkGeofence();
+  // GPS przy wylogowaniu jest opcjonalne — zapisujemy współrzędne jeśli dostępne
+  try{
+    const body={clock_out:new Date().toISOString()};
+    if(geo.lat) {body.geo_lat_out=geo.lat; body.geo_lon_out=geo.lon;}
+    const updated=await sbFetch(`/rest/v1/work_sessions?id=eq.${activeSession.id}`,{
+      method:'PATCH',
+      headers:{'Prefer':'return=representation'},
+      body:JSON.stringify(body)
+    });
+    const upd=Array.isArray(updated)?updated[0]:updated;
+    workSessions=workSessions.map(s=>s.id===activeSession.id?{...s,...upd}:s);
+    activeSession=null;
+    showToast('Zmiana zakończona ✓');
+    // Przeładuj sesje żeby mieć computed columns
+    await loadWorkSessions();
+    renderView();
+  }catch(e){
+    showToast('Błąd: '+e.message.slice(0,60));
+  }
+}
+
+// START BREAK
+async function doStartBreak(){
+  if(!activeSession||activeSession.break_start) return;
+  try{
+    const updated=await sbFetch(`/rest/v1/work_sessions?id=eq.${activeSession.id}`,{
+      method:'PATCH',
+      headers:{'Prefer':'return=representation'},
+      body:JSON.stringify({break_start:new Date().toISOString()})
+    });
+    const upd=Array.isArray(updated)?updated[0]:updated;
+    activeSession={...activeSession,...upd};
+    workSessions=workSessions.map(s=>s.id===activeSession.id?activeSession:s);
+    showToast('Przerwa rozpoczęta');
+    updateClockUI();
+  }catch(e){
+    showToast('Błąd: '+e.message.slice(0,60));
+  }
+}
+
+// END BREAK
+async function doEndBreak(){
+  if(!activeSession||!activeSession.break_start||activeSession.break_end) return;
+  try{
+    const updated=await sbFetch(`/rest/v1/work_sessions?id=eq.${activeSession.id}`,{
+      method:'PATCH',
+      headers:{'Prefer':'return=representation'},
+      body:JSON.stringify({break_end:new Date().toISOString()})
+    });
+    const upd=Array.isArray(updated)?updated[0]:updated;
+    activeSession={...activeSession,...upd};
+    workSessions=workSessions.map(s=>s.id===activeSession.id?activeSession:s);
+    showToast('Przerwa zakończona');
+    updateClockUI();
+  }catch(e){
+    showToast('Błąd: '+e.message.slice(0,60));
+  }
+}
 </script>
 </body>
 </html>
