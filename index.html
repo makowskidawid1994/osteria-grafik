@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="/icon-192.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
 :root {
   --brand: #7B1D2E;
@@ -149,13 +149,20 @@ body { font-family: var(--font); background: var(--bg); color: var(--text); min-
   border-bottom: 1px solid var(--border); gap: 10px;
   transition: background .2s, border-color .2s;
 }
-/* Na home — header przezroczysty, app bar schowany (mamy własny nagłówek) */
+/* Na home — ciemny header pasujący do tła */
 body.view-home .header {
-  background: transparent;
-  border-bottom-color: transparent;
-  box-shadow: none;
+  background: #0F0A0B;
+  border-bottom-color: rgba(255,255,255,.05);
 }
-body.view-home #main-content { background: #F5F0EE; }
+body.view-home .header-brand { color: rgba(255,255,255,.9); }
+body.view-home .header-brand em { color: rgba(255,255,255,.3); }
+body.view-home .header-brand-dot { background: #7B1D2E; }
+body.view-home .role-badge {
+  background: rgba(255,255,255,.07); color: rgba(255,255,255,.45);
+  border-color: rgba(255,255,255,.08);
+}
+body.view-home .header-avatar { border-color: rgba(255,255,255,.12); }
+body.view-home #main-content { background: #0F0A0B; }
 
 .header-brand { font-size: 15px; font-weight: 800; flex: 1; letter-spacing: -.5px; color: var(--text); display: flex; align-items: center; gap: 6px; transition: color .2s; }
 .header-brand em { color: var(--text-3); font-style: normal; font-weight: 400; transition: color .2s; }
@@ -211,178 +218,132 @@ body.view-home #main-content { background: #F5F0EE; }
 }
 
 /* ════════════════════════════════════════
-   HOME — OSTERIA ANTONINA
+   HOME SCREEN
 ════════════════════════════════════════ */
 .hw-wrap {
   min-height: 100vh;
-  background: #F5F0EE;
+  background: #0F0A0B;
   display: flex; flex-direction: column;
-  padding-bottom: max(env(safe-area-inset-bottom), 28px);
+  padding-bottom: max(env(safe-area-inset-bottom), 24px);
   -webkit-tap-highlight-color: transparent;
 }
 
-/* Header z nazwą restauracji */
+/* Górna sekcja — powitanie */
 .hw-header {
-  padding: 28px 22px 0;
-  display: flex; flex-direction: column;
-  position: relative;
+  padding: 32px 20px 20px;
 }
-.hw-restaurant {
-  font-family: 'DM Serif Display', Georgia, serif;
-  font-size: 11px; letter-spacing: 3px; text-transform: uppercase;
-  color: #9E6B6B; font-weight: 400; font-style: italic;
+.hw-name {
+  font-size: 28px; font-weight: 800; color: #fff;
+  letter-spacing: -1px; line-height: 1;
 }
-.hw-greeting {
-  font-family: 'DM Serif Display', Georgia, serif;
-  font-size: 32px; color: #1C0C0E; line-height: 1.1; margin-top: 2px;
-}
-.hw-greeting em {
-  font-style: italic; color: #7B1D2E;
-}
-.hw-meta {
-  margin-top: 6px;
-  display: flex; align-items: center; gap: 10px;
-}
-.hw-role-chip {
-  font-family: 'DM Mono', monospace;
-  font-size: 9px; letter-spacing: 1.5px; text-transform: uppercase;
-  color: #9E6B6B; background: rgba(123,29,46,.07);
-  border: 1px solid rgba(123,29,46,.12);
-  padding: 2px 8px; border-radius: 2px;
-}
-.hw-date-str {
-  font-family: 'DM Mono', monospace;
-  font-size: 9px; letter-spacing: .5px; color: #BEA0A0;
+.hw-name span { color: #7B1D2E; }
+.hw-sub {
+  margin-top: 4px;
+  font-size: 13px; font-weight: 400; color: rgba(255,255,255,.35);
+  letter-spacing: 0;
 }
 
-/* Pasek statusu zmiany */
-.hw-shift-bar {
-  margin: 16px 22px 0;
-  padding: 10px 14px;
-  background: rgba(255,255,255,.7);
-  border: 1px solid rgba(123,29,46,.1);
-  border-radius: 6px;
-  display: flex; align-items: center; gap: 10px;
-  backdrop-filter: blur(4px);
-}
-.hw-shift-dot {
-  width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0;
-  background: #D9B8BE;
-}
-.hw-shift-bar.active .hw-shift-dot {
-  background: #16A34A;
-  box-shadow: 0 0 0 3px rgba(34,197,94,.18);
-  animation: pulse-ring 1.8s ease-out infinite;
-}
-.hw-shift-text {
-  font-family: 'DM Mono', monospace;
-  font-size: 11px; color: #7B5050; letter-spacing: .2px; flex: 1;
-}
-.hw-shift-bar.active .hw-shift-text { color: #15803D; font-weight: 500; }
-.hw-shift-cta {
-  font-family: 'Inter', sans-serif;
-  font-size: 10px; font-weight: 700; letter-spacing: .5px;
-  color: #7B1D2E; text-decoration: none; text-transform: uppercase;
-  cursor: pointer; padding: 4px 10px;
-  background: rgba(123,29,46,.08); border-radius: 4px;
-  border: none; outline: none;
+/* Blok START — bardzo wyraźny */
+.hw-clock-block {
+  margin: 0 14px 10px;
+  position: relative; overflow: hidden;
+  border-radius: 20px;
+  background: #7B1D2E;
+  padding: 22px 22px 22px;
+  cursor: pointer;
   -webkit-tap-highlight-color: transparent;
-  transition: background .15s;
+  transition: transform .12s cubic-bezier(.4,0,.2,1);
+  will-change: transform;
 }
-.hw-shift-cta:active { background: rgba(123,29,46,.15); }
+.hw-clock-block:active { transform: scale(.97); background: #6A1826; }
+.hw-clock-block.working {
+  background: linear-gradient(135deg, #0D3B1A 0%, #0A2E13 100%);
+}
+.hw-clock-block.working:active { background: #082410; }
 
-/* Bloki nawigacji */
+.hw-clock-label {
+  font-size: 11px; font-weight: 600; letter-spacing: 1.5px;
+  text-transform: uppercase; color: rgba(255,255,255,.5);
+  margin-bottom: 8px;
+}
+.hw-clock-title {
+  font-size: 36px; font-weight: 900; color: #fff;
+  letter-spacing: -1.5px; line-height: 1;
+}
+.hw-clock-hint {
+  margin-top: 10px;
+  font-size: 12px; color: rgba(255,255,255,.4); font-weight: 400;
+}
+.hw-clock-hint strong { color: rgba(255,255,255,.7); font-weight: 600; }
+.hw-clock-arrow {
+  position: absolute; right: 22px; bottom: 22px;
+  font-size: 28px; color: rgba(255,255,255,.25); font-weight: 300; line-height: 1;
+}
+.hw-clock-pulse {
+  position: absolute; top: 22px; right: 22px;
+  width: 10px; height: 10px;
+}
+.hw-clock-pulse::before, .hw-clock-pulse::after {
+  content:''; position:absolute; inset:0; border-radius:50%;
+}
+.hw-clock-pulse::before { background:#4ADE80; }
+.hw-clock-pulse::after {
+  background:rgba(74,222,128,.4);
+  animation: pulse-ring 2s ease-out infinite;
+}
+@keyframes pulse-ring {
+  0% { transform:scale(1); opacity:.8; }
+  100% { transform:scale(4.5); opacity:0; }
+}
+.hw-clock-block .hb-ripple-wrap { border-radius: 20px; }
+
+/* Lista sekcji */
 .hw-blocks {
   flex: 1;
+  padding: 0 14px;
   display: flex; flex-direction: column;
-  padding: 18px 14px 0;
-  gap: 6px;
+  gap: 2px;
 }
 
-/* Pojedynczy blok */
+/* Każdy wiersz */
 .hb-row {
   position: relative; overflow: hidden;
-  border-radius: 4px;
-  min-height: 72px;
+  border-radius: 14px;
+  min-height: 68px;
   cursor: pointer;
   display: flex; align-items: center;
   justify-content: space-between;
   padding: 0 18px;
-  background: rgba(255,255,255,.75);
-  border: 1px solid rgba(188,152,152,.25);
-  border-left: 3px solid rgba(123,29,46,.12);
+  background: #1A1113;
+  border: 1px solid rgba(255,255,255,.05);
   -webkit-tap-highlight-color: transparent;
   transition: transform .1s cubic-bezier(.4,0,.2,1), background .1s;
   will-change: transform;
-  backdrop-filter: blur(2px);
 }
-.hb-row:active { transform: scale(.98); background: rgba(249,240,242,.9); border-left-color: rgba(123,29,46,.35); }
+.hb-row + .hb-row { margin-top: 1px; }
+.hb-row:active { transform: scale(.98); background: #221519; }
 
-/* Pierwszy — start pracy */
-.hb-row.hb-primary {
-  min-height: 90px;
-  background: #7B1D2E;
-  border: none;
-  border-radius: 6px;
-  margin-bottom: 4px;
-}
-.hb-row.hb-primary:active { background: #6A1826; transform: scale(.985); }
-.hb-row.hb-primary .hb-row-label { color: rgba(255,255,255,.45); }
-.hb-row.hb-primary .hb-row-title { color: #fff; }
-.hb-row.hb-primary .hb-row-arrow { color: rgba(255,255,255,.35); }
-.hb-row.hb-primary.working { background: #1C3A1E; border: none; }
-.hb-row.hb-primary.working:active { background: #152D18; }
-
-.hb-row-left { position: relative; z-index: 1; }
+.hb-row-left { position: relative; z-index: 1; flex: 1; }
 .hb-row-label {
-  font-family: 'DM Mono', monospace;
-  font-size: 9px; letter-spacing: 1.8px; text-transform: uppercase;
-  color: #9E7070; margin-bottom: 5px;
+  font-size: 10px; font-weight: 500; letter-spacing: .4px;
+  color: rgba(255,255,255,.28); margin-bottom: 2px;
 }
 .hb-row-title {
-  font-family: 'DM Serif Display', Georgia, serif;
-  font-size: 26px; font-weight: 400;
-  color: #1C0C0E; line-height: 1;
+  font-size: 20px; font-weight: 700; color: #fff;
+  letter-spacing: -.5px; line-height: 1.1;
 }
-.hb-row-title em { font-style: italic; }
-
 .hb-row-arrow {
-  font-size: 20px; color: rgba(123,29,46,.2); z-index: 1;
-  font-family: 'DM Serif Display', Georgia, serif;
+  font-size: 22px; color: rgba(255,255,255,.12); z-index: 1;
+  font-weight: 300;
   transition: transform .12s;
 }
 .hb-row:active .hb-row-arrow { transform: translateX(3px); }
 
-/* Aktywna zmiana — zielony primary */
-.hb-row.hb-primary.working .hb-row-label { color: rgba(255,255,255,.45); }
-.hb-row.hb-primary.working .hb-row-title { color: #fff; }
-.hb-row.hb-primary.working .hb-row-arrow { color: rgba(255,255,255,.3); }
-
-/* Pulsujący wskaźnik aktywnej zmiany */
-.hb-pulse {
-  position: absolute; top: 50%; right: 52px; z-index: 2;
-  width: 8px; height: 8px; margin-top: -4px;
-}
-.hb-pulse::before, .hb-pulse::after {
-  content:''; position:absolute; inset:0; border-radius:50%;
-}
-.hb-pulse::before { background:#4ADE80; }
-.hb-pulse::after {
-  background:rgba(74,222,128,.35);
-  animation: pulse-ring 2s ease-out infinite;
-}
-@keyframes pulse-ring {
-  0%   { transform:scale(1); opacity:.8; }
-  100% { transform:scale(4); opacity:0; }
-}
-
-/* Badge na chat */
+/* Badge */
 .hb-badge {
   position: absolute; top: 50%; right: 44px; margin-top: -10px; z-index: 3;
-  background: #7B1D2E; color: white;
-  font-family: 'DM Mono', monospace;
-  font-size: 9px; font-weight: 500;
-  min-width: 20px; height: 20px; border-radius: 2px;
+  background: #7B1D2E; color: white; font-size: 10px; font-weight: 700;
+  min-width: 20px; height: 20px; border-radius: 6px;
   display: flex; align-items: center; justify-content: center; padding: 0 5px;
 }
 
@@ -396,19 +357,11 @@ body.view-home #main-content { background: #F5F0EE; }
   transform: translate(-50%,-50%) scale(0);
   width: 300%; padding-bottom: 300%;
   border-radius: 50%;
-  background: rgba(123,29,46,.06);
+  background: rgba(255,255,255,.04);
   animation: ripple-anim .45s cubic-bezier(.4,0,.2,1) forwards;
 }
-.hb-row.hb-primary .hb-ripple { background: rgba(255,255,255,.1); }
 @keyframes ripple-anim {
   to { transform: translate(-50%,-50%) scale(1); opacity: 0; }
-}
-
-/* Separator kategorii */
-.hb-sep {
-  font-family: 'DM Mono', monospace;
-  font-size: 8px; letter-spacing: 2.5px; text-transform: uppercase;
-  color: #C4A0A0; padding: 8px 4px 4px; margin-top: 2px;
 }
 
 /* Back button w sekcjach */
@@ -1656,73 +1609,64 @@ function renderHome(mc){
   const tod=today();
   const myShiftToday=shifts.find(s=>s.employee_id===emp?.id&&s.date===tod);
   const active=workSessions.find(s=>s.employee_id===emp?.id&&!s.clock_out);
-
   const unread=chatUnread>0?chatUnread:null;
   const now=new Date();
-  const dStr=now.toLocaleDateString('pl-PL',{weekday:'short',day:'numeric',month:'short'});
+  const dStr=now.toLocaleDateString('pl-PL',{weekday:'long',day:'numeric',month:'long'});
 
-  // Pasek zmiany
-  let shiftText, shiftActive=false;
+  // Duży blok clock
+  let clockTitle, clockHint, clockCls='';
   if(active){
-    shiftActive=true;
-    shiftText=`Zmiana trwa od ${fmtTime(active.clock_in)}`;
+    clockTitle='Zakończ pracę';
+    clockHint=`Zmiana trwa od <strong>${fmtTime(active.clock_in)}</strong>`;
+    clockCls=' working';
   } else if(myShiftToday){
-    shiftText=`Zmiana: ${(myShiftToday.start_time||'').slice(0,5)}–${(myShiftToday.end_time||'').slice(0,5)}`;
+    clockTitle='Zacznij pracę';
+    clockHint=`Zmiana dziś <strong>${(myShiftToday.start_time||'').slice(0,5)}–${(myShiftToday.end_time||'').slice(0,5)}</strong> — kliknij, żeby zarejestrować`;
   } else {
-    shiftText='Brak zmiany w grafiku';
+    clockTitle='Zacznij pracę';
+    clockHint='Zarejestruj czas pracy';
   }
 
-  // Blok główny — start/stop pracy
-  const clockLabel=active?'Zakończ pracę':'Zacznij pracę';
-  const clockSub=active?'kliknij, żeby zakończyć':'Zarejestruj rozpoczęcie';
-  const clockClass=active?'hb-primary working':'hb-primary';
-
   const rowHTML=b=>`
-    <div class="hb-row${b.cls?' '+b.cls:''}" onclick="hbTap(this,'${b.id}')">
-      ${b.pulse?`<span class="hb-pulse"></span>`:''}
+    <div class="hb-row" onclick="hbTap(this,'${b.id}')">
       ${b.badge?`<span class="hb-badge">${b.badge}</span>`:''}
       <div class="hb-row-left">
         <div class="hb-row-label">${b.sub}</div>
-        <div class="hb-row-title">${b.em?`<em>${b.label}</em>`:b.label}</div>
+        <div class="hb-row-title">${b.label}</div>
       </div>
-      <div class="hb-row-arrow">→</div>
+      <div class="hb-row-arrow">›</div>
       <div class="hb-ripple-wrap"></div>
     </div>`;
 
   const rows=[];
-  rows.push({id:'clock', cls:clockClass, pulse:!!active, em:true,
-    label: clockLabel, sub: clockSub});
-  rows.push({id:'sched',  label:'Grafik',      sub:'harmonogram zmian'});
-  rows.push({id:'chat',   label:'Chat',         sub:'wiadomości zespołu', badge:unread});
+  rows.push({id:'sched',   label:'Grafik',       sub:'harmonogram zmian'});
+  rows.push({id:'chat',    label:'Chat',          sub:'wiadomości zespołu', badge:unread});
   if(isOwnerOrMgr||isKitchen)
-    rows.push({id:'kitchen',label:'Kuchnia',    sub:'receptury & straty'});
-  rows.push({id:'board',  label:'Tablica',      sub:'ogłoszenia'});
-  rows.push({id:'events', label:'Wydarzenia',   sub:'eventy & menu'});
-  rows.push({id:'avail',  label:'Dyspozycja',   sub:'dostępność w miesiącu'});
+    rows.push({id:'kitchen', label:'Kuchnia',     sub:'receptury & straty'});
+  rows.push({id:'board',   label:'Tablica',       sub:'ogłoszenia'});
+  rows.push({id:'events',  label:'Wydarzenia',    sub:'eventy & menu'});
+  rows.push({id:'avail',   label:'Dyspozycja',    sub:'dostępność'});
   if(isOwnerOrMgr){
-    rows.push({id:'emps', label:'Pracownicy',   sub:'zarządzanie zespołem'});
-    rows.push({id:'dash', label:'Panel',         sub:'raporty & rozliczenia'});
+    rows.push({id:'emps',  label:'Pracownicy',    sub:'zarządzanie'});
+    rows.push({id:'dash',  label:'Panel',          sub:'raporty'});
   }
-
-  const ctaBtn=!active&&myShiftToday
-    ?`<button class="hw-shift-cta" onclick="hbTap(document.querySelector('.hb-primary'),'clock')">Start →</button>`
-    :'';
 
   mc.innerHTML=`
   <div class="hw-wrap">
     <div class="hw-header">
-      <div class="hw-restaurant">Osteria Antonina</div>
-      <div class="hw-greeting">Cześć, <em>${firstName}</em></div>
-      <div class="hw-meta">
-        <span class="hw-role-chip">${role}</span>
-        <span class="hw-date-str">${dStr}</span>
-      </div>
+      <div class="hw-name">${firstName}<span>.</span></div>
+      <div class="hw-sub">${role} · ${dStr}</div>
     </div>
-    <div class="hw-shift-bar${shiftActive?' active':''}">
-      <span class="hw-shift-dot"></span>
-      <span class="hw-shift-text">${shiftText}</span>
-      ${ctaBtn}
+
+    <div class="hw-clock-block${clockCls}" onclick="hbTap(this,'clock')">
+      ${active?`<span class="hw-clock-pulse"></span>`:''}
+      <div class="hw-clock-label">${active?'Trwa zmiana':'Rejestracja czasu'}</div>
+      <div class="hw-clock-title">${clockTitle}</div>
+      <div class="hw-clock-hint">${clockHint}</div>
+      <div class="hw-clock-arrow">→</div>
+      <div class="hb-ripple-wrap"></div>
     </div>
+
     <div class="hw-blocks">
       ${rows.map(rowHTML).join('')}
     </div>
