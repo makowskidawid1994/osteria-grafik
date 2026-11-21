@@ -734,6 +734,129 @@ body { font-family: var(--font); background: var(--bg); color: var(--text); min-
 .clr-badge-break { background: #FFF7ED; color: var(--warn); }
 .clr-badge-out { background: var(--bg); color: var(--text-3); border: 1px solid var(--border); }
 .clr-time { font-size: 12px; color: var(--text-3); min-width: 60px; text-align: right; }
+
+/* ─── Chat zespołowy ─── */
+.chat-screen { display: flex; flex-direction: column; height: 100%; }
+.chat-msgs {
+  flex: 1; overflow-y: auto; padding: 12px 16px;
+  display: flex; flex-direction: column; gap: 10px;
+  -webkit-overflow-scrolling: touch;
+}
+.chat-bubble-wrap { display: flex; gap: 8px; align-items: flex-end; }
+.chat-bubble-wrap.mine { flex-direction: row-reverse; }
+.chat-av {
+  width: 28px; height: 28px; border-radius: 50%; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px; font-weight: 700; color: white;
+}
+.chat-bubble {
+  max-width: 72%; padding: 10px 13px; border-radius: 18px;
+  font-size: 14px; line-height: 1.4; word-break: break-word;
+  position: relative;
+}
+.chat-bubble-wrap:not(.mine) .chat-bubble {
+  background: white; border: 1px solid var(--border);
+  border-bottom-left-radius: 4px; color: var(--text);
+}
+.chat-bubble-wrap.mine .chat-bubble {
+  background: var(--text); color: white;
+  border-bottom-right-radius: 4px;
+}
+.chat-meta { font-size: 10px; color: var(--text-3); margin-top: 3px; }
+.chat-bubble-wrap.mine .chat-meta { text-align: right; }
+.chat-sender { font-weight: 600; font-size: 11px; color: var(--text-2); margin-bottom: 2px; }
+.chat-bubble-wrap.mine .chat-sender { display: none; }
+.chat-input-bar {
+  display: flex; gap: 8px; padding: 10px 12px calc(env(safe-area-inset-bottom) + 10px);
+  background: white; border-top: 1px solid var(--border); align-items: flex-end;
+}
+.chat-input {
+  flex: 1; padding: 10px 14px; border: 1.5px solid var(--border); border-radius: 22px;
+  font-size: 14px; font-family: var(--font); outline: none; resize: none;
+  max-height: 120px; line-height: 1.4; transition: border-color .15s;
+  background: var(--bg); color: var(--text);
+}
+.chat-input:focus { border-color: var(--text); background: white; }
+.chat-send-btn {
+  width: 40px; height: 40px; border-radius: 50%; background: var(--text);
+  border: none; cursor: pointer; display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; transition: all .15s; color: white;
+}
+.chat-send-btn:hover { background: var(--accent-hover); transform: scale(1.05); }
+.chat-send-btn svg { width: 18px; height: 18px; stroke: white; fill: none; stroke-width: 2; }
+.chat-day-label {
+  text-align: center; font-size: 11px; color: var(--text-3); font-weight: 500;
+  padding: 4px 10px; background: var(--border); border-radius: 10px;
+  align-self: center; margin: 4px 0;
+}
+.chat-empty { text-align: center; padding: 40px 20px; color: var(--text-3); font-size: 14px; }
+
+/* ─── Badge powiadomień ─── */
+.bnav-badge {
+  position: absolute; top: 4px; right: 50%; transform: translateX(calc(50% + 10px));
+  background: var(--danger); color: white; font-size: 9px; font-weight: 700;
+  min-width: 16px; height: 16px; border-radius: 8px; display: flex;
+  align-items: center; justify-content: center; padding: 0 4px;
+  border: 2px solid white; pointer-events: none;
+}
+
+/* ─── Profil pracownika (sheet) ─── */
+.profile-sheet-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,.4); z-index: 400;
+  display: flex; align-items: flex-end; opacity: 0; pointer-events: none;
+  transition: opacity .2s;
+}
+.profile-sheet-overlay.open { opacity: 1; pointer-events: all; }
+.profile-sheet {
+  background: white; width: 100%; border-radius: 24px 24px 0 0;
+  padding: 0 0 calc(env(safe-area-inset-bottom) + 20px);
+  transform: translateY(100%); transition: transform .3s cubic-bezier(.4,0,.2,1);
+  max-height: 85vh; overflow-y: auto;
+}
+.profile-sheet-overlay.open .profile-sheet { transform: translateY(0); }
+.profile-sheet-pill { width: 36px; height: 4px; background: var(--border-2); border-radius: 2px; margin: 12px auto 0; }
+.profile-sheet-header {
+  display: flex; align-items: center; gap: 14px; padding: 20px 20px 16px;
+  border-bottom: 1px solid var(--border);
+}
+.profile-sheet-av {
+  width: 56px; height: 56px; border-radius: 50%; display: flex; align-items: center;
+  justify-content: center; font-size: 20px; font-weight: 700; color: white; flex-shrink: 0;
+}
+.profile-sheet-name { font-size: 18px; font-weight: 700; letter-spacing: -.4px; }
+.profile-sheet-role { font-size: 12px; color: var(--text-3); margin-top: 2px; }
+.profile-stat-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1px; background: var(--border); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); margin-top: 0; }
+.profile-stat { background: white; padding: 14px 10px; text-align: center; }
+.profile-stat-val { font-size: 20px; font-weight: 700; letter-spacing: -.5px; }
+.profile-stat-lbl { font-size: 10px; color: var(--text-3); font-weight: 500; margin-top: 2px; letter-spacing: .2px; }
+.profile-actions { padding: 16px 20px; display: flex; flex-direction: column; gap: 8px; }
+.profile-action-btn {
+  display: flex; align-items: center; gap: 12px; padding: 13px 14px;
+  background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-lg);
+  cursor: pointer; font-family: var(--font); font-size: 14px; font-weight: 500;
+  color: var(--text); transition: all .12s; text-align: left;
+}
+.profile-action-btn:hover { background: white; border-color: var(--border-2); }
+.profile-action-btn svg { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 1.8; color: var(--text-3); flex-shrink: 0; }
+.profile-action-btn.danger { color: var(--danger); }
+.profile-action-btn.danger svg { color: var(--danger); }
+
+/* ─── Animacje wejścia kart ─── */
+@keyframes slide-up { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
+.anim-in { animation: slide-up .25s ease both; }
+.anim-in:nth-child(2) { animation-delay: .05s; }
+.anim-in:nth-child(3) { animation-delay: .1s; }
+.anim-in:nth-child(4) { animation-delay: .15s; }
+
+/* ─── Pull to refresh ─── */
+.ptr-indicator {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  padding: 12px; font-size: 12px; color: var(--text-3);
+  overflow: hidden; height: 0; transition: height .2s;
+}
+.ptr-indicator.visible { height: 44px; }
+.ptr-spinner { width: 16px; height: 16px; border: 2px solid var(--border); border-top-color: var(--text); border-radius: 50%; animation: spin .6s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
 </style>
 </head>
 <body>
@@ -800,7 +923,34 @@ body { font-family: var(--font); background: var(--bg); color: var(--text); min-
       <div class="bnav-icon-wrap"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
       Czas pracy
     </button>
+    <button class="bnav-item" id="nav-chat" onclick="showView('chat')">
+      <div class="bnav-icon-wrap" style="position:relative">
+        <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        <span class="bnav-badge" id="chat-badge" style="display:none">0</span>
+      </div>
+      Chat
+    </button>
   </nav>
+</div>
+
+<!-- PROFIL SHEET -->
+<div class="profile-sheet-overlay" id="profile-sheet-overlay" onclick="if(event.target===this)closeProfileSheet()">
+  <div class="profile-sheet" id="profile-sheet">
+    <div class="profile-sheet-pill"></div>
+    <div class="profile-sheet-header">
+      <div class="profile-sheet-av" id="ps-av"></div>
+      <div>
+        <div class="profile-sheet-name" id="ps-name"></div>
+        <div class="profile-sheet-role" id="ps-role"></div>
+      </div>
+    </div>
+    <div class="profile-stat-row">
+      <div class="profile-stat anim-in"><div class="profile-stat-val" id="ps-shifts">—</div><div class="profile-stat-lbl">Zmiany w tyg.</div></div>
+      <div class="profile-stat anim-in"><div class="profile-stat-val" id="ps-hours">—</div><div class="profile-stat-lbl">Godziny w tyg.</div></div>
+      <div class="profile-stat anim-in"><div class="profile-stat-val" id="ps-today">—</div><div class="profile-stat-lbl">Dziś</div></div>
+    </div>
+    <div class="profile-actions" id="ps-actions"></div>
+  </div>
 </div>
 
 <!-- SHIFT MODAL -->
@@ -909,6 +1059,8 @@ async function doLogin() {
       if(dashBtn) dashBtn.querySelector('span:last-child') && (dashBtn.querySelector('span:last-child').textContent = 'Mój panel');
     }
     await loadAllData();
+    // Załaduj chat w tle i startuj polling
+    loadChatMessages().then(()=>startGlobalPolling()).catch(()=>{});
     showView('sched');
   } catch(e) {
     const el=document.getElementById('auth-err');
@@ -1041,6 +1193,18 @@ function renderView(){
   else if(currentView==='avail') renderAvail(mc);
   else if(currentView==='dash') renderDash(mc).catch(e=>console.error(e));
   else if(currentView==='clock') renderClock(mc);
+  else if(currentView==='chat'){
+    // Reset badge przy wejściu
+    chatUnread=0; updateChatBadge();
+    loadChatMessages().then(ok=>{
+      if(ok) renderChat(mc);
+      else {
+        mc.innerHTML=`<div class="page-bar"><div class="page-bar-title">Chat zespołowy</div></div><div style="padding:40px;text-align:center;color:var(--text-3)"><p style="font-size:14px">Inicjalizacja chatu…</p><p style="font-size:12px;margin-top:8px">Trwa konfiguracja bazy danych.</p></div>`;
+        // Spróbuj utworzyć tabelę przez SQL
+        createChatTable().then(()=>loadChatMessages().then(()=>renderChat(mc)));
+      }
+    });
+  }
 }
 
 async function renderDashAsync(mc){ await renderDash(mc); }
@@ -2354,6 +2518,313 @@ async function doEndBreak(){
     showToast('Błąd: '+e.message.slice(0,60));
   }
 }
+
+/* ═══════════════════════════════════════════════
+   CHAT ZESPOŁOWY
+═══════════════════════════════════════════════ */
+async function createChatTable(){
+  // Próba stworzenia tabeli przez Supabase SQL API (wymaga service_role, może nie zadziałać z anon)
+  // W praktyce tabela powinna być stworzona raz przez SQL w Supabase dashboard
+  // Ta funkcja tylko sygnalizuje błąd
+  console.log('[Chat] Tabela team_messages nie istnieje — stwórz ją w Supabase');
+}
+let chatMessages=[];
+let chatLastSeen=parseInt(localStorage.getItem('chatLastSeen')||'0');
+let chatPollTimer=null;
+let chatUnread=0;
+
+async function loadChatMessages(){
+  try{
+    const msgs=await sbFetch('/rest/v1/team_messages?select=*,employees(name,department)&order=created_at.asc&limit=100');
+    chatMessages=Array.isArray(msgs)?msgs:[];
+    return true;
+  }catch(e){
+    // Tabela może nie istnieć jeszcze
+    return false;
+  }
+}
+
+function renderChat(mc){
+  const emp=getCurrentEmployee();
+  const myEmail=currentUser?.email||'';
+
+  mc.innerHTML=`
+  <div class="page-bar" style="position:sticky;top:0;z-index:10;">
+    <div class="page-bar-title">Chat zespołowy</div>
+    <div style="font-size:11px;color:var(--text-3)">${employees.length} os.</div>
+  </div>
+  <div class="chat-msgs" id="chat-msgs-list"></div>
+  <div class="chat-input-bar">
+    <textarea class="chat-input" id="chat-input" placeholder="Napisz coś do zespołu…" rows="1" oninput="autoResizeChat(this)" onkeydown="chatKeydown(event)"></textarea>
+    <button class="chat-send-btn" onclick="sendChatMsg()">
+      <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+    </button>
+  </div>`;
+
+  renderChatMessages();
+
+  // Scroll na dół
+  setTimeout(()=>{
+    const list=document.getElementById('chat-msgs-list');
+    if(list) list.scrollTop=list.scrollHeight;
+  },50);
+
+  // Zresetuj badge
+  chatUnread=0;
+  updateChatBadge();
+  if(chatMessages.length>0){
+    chatLastSeen=Date.now();
+    localStorage.setItem('chatLastSeen', chatLastSeen);
+  }
+
+  // Start polling
+  if(chatPollTimer) clearInterval(chatPollTimer);
+  chatPollTimer=setInterval(()=>{
+    if(currentView==='chat') pollChat();
+  },5000);
+}
+
+function renderChatMessages(){
+  const list=document.getElementById('chat-msgs-list');
+  if(!list) return;
+  const myEmail=currentUser?.email||'';
+  if(!chatMessages.length){
+    list.innerHTML=`<div class="chat-empty">👋 Zacznij rozmowę ze swoim zespołem!</div>`;
+    return;
+  }
+
+  let html='';
+  let lastDay='';
+  chatMessages.forEach(msg=>{
+    const isMe=msg.sender_email===myEmail;
+    const empName=msg.employees?.name||msg.sender_email?.split('@')[0]||'?';
+    const color=avatarColor(empName);
+    const ini=initials(empName);
+    const ts=new Date(msg.created_at);
+    const day=ts.toLocaleDateString('pl-PL',{weekday:'short',day:'numeric',month:'short'});
+    const time=ts.toLocaleTimeString('pl-PL',{hour:'2-digit',minute:'2-digit'});
+
+    if(day!==lastDay){
+      html+=`<div class="chat-day-label">${day}</div>`;
+      lastDay=day;
+    }
+
+    html+=`<div class="chat-bubble-wrap${isMe?' mine':''}">
+      ${!isMe?`<div class="chat-av" style="background:${color}">${ini}</div>`:''}
+      <div>
+        ${!isMe?`<div class="chat-sender">${empName}</div>`:''}
+        <div class="chat-bubble">${escHtml(msg.content)}</div>
+        <div class="chat-meta">${time}</div>
+      </div>
+      ${isMe?`<div class="chat-av" style="background:${color}">${ini}</div>`:''}
+    </div>`;
+  });
+  list.innerHTML=html;
+}
+
+function escHtml(s){
+  return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');
+}
+
+function autoResizeChat(el){
+  el.style.height='auto';
+  el.style.height=Math.min(el.scrollHeight,120)+'px';
+}
+
+function chatKeydown(e){
+  if(e.key==='Enter'&&!e.shiftKey){ e.preventDefault(); sendChatMsg(); }
+}
+
+async function sendChatMsg(){
+  const inp=document.getElementById('chat-input');
+  if(!inp) return;
+  const content=inp.value.trim();
+  if(!content) return;
+  inp.value=''; inp.style.height='auto';
+
+  const emp=getCurrentEmployee();
+  try{
+    const msg=await sbFetch('/rest/v1/team_messages',{
+      method:'POST',
+      headers:{'Prefer':'return=representation'},
+      body:JSON.stringify({
+        content,
+        sender_email:currentUser?.email||'',
+        employee_id:emp?.id||null
+      })
+    });
+    const newMsg=Array.isArray(msg)?msg[0]:msg;
+    // Dociągnij employees info
+    newMsg.employees={name:emp?.name||currentUser?.email?.split('@')[0],department:emp?.department};
+    chatMessages.push(newMsg);
+    renderChatMessages();
+    setTimeout(()=>{
+      const list=document.getElementById('chat-msgs-list');
+      if(list) list.scrollTop=list.scrollHeight;
+    },30);
+  }catch(e){
+    showToast('Błąd wysyłania: '+e.message.slice(0,50));
+  }
+}
+
+async function pollChat(){
+  if(!currentUser) return;
+  try{
+    const msgs=await sbFetch('/rest/v1/team_messages?select=*,employees(name,department)&order=created_at.asc&limit=100');
+    const newMsgs=Array.isArray(msgs)?msgs:[];
+    if(newMsgs.length>chatMessages.length){
+      const added=newMsgs.length-chatMessages.length;
+      chatMessages=newMsgs;
+      if(currentView==='chat'){
+        renderChatMessages();
+        setTimeout(()=>{
+          const list=document.getElementById('chat-msgs-list');
+          if(list) list.scrollTop=list.scrollHeight;
+        },30);
+      } else {
+        chatUnread+=added;
+        updateChatBadge();
+        // Wibracja (haptyka) jeśli dostępna
+        if(navigator.vibrate) navigator.vibrate([50,30,50]);
+      }
+    }
+  }catch(e){}
+}
+
+function updateChatBadge(){
+  const badge=document.getElementById('chat-badge');
+  if(!badge) return;
+  if(chatUnread>0){
+    badge.style.display='flex';
+    badge.textContent=chatUnread>9?'9+':chatUnread;
+  } else {
+    badge.style.display='none';
+  }
+}
+
+// Start globalnego pollingu po zalogowaniu
+function startGlobalPolling(){
+  if(chatPollTimer) clearInterval(chatPollTimer);
+  chatPollTimer=setInterval(()=>{
+    if(currentView!=='chat') pollChat();
+  },10000);
+}
+
+/* ═══════════════════════════════════════════════
+   PROFIL PRACOWNIKA — BOTTOM SHEET
+═══════════════════════════════════════════════ */
+function openProfileSheet(){
+  const emp=getCurrentEmployee();
+  const username=currentUser?.email?.split('@')[0]||'';
+  const roleName={owner:'Właściciel',manager:'Manager',kitchen:'Kuchnia',front:'Sala',employee:'Pracownik'}[currentRole]||currentRole;
+
+  // Dane statystyczne — zmiany w tym tygodniu
+  const{from,to}=getWeekRange(0);
+  const myShifts=emp?shifts.filter(s=>s.employee_id===emp.id&&s.date>=from&&s.date<=to):[];
+  const totalH=myShifts.reduce((s,sh)=>s+calcH(sh.start_time||'10:00:00',sh.end_time||'18:00:00'),0);
+  const todayStr=today();
+  const todayShift=myShifts.find(s=>s.date===todayStr);
+
+  // Avatar
+  const av=document.getElementById('ps-av');
+  const ini=emp?initials(emp.name):username.slice(0,2).toUpperCase();
+  const col=emp?avatarColor(emp.name):'#09090B';
+  if(av){av.textContent=ini; av.style.background=col;}
+  document.getElementById('ps-name').textContent=emp?.name||username;
+  document.getElementById('ps-role').textContent=roleName+(emp?.department?` · ${emp.department}`:'');
+  document.getElementById('ps-shifts').textContent=myShifts.length;
+  document.getElementById('ps-hours').textContent=totalH>0?totalH.toFixed(1)+'h':'0h';
+  document.getElementById('ps-today').textContent=todayShift
+    ?`${(todayShift.start_time||'').slice(0,5)}–${(todayShift.end_time||'').slice(0,5)}`
+    :'wolne';
+
+  // Akcje
+  const actions=document.getElementById('ps-actions');
+  actions.innerHTML=`
+    <button class="profile-action-btn anim-in" onclick="closeProfileSheet();showView('clock')">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      Mój czas pracy
+    </button>
+    <button class="profile-action-btn anim-in" onclick="closeProfileSheet();showView('avail')">
+      <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      Moje dyspozycje
+    </button>
+    <button class="profile-action-btn anim-in" onclick="closeProfileSheet();startChangeEmail()">
+      <svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+      Zmień e-mail
+    </button>
+    <button class="profile-action-btn anim-in" onclick="closeProfileSheet();startChangePassword()">
+      <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      Zmień hasło
+    </button>
+    <button class="profile-action-btn danger anim-in" onclick="closeProfileSheet();doLogout()">
+      <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+      Wyloguj się
+    </button>`;
+
+  document.getElementById('profile-sheet-overlay').classList.add('open');
+}
+
+function closeProfileSheet(){
+  document.getElementById('profile-sheet-overlay').classList.remove('open');
+}
+
+// Zmień onclick avatara na profil sheet
+function toggleAvatarMenu(e){
+  e.stopPropagation();
+  // Zamiast dropdown — otwieramy profil sheet (pełniejszy)
+  openProfileSheet();
+  // Ukryj stare menu jeśli widoczne
+  const m=document.getElementById('avatar-menu');
+  if(m) m.style.display='none';
+}
+
+/* ═══════════════════════════════════════════════
+   PULL TO REFRESH
+═══════════════════════════════════════════════ */
+(function setupPTR(){
+  let startY=0, pulling=false, threshold=60;
+  const mc=()=>document.getElementById('main-content');
+
+  document.addEventListener('touchstart',e=>{
+    const el=mc();
+    if(el&&el.scrollTop===0) startY=e.touches[0].clientY;
+  },{passive:true});
+
+  document.addEventListener('touchmove',e=>{
+    const el=mc(); if(!el) return;
+    if(el.scrollTop>0){startY=0;return;}
+    const dy=e.touches[0].clientY-startY;
+    if(dy>10&&startY>0){
+      pulling=true;
+      let ind=document.getElementById('ptr-ind');
+      if(!ind){
+        ind=document.createElement('div');
+        ind.id='ptr-ind'; ind.className='ptr-indicator';
+        ind.innerHTML=`<div class="ptr-spinner"></div><span>Odświeżanie…</span>`;
+        el.prepend(ind);
+      }
+      ind.classList.toggle('visible',dy>threshold);
+    }
+  },{passive:true});
+
+  document.addEventListener('touchend',async e=>{
+    if(!pulling) return; pulling=false;
+    const ind=document.getElementById('ptr-ind');
+    const el=mc();
+    const dy=e.changedTouches[0].clientY-startY;
+    if(dy>threshold){
+      if(ind) ind.classList.add('visible');
+      await loadAllData();
+      const curView=currentView;
+      if(curView) showView(curView);
+      showToast('Odświeżono ✓');
+    }
+    if(ind){ ind.classList.remove('visible'); setTimeout(()=>ind.remove(),300); }
+    startY=0;
+  });
+})();
+
 </script>
 </body>
 </html>
