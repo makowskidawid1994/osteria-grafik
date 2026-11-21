@@ -224,60 +224,74 @@ body.view-home #main-content { background: #0F0A0B; }
   min-height: 100vh;
   background: #0F0A0B;
   display: flex; flex-direction: column;
-  padding-bottom: max(env(safe-area-inset-bottom), 24px);
+  padding-bottom: max(env(safe-area-inset-bottom), 100px);
   -webkit-tap-highlight-color: transparent;
 }
 
-/* Górna sekcja — powitanie */
+/* Powitanie z animacją */
 .hw-header {
-  padding: 32px 20px 20px;
+  padding: 36px 22px 20px;
 }
-.hw-name {
-  font-size: 28px; font-weight: 800; color: #fff;
-  letter-spacing: -1px; line-height: 1;
+.hw-greeting-line {
+  overflow: hidden; height: 32px;
 }
-.hw-name span { color: #7B1D2E; }
-.hw-sub {
-  margin-top: 4px;
-  font-size: 13px; font-weight: 400; color: rgba(255,255,255,.35);
-  letter-spacing: 0;
+.hw-greeting-text {
+  font-size: 26px; font-weight: 400; color: rgba(255,255,255,.38);
+  letter-spacing: -.5px; line-height: 32px;
+  transform: translateY(32px);
+  animation: slideUp .45s cubic-bezier(.4,0,.2,1) .05s forwards;
+}
+.hw-name-line {
+  overflow: hidden; height: 50px; margin-top: 0;
+}
+.hw-name-text {
+  font-size: 44px; font-weight: 800; color: #fff;
+  letter-spacing: -2px; line-height: 50px;
+  transform: translateY(50px);
+  animation: slideUp .45s cubic-bezier(.4,0,.2,1) .15s forwards;
+}
+@keyframes slideUp {
+  to { transform: translateY(0); }
 }
 
-/* Blok START — bardzo wyraźny */
+/* Blok Zacznij pracę */
 .hw-clock-block {
-  margin: 0 14px 10px;
+  margin: 0 14px 8px;
   position: relative; overflow: hidden;
-  border-radius: 20px;
+  border-radius: 18px;
   background: #7B1D2E;
-  padding: 22px 22px 22px;
+  padding: 24px 22px 68px;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
-  transition: transform .12s cubic-bezier(.4,0,.2,1);
+  transition: transform .12s cubic-bezier(.4,0,.2,1), opacity .12s;
   will-change: transform;
+  opacity: 0;
+  animation: fadeInUp .4s cubic-bezier(.4,0,.2,1) .38s forwards;
 }
-.hw-clock-block:active { transform: scale(.97); background: #6A1826; }
-.hw-clock-block.working {
-  background: linear-gradient(135deg, #0D3B1A 0%, #0A2E13 100%);
-}
-.hw-clock-block.working:active { background: #082410; }
+.hw-clock-block:active { transform: scale(.975); opacity: .9; }
+.hw-clock-block.working { background: #0E2E14; }
+.hw-clock-block.working:active { background: #0A2410; }
 
-.hw-clock-label {
-  font-size: 11px; font-weight: 600; letter-spacing: 1.5px;
-  text-transform: uppercase; color: rgba(255,255,255,.5);
-  margin-bottom: 8px;
+.hw-clock-eyebrow {
+  font-size: 10px; font-weight: 600; letter-spacing: 2px;
+  text-transform: uppercase; color: rgba(255,255,255,.4);
+  margin-bottom: 10px;
 }
 .hw-clock-title {
-  font-size: 36px; font-weight: 900; color: #fff;
-  letter-spacing: -1.5px; line-height: 1;
+  font-size: 40px; font-weight: 900; color: #fff;
+  letter-spacing: -2px; line-height: .95;
 }
-.hw-clock-hint {
-  margin-top: 10px;
-  font-size: 12px; color: rgba(255,255,255,.4); font-weight: 400;
+.hw-clock-sub {
+  position: absolute; bottom: 22px; left: 22px; right: 60px;
+  font-size: 12px; color: rgba(255,255,255,.38); font-weight: 400; line-height: 1.4;
 }
-.hw-clock-hint strong { color: rgba(255,255,255,.7); font-weight: 600; }
-.hw-clock-arrow {
-  position: absolute; right: 22px; bottom: 22px;
-  font-size: 28px; color: rgba(255,255,255,.25); font-weight: 300; line-height: 1;
+.hw-clock-sub strong { color: rgba(255,255,255,.65); font-weight: 600; }
+.hw-clock-caret {
+  position: absolute; right: 20px; bottom: 20px;
+  width: 36px; height: 36px; border-radius: 50%;
+  background: rgba(255,255,255,.12);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; color: rgba(255,255,255,.7);
 }
 .hw-clock-pulse {
   position: absolute; top: 22px; right: 22px;
@@ -288,60 +302,75 @@ body.view-home #main-content { background: #0F0A0B; }
 }
 .hw-clock-pulse::before { background:#4ADE80; }
 .hw-clock-pulse::after {
-  background:rgba(74,222,128,.4);
+  background:rgba(74,222,128,.35);
   animation: pulse-ring 2s ease-out infinite;
 }
 @keyframes pulse-ring {
   0% { transform:scale(1); opacity:.8; }
   100% { transform:scale(4.5); opacity:0; }
 }
-.hw-clock-block .hb-ripple-wrap { border-radius: 20px; }
-
-/* Lista sekcji */
-.hw-blocks {
-  flex: 1;
-  padding: 0 14px;
-  display: flex; flex-direction: column;
-  gap: 2px;
+@keyframes fadeInUp {
+  from { opacity:0; transform:translateY(12px); }
+  to   { opacity:1; transform:translateY(0); }
 }
 
-/* Każdy wiersz */
+/* ── Bloki — płaskie bańki ── */
+.hw-blocks {
+  padding: 0 16px;
+  display: flex; flex-direction: column;
+  gap: 10px;
+}
+
+/* Każda "bańka" — płaski pill */
 .hb-row {
   position: relative; overflow: hidden;
-  border-radius: 14px;
-  min-height: 68px;
+  border-radius: 100px;        /* pełny pill */
+  height: 72px;
   cursor: pointer;
   display: flex; align-items: center;
-  justify-content: space-between;
-  padding: 0 18px;
-  background: #1A1113;
-  border: 1px solid rgba(255,255,255,.05);
+  justify-content: center;
+  padding: 0 32px;
+  background: rgba(255,255,255,.055);
+  border: 1.5px solid rgba(255,255,255,.08);
   -webkit-tap-highlight-color: transparent;
-  transition: transform .1s cubic-bezier(.4,0,.2,1), background .1s;
+  transition: transform .12s cubic-bezier(.34,1.56,.64,1), background .12s;
   will-change: transform;
+  opacity: 0;
+  animation: pillIn .4s cubic-bezier(.34,1.4,.64,1) forwards;
 }
-.hb-row + .hb-row { margin-top: 1px; }
-.hb-row:active { transform: scale(.98); background: #221519; }
+.hw-blocks .hb-row:nth-child(1) { animation-delay: .42s; }
+.hw-blocks .hb-row:nth-child(2) { animation-delay: .50s; }
+.hw-blocks .hb-row:nth-child(3) { animation-delay: .58s; }
+.hw-blocks .hb-row:nth-child(4) { animation-delay: .66s; }
+.hw-blocks .hb-row:nth-child(5) { animation-delay: .74s; }
+.hw-blocks .hb-row:nth-child(6) { animation-delay: .82s; }
+.hw-blocks .hb-row:nth-child(7) { animation-delay: .90s; }
+.hw-blocks .hb-row:nth-child(8) { animation-delay: .98s; }
+@keyframes pillIn {
+  from { opacity:0; transform: scale(.85); }
+  to   { opacity:1; transform: scale(1); }
+}
 
-.hb-row-left { position: relative; z-index: 1; flex: 1; }
+.hb-row:active {
+  transform: scale(.94);
+  background: rgba(255,255,255,.1);
+  border-color: rgba(255,255,255,.18);
+}
+
+.hb-row-left { z-index: 1; text-align: center; }
 .hb-row-label {
-  font-size: 10px; font-weight: 500; letter-spacing: .4px;
-  color: rgba(255,255,255,.28); margin-bottom: 2px;
+  font-size: 10px; font-weight: 500; color: rgba(255,255,255,.3);
+  letter-spacing: .3px; margin-bottom: 1px;
 }
 .hb-row-title {
-  font-size: 20px; font-weight: 700; color: #fff;
+  font-size: 20px; font-weight: 700; color: rgba(255,255,255,.9);
   letter-spacing: -.5px; line-height: 1.1;
 }
-.hb-row-arrow {
-  font-size: 22px; color: rgba(255,255,255,.12); z-index: 1;
-  font-weight: 300;
-  transition: transform .12s;
-}
-.hb-row:active .hb-row-arrow { transform: translateX(3px); }
+.hb-row-arrow { display: none; }
 
 /* Badge */
 .hb-badge {
-  position: absolute; top: 50%; right: 44px; margin-top: -10px; z-index: 3;
+  position: absolute; top: 50%; right: 24px; margin-top: -10px; z-index: 3;
   background: #7B1D2E; color: white; font-size: 10px; font-weight: 700;
   min-width: 20px; height: 20px; border-radius: 6px;
   display: flex; align-items: center; justify-content: center; padding: 0 5px;
@@ -350,18 +379,46 @@ body.view-home #main-content { background: #0F0A0B; }
 /* Ripple */
 .hb-ripple-wrap {
   position: absolute; inset: 0; border-radius: inherit;
-  overflow: hidden; pointer-events: none; z-index: 4;
+  overflow: hidden; pointer-events: none; z-index: 10;
 }
 .hb-ripple {
   position: absolute; left: 50%; top: 50%;
   transform: translate(-50%,-50%) scale(0);
   width: 300%; padding-bottom: 300%;
   border-radius: 50%;
-  background: rgba(255,255,255,.04);
+  background: rgba(255,255,255,.05);
   animation: ripple-anim .45s cubic-bezier(.4,0,.2,1) forwards;
 }
 @keyframes ripple-anim {
   to { transform: translate(-50%,-50%) scale(1); opacity: 0; }
+}
+
+/* ── Chat FAB — zawsze widoczny ── */
+.chat-fab {
+  position: fixed; right: 18px; z-index: 200;
+  bottom: calc(max(env(safe-area-inset-bottom), 12px) + 70px);
+  width: 54px; height: 54px; border-radius: 50%;
+  background: #7B1D2E;
+  box-shadow: 0 4px 20px rgba(0,0,0,.4), 0 1px 4px rgba(0,0,0,.3);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; border: none; outline: none;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform .15s cubic-bezier(.4,0,.2,1), box-shadow .15s;
+  will-change: transform;
+}
+.chat-fab:active { transform: scale(.9); box-shadow: 0 2px 10px rgba(0,0,0,.35); }
+.chat-fab svg { width: 22px; height: 22px; stroke: #fff; fill: none; stroke-width: 1.8; }
+.chat-fab-badge {
+  position: absolute; top: -2px; right: -2px;
+  min-width: 18px; height: 18px; border-radius: 9px;
+  background: #EF4444; color: white; font-size: 10px; font-weight: 700;
+  display: none; align-items: center; justify-content: center; padding: 0 4px;
+  border: 2px solid #0F0A0B;
+}
+.chat-fab-badge.visible { display: flex; }
+/* Na jasnym tle (inne widoki) FAB też działa, bo position:fixed */
+body:not(.view-home) .chat-fab {
+  bottom: calc(max(env(safe-area-inset-bottom), 12px) + 70px);
 }
 
 /* Back button w sekcjach */
@@ -1244,6 +1301,11 @@ body.view-home #main-content { background: #0F0A0B; }
     <span class="header-name" id="hdr-user"></span>
   </div>
   <div class="main" id="main-content"><div class="spinner"></div></div>
+  <!-- Chat FAB — zawsze widoczny -->
+  <button class="chat-fab" id="chat-fab" onclick="showView('chat')" aria-label="Chat">
+    <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+    <span class="chat-fab-badge" id="chat-fab-badge"></span>
+  </button>
   <nav class="bnav" id="bottom-nav">
     <button class="bnav-item active" id="nav-sched" onclick="showView('sched')">
       <div class="bnav-icon-wrap"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
@@ -1540,6 +1602,9 @@ function showView(v, pushHistory=true){
     mc.classList.add('no-bnav');
   }
   if(mc){ mc.classList.remove('view-transition'); void mc.offsetWidth; mc.classList.add('view-transition'); }
+  // FAB chat — ukryj w chacie
+  const fab=document.getElementById('chat-fab');
+  if(fab) fab.style.display=v==='chat'?'none':'flex';
   renderView();
 }
 
@@ -1611,20 +1676,20 @@ function renderHome(mc){
   const active=workSessions.find(s=>s.employee_id===emp?.id&&!s.clock_out);
   const unread=chatUnread>0?chatUnread:null;
   const now=new Date();
-  const dStr=now.toLocaleDateString('pl-PL',{weekday:'long',day:'numeric',month:'long'});
+  const h=now.getHours();
+  const greeting=h<12?'Dzień dobry':(h<18?'Cześć':'Dobry wieczór');
 
-  // Duży blok clock
   let clockTitle, clockHint, clockCls='';
   if(active){
     clockTitle='Zakończ pracę';
-    clockHint=`Zmiana trwa od <strong>${fmtTime(active.clock_in)}</strong>`;
+    clockHint=`od ${fmtTime(active.clock_in)}`;
     clockCls=' working';
   } else if(myShiftToday){
     clockTitle='Zacznij pracę';
-    clockHint=`Zmiana dziś <strong>${(myShiftToday.start_time||'').slice(0,5)}–${(myShiftToday.end_time||'').slice(0,5)}</strong> — kliknij, żeby zarejestrować`;
+    clockHint=`zmiana ${(myShiftToday.start_time||'').slice(0,5)}–${(myShiftToday.end_time||'').slice(0,5)}`;
   } else {
     clockTitle='Zacznij pracę';
-    clockHint='Zarejestruj czas pracy';
+    clockHint='zarejestruj czas';
   }
 
   const rowHTML=b=>`
@@ -1634,13 +1699,12 @@ function renderHome(mc){
         <div class="hb-row-label">${b.sub}</div>
         <div class="hb-row-title">${b.label}</div>
       </div>
-      <div class="hb-row-arrow">›</div>
+      <div class="hb-row-arrow"></div>
       <div class="hb-ripple-wrap"></div>
     </div>`;
 
   const rows=[];
-  rows.push({id:'sched',   label:'Grafik',       sub:'harmonogram zmian'});
-  rows.push({id:'chat',    label:'Chat',          sub:'wiadomości zespołu', badge:unread});
+  rows.push({id:'sched',   label:'Grafik',       sub:'harmonogram'});
   if(isOwnerOrMgr||isKitchen)
     rows.push({id:'kitchen', label:'Kuchnia',     sub:'receptury & straty'});
   rows.push({id:'board',   label:'Tablica',       sub:'ogłoszenia'});
@@ -1654,16 +1718,16 @@ function renderHome(mc){
   mc.innerHTML=`
   <div class="hw-wrap">
     <div class="hw-header">
-      <div class="hw-name">${firstName}<span>.</span></div>
-      <div class="hw-sub">${role} · ${dStr}</div>
+      <div class="hw-greeting-line"><div class="hw-greeting-text">${greeting},</div></div>
+      <div class="hw-name-line"><div class="hw-name-text">${firstName}.</div></div>
     </div>
 
     <div class="hw-clock-block${clockCls}" onclick="hbTap(this,'clock')">
       ${active?`<span class="hw-clock-pulse"></span>`:''}
-      <div class="hw-clock-label">${active?'Trwa zmiana':'Rejestracja czasu'}</div>
+      <div class="hw-clock-eyebrow">${active?'TRWA ZMIANA':'CZAS PRACY'}</div>
       <div class="hw-clock-title">${clockTitle}</div>
-      <div class="hw-clock-hint">${clockHint}</div>
-      <div class="hw-clock-arrow">→</div>
+      <div class="hw-clock-sub">${clockHint}</div>
+      <div class="hw-clock-caret">→</div>
       <div class="hb-ripple-wrap"></div>
     </div>
 
@@ -1671,6 +1735,8 @@ function renderHome(mc){
       ${rows.map(rowHTML).join('')}
     </div>
   </div>`;
+
+  updateFabBadge();
 }
 
 function hbTap(el, view){
@@ -3789,13 +3855,24 @@ async function pollChat(){
 
 function updateChatBadge(){
   const badge=document.getElementById('chat-badge');
-  if(!badge) return;
-  if(chatUnread>0){
-    badge.style.display='flex';
-    badge.textContent=chatUnread>9?'9+':chatUnread;
-  } else {
-    badge.style.display='none';
+  if(badge){
+    if(chatUnread>0){ badge.style.display='flex'; badge.textContent=chatUnread>9?'9+':chatUnread; }
+    else { badge.style.display='none'; }
   }
+  updateFabBadge();
+}
+function updateFabBadge(){
+  const fab=document.getElementById('chat-fab-badge');
+  if(!fab) return;
+  if(chatUnread>0){
+    fab.textContent=chatUnread>9?'9+':String(chatUnread);
+    fab.classList.add('visible');
+  } else {
+    fab.classList.remove('visible');
+  }
+  // Ukryj FAB gdy jesteśmy w chacie
+  const fabBtn=document.getElementById('chat-fab');
+  if(fabBtn) fabBtn.style.display=currentView==='chat'?'none':'flex';
 }
 
 // Start globalnego pollingu po zalogowaniu
