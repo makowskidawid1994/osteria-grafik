@@ -798,6 +798,22 @@ body { font-family: var(--font); background: var(--bg); color: var(--text); min-
 .clr-badge-break { background: #FFF7ED; color: var(--warn); }
 .clr-badge-out { background: var(--bg); color: var(--text-3); border: 1px solid var(--border); }
 .clr-time { font-size: 12px; color: var(--text-3); min-width: 60px; text-align: right; }
+.clr-edit-btn { background: none; border: 1px solid var(--border); border-radius: 6px; padding: 4px 8px; font-size: 11px; color: var(--text-3); cursor: pointer; font-family: var(--font); white-space: nowrap; }
+.clr-edit-btn:active { background: var(--bg); }
+
+/* Modal edycji sesji */
+.sess-edit-modal { padding: 20px; display: flex; flex-direction: column; gap: 14px; }
+.sem-title { font-size: 16px; font-weight: 700; color: var(--text); }
+.sem-name { font-size: 13px; color: var(--text-3); margin-top: -8px; }
+.sem-field { display: flex; flex-direction: column; gap: 4px; }
+.sem-label { font-size: 11px; font-weight: 600; color: var(--text-3); text-transform: uppercase; letter-spacing: .4px; }
+.sem-input { border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px; font-size: 14px; font-family: var(--font); color: var(--text); background: white; -webkit-appearance: none; }
+.sem-input:focus { outline: none; border-color: var(--brand); }
+.sem-row { display: flex; gap: 10px; }
+.sem-row .sem-field { flex: 1; }
+.sem-actions { display: flex; gap: 10px; padding-top: 4px; }
+.sem-btn-save { flex: 1; background: var(--brand); color: white; border: none; border-radius: 8px; padding: 12px; font-size: 14px; font-weight: 600; font-family: var(--font); cursor: pointer; }
+.sem-btn-del { background: var(--danger-bg); color: var(--danger); border: 1px solid #FECACA; border-radius: 8px; padding: 12px 16px; font-size: 14px; font-weight: 600; font-family: var(--font); cursor: pointer; }
 
 /* ─── Chat zespołowy ─── */
 .chat-screen { display: flex; flex-direction: column; height: 100%; }
@@ -2502,7 +2518,7 @@ function renderClock(mc){
   const emp=getCurrentEmployee();
   if(!emp && !canEdit()){
     // Pracownik bez powiązanego profilu — pokaż info + debug
-    const userEmail=currentUser?.email||'';
+    const userEmail=currentUser?.user?.email||currentUser?.email||'';
     mc.innerHTML=`<div class="clock-wrap"><div class="clock-hero" style="gap:12px;">
       <div style="font-size:32px">⚠️</div>
       <div style="font-size:14px;font-weight:600;color:var(--text)">Profil nie znaleziony</div>
@@ -2572,12 +2588,43 @@ function buildClockHTML(emp, isManager){
       html+=liveRows.join('');
     }
     html+=`</div>`;
+
+    // Historia wszystkich sesji — edytowalna (tylko manager/właściciel)
+    const allRecent=workSessions.filter(s=>s.clock_out).slice(0,30);
+    html+=`<div class="clock-history-card">
+      <div class="clock-history-title" style="display:flex;justify-content:space-between;align-items:center;">
+        <span>Historia zmian — wszyscy</span>
+        <span style="font-size:10px;color:var(--text-3);font-weight:400;text-transform:none">Dotknij wiersza by edytować</span>
+      </div>`;
+    if(allRecent.length===0){
+      html+=`<div style="padding:20px;text-align:center;font-size:13px;color:var(--text-3)">Brak zarejestrowanych sesji</div>`;
+    } else {
+      for(const s of allRecent){
+        const empName=employees.find(e=>e.id===s.employee_id)?.name||s.employees?.name||'—';
+        const dur=s.total_minutes;
+        const brk=s.break_minutes;
+        html+=`<div class="clock-session-row" onclick="openSessionEdit('${s.id}')" style="cursor:pointer;">
+          <div style="flex:1;min-width:0">
+            <div style="font-size:12px;font-weight:700;color:var(--brand);margin-bottom:2px">${empName}</div>
+            <div class="csr-date" style="min-width:0">${fmtDate(s.clock_in)}</div>
+            <div style="font-size:13px;font-weight:600;color:var(--text);margin-top:2px">${fmtTime(s.clock_in)} – ${fmtTime(s.clock_out)}</div>
+            ${brk>0?`<div class="csr-break">przerwa ${fmtDuration(brk)}</div>`:''}
+          </div>
+          <div style="text-align:right;flex-shrink:0">
+            <div class="csr-dur-h">${dur?fmtDuration(dur):'—'}</div>
+            <div class="csr-dur-min">przepracowane</div>
+            <div class="clr-edit-btn" style="margin-top:6px">Edytuj</div>
+          </div>
+        </div>`;
+      }
+    }
+    html+=`</div>`;
   }
 
-  // Historia sesji pracownika
+  // Historia sesji pracownika (własna)
   if(emp && recentSessions.length>0){
     html+=`<div class="clock-history-card">
-      <div class="clock-history-title">Ostatnie zmiany</div>`;
+      <div class="clock-history-title">Moje ostatnie zmiany</div>`;
     for(const s of recentSessions){
       const dur=s.total_minutes;
       const brk=s.break_minutes;
@@ -2594,12 +2641,98 @@ function buildClockHTML(emp, isManager){
       </div>`;
     }
     html+=`</div>`;
-  } else if(emp && recentSessions.length===0){
+  } else if(emp && recentSessions.length===0 && !isManager){
     html+=`<div style="padding:24px;text-align:center;font-size:13px;color:var(--text-3)">Brak zarejestrowanych zmian</div>`;
   }
 
   html+=`</div></div>`;
   return html;
+}
+
+function toLocalDT(isoStr){
+  if(!isoStr) return '';
+  const d=new Date(isoStr);
+  const pad2=n=>String(n).padStart(2,'0');
+  return `${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())}T${pad2(d.getHours())}:${pad2(d.getMinutes())}`;
+}
+
+function openSessionEdit(sessId){
+  if(!canEdit()) return;
+  const s=workSessions.find(x=>x.id===sessId);
+  if(!s) return;
+  const empName=employees.find(e=>e.id===s.employee_id)?.name||'—';
+  const modal=document.createElement('div');
+  modal.className='modal-overlay active';
+  modal.id='sess-edit-overlay';
+  modal.innerHTML=`<div class="modal-sheet" style="max-width:420px;margin:auto;border-radius:16px 16px 0 0;">
+    <div class="modal-handle"></div>
+    <div class="sess-edit-modal">
+      <div class="sem-title">Edytuj sesję</div>
+      <div class="sem-name">${empName}</div>
+      <div class="sem-field">
+        <div class="sem-label">Przyjście (clock in)</div>
+        <input class="sem-input" type="datetime-local" id="sem-in" value="${toLocalDT(s.clock_in)}">
+      </div>
+      <div class="sem-field">
+        <div class="sem-label">Wyjście (clock out)</div>
+        <input class="sem-input" type="datetime-local" id="sem-out" value="${toLocalDT(s.clock_out)}">
+      </div>
+      <div class="sem-row">
+        <div class="sem-field">
+          <div class="sem-label">Przerwa start</div>
+          <input class="sem-input" type="datetime-local" id="sem-brk-s" value="${toLocalDT(s.break_start)}">
+        </div>
+        <div class="sem-field">
+          <div class="sem-label">Przerwa koniec</div>
+          <input class="sem-input" type="datetime-local" id="sem-brk-e" value="${toLocalDT(s.break_end)}">
+        </div>
+      </div>
+      <div class="sem-actions">
+        <button class="sem-btn-save" onclick="saveSessionEdit('${s.id}')">Zapisz zmiany</button>
+        <button class="sem-btn-del" onclick="deleteSession('${s.id}')">Usuń</button>
+      </div>
+      <button onclick="document.getElementById('sess-edit-overlay').remove()" style="width:100%;padding:12px;border:none;background:none;color:var(--text-3);font-size:14px;font-family:var(--font);cursor:pointer;">Anuluj</button>
+    </div>
+  </div>`;
+  modal.addEventListener('click',e=>{ if(e.target===modal) modal.remove(); });
+  document.body.appendChild(modal);
+}
+
+async function saveSessionEdit(sessId){
+  const inVal=document.getElementById('sem-in').value;
+  const outVal=document.getElementById('sem-out').value;
+  const brkS=document.getElementById('sem-brk-s').value;
+  const brkE=document.getElementById('sem-brk-e').value;
+  if(!inVal||!outVal){showToast('Podaj obie godziny');return;}
+  const body={
+    clock_in:new Date(inVal).toISOString(),
+    clock_out:new Date(outVal).toISOString(),
+    break_start:brkS?new Date(brkS).toISOString():null,
+    break_end:brkE?new Date(brkE).toISOString():null
+  };
+  try{
+    const updated=await sbFetch(`/rest/v1/work_sessions?id=eq.${sessId}`,{
+      method:'PATCH',
+      headers:{'Prefer':'return=representation'},
+      body:JSON.stringify(body)
+    });
+    const upd=Array.isArray(updated)?updated[0]:updated;
+    workSessions=workSessions.map(s=>s.id===sessId?{...s,...upd}:s);
+    document.getElementById('sess-edit-overlay')?.remove();
+    showToast('✓ Sesja zaktualizowana');
+    renderView();
+  }catch(e){showToast('Błąd: '+e.message.slice(0,80));}
+}
+
+async function deleteSession(sessId){
+  if(!confirm('Na pewno usunąć tę sesję?')) return;
+  try{
+    await sbFetch(`/rest/v1/work_sessions?id=eq.${sessId}`,{method:'DELETE'});
+    workSessions=workSessions.filter(s=>s.id!==sessId);
+    document.getElementById('sess-edit-overlay')?.remove();
+    showToast('Sesja usunięta');
+    renderView();
+  }catch(e){showToast('Błąd: '+e.message.slice(0,80));}
 }
 
 function buildLivePanelRows(){
