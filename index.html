@@ -596,7 +596,7 @@ body:not(.view-home) .chat-fab {
 }
 .section-back-btn svg { width: 18px; height: 18px; stroke: var(--brand); fill: none; stroke-width: 2; }
 .btn-sm { padding: 6px 14px; font-size: 12px; border-radius: 8px; }
-.home-tile { position: relative; }
+.home-tile { position: relative; display:flex; flex-direction:column; background:var(--bg-card); border:1px solid var(--border); border-radius:14px; cursor:pointer; overflow:hidden; }
 .home-tile-badge {
   position: absolute; top: 12px; right: 12px;
   background: var(--brand); color: white; font-size: 10px; font-weight: 700;
@@ -1692,7 +1692,7 @@ let availMonthOffset=1; // default: next month
 let workSessions=[], activeSession=null;
 let clockTimerInterval=null;
 // Geofence: Osteria Antonina, Solna 11c, Kołobrzeg
-const GEO_LAT = 54.17528, GEO_LON = 15.57647, GEO_RADIUS = 25; // metry
+const GEO_LAT = 54.17528, GEO_LON = 15.57647, GEO_RADIUS = 200; // metry (GPS w budynku ma dokładność ±50-100m)
 
 async function sbFetch(path, opts={}) {
   const h={'apikey':SB_KEY,'Content-Type':'application/json'};
@@ -2002,10 +2002,10 @@ function renderView(){
       renderChat(mc); triggerAnim();
     } else {
       // Pokaż szkielet od razu (ciemny, nie biały)
-      mc.innerHTML=`<div style="display:flex;flex-direction:column;height:100%;background:var(--bg);">
+      mc.innerHTML=`<div style="display:flex;flex-direction:column;min-height:100%;background:var(--bg);">
         <div class="page-bar" style="position:sticky;top:0;z-index:10;flex-shrink:0;"><div class="page-bar-title">Chat zespołowy</div></div>
-        <div style="flex:1;background:var(--bg);"></div>
-        <div class="chat-input-bar" style="flex-shrink:0;">
+        <div style="flex:1;background:var(--bg);padding-bottom:calc(70px + max(env(safe-area-inset-bottom),12px) + 62px);"></div>
+        <div class="chat-input-bar" style="position:fixed;bottom:calc(max(env(safe-area-inset-bottom),12px) + 62px);left:0;right:0;z-index:99;">
           <textarea class="chat-input" placeholder="Napisz coś do zespołu…" rows="1" disabled></textarea>
           <button class="chat-send-btn" disabled><svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button>
         </div>
@@ -4607,13 +4607,13 @@ function renderChat(mc){
   const myEmail=currentUser?.user?.email||currentUser?.email||'';
 
   mc.innerHTML=`
-  <div style="display:flex;flex-direction:column;height:100%;">
+  <div style="display:flex;flex-direction:column;min-height:100%;">
   <div class="page-bar" style="position:sticky;top:0;z-index:10;flex-shrink:0;">
     <div class="page-bar-title">Chat zespołowy</div>
     <div style="font-size:11px;color:var(--text-3)">${employees.length} os.</div>
   </div>
-  <div class="chat-msgs" id="chat-msgs-list" style="flex:1;overflow-y:auto;"></div>
-  <div class="chat-input-bar" style="flex-shrink:0;">
+  <div class="chat-msgs" id="chat-msgs-list" style="flex:1;overflow-y:auto;padding-bottom:calc(70px + max(env(safe-area-inset-bottom),12px) + 62px);"></div>
+  <div class="chat-input-bar" style="position:fixed;bottom:calc(max(env(safe-area-inset-bottom),12px) + 62px);left:0;right:0;z-index:99;">
     <textarea class="chat-input" id="chat-input" placeholder="Napisz coś do zespołu…" rows="1" oninput="autoResizeChat(this)" onkeydown="chatKeydown(event)"></textarea>
     <button class="chat-send-btn" onclick="sendChatMsg()">
       <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
