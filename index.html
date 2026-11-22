@@ -19,32 +19,36 @@
   --brand: #7B1D2E;
   --brand-dark: #5C1420;
   --brand-light: #9B2D42;
-  --brand-soft: #F9F0F2;
-  --brand-mid: #EDD5DA;
-  --accent: #7B1D2E;
-  --accent-hover: #5C1420;
-  --accent-soft: #F9F0F2;
-  --bg: #FAFAFA;
-  --surface: #ffffff;
-  --border: #E4E4E7;
-  --border-2: #D4D4D8;
-  --text: #1A0A0D;
-  --text-2: #5C3540;
-  --text-3: #A1727E;
-  --danger: #DC2626;
-  --danger-bg: #FEF2F2;
-  --warn: #D97706;
-  --green: #16A34A;
-  --green-bg: #F0FDF4;
-  --red-soft: #FEF2F2;
-  --radius: 6px;
-  --radius-lg: 8px;
+  --brand-soft: rgba(123,29,46,.12);
+  --brand-mid: rgba(123,29,46,.2);
+  --accent: #9B2D42;
+  --accent-hover: #7B1D2E;
+  --accent-soft: rgba(123,29,46,.1);
+  /* Ciemne tło aplikacji */
+  --bg: #1A0810;
+  --bg-card: #2A1018;
+  --bg-card2: #221020;
+  --surface: #2A1018;
+  --border: rgba(255,255,255,.1);
+  --border-2: rgba(255,255,255,.07);
+  --text: #F5E8EC;
+  --text-2: #C9A0AE;
+  --text-3: #8A5A6A;
+  --danger: #F87171;
+  --danger-bg: rgba(220,38,38,.15);
+  --warn: #FBBF24;
+  --green: #34D399;
+  --green-bg: rgba(52,211,153,.12);
+  --red-soft: rgba(220,38,38,.12);
+  --radius: 12px;
+  --radius-lg: 16px;
   --font: 'Nunito', 'Poppins', -apple-system, 'Segoe UI', sans-serif;
-  --shadow-sm: 0 1px 2px rgba(0,0,0,.05);
-  --shadow: 0 1px 4px rgba(0,0,0,.08);
+  --shadow-sm: 0 1px 4px rgba(0,0,0,.3);
+  --shadow: 0 2px 12px rgba(0,0,0,.4);
 }
 * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 body { font-family: var(--font); background: var(--bg); color: var(--text); min-height: 100vh; font-size: 14px; line-height: 1.5; -webkit-font-smoothing: antialiased; }
+#app { background: var(--bg); }
 
 /* ─── AUTH — pełny ekran ─── */
 #auth-screen {
@@ -192,9 +196,9 @@ body { font-family: var(--font); background: var(--bg); color: var(--text); min-
 /* ─── App shell ─── */
 #app { display: none; }
 .header {
-  background: white; color: var(--text); height: 56px; padding: 0 16px;
+  background: #1A0810; color: var(--text); height: 56px; padding: 0 16px;
   display: flex; align-items: center; position: sticky; top: 0; z-index: 100;
-  border-bottom: 1px solid var(--border); gap: 10px;
+  border-bottom: 1px solid rgba(255,255,255,.08); gap: 10px;
   transition: background .2s, border-color .2s;
 }
 /* Na home — ciemny nav i header */
@@ -246,7 +250,7 @@ body.view-home #main-content { background: transparent; }
 
 /* ─── Bottom nav — app style ─── */
 .bnav {
-  position: fixed; bottom: 0; left: 0; right: 0; background: white;
+  position: fixed; bottom: 0; left: 0; right: 0; background: rgba(26,8,14,.96);
   border-top: 1px solid var(--border); display: flex; z-index: 100;
   padding-bottom: max(env(safe-area-inset-bottom), 12px);
   padding-top: 10px;
@@ -601,7 +605,7 @@ body:not(.view-home) .chat-fab {
 
 /* ─── Page header bar ─── */
 .page-bar {
-  background: white; border-bottom: 1px solid var(--border);
+  background: var(--bg-card); border-bottom: 1px solid var(--border-2);
   padding: 10px 16px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
 }
 .page-bar-title {
@@ -617,7 +621,7 @@ body:not(.view-home) .chat-fab {
   border: none; background: none; font-family: var(--font); color: var(--text-3);
   transition: all .12s;
 }
-.vt-btn.active { background: white; color: var(--text); box-shadow: var(--shadow-sm); font-weight: 600; }
+.vt-btn.active { background: var(--surface); color: var(--text); box-shadow: var(--shadow-sm); font-weight: 600; }
 
 /* ─── Week nav ─── */
 .week-nav {
@@ -625,7 +629,7 @@ body:not(.view-home) .chat-fab {
   padding: 12px 16px 0; gap: 8px;
 }
 .wn-btn {
-  width: 30px; height: 30px; border: 1px solid var(--border); background: white;
+  width: 30px; height: 30px; border: 1px solid var(--border-2); background: var(--bg-card);
   border-radius: var(--radius); display: flex; align-items: center; justify-content: center;
   cursor: pointer; color: var(--text-2); font-size: 15px; transition: all .12s;
   flex-shrink: 0;
@@ -644,7 +648,7 @@ body:not(.view-home) .chat-fab {
 .dept-row::-webkit-scrollbar { display: none; }
 .dtab {
   padding: 5px 12px; border-radius: 4px; font-size: 12px; font-weight: 500;
-  white-space: nowrap; border: 1px solid var(--border); background: white;
+  white-space: nowrap; border: 1px solid var(--border-2); background: var(--bg-card);
   color: var(--text-2); cursor: pointer; transition: all .12s; font-family: var(--font);
 }
 .dtab.active { background: var(--text); color: white; border-color: var(--text); }
@@ -664,7 +668,7 @@ body:not(.view-home) .chat-fab {
 .sched-wrap { padding: 10px 16px 16px; overflow-x: auto; -webkit-overflow-scrolling: touch; }
 .sched-tbl {
   width: 100%; border-collapse: collapse; min-width: 480px;
-  background: white; border-radius: var(--radius-lg); overflow: hidden;
+  background: var(--bg-card); border-radius: var(--radius-lg); overflow: hidden;
   border: 1px solid var(--border);
 }
 .sched-tbl thead th {
@@ -679,7 +683,7 @@ body:not(.view-home) .chat-fab {
 .sched-tbl thead th.th-day.today .dn { color: white; }
 .sched-tbl thead th.th-day.weekend { background: var(--red-soft); color: var(--danger); }
 .sched-tbl thead th.th-day.weekend .dn { color: var(--danger); }
-.td-day-cell.weekend { background: #FFFCFC; }
+.td-day-cell.weekend { background: rgba(255,255,255,.03); }
 .td-day-cell.weekend:hover { background: var(--red-soft); }
 .td-day-cell.weekend .shift-chip { background: var(--danger); box-shadow: none; }
 .td-day-cell.weekend .shift-cost-lbl { color: var(--danger); }
@@ -718,7 +722,7 @@ body:not(.view-home) .chat-fab {
 /* ─── Auto-fill button ─── */
 .autofill-btn {
   display: flex; align-items: center; gap: 8px; margin: 10px 16px 0;
-  background: white; border: 1px solid var(--border); border-radius: var(--radius);
+  background: var(--bg-card); border: 1px solid var(--border-2); border-radius: var(--radius);
   padding: 10px 14px; cursor: pointer; font-family: var(--font); font-size: 12px;
   color: var(--text-2); font-weight: 500; width: calc(100% - 32px); transition: all .12s;
 }
@@ -736,7 +740,7 @@ body:not(.view-home) .chat-fab {
 .avail-nav { display: flex; gap: 4px; }
 .avail-nav button {
   width: 32px; height: 32px; border-radius: 6px; border: 1px solid var(--border);
-  background: white; color: var(--text-2); font-size: 15px; cursor: pointer;
+  background: var(--bg-card); color: var(--text-2); font-size: 15px; cursor: pointer;
   display: flex; align-items: center; justify-content: center; transition: all .1s;
 }
 .avail-nav button:hover { border-color: var(--accent); color: var(--accent); }
@@ -749,10 +753,10 @@ body:not(.view-home) .chat-fab {
 .avail-intro strong { color: var(--text); font-weight: 600; }
 .avail-status-bar {
   display: flex; align-items: center; gap: 8px; padding: 10px 20px;
-  background: #F0FDF4; border-bottom: 1px solid #BBF7D0;
-  font-size: 12px; color: #166534; font-weight: 500;
+  background: rgba(52,211,153,.1); border-bottom: 1px solid rgba(52,211,153,.2);
+  font-size: 12px; color: #34D399; font-weight: 500;
 }
-.avail-status-bar.empty { background: #F8FAFC; border-color: var(--border); color: var(--text-3); }
+.avail-status-bar.empty { background: var(--bg-card2); border-color: var(--border-2); color: var(--text-3); }
 .avail-days-list { padding: 0 20px 100px; }
 .avail-week-label {
   font-size: 10px; font-weight: 700; letter-spacing: .8px; text-transform: uppercase;
@@ -783,7 +787,7 @@ body:not(.view-home) .chat-fab {
 }
 .avail-toggle::after {
   content: ''; position: absolute; width: 18px; height: 18px; border-radius: 50%;
-  background: white; top: 3px; left: 3px; transition: transform .15s;
+  background: var(--bg-card); top: 3px; left: 3px; transition: transform .15s;
   box-shadow: 0 1px 3px rgba(0,0,0,.2);
 }
 .avail-day-row.unavail .avail-toggle { background: #EF4444; }
@@ -794,7 +798,7 @@ body:not(.view-home) .chat-fab {
 }
 .avail-save-bar {
   position: fixed; bottom: 60px; left: 0; right: 0; padding: 12px 20px;
-  background: white; border-top: 1px solid var(--border);
+  background: var(--bg-card); border-top: 1px solid var(--border-2);
   display: flex; gap: 10px; align-items: center; z-index: 50;
 }
 .avail-save-btn {
@@ -834,7 +838,7 @@ body:not(.view-home) .chat-fab {
 .blocked-days-row { display: flex; flex-wrap: wrap; gap: 4px; }
 .bday {
   width: 34px; height: 32px; border-radius: var(--radius); border: 1px solid var(--border);
-  background: white; font-size: 12px; font-weight: 500; color: var(--text-2);
+  background: var(--bg-card); font-size: 12px; font-weight: 500; color: var(--text-2);
   cursor: pointer; transition: all .1s; display: flex; align-items: center; justify-content: center;
 }
 .bday:hover { border-color: var(--border-2); color: var(--text); }
@@ -852,7 +856,7 @@ body:not(.view-home) .chat-fab {
   font-size: 11px; font-weight: 500; color: var(--text-2); transition: all .1s; min-height: 28px;
   display: flex; align-items: center; justify-content: center;
 }
-.adc.avail-yes { background: #F0FDF4; color: #166534; font-weight: 700; }
+.adc.avail-yes { background: rgba(52,211,153,.15); color: #34D399; font-weight: 700; }
 .adc.avail-no { background: #FEF2F2; color: #991B1B; font-weight: 700; }
 .adc.adc-empty { cursor: default; }
 .adc.adc-past { color: var(--border); cursor: default; }
@@ -865,7 +869,7 @@ body:not(.view-home) .chat-fab {
 /* ─── Add emp button ─── */
 .add-emp-btn {
   display: flex; align-items: center; justify-content: center; gap: 8px;
-  margin: 0 16px 14px; padding: 10px; background: white; border: 1px dashed var(--border-2);
+  margin: 0 16px 14px; padding: 10px; background: var(--bg-card2); border: 1px dashed var(--border);
   border-radius: var(--radius); cursor: pointer; font-size: 12px; font-weight: 500;
   color: var(--text-3); font-family: var(--font); transition: all .12s;
 }
@@ -879,7 +883,7 @@ body:not(.view-home) .chat-fab {
 .month-wrap { padding: 10px 16px 0; overflow-x: auto; -webkit-overflow-scrolling: touch; }
 .month-tbl {
   width: 100%; border-collapse: collapse; min-width: 520px;
-  background: white; border-radius: var(--radius-lg); overflow: hidden;
+  background: var(--bg-card); border-radius: var(--radius-lg); overflow: hidden;
   border: 1px solid var(--border);
 }
 .month-tbl thead th {
@@ -903,7 +907,7 @@ body:not(.view-home) .chat-fab {
 }
 .mtd-day:hover { background: var(--bg); }
 .mtd-day.mtoday-cell { background: rgba(0,0,0,.03); }
-.mtd-day.mweekend { background: #FFFCFC; }
+.mtd-day.mweekend { background: rgba(255,255,255,.03); }
 .month-tbl thead th.mth-day.mweekend-h { background: var(--red-soft); color: var(--danger); }
 .month-tbl thead th.mth-day.mweekend-h .mdn { color: var(--danger); }
 .mtd-day.mweekend .mchip { background: var(--danger); }
@@ -912,7 +916,7 @@ body:not(.view-home) .chat-fab {
 /* ─── Employees list ─── */
 .emp-list { padding: 8px 16px; display: flex; flex-direction: column; }
 .emp-row {
-  background: white; border-bottom: 1px solid var(--border);
+  background: var(--bg-card); border-bottom: 1px solid var(--border-2);
   padding: 12px 0; display: flex; align-items: center; gap: 10px;
   transition: background .1s;
 }
@@ -935,7 +939,7 @@ body:not(.view-home) .chat-fab {
 /* ─── Availability ─── */
 .bday-we { color: var(--accent); }
 .bday-we.bday-on { background: #1E293B; color: white; }
-.avail-card { background: white; border-radius: var(--radius-lg); border: 1.5px solid var(--border); padding: 14px 16px; }
+.avail-card { background: var(--bg-card); border-radius: var(--radius-lg); border: 1.5px solid var(--border-2); padding: 14px 16px; }
 .avail-card-head { display: flex; align-items: center; gap: 9px; margin-bottom: 11px; }
 .avail-days { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
 .aday {
@@ -956,7 +960,7 @@ body:not(.view-home) .chat-fab {
 .dash-wrap { padding: 12px 16px; }
 .dash-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 16px; }
 .stat-box {
-  background: white; border-radius: var(--radius-lg); border: 1px solid var(--border);
+  background: var(--bg-card); border-radius: var(--radius-lg); border: 1px solid var(--border-2);
   padding: 14px 14px 12px;
 }
 .stat-box.accent { background: var(--text); border-color: var(--text); }
@@ -969,7 +973,7 @@ body:not(.view-home) .chat-fab {
 .dash-section-title { font-size: 10px; font-weight: 600; color: var(--text-3); margin-bottom: 8px; text-transform: uppercase; letter-spacing: .5px; }
 .dash-emp-rows { display: flex; flex-direction: column; }
 .dash-emp-row {
-  background: white; border-bottom: 1px solid var(--border);
+  background: var(--bg-card); border-bottom: 1px solid var(--border-2);
   padding: 10px 0; display: flex; align-items: center; gap: 10px;
 }
 .dash-emp-row:last-child { border-bottom: none; }
@@ -989,12 +993,12 @@ body:not(.view-home) .chat-fab {
 .cta-title { font-size: 15px; font-weight: 700; margin-bottom: 3px; letter-spacing: -.3px; }
 .cta-sub { font-size: 12px; opacity: .6; }
 .cta-btn {
-  display: inline-block; margin-top: 12px; background: white; color: var(--text);
+  display: inline-block; margin-top: 12px; background: rgba(255,255,255,.12); color: var(--text);
   border: none; border-radius: var(--radius); padding: 7px 16px; font-size: 12px; font-weight: 700;
   cursor: pointer; font-family: var(--font);
 }
 .info-card {
-  background: white; border-radius: var(--radius-lg); border: 1px solid var(--border);
+  background: var(--bg-card); border-radius: var(--radius-lg); border: 1px solid var(--border-2);
   padding: 12px 14px; margin-bottom: 8px;
 }
 .info-card-title { font-size: 10px; font-weight: 600; color: var(--text-3); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 10px; }
@@ -1007,14 +1011,14 @@ body:not(.view-home) .chat-fab {
 
 /* ─── Stats grid (emp) ─── */
 .emp-stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-bottom: 8px; }
-.estat { background: white; border-radius: var(--radius-lg); border: 1px solid var(--border); padding: 10px 8px; text-align: center; }
+.estat { background: var(--bg-card); border-radius: var(--radius-lg); border: 1px solid var(--border-2); padding: 10px 8px; text-align: center; }
 .estat-val { font-size: 19px; font-weight: 700; letter-spacing: -.5px; }
 .estat-lbl { font-size: 10px; color: var(--text-3); font-weight: 500; margin-top: 2px; }
 
 /* ─── Export button ─── */
 .export-btn {
   display: flex; align-items: center; justify-content: center; gap: 8px;
-  width: 100%; padding: 10px; background: white; border: 1px solid var(--border);
+  width: 100%; padding: 10px; background: var(--bg-card); border: 1px solid var(--border-2);
   border-radius: var(--radius); cursor: pointer; font-size: 12px; font-weight: 500;
   color: var(--text-2); font-family: var(--font); transition: all .12s; margin-bottom: 8px;
 }
@@ -1024,7 +1028,7 @@ body:not(.view-home) .chat-fab {
 /* ─── Month selector for export ─── */
 .month-sel-row { display: flex; gap: 4px; margin-bottom: 10px; overflow-x: auto; scrollbar-width: none; }
 .month-sel-row::-webkit-scrollbar { display: none; }
-.msel-btn { padding: 5px 12px; border-radius: 4px; font-size: 12px; font-weight: 500; white-space: nowrap; border: 1px solid var(--border); background: white; color: var(--text-2); cursor: pointer; transition: all .12s; font-family: var(--font); flex-shrink: 0; }
+.msel-btn { padding: 5px 12px; border-radius: 4px; font-size: 12px; font-weight: 500; white-space: nowrap; border: 1px solid var(--border-2); background: var(--bg-card); color: var(--text-2); cursor: pointer; transition: all .12s; font-family: var(--font); flex-shrink: 0; }
 .msel-btn.active { background: var(--text); color: white; border-color: var(--text); }
 
 /* ─── Modal ─── */
@@ -1036,7 +1040,7 @@ body:not(.view-home) .chat-fab {
 }
 .modal-overlay.open { opacity: 1; pointer-events: all; }
 .modal {
-  background: white; border-radius: 16px 16px 0 0; width: 100%; max-width: 480px;
+  background: var(--bg-card); border-radius: 16px 16px 0 0; width: 100%; max-width: 480px;
   padding: 18px 20px 36px; transform: translateY(100%);
   transition: transform .22s cubic-bezier(.32,.72,0,1); max-height: 88vh; overflow-y: auto;
 }
@@ -1048,7 +1052,7 @@ body:not(.view-home) .chat-fab {
 .mfield label { display: block; font-size: 11px; font-weight: 500; color: var(--text-2); margin-bottom: 4px; letter-spacing: .1px; }
 .mfield input, .mfield select {
   width: 100%; padding: 9px 12px; border: 1px solid var(--border); border-radius: var(--radius);
-  font-size: 14px; font-family: var(--font); outline: none; color: var(--text); background: white;
+  font-size: 14px; font-family: var(--font); outline: none; color: var(--text); background: var(--bg-card);
   transition: border-color .12s;
 }
 .mfield input:focus, .mfield select:focus { border-color: var(--text); box-shadow: 0 0 0 2px rgba(0,0,0,.06); }
@@ -1063,12 +1067,63 @@ body:not(.view-home) .chat-fab {
 
 /* ─── Toast — minimalny ─── */
 .toast {
-  position: fixed; bottom: 76px; left: 50%; transform: translateX(-50%) translateY(6px);
-  background: rgba(0,0,0,.72); color: white; padding: 7px 14px; border-radius: 20px;
-  font-size: 12px; font-weight: 500; z-index: 300; opacity: 0; pointer-events: none;
-  white-space: nowrap; transition: all .18s cubic-bezier(.32,.72,0,1); box-shadow: 0 4px 16px rgba(0,0,0,.2);
+  position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%) translateY(10px);
+  background: rgba(20,4,10,.92); color: white; padding: 12px 22px; border-radius: 28px;
+  font-size: 14px; font-weight: 600; z-index: 500; opacity: 0; pointer-events: none;
+  white-space: nowrap; transition: all .22s cubic-bezier(.32,.72,0,1);
+  box-shadow: 0 8px 32px rgba(0,0,0,.5); border: 1px solid rgba(255,255,255,.12);
+  max-width: 90vw; white-space: normal; text-align: center; line-height: 1.4;
 }
 .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+.toast.toast-err { background: rgba(180,20,30,.92); border-color: rgba(255,100,100,.3); }
+
+/* ─── Geo Error Overlay — środek ekranu ─── */
+.geo-error-overlay {
+  position: fixed; inset: 0; z-index: 600;
+  display: flex; align-items: center; justify-content: center;
+  padding: 32px;
+  background: rgba(0,0,0,.55);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  opacity: 0; pointer-events: none;
+  transition: opacity .22s ease;
+}
+.geo-error-overlay.show { opacity: 1; pointer-events: auto; }
+.geo-error-card {
+  background: #2A0E18;
+  border: 1px solid rgba(248,113,113,.3);
+  border-radius: 24px;
+  padding: 32px 28px 24px;
+  text-align: center;
+  max-width: 320px; width: 100%;
+  box-shadow: 0 24px 60px rgba(0,0,0,.6);
+  transform: scale(.92) translateY(10px);
+  transition: transform .28s cubic-bezier(.16,1,.3,1);
+}
+.geo-error-overlay.show .geo-error-card { transform: scale(1) translateY(0); }
+.geo-error-icon {
+  width: 64px; height: 64px; border-radius: 50%;
+  background: rgba(220,38,38,.2);
+  border: 2px solid rgba(248,113,113,.4);
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 20px;
+  font-size: 28px;
+}
+.geo-error-title {
+  font-size: 17px; font-weight: 800; color: #F5E8EC; letter-spacing: -.3px; margin-bottom: 10px;
+  font-family: 'Nunito','Poppins',sans-serif;
+}
+.geo-error-msg {
+  font-size: 14px; color: rgba(245,232,236,.6); line-height: 1.55; margin-bottom: 24px;
+  font-family: 'Nunito','Poppins',sans-serif;
+}
+.geo-error-btn {
+  width: 100%; padding: 14px; border-radius: 14px; border: none; cursor: pointer;
+  background: rgba(255,255,255,.1); color: #F5E8EC;
+  font-size: 15px; font-weight: 700; font-family: 'Nunito','Poppins',sans-serif;
+  transition: background .15s;
+}
+.geo-error-btn:active { background: rgba(255,255,255,.18); }
 
 /* ─── Misc ─── */
 .empty-state { text-align: center; padding: 52px 24px; color: var(--text-3); }
@@ -1207,7 +1262,7 @@ body:not(.view-home) .chat-fab {
 @keyframes pulse-dot { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.5;transform:scale(.8)} }
 
 .clock-history-card {
-  background: white; border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden;
+  background: var(--bg-card); border: 1px solid var(--border-2); border-radius: var(--radius-lg); overflow: hidden;
 }
 .clock-history-title { font-size: 10px; font-weight: 600; color: var(--text-3); text-transform: uppercase; letter-spacing: .5px; padding: 12px 14px 8px; border-bottom: 1px solid var(--border); }
 .clock-session-row {
@@ -1223,7 +1278,7 @@ body:not(.view-home) .chat-fab {
 .csr-dur-min { font-size: 10px; color: var(--text-3); }
 
 /* Manager live panel */
-.clock-live-card { background: white; border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; }
+.clock-live-card { background: var(--bg-card); border: 1px solid var(--border-2); border-radius: var(--radius-lg); overflow: hidden; }
 .clock-live-title { font-size: 10px; font-weight: 600; color: var(--text-3); text-transform: uppercase; letter-spacing: .5px; padding: 12px 14px 8px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
 .clock-live-row { display: flex; align-items: center; gap: 10px; padding: 10px 14px; border-bottom: 1px solid var(--border); }
 .clock-live-row:last-child { border-bottom: none; }
@@ -1231,7 +1286,7 @@ body:not(.view-home) .chat-fab {
 .clr-dept { font-size: 11px; color: var(--text-3); margin-top: 1px; }
 .clr-badge { font-size: 11px; font-weight: 600; padding: 3px 8px; border-radius: 4px; white-space: nowrap; }
 .clr-badge-in { background: var(--green-bg); color: var(--green); }
-.clr-badge-break { background: #FFF7ED; color: var(--warn); }
+.clr-badge-break { background: rgba(251,191,36,.12); color: var(--warn); }
 .clr-badge-out { background: var(--bg); color: var(--text-3); border: 1px solid var(--border); }
 .clr-time { font-size: 12px; color: var(--text-3); min-width: 60px; text-align: right; }
 .clr-edit-btn { background: none; border: 1px solid var(--border); border-radius: 6px; padding: 4px 8px; font-size: 11px; color: var(--text-3); cursor: pointer; font-family: var(--font); white-space: nowrap; }
@@ -1243,7 +1298,7 @@ body:not(.view-home) .chat-fab {
 .sem-name { font-size: 13px; color: var(--text-3); margin-top: -8px; }
 .sem-field { display: flex; flex-direction: column; gap: 4px; }
 .sem-label { font-size: 11px; font-weight: 600; color: var(--text-3); text-transform: uppercase; letter-spacing: .4px; }
-.sem-input { border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px; font-size: 14px; font-family: var(--font); color: var(--text); background: white; -webkit-appearance: none; }
+.sem-input { border: 1px solid var(--border-2); border-radius: 8px; padding: 10px 12px; font-size: 14px; font-family: var(--font); color: var(--text); background: var(--bg-card); -webkit-appearance: none; }
 .sem-input:focus { outline: none; border-color: var(--brand); }
 .sem-row { display: flex; gap: 10px; }
 .sem-row .sem-field { flex: 1; }
@@ -1280,7 +1335,7 @@ body:not(.view-home) .chat-fab {
 }
 /* Wiadomości innych — szare po lewej */
 .chat-bubble.other {
-  background: white; border: 1px solid var(--border); color: var(--text);
+  background: var(--surface); border: 1px solid var(--border-2); color: var(--text);
   border-radius: 18px 18px 18px 4px;
 }
 /* Wiadomości własne — bordowe po prawej */
@@ -1299,7 +1354,7 @@ body:not(.view-home) .chat-fab {
 .chat-time-inline { font-size: 10px; opacity: .6; margin-left: 6px; float: right; margin-top: 3px; }
 .chat-input-bar {
   display: flex; gap: 8px; padding: 10px 12px calc(env(safe-area-inset-bottom) + 10px);
-  background: white; border-top: 1px solid var(--border); align-items: flex-end;
+  background: var(--bg-card); border-top: 1px solid var(--border-2); align-items: flex-end;
 }
 .chat-input {
   flex: 1; padding: 10px 14px; border: 1.5px solid var(--border); border-radius: 22px;
@@ -1307,7 +1362,7 @@ body:not(.view-home) .chat-fab {
   max-height: 120px; line-height: 1.4; transition: border-color .15s;
   background: var(--bg); color: var(--text);
 }
-.chat-input:focus { border-color: var(--text); background: white; }
+.chat-input:focus { border-color: var(--brand-light); background: var(--surface); }
 .chat-send-btn {
   width: 42px; height: 42px; border-radius: 50%; background: var(--brand);
   border: none; cursor: pointer; display: flex; align-items: center; justify-content: center;
@@ -1324,7 +1379,7 @@ body:not(.view-home) .chat-fab {
 .chat-empty { text-align: center; padding: 40px 20px; color: var(--text-3); font-size: 14px; }
 
 /* ─── Dashboard pracownika ─── */
-.emp-dash { padding: 0 0 100px; }
+.emp-dash { padding: 0 0 100px; min-height: calc(100dvh - 56px); background: var(--bg); }
 .emp-dash-header {
   display: flex; align-items: center; justify-content: space-between;
   padding: 20px 16px 12px;
@@ -1337,7 +1392,7 @@ body:not(.view-home) .chat-fab {
 }
 .emp-next-shift {
   margin: 4px 16px 16px; padding: 20px; border-radius: 16px;
-  background: var(--text); color: white; position: relative; overflow: hidden;
+  background: var(--brand); color: white; position: relative; overflow: hidden;
 }
 .emp-next-shift::before {
   content: ''; position: absolute; right: -20px; top: -20px;
@@ -1361,10 +1416,10 @@ body:not(.view-home) .chat-fab {
 .emp-week-strip::-webkit-scrollbar { display: none; }
 .emp-week-day {
   flex: 1; min-width: 40px; display: flex; flex-direction: column; align-items: center;
-  padding: 10px 4px; border-radius: 12px; background: white; border: 1.5px solid var(--border);
+  padding: 10px 4px; border-radius: 12px; background: var(--bg-card); border: 1.5px solid var(--border-2);
   gap: 4px; transition: all .15s;
 }
-.emp-week-today { border-color: var(--text); background: var(--text); color: white; }
+.emp-week-today { border-color: var(--brand); background: var(--brand); color: white; }
 .emp-week-we { opacity: .5; }
 .ewd-label { font-size: 10px; font-weight: 600; color: var(--text-3); text-transform: uppercase; }
 .emp-week-today .ewd-label { color: rgba(255,255,255,.6); }
@@ -1374,12 +1429,12 @@ body:not(.view-home) .chat-fab {
 .ewd-off { font-size: 10px; color: transparent; height: 18px; }
 .emp-stats-row { display: flex; gap: 10px; padding: 0 16px; margin-bottom: 20px; }
 .emp-stat-card {
-  flex: 1; background: white; border: 1.5px solid var(--border); border-radius: 12px;
+  flex: 1; background: var(--bg-card); border: 1.5px solid var(--border-2); border-radius: 12px;
   padding: 14px 10px; text-align: center;
 }
 .esc-val { font-size: 22px; font-weight: 800; letter-spacing: -.5px; }
 .esc-label { font-size: 10px; color: var(--text-3); font-weight: 500; margin-top: 3px; }
-.emp-past-list { margin: 0 16px; border-radius: 12px; overflow: hidden; border: 1.5px solid var(--border); background: white; }
+.emp-past-list { margin: 0 16px; border-radius: 12px; overflow: hidden; border: 1.5px solid var(--border-2); background: var(--bg-card); }
 .emp-past-row {
   display: flex; align-items: center; padding: 13px 14px; gap: 10px;
   border-bottom: 1px solid var(--border);
@@ -1395,7 +1450,7 @@ body:not(.view-home) .chat-fab {
   background: var(--danger); color: white; font-size: 9px; font-weight: 700;
   min-width: 16px; height: 16px; border-radius: 8px; display: flex;
   align-items: center; justify-content: center; padding: 0 4px;
-  border: 2px solid white; pointer-events: none;
+  border: 2px solid var(--bg); pointer-events: none;
 }
 
 /* ─── Profil pracownika (sheet) ─── */
@@ -1406,7 +1461,7 @@ body:not(.view-home) .chat-fab {
 }
 .profile-sheet-overlay.open { opacity: 1; pointer-events: all; }
 .profile-sheet {
-  background: white; width: 100%; border-radius: 24px 24px 0 0;
+  background: var(--bg-card); width: 100%; border-radius: 24px 24px 0 0;
   padding: 0 0 calc(env(safe-area-inset-bottom) + 20px);
   transform: translateY(100%); transition: transform .3s cubic-bezier(.4,0,.2,1);
   max-height: 85vh; overflow-y: auto;
@@ -1424,7 +1479,7 @@ body:not(.view-home) .chat-fab {
 .profile-sheet-name { font-size: 18px; font-weight: 700; letter-spacing: -.4px; }
 .profile-sheet-role { font-size: 12px; color: var(--text-3); margin-top: 2px; }
 .profile-stat-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1px; background: var(--border); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); margin-top: 0; }
-.profile-stat { background: white; padding: 14px 10px; text-align: center; }
+.profile-stat { background: var(--bg-card); padding: 14px 10px; text-align: center; }
 .profile-stat-val { font-size: 20px; font-weight: 700; letter-spacing: -.5px; }
 .profile-stat-lbl { font-size: 10px; color: var(--text-3); font-weight: 500; margin-top: 2px; letter-spacing: .2px; }
 .profile-actions { padding: 16px 20px; display: flex; flex-direction: column; gap: 8px; }
@@ -1434,7 +1489,7 @@ body:not(.view-home) .chat-fab {
   cursor: pointer; font-family: var(--font); font-size: 14px; font-weight: 500;
   color: var(--text); transition: all .12s; text-align: left;
 }
-.profile-action-btn:hover { background: white; border-color: var(--border-2); }
+.profile-action-btn:hover { background: var(--bg-card2); border-color: var(--border); }
 .profile-action-btn svg { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 1.8; color: var(--text-3); flex-shrink: 0; }
 .profile-action-btn.danger { color: var(--danger); }
 .profile-action-btn.danger svg { color: var(--danger); }
@@ -1505,7 +1560,7 @@ body:not(.view-home) .chat-fab {
     <span class="role-badge" id="hdr-role"></span>
     <div class="header-avatar" id="hdr-avatar" onclick="toggleAvatarMenu(event)" title="Menu"></div>
     <!-- Avatar dropdown -->
-    <div id="avatar-menu" style="display:none;position:fixed;top:56px;right:12px;background:white;border:1px solid var(--border);border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,.14);z-index:300;min-width:200px;overflow:hidden;">
+    <div id="avatar-menu" style="display:none;position:fixed;top:56px;right:12px;background:var(--bg-card);border:1px solid var(--border-2);border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,.7);z-index:300;min-width:200px;overflow:hidden;">
       <div id="avatar-menu-name" style="padding:14px 16px 10px;border-bottom:1px solid var(--border);font-size:12px;color:var(--text-3);font-weight:500;"></div>
       <button onclick="startChangeEmail()" style="width:100%;padding:13px 16px;text-align:left;background:none;border:none;font-family:var(--font);font-size:14px;font-weight:500;cursor:pointer;color:var(--text);border-bottom:1px solid var(--border);">✉️ Zmień e-mail</button>
       <button onclick="startChangePassword()" style="width:100%;padding:13px 16px;text-align:left;background:none;border:none;font-family:var(--font);font-size:14px;font-weight:500;cursor:pointer;color:var(--text);border-bottom:1px solid var(--border);">🔒 Zmień hasło</button>
@@ -1514,6 +1569,16 @@ body:not(.view-home) .chat-fab {
     <span class="header-name" id="hdr-user"></span>
   </div>
   <div class="main" id="main-content"><div class="spinner"></div></div>
+
+  <!-- Geo Error Overlay -->
+  <div class="geo-error-overlay" id="geo-error-overlay" onclick="closeGeoError()">
+    <div class="geo-error-card" onclick="event.stopPropagation()">
+      <div class="geo-error-icon">📍</div>
+      <div class="geo-error-title">Jesteś poza restauracją</div>
+      <div class="geo-error-msg" id="geo-error-msg"></div>
+      <button class="geo-error-btn" onclick="closeGeoError()">OK, rozumiem</button>
+    </div>
+  </div>
   <!-- Chat FAB — zawsze widoczny -->
   <button class="chat-fab" id="chat-fab" onclick="showView('chat')" aria-label="Chat">
     <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
@@ -2168,7 +2233,7 @@ function openAddBoard(){
     <div class="mfield"><label>Tytuł</label><input type="text" id="bm-title" placeholder="Temat ogłoszenia…"></div>
     <div class="mfield"><label>Treść (opcjonalnie)</label><textarea id="bm-body" rows="3" style="width:100%;border:1px solid var(--border);border-radius:8px;padding:10px 12px;font-family:var(--font);font-size:14px;resize:none" placeholder="Szczegóły…"></textarea></div>
     <div class="mfield"><label>Kategoria</label>
-      <select id="bm-cat" style="width:100%;border:1px solid var(--border);border-radius:8px;padding:10px 12px;font-family:var(--font);font-size:14px;background:white">
+      <select id="bm-cat" style="width:100%;border:1px solid var(--border);border-radius:8px;padding:10px 12px;font-family:var(--font);font-size:14px;background:var(--bg-card)">
         <option value="info">Info</option>
         <option value="task">Zadanie</option>
         <option value="urgent">Pilne</option>
@@ -2285,7 +2350,7 @@ function openAddEvent(){
     <div class="mfield"><label>Nazwa</label><input type="text" id="ev-title" placeholder="np. Seafood Night, Sylwester…"></div>
     <div class="mfield"><label>Data</label><input type="date" id="ev-date" value="${today()}"></div>
     <div class="mfield"><label>Typ</label>
-      <select id="ev-type" style="width:100%;border:1px solid var(--border);border-radius:8px;padding:10px 12px;font-family:var(--font);font-size:14px;background:white">
+      <select id="ev-type" style="width:100%;border:1px solid var(--border);border-radius:8px;padding:10px 12px;font-family:var(--font);font-size:14px;background:var(--bg-card)">
         <option value="event">Wydarzenie</option>
         <option value="menu">Menu specjalne</option>
         <option value="note">Info dla zespołu</option>
@@ -3170,42 +3235,56 @@ async function renderDash(mc){
     return {off, label: monthName(d.getMonth())+' '+d.getFullYear()};
   });
 
-  let html=`<div class="page-bar"><button class="section-back-btn" onclick="goHome()"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>Wróć</button><div class="page-bar-title">Dashboard</div></div>
-  <div class="dash-wrap">
-    <div class="dash-grid">
-      <div class="stat-box accent">
-        <div class="stat-box-label">Koszt pracy</div>
-        <div class="stat-box-val">${tc.toFixed(0)} <span style="font-size:14px;font-weight:400">zł</span></div>
-        <div class="stat-box-sub">${th.toFixed(1)} godz. łącznie</div>
+  let html=`
+  <div style="min-height:calc(100dvh - 56px);background:var(--bg);display:flex;flex-direction:column;">
+
+  <!-- Hero manager -->
+  <div style="background:linear-gradient(180deg,#2D1020 0%,var(--bg) 100%);padding:24px 20px 20px;">
+    <div style="font-size:11px;color:var(--text-3);font-weight:600;letter-spacing:.5px;text-transform:uppercase;margin-bottom:4px;">Dashboard managera</div>
+    <div style="font-size:24px;font-weight:800;letter-spacing:-.6px;color:var(--text);margin-bottom:16px;">Osteria Antonina</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+      <div style="background:var(--brand);border-radius:16px;padding:16px;">
+        <div style="font-size:10px;color:rgba(255,255,255,.6);font-weight:600;text-transform:uppercase;letter-spacing:.3px;margin-bottom:4px;">Koszt pracy</div>
+        <div style="font-size:24px;font-weight:800;color:white;letter-spacing:-.5px;">${tc.toFixed(0)}<span style="font-size:14px;font-weight:400"> zł</span></div>
+        <div style="font-size:11px;color:rgba(255,255,255,.5);margin-top:2px;">${th.toFixed(1)} godz.</div>
       </div>
-      <div class="stat-box">
-        <div class="stat-box-label">Pracownicy</div>
-        <div class="stat-box-val">${employees.length}</div>
-        <div class="stat-box-sub">${shifts.length} zmian</div>
+      <div style="background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:16px;">
+        <div style="font-size:10px;color:var(--text-3);font-weight:600;text-transform:uppercase;letter-spacing:.3px;margin-bottom:4px;">Pracownicy</div>
+        <div style="font-size:24px;font-weight:800;color:var(--text);letter-spacing:-.5px;">${employees.length}</div>
+        <div style="font-size:11px;color:var(--text-3);margin-top:2px;">${shifts.length} zmian</div>
       </div>
-      <div class="stat-box">
-        <div class="stat-box-label">Kuchnia</div>
-        <div class="stat-box-val">${kC.toFixed(0)} <span style="font-size:12px;font-weight:400">zł</span></div>
-        <div class="stat-box-sub">${kH.toFixed(1)}h · ${employees.filter(e=>e.department==='kuchnia').length} os.</div>
+      <div style="background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:16px;">
+        <div style="font-size:10px;color:var(--text-3);font-weight:600;text-transform:uppercase;letter-spacing:.3px;margin-bottom:4px;">Kuchnia</div>
+        <div style="font-size:22px;font-weight:800;color:var(--text);letter-spacing:-.5px;">${kC.toFixed(0)}<span style="font-size:12px;font-weight:400"> zł</span></div>
+        <div style="font-size:11px;color:var(--text-3);margin-top:2px;">${kH.toFixed(1)}h · ${employees.filter(e=>e.department==='kuchnia').length} os.</div>
       </div>
-      <div class="stat-box">
-        <div class="stat-box-label">Sala</div>
-        <div class="stat-box-val">${sC.toFixed(0)} <span style="font-size:12px;font-weight:400">zł</span></div>
-        <div class="stat-box-sub">${sH.toFixed(1)}h · ${employees.filter(e=>e.department==='sala').length} os.</div>
+      <div style="background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:16px;">
+        <div style="font-size:10px;color:var(--text-3);font-weight:600;text-transform:uppercase;letter-spacing:.3px;margin-bottom:4px;">Sala</div>
+        <div style="font-size:22px;font-weight:800;color:var(--text);letter-spacing:-.5px;">${sC.toFixed(0)}<span style="font-size:12px;font-weight:400"> zł</span></div>
+        <div style="font-size:11px;color:var(--text-3);margin-top:2px;">${sH.toFixed(1)}h · ${employees.filter(e=>e.department==='sala').length} os.</div>
       </div>
     </div>
+  </div>
 
-    <div class="dash-section-title" style="margin-bottom:6px">Eksport raportu miesięcznego</div>
-    <div class="month-sel-row">
-      ${exportMonths.map(m=>`<button class="msel-btn" onclick="exportMonthReport(${m.off})">${m.label}</button>`).join('')}
+  <!-- Treść -->
+  <div style="flex:1;padding:16px;display:flex;flex-direction:column;gap:12px;padding-bottom:100px;">
+
+    <!-- Eksport -->
+    <div style="background:var(--bg-card);border:1px solid var(--border-2);border-radius:16px;padding:16px;">
+      <div style="font-size:11px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px;">Eksport raportu</div>
+      <div class="month-sel-row" style="margin-bottom:10px;">
+        ${exportMonths.map(m=>`<button class="msel-btn" onclick="exportMonthReport(${m.off})">${m.label}</button>`).join('')}
+      </div>
+      <button class="export-btn" onclick="exportMonthReport(exportMonthOffset)">
+        <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Pobierz CSV — pełen raport
+      </button>
     </div>
-    <button class="export-btn" onclick="exportMonthReport(exportMonthOffset)">
-      <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-      Pobierz CSV (Excel) — pełen raport z godzinami
-    </button>
 
-    <div class="dash-section-title">Stawki i koszty — bieżący okres</div>
-    <div class="dash-emp-rows">`;
+    <!-- Lista pracowników -->
+    <div style="font-size:11px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:.5px;padding:0 2px;">Stawki i koszty</div>
+    <div style="background:var(--bg-card);border:1px solid var(--border-2);border-radius:16px;overflow:hidden;">
+    <div class="dash-emp-rows" style="padding:0 16px;">`;
 
   [...employees].sort((a,b)=>(b.rate_net||0)-(a.rate_net||0)).forEach(emp=>{
     const eS=shifts.filter(s=>s.employee_id===emp.id);
@@ -3223,7 +3302,7 @@ async function renderDash(mc){
       </div>
     </div>`;
   });
-  html+=`</div></div>`;
+  html+=`</div></div></div></div>`;
   mc.innerHTML=html;
 }
 
@@ -3255,79 +3334,104 @@ async function renderEmpDash(mc){
 
   const hasRate=(emp?.rate_net||0)>1;
 
-  let html=`<div class="page-bar"><button class="section-back-btn" onclick="goHome()"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>Wróć</button><div class="page-bar-title">Mój panel</div></div>
-  <div class="emp-dash">
+  const empColor = avatarColor(emp?.name||'?');
+  const empInitials = initials(emp?.name||'?');
+  let html=`
+  <div style="min-height:calc(100dvh - 56px);background:var(--bg);display:flex;flex-direction:column;">
 
-    <div class="emp-stats-grid">
-      <div class="estat">
-        <div class="estat-val" style="color:var(--accent)">${thisMonthShifts.length}</div>
-        <div class="estat-lbl">zmian w tym miesiącu</div>
-      </div>
-      <div class="estat">
-        <div class="estat-val">${mH.toFixed(1)}<span style="font-size:13px;font-weight:400">h</span></div>
-        <div class="estat-lbl">godz. ten miesiąc</div>
-      </div>
-      <div class="estat">
-        <div class="estat-val" style="color:var(--green)">${lastMonthShifts.length}</div>
-        <div class="estat-lbl">zmian poprz. miesiąc</div>
+  <!-- Hero ciemny z gradientem -->
+  <div style="background:linear-gradient(180deg,#3A1020 0%,var(--bg) 100%);padding:28px 20px 24px;position:relative;overflow:hidden;">
+    <div style="position:absolute;top:-40px;right:-40px;width:180px;height:180px;border-radius:50%;background:radial-gradient(circle,rgba(123,29,46,.35) 0%,transparent 70%);pointer-events:none;"></div>
+    <div style="display:flex;align-items:center;gap:16px;position:relative;z-index:1;">
+      <div style="width:64px;height:64px;border-radius:50%;background:${empColor};display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700;color:white;flex-shrink:0;border:3px solid rgba(255,255,255,.12);">${empInitials}</div>
+      <div style="flex:1;min-width:0;">
+        <div style="font-size:11px;color:var(--text-3);font-weight:600;letter-spacing:.5px;text-transform:uppercase;margin-bottom:3px;">Witaj z powrotem</div>
+        <div style="font-size:22px;font-weight:800;letter-spacing:-.5px;color:var(--text);line-height:1.1;">${emp?.name||'Pracownik'}</div>
+        <div style="font-size:12px;color:var(--text-3);margin-top:3px;text-transform:capitalize;">${emp?.department||''}</div>
       </div>
     </div>
 
-    ${hasRate?`<div class="info-card" style="margin-bottom:10px">
-      <div class="info-card-title">Zarobki netto</div>
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
-        <span style="font-size:13px;color:var(--text-2)">${monthName(now.getMonth())} ${now.getFullYear()}</span>
-        <span style="font-size:18px;font-weight:700;color:var(--accent)">${mC.toFixed(0)} zł</span>
+    <!-- Stats row -->
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:20px;">
+      <div style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:12px 8px;text-align:center;">
+        <div style="font-size:22px;font-weight:800;color:var(--accent);letter-spacing:-.5px;">${thisMonthShifts.length}</div>
+        <div style="font-size:10px;color:var(--text-3);margin-top:2px;font-weight:600;">zmian</div>
       </div>
-      <div style="display:flex;justify-content:space-between;align-items:center">
-        <span style="font-size:12px;color:var(--text-3)">${monthName(new Date(now.getFullYear(),now.getMonth()-1,1).getMonth())} (poprzedni)</span>
-        <span style="font-size:14px;font-weight:600;color:var(--text-3)">${lmC.toFixed(0)} zł</span>
+      <div style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:12px 8px;text-align:center;">
+        <div style="font-size:22px;font-weight:800;color:var(--text);letter-spacing:-.5px;">${mH.toFixed(0)}<span style="font-size:14px;font-weight:400">h</span></div>
+        <div style="font-size:10px;color:var(--text-3);margin-top:2px;font-weight:600;">ten miesiąc</div>
+      </div>
+      <div style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:12px 8px;text-align:center;">
+        <div style="font-size:22px;font-weight:800;color:var(--green);letter-spacing:-.5px;">${hasRate?mC.toFixed(0)+'zł':lmH.toFixed(0)+'h'}</div>
+        <div style="font-size:10px;color:var(--text-3);margin-top:2px;font-weight:600;">${hasRate?'zarobki':'poprz. m-c'}</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Treść -->
+  <div style="flex:1;padding:0 16px 100px;display:flex;flex-direction:column;gap:12px;">
+
+    ${hasRate?`
+    <!-- Zarobki -->
+    <div style="background:var(--bg-card);border:1px solid var(--border-2);border-radius:16px;padding:16px;">
+      <div style="font-size:11px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:12px;">Zarobki netto</div>
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border-2);">
+        <span style="font-size:14px;color:var(--text-2);">${monthName(now.getMonth())} ${now.getFullYear()}</span>
+        <span style="font-size:20px;font-weight:800;color:var(--accent);">${mC.toFixed(0)} zł</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0 0;">
+        <span style="font-size:13px;color:var(--text-3);">${monthName(new Date(now.getFullYear(),now.getMonth()-1,1).getMonth())} (poprzedni)</span>
+        <span style="font-size:16px;font-weight:600;color:var(--text-3);">${lmC.toFixed(0)} zł</span>
       </div>
     </div>`:''}
 
-    <div class="cta-card">
-      <div class="cta-title">Zgłoś dyspozycyjność</div>
-      <div class="cta-sub">Podaj dostępne dni na ${nextMonthName} — manager ułoży grafik na podstawie Twoich preferencji.</div>
-      <button class="cta-btn" onclick="showView('avail')">Uzupełnij dyspozycyjność →</button>
+    <!-- CTA dyspozycyjność -->
+    <div style="background:linear-gradient(135deg,var(--brand-dark) 0%,var(--brand) 100%);border-radius:16px;padding:18px;position:relative;overflow:hidden;">
+      <div style="position:absolute;top:-20px;right:-20px;width:100px;height:100px;border-radius:50%;background:rgba(255,255,255,.07);pointer-events:none;"></div>
+      <div style="font-size:15px;font-weight:800;color:white;letter-spacing:-.3px;margin-bottom:4px;">Zgłoś dyspozycyjność</div>
+      <div style="font-size:12px;color:rgba(255,255,255,.65);line-height:1.5;margin-bottom:14px;">Podaj dostępne dni na ${nextMonthName} — manager ułoży grafik.</div>
+      <button onclick="showView('avail')" style="background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.25);color:white;border-radius:10px;padding:9px 18px;font-size:13px;font-weight:700;font-family:var(--font);cursor:pointer;backdrop-filter:blur(8px);">Uzupełnij →</button>
     </div>
 
-    <div class="info-card">
-      <div class="info-card-title">Mój grafik — bieżący tydzień</div>`;
+    <!-- Grafik -->
+    <div style="background:var(--bg-card);border:1px solid var(--border-2);border-radius:16px;padding:16px;">
+      <div style="font-size:11px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:12px;">Mój grafik — bieżący tydzień</div>`;
 
   if(myShifts.length===0){
     html+=`<div style="font-size:13px;color:var(--text-3);padding:8px 0">Brak zaplanowanych zmian</div>`;
   } else {
-    html+=`<div class="my-shifts-list">`;
     myShifts.forEach(s=>{
       const d=new Date(s.date+'T12:00:00');
       const h=calcH(s.start_time||'10:00:00',s.end_time||'18:00:00');
       const dayLabel=['Nd','Pon','Wt','Śr','Czw','Pt','Sob'][d.getDay()];
-      html+=`<div class="my-shift-row">
+      html+=`<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border-2);">
         <div>
-          <div class="msr-date">${dayLabel} ${d.getDate()}.${pad(d.getMonth()+1)}</div>
-          <div class="msr-h">${h.toFixed(1)} godz.</div>
+          <div style="font-size:13px;font-weight:700;color:var(--text);">${dayLabel} ${d.getDate()}.${pad(d.getMonth()+1)}</div>
+          <div style="font-size:11px;color:var(--text-3);margin-top:1px;">${h.toFixed(1)} godz.</div>
         </div>
-        <div class="msr-time">${(s.start_time||'10:00').slice(0,5)} – ${(s.end_time||'18:00').slice(0,5)}</div>
+        <div style="font-size:14px;font-weight:700;color:var(--accent);">${(s.start_time||'10:00').slice(0,5)} – ${(s.end_time||'18:00').slice(0,5)}</div>
       </div>`;
     });
-    html+=`</div>`;
   }
+
+  html+=`</div>`;
 
   // Upcoming shifts (this month beyond current week)
   const tod = today();
   const upcoming = thisMonthShifts.filter(s=>s.date>tod).sort((a,b)=>a.date.localeCompare(b.date)).slice(0,5);
   if(upcoming.length>0){
-    html+=`</div><div class="info-card"><div class="info-card-title">Nadchodzące zmiany</div><div class="my-shifts-list">`;
+    html+=`<div style="background:var(--bg-card);border:1px solid var(--border-2);border-radius:16px;padding:16px;">
+      <div style="font-size:11px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:12px;">Nadchodzące zmiany</div>`;
     upcoming.forEach(s=>{
       const d=new Date(s.date+'T12:00:00');
       const h=calcH(s.start_time||'10:00:00',s.end_time||'18:00:00');
       const dayLabel=['Nd','Pon','Wt','Śr','Czw','Pt','Sob'][d.getDay()];
-      html+=`<div class="my-shift-row">
+      html+=`<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border-2);">
         <div>
-          <div class="msr-date">${dayLabel} ${d.getDate()}.${pad(d.getMonth()+1)}</div>
-          <div class="msr-h">${h.toFixed(1)} godz.</div>
+          <div style="font-size:13px;font-weight:700;color:var(--text);">${dayLabel} ${d.getDate()}.${pad(d.getMonth()+1)}</div>
+          <div style="font-size:11px;color:var(--text-3);margin-top:1px;">${h.toFixed(1)} godz.</div>
         </div>
-        <div class="msr-time">${(s.start_time||'10:00').slice(0,5)} – ${(s.end_time||'18:00').slice(0,5)}</div>
+        <div style="font-size:14px;font-weight:700;color:var(--accent);">${(s.start_time||'10:00').slice(0,5)} – ${(s.end_time||'18:00').slice(0,5)}</div>
       </div>`;
     });
     html+=`</div>`;
@@ -3388,8 +3492,21 @@ async function deleteShift(){
 
 function openModal(id){document.getElementById(id).classList.add('open');}
 function closeModal(id){document.getElementById(id).classList.remove('open');}
-function showToast(msg,duration=2500){
-  const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show');
+function showGeoError(msg){
+  const overlay=document.getElementById('geo-error-overlay');
+  const msgEl=document.getElementById('geo-error-msg');
+  if(!overlay||!msgEl) return;
+  msgEl.textContent=msg;
+  overlay.classList.add('show');
+}
+function closeGeoError(){
+  document.getElementById('geo-error-overlay')?.classList.remove('show');
+}
+
+function showToast(msg,duration=2500,isErr=false){
+  const t=document.getElementById('toast'); t.textContent=msg;
+  t.classList.toggle('toast-err', isErr);
+  t.classList.add('show');
   clearTimeout(t._tid);
   t._tid=setTimeout(()=>t.classList.remove('show'),duration);
 }
@@ -3888,10 +4005,9 @@ async function doClockin(){
 
   const geo=await checkGeofence();
   if(!geo.ok){
-    // Pełny reset — przywróć przycisk do stanu idle ręcznie
     if(btn){btn.disabled=false; btn.innerHTML=origHTML; btn.className='clock-btn-round state-idle'; btn.onclick=()=>doClockin();}
-    const msg=geo.error?`Błąd GPS: ${geo.error}`:`Jesteś ${geo.dist}m od restauracji — musisz być bliżej`;
-    showToast(msg,4000);
+    const msg=geo.error?`Błąd GPS: ${geo.error}`:`Jesteś ${geo.dist}m od restauracji — musisz być bliżej, żeby zacząć zmianę`;
+    showGeoError(msg);
     return;
   }
 
