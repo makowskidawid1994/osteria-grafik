@@ -5352,7 +5352,10 @@ async function renderFinance(mc){
         <div style="font-size:14px;font-weight:700;color:var(--text);min-width:120px;text-align:center;text-transform:capitalize">${monthLabel}</div>
         <button onclick="financeMonthOffset++;if(financeMonthOffset>0)financeMonthOffset=0;renderFinance()" style="background:none;border:none;color:${financeMonthOffset<0?'var(--text-2)':'var(--text-3)'};font-size:20px;padding:4px 8px;cursor:pointer">›</button>
       </div>
-      <button onclick="openRevenueEdit('${todayStr}')" style="background:var(--brand);color:#fff;border:none;border-radius:8px;padding:7px 12px;font-size:12px;font-weight:700;font-family:var(--font);cursor:pointer">+ Dodaj</button>
+      <div style="display:flex;gap:6px">
+        <button onclick="openPosbistroImport()" style="background:var(--bg-card2);color:var(--text-2);border:1px solid var(--border);border-radius:8px;padding:7px 10px;font-size:12px;font-weight:700;font-family:var(--font);cursor:pointer">↑ CSV</button>
+        <button onclick="openRevenueEdit('${todayStr}')" style="background:var(--brand);color:#fff;border:none;border-radius:8px;padding:7px 12px;font-size:12px;font-weight:700;font-family:var(--font);cursor:pointer">+ Dodaj</button>
+      </div>
     </div>
 
     <div style="padding:0 16px;margin-top:8px">
@@ -5484,6 +5487,161 @@ async function saveRevenue(dateStr){
   } catch(e){
     showToast('Błąd: '+e.message.slice(0,50), 3000, true);
   }
+}
+
+/* ═══════════════════════════════════════════════
+   IMPORT CSV Z POSBISTRO
+═══════════════════════════════════════════════ */
+
+function openPosbistroImport(){
+  document.getElementById('posbistro-import-modal')?.remove();
+  const mo=document.createElement('div');
+  mo.id='posbistro-import-modal';
+  mo.className='modal-overlay active';
+  mo.innerHTML=`
+  <div class="modal" style="max-width:380px;width:calc(100% - 32px);padding:24px">
+    <div style="font-size:16px;font-weight:800;color:var(--text);margin-bottom:4px">Import z POSbistro</div>
+    <div style="font-size:13px;color:var(--text-2);margin-bottom:16px;line-height:1.5">
+      W POSowner: <b>Raporty → Sprzedaż → Eksport CSV</b>.<br>
+      Obsługiwane formaty: raport dzienny, tygodniowy lub za dowolny okres.
+    </div>
+    <div id="posbistro-drop" onclick="document.getElementById('posbistro-file-input').click()"
+      style="border:2px dashed var(--border);border-radius:12px;padding:28px 16px;text-align:center;cursor:pointer;background:var(--bg);transition:border-color .2s"
+      ondragover="event.preventDefault();this.style.borderColor='var(--brand)'"
+      ondragleave="this.style.borderColor='var(--border)'"
+      ondrop="event.preventDefault();this.style.borderColor='var(--border)';handlePosbistroFile(event.dataTransfer.files[0])">
+      <div style="font-size:28px;margin-bottom:8px">📂</div>
+      <div style="font-size:14px;font-weight:700;color:var(--text)">Wgraj plik CSV</div>
+      <div style="font-size:12px;color:var(--text-3);margin-top:4px">lub przeciągnij tutaj</div>
+    </div>
+    <input id="posbistro-file-input" type="file" accept=".csv,.txt" style="display:none"
+      onchange="handlePosbistroFile(this.files[0])">
+    <div id="posbistro-import-status" style="margin-top:14px;min-height:20px"></div>
+    <button onclick="document.getElementById('posbistro-import-modal').remove()"
+      style="width:100%;margin-top:14px;padding:12px;background:var(--bg-card2);border:1px solid var(--border);border-radius:10px;color:var(--text-2);font-size:14px;font-weight:700;font-family:var(--font);cursor:pointer">
+      Zamknij
+    </button>
+  </div>`;
+  document.body.appendChild(mo);
+}
+
+async function handlePosbistroFile(file){
+  if(!file) return;
+  const statusEl=document.getElementById('posbistro-import-status');
+  if(statusEl) statusEl.innerHTML=`<div style="color:var(--text-2);font-size:13px">Czytam plik…</div>`;
+
+  const text=await file.text();
+  const rows=parsePosbistroCSV(text);
+
+  if(!rows.length){
+    if(statusEl) statusEl.innerHTML=`<div style="color:var(--danger);font-size:13px">Nie rozpoznano formatu CSV. Sprawdź czy to eksport z POSbistro/POSowner.</div>`;
+    return;
+  }
+
+  if(statusEl) statusEl.innerHTML=`<div style="color:var(--text-2);font-size:13px">Znaleziono ${rows.length} dni. Zapisuję…</div>`;
+
+  let saved=0, failed=0;
+  for(const row of rows){
+    try{
+      const r=await fetch(`${SB_URL}/rest/v1/daily_revenue`,{
+        method:'POST',
+        headers:{...SB_HEADERS,'Prefer':'resolution=merge-duplicates,return=minimal'},
+        body:JSON.stringify({
+          date:row.date,
+          revenue_cash:row.cash,
+          revenue_card:row.card,
+          covers:row.covers||null,
+          source:'posbistro_csv',
+          updated_at:new Date().toISOString()
+        })
+      });
+      if(r.ok||r.status===201||r.status===200) saved++;
+      else failed++;
+    }catch(_){ failed++; }
+  }
+
+  if(statusEl) statusEl.innerHTML=`
+    <div style="background:${failed===0?'rgba(34,197,94,.1)':'rgba(239,68,68,.1)'};border-radius:10px;padding:12px;text-align:center">
+      <div style="font-size:18px;font-weight:800;color:${failed===0?'var(--green)':'var(--warn)'}">${saved} dni zapisanych</div>
+      ${failed>0?`<div style="font-size:12px;color:var(--danger);margin-top:2px">${failed} błędów</div>`:''}
+      ${saved>0?`<div style="font-size:12px;color:var(--text-3);margin-top:4px">Odśwież widok finansów</div>`:''}
+    </div>`;
+
+  if(saved>0){
+    setTimeout(()=>{
+      document.getElementById('posbistro-import-modal')?.remove();
+      renderFinance(document.getElementById('main-content'));
+    },1800);
+  }
+}
+
+function parsePosbistroCSV(text){
+  /* Obsługuje kilka formatów eksportu POSbistro/POSowner:
+     1. Raport sprzedaży dzienny (kolumny: Data, Gotówka, Karta, Suma, Liczba transakcji itd.)
+     2. Format z separatorem ; lub ,
+     3. Dowolna kolejność kolumn — detekcja po nagłówkach
+  */
+  const lines=text.replace(/\r\n/g,'\n').replace(/\r/g,'\n').split('\n').filter(l=>l.trim());
+  if(lines.length<2) return [];
+
+  // Wykryj separator
+  const sep=lines[0].includes(';')?';':',';
+
+  const headers=lines[0].split(sep).map(h=>h.trim().replace(/^"|"$/g,'').toLowerCase());
+
+  // Mapowanie nagłówków
+  const idx={};
+  const matchers={
+    date:    ['data','date','dzień','dzien','day'],
+    cash:    ['gotówka','gotowka','cash','płatność gotówką','platnosc gotowka','utarg gotówka','utarg gotowka','got.'],
+    card:    ['karta','card','płatność kartą','platnosc karta','utarg karta','terminal'],
+    total:   ['suma','total','przychód','przychod','obrót','obrot','utarg','sprzedaż netto','sprzedaz netto','sprzedaż','sprzedaz'],
+    covers:  ['goście','goscie','covers','osoby','liczba gości','liczba gosci','transactions','liczba transakcji','transakcje'],
+  };
+
+  for(const [key,words] of Object.entries(matchers)){
+    for(let i=0;i<headers.length;i++){
+      if(words.some(w=>headers[i].includes(w))){
+        if(idx[key]===undefined) idx[key]=i;
+      }
+    }
+  }
+
+  if(idx.date===undefined) return [];
+
+  const results=[];
+  for(let i=1;i<lines.length;i++){
+    const cols=lines[i].split(sep).map(c=>c.trim().replace(/^"|"$/g,''));
+    if(!cols[idx.date]||cols[idx.date].length<8) continue;
+
+    // Parsuj datę (DD.MM.YYYY lub YYYY-MM-DD)
+    let dateStr=cols[idx.date];
+    if(/^\d{2}\.\d{2}\.\d{4}$/.test(dateStr)){
+      const [d,m,y]=dateStr.split('.');
+      dateStr=`${y}-${m}-${d}`;
+    } else if(/^\d{4}-\d{2}-\d{2}/.test(dateStr)){
+      dateStr=dateStr.slice(0,10);
+    } else continue;
+
+    const parseAmt=s=>{
+      if(!s) return 0;
+      return parseFloat(s.replace(/\s/g,'').replace(',','.').replace(/[^\d.-]/g,''))||0;
+    };
+
+    let cash=idx.cash!==undefined?parseAmt(cols[idx.cash]):0;
+    let card=idx.card!==undefined?parseAmt(cols[idx.card]):0;
+    const total=idx.total!==undefined?parseAmt(cols[idx.total]):0;
+
+    // Jeśli mamy tylko total bez podziału gotówka/karta
+    if(!cash&&!card&&total>0) cash=total;
+    // Jeśli total != cash+card, sprawdź czy total to suma
+    if(total>0&&(cash+card)>total*1.01) cash=0,card=total;
+
+    const covers=idx.covers!==undefined?parseInt(parseAmt(cols[idx.covers]))||null:null;
+
+    if(cash+card>0) results.push({date:dateStr,cash,card,covers});
+  }
+  return results;
 }
 
 /* ═══════════════════════════════════════════════
