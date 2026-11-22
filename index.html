@@ -267,8 +267,10 @@ body.view-home #main-content { background: transparent; }
 }
 .bnav-item svg { width: 22px; height: 22px; stroke: var(--text-3); fill: none; stroke-width: 1.8; transition: stroke .25s cubic-bezier(.4,0,.2,1); }
 
-.main { padding-bottom: calc(62px + max(env(safe-area-inset-bottom), 12px) + 4px); min-height: calc(100dvh - 56px); }
+.main { padding-bottom: calc(62px + max(env(safe-area-inset-bottom), 12px) + 4px); min-height: calc(100dvh - 56px); background: var(--bg); }
 .main.no-bnav { padding-bottom: 0; }
+/* Chat wypełnia dostępną przestrzeń */
+.main.chat-view { display: flex; flex-direction: column; height: calc(100dvh - 56px); min-height: 0; padding-bottom: 0; overflow: hidden; }
 .main.view-transition { animation: viewFadeIn .5s cubic-bezier(.16,1,.3,1) both; }
 @keyframes viewFadeIn {
   from { opacity: 0; transform: translateY(6px); }
@@ -1880,11 +1882,13 @@ function showView(v, pushHistory=true){
   // FAB chat — ukryj w chacie
   const fab=document.getElementById('chat-fab');
   if(fab) fab.style.display=v==='chat'?'none':'flex';
+  // Tryb chat — specjalny layout fullscreen
+  mc.classList.toggle('chat-view', v==='chat');
+  // Animacja wejścia (synchroniczne widoki)
+  if(v!=='chat' && v!=='dash'){
+    mc.classList.remove('view-transition'); void mc.offsetWidth; mc.classList.add('view-transition');
+  }
   renderView();
-  // Animacja po wyrenderowaniu (rAF żeby DOM był gotowy)
-  requestAnimationFrame(()=>{
-    if(mc){ mc.classList.remove('view-transition'); void mc.offsetWidth; mc.classList.add('view-transition'); }
-  });
 }
 
 function goHome(){showView('home');}
@@ -1901,7 +1905,7 @@ function renderView(){
   else if(currentView==='sched') renderSched(mc);
   else if(currentView==='emps') renderEmps(mc);
   else if(currentView==='avail') renderAvail(mc);
-  else if(currentView==='dash') renderDash(mc).catch(e=>console.error(e));
+  else if(currentView==='dash') renderDash(mc).then(()=>{ mc.classList.remove('view-transition'); void mc.offsetWidth; mc.classList.add('view-transition'); }).catch(e=>console.error(e));
   else if(currentView==='clock') renderClock(mc);
   else if(currentView==='kitchen') renderKitchen(mc);
   else if(currentView==='events') renderEvents(mc);
@@ -1911,10 +1915,12 @@ function renderView(){
   else if(currentView==='handover') renderStub(mc,'Przekazanie zmiany','kitchen','Przekazanie zmiany będzie dostępne wkrótce.');
   else if(currentView==='chat'){
     chatUnread=0; updateChatBadge();
+    const triggerAnim=()=>{ mc.classList.remove('view-transition'); void mc.offsetWidth; mc.classList.add('view-transition'); };
     loadChatMessages().then(ok=>{
-      if(ok) renderChat(mc);
+      if(ok){ renderChat(mc); triggerAnim(); }
       else {
         mc.innerHTML=`<div class="page-bar"><div class="page-bar-title">Chat zespołowy</div></div><div style="padding:40px;text-align:center;color:var(--text-3)"><p style="font-size:14px">Inicjalizacja chatu…</p><p style="font-size:12px;margin-top:8px">Trwa konfiguracja bazy danych.</p></div>`;
+        triggerAnim();
         createChatTable().then(()=>loadChatMessages().then(()=>renderChat(mc)));
       }
     });
@@ -3516,7 +3522,10 @@ function buildClockHTML(emp, isManager){
       <div class="clock-date">${dateStr}</div>
       <div class="clock-elapsed" id="clock-elapsed"></div>
       <div class="clock-status-label" id="clock-status-label">Naciśnij aby rozpocząć zmianę</div>
-      <div class="clock-big-btn-wrap">
+      <div class="clock-geo-status" id="clock-geo-status">
+        <span class="clock-geo-loading">● Sprawdzanie lokalizacji…</span>
+      </div>
+      <div class="clock-big-btn-wrap" style="margin-top:20px">
         <div class="clock-ring">
           <button class="clock-btn-round state-idle" id="btn-clock-main" onclick="onMainClockBtn()">
             <svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>
@@ -3525,9 +3534,6 @@ function buildClockHTML(emp, isManager){
         </div>
       </div>
       <div class="clock-secondary-row" id="clock-secondary-row" style="display:none"></div>
-      <div class="clock-geo-status" id="clock-geo-status">
-        <span class="clock-geo-loading">● Sprawdzanie lokalizacji…</span>
-      </div>
     </div>`;
   }
 
@@ -4004,16 +4010,18 @@ function renderChat(mc){
   const myEmail=currentUser?.user?.email||currentUser?.email||'';
 
   mc.innerHTML=`
-  <div class="page-bar" style="position:sticky;top:0;z-index:10;">
+  <div style="display:flex;flex-direction:column;height:100%;">
+  <div class="page-bar" style="position:sticky;top:0;z-index:10;flex-shrink:0;">
     <div class="page-bar-title">Chat zespołowy</div>
     <div style="font-size:11px;color:var(--text-3)">${employees.length} os.</div>
   </div>
-  <div class="chat-msgs" id="chat-msgs-list"></div>
-  <div class="chat-input-bar">
+  <div class="chat-msgs" id="chat-msgs-list" style="flex:1;overflow-y:auto;"></div>
+  <div class="chat-input-bar" style="flex-shrink:0;">
     <textarea class="chat-input" id="chat-input" placeholder="Napisz coś do zespołu…" rows="1" oninput="autoResizeChat(this)" onkeydown="chatKeydown(event)"></textarea>
     <button class="chat-send-btn" onclick="sendChatMsg()">
       <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
     </button>
+  </div>
   </div>`;
 
   renderChatMessages();
