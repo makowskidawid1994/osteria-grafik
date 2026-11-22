@@ -1677,6 +1677,14 @@ body:not(.view-home) .chat-fab {
 <script>
 const SB_URL = 'https://kplaunvegdjgkycirzhk.supabase.co';
 const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtwbGF1bnZlZ2RqZ2t5Y2lyemhrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTUwMTQ1MjAsImV4cCI6MjExMDU5MDUyMH0.tikiZjXpUshBBNkuoL5eQ-O63Qt2c4IQC079a_NOsIk';
+// SB_HEADERS — dynamiczne nagłówki z tokenem użytkownika
+function getSBHeaders(extra){
+  const h={'apikey':SB_KEY,'Content-Type':'application/json'};
+  if(typeof currentUser!=='undefined'&&currentUser?.access_token) h['Authorization']='Bearer '+currentUser.access_token;
+  return extra?{...h,...extra}:h;
+}
+// Alias dla wstecznej kompatybilności
+Object.defineProperty(window,'SB_HEADERS',{get:()=>getSBHeaders()});
 
 let currentUser=null, currentRole=null;
 let employees=[], shifts=[], availability=[];
@@ -5471,8 +5479,7 @@ async function saveRevenue(dateStr){
     const r = await fetch(`${SB_URL}/rest/v1/daily_revenue`, {
       method:'POST',
       headers:{
-        ...SB_HEADERS,
-        'Prefer':'resolution=merge-duplicates,return=minimal'
+        ...getSBHeaders({'Prefer':'resolution=merge-duplicates,return=minimal'})
       },
       body: JSON.stringify({date:dateStr, revenue_cash:cash, revenue_card:card, covers, note, source:'manual', updated_at:new Date().toISOString()})
     });
@@ -5545,7 +5552,7 @@ async function handlePosbistroFile(file){
     try{
       const r=await fetch(`${SB_URL}/rest/v1/daily_revenue`,{
         method:'POST',
-        headers:{...SB_HEADERS,'Prefer':'resolution=merge-duplicates,return=minimal'},
+        headers:getSBHeaders({'Prefer':'resolution=merge-duplicates,return=minimal'}),
         body:JSON.stringify({
           date:row.date,
           revenue_cash:row.cash,
