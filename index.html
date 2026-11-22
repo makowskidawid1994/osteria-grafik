@@ -1683,6 +1683,8 @@ let employees=[], shifts=[], availability=[];
 let currentWeekOffset=0, currentDept='all', currentView='home', schedView='week';
 let currentMonthOffset=0;
 let currentShiftEmpId=null, currentShiftDate=null;
+let currentRecipeCategory=null, currentRecipeId=null;
+let recipesData=[], eventsData=[];
 // availMonth: which month the availability tab is showing (offset from now)
 let availMonthOffset=1; // default: next month
 
@@ -1781,7 +1783,7 @@ function showWelcomeSplash(email){
     // Spróbuj wyciągnąć imię z bazy pracowników (mogą jeszcze nie być załadowani)
     const tryGetFirst=()=>{
       const emp=employees.find(e=>e.email&&e.email.toLowerCase()===email.toLowerCase());
-      if(emp?.name) return emp.name.split(' ')[0];
+      if(emp?.name){const p=emp.name.trim().split(/\s+/).filter(Boolean);return p.length>=2?p[p.length-1]:p[0]||'';}
       // fallback: pierwsza litera dużą, reszta usuń cyfry i znaki
       const raw=email.split('@')[0].replace(/[0-9._]/g,' ').trim();
       return raw.split(' ').filter(Boolean).map(w=>w[0].toUpperCase()+w.slice(1).toLowerCase()).join(' ')||'';
@@ -1980,7 +1982,8 @@ function renderView(){
   else if(currentView==='kitchen') renderKitchen(mc);
   else if(currentView==='events') renderEvents(mc);
   else if(currentView==='board') renderBoard(mc);
-  else if(currentView==='recipes') renderStub(mc,'Receptury','kitchen','Karty technologiczne będą dostępne wkrótce.');
+  else if(currentView==='recipes') renderRecipes(mc);
+  else if(currentView==='recipe-detail') renderRecipeDetail(mc);
   else if(currentView==='waste') renderStub(mc,'Zeszyt strat','kitchen','Rejestracja strat będzie dostępna wkrótce.');
   else if(currentView==='handover') renderStub(mc,'Przekazanie zmiany','kitchen','Przekazanie zmiany będzie dostępne wkrótce.');
   else if(currentView==='chat'){
@@ -2034,7 +2037,11 @@ function renderHome(mc){
   const myEmail=currentUser?.user?.email||'';
   // Użyj imienia z bazy pracowników; fallback na nick z maila tylko gdy brak rekordu
   const rawName=emp?.name||'';
-  const firstName=rawName.split(' ')[0]||(myEmail.split('@')[0])||'Witaj';
+  // Polskie dane mogą mieć format "Nazwisko Imię" — bierzemy imię (ostatnie słowo) jeśli jest wielka litera
+  const nameParts=rawName.trim().split(/\s+/).filter(Boolean);
+  const firstName=nameParts.length>=2
+    ? nameParts[nameParts.length-1]   // ostatnie słowo = imię (Kowalski Jan → Jan)
+    : (nameParts[0]||(myEmail.split('@')[0])||'Witaj');
   const role=currentRole==='owner'?'Właściciel':currentRole==='manager'?'Manager':emp?.department==='kuchnia'?'Kucharz':'Pracownik';
   const isKitchen=emp?.department==='kuchnia';
   const isOwnerOrMgr=canEdit();
@@ -2158,6 +2165,360 @@ function hbTap(el, view){
 /* ═══════════════════════════════════════════════
    KUCHNIA — Receptury & Zeszyt Strat
 ═══════════════════════════════════════════════ */
+/* ═══════════════════════════════════════════════
+   RECEPTURY — dane lokalne (Supabase-ready)
+═══════════════════════════════════════════════ */
+const RECIPE_CATEGORIES = [
+  { id:'przystawki',   label:'Przystawki',       icon:'🥗' },
+  { id:'pizza',        label:'Pizza',             icon:'🍕' },
+  { id:'pasta',        label:'Pasta',             icon:'🍝' },
+  { id:'dania-glowne', label:'Dania główne',      icon:'🥩' },
+  { id:'desery',       label:'Desery',            icon:'🍮' },
+  { id:'napoje',       label:'Napoje',            icon:'🍹' },
+];
+
+// Przykładowe receptury — do zastąpienia danymi z Supabase
+const RECIPES_DEFAULT = [
+  {
+    id:'r1', category:'przystawki', name:'Tatar wołowy',
+    portions:1, prep_time:15, allergens:['gluten','jajka','musztarda'],
+    ingredients:[
+      {name:'Polędwica wołowa',qty:'160',unit:'g'},
+      {name:'Żółtko jajka',qty:'1',unit:'szt.'},
+      {name:'Kapary',qty:'10',unit:'g'},
+      {name:'Ogórek kiszony',qty:'20',unit:'g'},
+      {name:'Cebula czerwona',qty:'15',unit:'g'},
+      {name:'Musztarda Dijon',qty:'5',unit:'g'},
+      {name:'Olej z pestek winogron',qty:'10',unit:'ml'},
+      {name:'Tabasco',qty:'2',unit:'krople'},
+      {name:'Sól morska, pieprz cayenne',qty:'',unit:'do smaku'},
+      {name:'Grzanka z chleba żytniego',qty:'2',unit:'szt.'},
+    ],
+    method:`1. Polędwicę oczyść z błon i ścięgien. Posiekaj nożem na drobną kostkę (~3 mm) — NIE miel.
+2. W miseczce wymieszaj żółtko, musztardę, olej — emulguj widelcem.
+3. Kapary, ogórek i cebulę posiekaj bardzo drobno, dodaj do mięsa.
+4. Dodaj emulsję, tabasco, dopraw solą i pieprzem. Wymieszaj delikatnie.
+5. Uformuj ringiem na talerzu, udekoruj żółtkiem w połówce skorupki jajka.
+6. Podawaj z grzankami i oliwą truflową. Serwuj natychmiast.`,
+    notes:'Mięso kroić wyłącznie na zimno, bezpośrednio przed serwisem. Temp. max. 4°C do wydania.',
+  },
+  {
+    id:'r2', category:'pizza', name:'Margherita STG',
+    portions:1, prep_time:90, allergens:['gluten','laktoza'],
+    ingredients:[
+      {name:'Ciasto neapolitańskie (kulka)',qty:'260',unit:'g'},
+      {name:'Passata pomidorowa San Marzano',qty:'80',unit:'g'},
+      {name:'Mozzarella fior di latte',qty:'80',unit:'g'},
+      {name:'Oliwa EVO',qty:'10',unit:'ml'},
+      {name:'Bazylia świeża',qty:'3',unit:'listki'},
+      {name:'Sól morska',qty:'',unit:'szczypta'},
+    ],
+    method:`1. Kulkę ciasta (dojrzałą, temp. pokojowa) rozciągnij ręcznie na 30–33 cm — nie używaj wałka.
+2. Passatę rozsmaruj spiralnie od środka, zostaw 1–1,5 cm brzegu.
+3. Połóż mozzarellę porwaną w kawałki równomiernie.
+4. Skrop oliwą EVO. Lekko posól brzegi.
+5. Piecz w piecu opałowym w 430–480°C przez 60–90 sekund, obracaj co 30 s.
+6. Po wyjęciu dodaj świeżą bazylię i krop oliwą.`,
+    notes:'Ciasto: protokół AVPN — bezpośrednie, 48–72 h fermentacja w 4°C. Sprawdzaj wilgotność passaty — zbyt rzadka podmoczy spód.',
+  },
+  {
+    id:'r3', category:'pasta', name:'Cacio e Pepe',
+    portions:2, prep_time:20, allergens:['gluten','laktoza'],
+    ingredients:[
+      {name:'Spaghetti (własny wyrób lub De Cecco)',qty:'200',unit:'g'},
+      {name:'Pecorino Romano DOP (starty)',qty:'80',unit:'g'},
+      {name:'Parmigiano Reggiano (starty)',qty:'40',unit:'g'},
+      {name:'Pieprz czarny całe ziarna',qty:'2',unit:'łyżeczki'},
+      {name:'Woda z makaronu',qty:'150',unit:'ml'},
+      {name:'Sól',qty:'',unit:'do wody'},
+    ],
+    method:`1. Pieprz uprać na suchej patelni (śr.) do uwolnienia aromatu. Grubo roztłucz w moździerzu.
+2. Makaron gotuj w mocno osolonej wodzie al dente (zostaw 2 min do al dente).
+3. Na patelni rozgrzej łyżkę wody z makaronu z pieprzem — stwórz bazę.
+4. Wymieszaj oba sery z 3 łyżkami zimnej wody makaronowej na gładką pastę.
+5. Przełóż al dente makaron na patelnię z pieprzem, dodaj wodę, mieszaj.
+6. Zdejmij z ognia — dodaj pastę serową, szybko mieszaj ruchem obrotowym. Creamy, nie grudkowe.
+7. Serwuj natychmiast, posyp pieprzem i startym pecorino.`,
+    notes:'Kluczowe: nigdy ser bezpośrednio na gorącą patelnię — zetnie się. Temperatura maks. 70°C przy serze.',
+  },
+  {
+    id:'r4', category:'desery', name:'Tiramisu Classico',
+    portions:6, prep_time:30, allergens:['gluten','jajka','laktoza'],
+    ingredients:[
+      {name:'Żółtka jaj',qty:'4',unit:'szt.'},
+      {name:'Cukier drobny',qty:'100',unit:'g'},
+      {name:'Mascarpone',qty:'500',unit:'g'},
+      {name:'Śmietanka 36% (ubita)',qty:'200',unit:'ml'},
+      {name:'Espresso mocne (ostudzone)',qty:'300',unit:'ml'},
+      {name:'Amaretto',qty:'30',unit:'ml'},
+      {name:'Ladyfingers (savoiardi)',qty:'200',unit:'g'},
+      {name:'Kakao holenderskie (do oprószenia)',qty:'',unit:'do dekoracji'},
+    ],
+    method:`1. Żółtka utrzyj z cukrem do bladej, puszystej masy (ribbon stage).
+2. Wmieszaj mascarpone — delikatnie, żeby nie zwarzył.
+3. Wmieszaj ubitą śmietankę na przemian — lekki krem.
+4. Połącz espresso z amaretto. Każde savoiardi zamaczaj 1–2 s — nie namaczaj.
+5. Pierwsza warstwa biszkoptów, połowa kremu, druga warstwa biszkoptów, reszta kremu.
+6. Schłódź min. 6 h (optymalnie noc). Przed podaniem obficie oprósz kakao przez sitko.`,
+    notes:'Bez surowych jaj: pasteryzuj żółtka w kąpieli wodnej 60°C przez 5 min mieszając. Tiramisu trzyma 48 h w lodówce.',
+  },
+];
+
+let recipesLocal = [...RECIPES_DEFAULT];
+
+function renderRecipes(mc){
+  const cat = currentRecipeCategory;
+
+  if(!cat){
+    // Widok kategorii
+    mc.innerHTML=`
+    <div style="min-height:100dvh;background:var(--bg);display:flex;flex-direction:column;">
+    <div class="page-bar">
+      <button class="section-back-btn" onclick="showView('kitchen')">
+        <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>Wróć
+      </button>
+      <div class="page-bar-title">Receptury</div>
+      ${canEdit()?`<button class="btn-primary btn-sm" onclick="openAddRecipe()">+ Dodaj</button>`:''}
+    </div>
+    <div style="padding:16px;display:flex;flex-direction:column;gap:8px;flex:1;">
+      ${RECIPE_CATEGORIES.map(c=>{
+        const count=recipesLocal.filter(r=>r.category===c.id).length;
+        return`<div onclick="currentRecipeCategory='${c.id}';renderView();" style="display:flex;align-items:center;gap:14px;background:var(--bg-card);border:1px solid var(--border-2);border-radius:14px;padding:16px;cursor:pointer;-webkit-tap-highlight-color:transparent;">
+          <div style="width:44px;height:44px;border-radius:12px;background:var(--bg-card2);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;">${c.icon}</div>
+          <div style="flex:1;">
+            <div style="font-size:15px;font-weight:700;color:var(--text);">${c.label}</div>
+            <div style="font-size:12px;color:var(--text-3);margin-top:2px;">${count} ${count===1?'receptura':count<5?'receptury':'receptur'}</div>
+          </div>
+          <svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:var(--text-3);fill:none;stroke-width:2;flex-shrink:0"><polyline points="9 18 15 12 9 6"/></svg>
+        </div>`;
+      }).join('')}
+    </div></div>`;
+    return;
+  }
+
+  // Widok listy w kategorii
+  const catInfo = RECIPE_CATEGORIES.find(c=>c.id===cat)||{label:cat,icon:'📄'};
+  const list = recipesLocal.filter(r=>r.category===cat);
+
+  mc.innerHTML=`
+  <div style="min-height:100dvh;background:var(--bg);display:flex;flex-direction:column;">
+  <div class="page-bar">
+    <button class="section-back-btn" onclick="currentRecipeCategory=null;renderView();">
+      <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>Receptury
+    </button>
+    <div class="page-bar-title">${catInfo.icon} ${catInfo.label}</div>
+    ${canEdit()?`<button class="btn-primary btn-sm" onclick="openAddRecipe('${cat}')">+ Dodaj</button>`:''}
+  </div>
+  <div style="padding:16px;display:flex;flex-direction:column;gap:8px;flex:1;">
+    ${list.length===0
+      ?`<div style="text-align:center;padding:60px 20px;color:var(--text-3);font-size:13px;">Brak receptur w tej kategorii</div>`
+      :list.map(r=>`
+      <div onclick="currentRecipeId='${r.id}';showView('recipe-detail');" style="background:var(--bg-card);border:1px solid var(--border-2);border-radius:14px;padding:16px;cursor:pointer;-webkit-tap-highlight-color:transparent;">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;">
+          <div style="flex:1;min-width:0;">
+            <div style="font-size:15px;font-weight:700;color:var(--text);margin-bottom:3px;">${r.name}</div>
+            <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+              <span style="font-size:11px;color:var(--text-3);">${r.portions} ${r.portions===1?'porcja':'porcje'} · ${r.prep_time} min</span>
+              ${r.allergens.map(a=>`<span style="font-size:10px;padding:1px 6px;border-radius:4px;background:rgba(248,113,113,.12);color:#F87171;">${a}</span>`).join('')}
+            </div>
+          </div>
+          <svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:var(--text-3);fill:none;stroke-width:2;flex-shrink:0"><polyline points="9 18 15 12 9 6"/></svg>
+        </div>
+      </div>`).join('')}
+  </div></div>`;
+}
+
+function renderRecipeDetail(mc){
+  const r = recipesLocal.find(x=>x.id===currentRecipeId);
+  if(!r){ currentRecipeId=null; showView('recipes'); return; }
+
+  mc.innerHTML=`
+  <div style="min-height:100dvh;background:var(--bg);display:flex;flex-direction:column;">
+  <div class="page-bar">
+    <button class="section-back-btn" onclick="showView('recipes');">
+      <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+      ${RECIPE_CATEGORIES.find(c=>c.id===r.category)?.label||'Receptury'}
+    </button>
+    <div class="page-bar-title">${r.name}</div>
+    ${canEdit()?`<button class="btn-primary btn-sm" onclick="openEditRecipe('${r.id}')">Edytuj</button>`:''}
+  </div>
+
+  <div style="flex:1;padding:16px;display:flex;flex-direction:column;gap:12px;padding-bottom:100px;">
+
+    <!-- Meta -->
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;">
+      <div style="text-align:center;padding:12px 6px;background:var(--bg-card2);border-radius:10px;border:1px solid var(--border-2);">
+        <div style="font-size:18px;font-weight:800;color:var(--text);">${r.portions}</div>
+        <div style="font-size:10px;color:var(--text-3);margin-top:1px;">porcj${r.portions===1?'a':'e'}</div>
+      </div>
+      <div style="text-align:center;padding:12px 6px;background:var(--bg-card2);border-radius:10px;border:1px solid var(--border-2);">
+        <div style="font-size:18px;font-weight:800;color:var(--text);">${r.prep_time}</div>
+        <div style="font-size:10px;color:var(--text-3);margin-top:1px;">minut</div>
+      </div>
+      <div style="text-align:center;padding:12px 6px;background:var(--bg-card2);border-radius:10px;border:1px solid var(--border-2);">
+        <div style="font-size:14px;font-weight:800;color:var(--text);">${r.allergens.length>0?r.allergens.length:'—'}</div>
+        <div style="font-size:10px;color:var(--text-3);margin-top:1px;">alergenów</div>
+      </div>
+    </div>
+
+    <!-- Alergeny -->
+    ${r.allergens.length>0?`
+    <div style="display:flex;flex-wrap:wrap;gap:6px;">
+      ${r.allergens.map(a=>`<span style="font-size:12px;padding:4px 10px;border-radius:6px;background:rgba(248,113,113,.12);color:#F87171;border:1px solid rgba(248,113,113,.2);">${a}</span>`).join('')}
+    </div>`:''}
+
+    <!-- Składniki -->
+    <div style="background:var(--bg-card);border:1px solid var(--border-2);border-radius:14px;overflow:hidden;">
+      <div style="padding:14px 16px;border-bottom:1px solid var(--border-2);">
+        <div style="font-size:11px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:.5px;">Składniki</div>
+      </div>
+      ${r.ingredients.map((ing,i)=>`
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:11px 16px;border-bottom:${i<r.ingredients.length-1?'1px solid var(--border-2)':'none'};">
+        <span style="font-size:14px;color:var(--text);">${ing.name}</span>
+        <span style="font-size:14px;font-weight:700;color:var(--text-2);white-space:nowrap;">${ing.qty}${ing.unit?' '+ing.unit:''}</span>
+      </div>`).join('')}
+    </div>
+
+    <!-- Opis technologiczny -->
+    <div style="background:var(--bg-card);border:1px solid var(--border-2);border-radius:14px;overflow:hidden;">
+      <div style="padding:14px 16px;border-bottom:1px solid var(--border-2);">
+        <div style="font-size:11px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:.5px;">Opis technologiczny</div>
+      </div>
+      <div style="padding:16px;font-size:14px;color:var(--text);line-height:1.75;white-space:pre-wrap;">${r.method}</div>
+    </div>
+
+    <!-- Uwagi szefa -->
+    ${r.notes?`
+    <div style="background:rgba(123,29,46,.1);border:1px solid rgba(123,29,46,.2);border-radius:14px;padding:14px 16px;">
+      <div style="font-size:11px;font-weight:700;color:var(--brand-light);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;">Uwagi szefa kuchni</div>
+      <div style="font-size:13px;color:var(--text-2);line-height:1.6;">${r.notes}</div>
+    </div>`:''}
+
+  </div></div>`;
+}
+
+function openAddRecipe(categoryPreset){
+  const catOpts = RECIPE_CATEGORIES.map(c=>`<option value="${c.id}"${c.id===categoryPreset?' selected':''}>${c.icon} ${c.label}</option>`).join('');
+  const overlay=document.createElement('div');
+  overlay.className='modal-overlay active'; overlay.id='recipe-modal';
+  overlay.innerHTML=`<div class="modal" style="max-height:85vh;overflow-y:auto;">
+    <div class="modal-pill"></div>
+    <div class="modal-title">Nowa receptura</div>
+    <div class="mfield"><label>Nazwa dania</label><input type="text" id="rc-name" placeholder="np. Branzino al forno"></div>
+    <div class="mfield"><label>Kategoria</label>
+      <select id="rc-cat" style="width:100%;border:1px solid var(--border);border-radius:8px;padding:10px 12px;font-family:var(--font);font-size:14px;background:var(--bg-card);color:var(--text);">${catOpts}</select>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+      <div class="mfield"><label>Porcje</label><input type="number" id="rc-portions" value="1" min="1"></div>
+      <div class="mfield"><label>Czas (min)</label><input type="number" id="rc-time" value="30" min="1"></div>
+    </div>
+    <div class="mfield"><label>Alergeny (oddziel przecinkami)</label><input type="text" id="rc-allergens" placeholder="gluten, jajka, laktoza"></div>
+    <div class="mfield"><label>Składniki (jeden w linii: Nazwa | ilość | jednostka)</label>
+      <textarea id="rc-ingredients" rows="5" style="width:100%;border:1px solid var(--border);border-radius:8px;padding:10px 12px;font-family:var(--font);font-size:13px;background:var(--bg-card);color:var(--text);resize:vertical;" placeholder="Polędwica wołowa | 160 | g&#10;Żółtko jajka | 1 | szt."></textarea>
+    </div>
+    <div class="mfield"><label>Opis technologiczny</label>
+      <textarea id="rc-method" rows="8" style="width:100%;border:1px solid var(--border);border-radius:8px;padding:10px 12px;font-family:var(--font);font-size:13px;background:var(--bg-card);color:var(--text);resize:vertical;line-height:1.6;" placeholder="1. Krok pierwszy...&#10;2. Krok drugi..."></textarea>
+    </div>
+    <div class="mfield"><label>Uwagi szefa kuchni</label>
+      <textarea id="rc-notes" rows="2" style="width:100%;border:1px solid var(--border);border-radius:8px;padding:10px 12px;font-family:var(--font);font-size:13px;background:var(--bg-card);color:var(--text);resize:vertical;"></textarea>
+    </div>
+    <button class="btn-primary" style="width:100%;margin-top:8px;" onclick="saveNewRecipe()">Zapisz recepturę</button>
+    <button onclick="document.getElementById('recipe-modal').remove()" style="width:100%;margin-top:8px;background:none;border:none;color:var(--text-3);font-size:14px;padding:10px;cursor:pointer;">Anuluj</button>
+  </div>`;
+  document.body.appendChild(overlay);
+  overlay.addEventListener('click',e=>{ if(e.target===overlay) overlay.remove(); });
+}
+
+function openEditRecipe(id){
+  const r=recipesLocal.find(x=>x.id===id); if(!r) return;
+  const catOpts = RECIPE_CATEGORIES.map(c=>`<option value="${c.id}"${c.id===r.category?' selected':''}>${c.icon} ${c.label}</option>`).join('');
+  const ingSrc = r.ingredients.map(i=>`${i.name} | ${i.qty} | ${i.unit}`).join('\n');
+  const overlay=document.createElement('div');
+  overlay.className='modal-overlay active'; overlay.id='recipe-edit-modal';
+  overlay.innerHTML=`<div class="modal" style="max-height:85vh;overflow-y:auto;">
+    <div class="modal-pill"></div>
+    <div class="modal-title">Edytuj recepturę</div>
+    <div class="mfield"><label>Nazwa dania</label><input type="text" id="re-name" value="${r.name}"></div>
+    <div class="mfield"><label>Kategoria</label>
+      <select id="re-cat" style="width:100%;border:1px solid var(--border);border-radius:8px;padding:10px 12px;font-family:var(--font);font-size:14px;background:var(--bg-card);color:var(--text);">${catOpts}</select>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+      <div class="mfield"><label>Porcje</label><input type="number" id="re-portions" value="${r.portions}" min="1"></div>
+      <div class="mfield"><label>Czas (min)</label><input type="number" id="re-time" value="${r.prep_time}" min="1"></div>
+    </div>
+    <div class="mfield"><label>Alergeny</label><input type="text" id="re-allergens" value="${r.allergens.join(', ')}"></div>
+    <div class="mfield"><label>Składniki (Nazwa | ilość | jednostka)</label>
+      <textarea id="re-ingredients" rows="5" style="width:100%;border:1px solid var(--border);border-radius:8px;padding:10px 12px;font-family:var(--font);font-size:13px;background:var(--bg-card);color:var(--text);resize:vertical;">${ingSrc}</textarea>
+    </div>
+    <div class="mfield"><label>Opis technologiczny</label>
+      <textarea id="re-method" rows="8" style="width:100%;border:1px solid var(--border);border-radius:8px;padding:10px 12px;font-family:var(--font);font-size:13px;background:var(--bg-card);color:var(--text);resize:vertical;line-height:1.6;">${r.method}</textarea>
+    </div>
+    <div class="mfield"><label>Uwagi szefa kuchni</label>
+      <textarea id="re-notes" rows="2" style="width:100%;border:1px solid var(--border);border-radius:8px;padding:10px 12px;font-family:var(--font);font-size:13px;background:var(--bg-card);color:var(--text);resize:vertical;">${r.notes||''}</textarea>
+    </div>
+    <div style="display:flex;gap:8px;margin-top:8px;">
+      <button class="btn-primary" style="flex:1;" onclick="saveEditRecipe('${id}')">Zapisz zmiany</button>
+      <button onclick="deleteRecipe('${id}')" style="background:rgba(248,113,113,.12);border:1px solid rgba(248,113,113,.2);color:#F87171;border-radius:10px;padding:10px 16px;font-family:var(--font);font-size:14px;cursor:pointer;">Usuń</button>
+    </div>
+    <button onclick="document.getElementById('recipe-edit-modal').remove()" style="width:100%;margin-top:8px;background:none;border:none;color:var(--text-3);font-size:14px;padding:10px;cursor:pointer;">Anuluj</button>
+  </div>`;
+  document.body.appendChild(overlay);
+  overlay.addEventListener('click',e=>{ if(e.target===overlay) overlay.remove(); });
+}
+
+function parseIngredients(raw){
+  return raw.split('\n').map(l=>{
+    const p=l.split('|').map(x=>x.trim());
+    return{name:p[0]||'',qty:p[1]||'',unit:p[2]||''};
+  }).filter(x=>x.name);
+}
+
+function saveNewRecipe(){
+  const name=document.getElementById('rc-name').value.trim();
+  if(!name){showToast('Podaj nazwę dania');return;}
+  const r={
+    id:'r'+(Date.now()),
+    category:document.getElementById('rc-cat').value,
+    name,
+    portions:parseInt(document.getElementById('rc-portions').value)||1,
+    prep_time:parseInt(document.getElementById('rc-time').value)||30,
+    allergens:document.getElementById('rc-allergens').value.split(',').map(x=>x.trim()).filter(Boolean),
+    ingredients:parseIngredients(document.getElementById('rc-ingredients').value),
+    method:document.getElementById('rc-method').value.trim(),
+    notes:document.getElementById('rc-notes').value.trim(),
+  };
+  recipesLocal.push(r);
+  document.getElementById('recipe-modal').remove();
+  showToast('Receptura dodana');
+  renderView();
+}
+
+function saveEditRecipe(id){
+  const idx=recipesLocal.findIndex(x=>x.id===id); if(idx<0) return;
+  recipesLocal[idx]={
+    ...recipesLocal[idx],
+    category:document.getElementById('re-cat').value,
+    name:document.getElementById('re-name').value.trim(),
+    portions:parseInt(document.getElementById('re-portions').value)||1,
+    prep_time:parseInt(document.getElementById('re-time').value)||30,
+    allergens:document.getElementById('re-allergens').value.split(',').map(x=>x.trim()).filter(Boolean),
+    ingredients:parseIngredients(document.getElementById('re-ingredients').value),
+    method:document.getElementById('re-method').value.trim(),
+    notes:document.getElementById('re-notes').value.trim(),
+  };
+  document.getElementById('recipe-edit-modal').remove();
+  showToast('Zapisano');
+  renderView();
+}
+
+function deleteRecipe(id){
+  recipesLocal=recipesLocal.filter(x=>x.id!==id);
+  document.getElementById('recipe-edit-modal')?.remove();
+  currentRecipeId=null;
+  showToast('Receptura usunięta');
+  showView('recipes');
+}
+
 function renderKitchen(mc){
   mc.innerHTML=`<div class="page-bar" style="gap:12px">
     <button class="section-back-btn" onclick="goHome()">
@@ -2291,122 +2652,205 @@ async function saveBoardItem(){
 /* ═══════════════════════════════════════════════
    WYDARZENIA
 ═══════════════════════════════════════════════ */
+// Przykładowe wydarzenia — zastępowane danymi z Supabase gdy tabela istnieje
+const EVENTS_DEFAULT = [
+  {
+    id:'ev-demo-1',
+    date:'2026-12-24',
+    type:'event',
+    title:'Kolacja Wigilijna',
+    description:'Specjalne menu degustacyjne 5 dań. Rezerwacje: 18:00 i 20:30. Dekoracje — Oliwia koordynuje od 15:00.',
+    guests:48,
+    _local:true,
+  },
+  {
+    id:'ev-demo-2',
+    date:'2026-12-31',
+    type:'event',
+    title:'Sylwester 2026/2027',
+    description:'Menu à la carte + open bar. Muzyka na żywo od 21:00. Obowiązkowe rezerwacje z przedpłatą.',
+    guests:65,
+    _local:true,
+  },
+  {
+    id:'ev-demo-3',
+    date:'2026-12-14',
+    type:'menu',
+    title:'Seafood Night',
+    description:'Menu sezonowe: langustynki, branzino, ostrzygi. Sprawdzić dostawy u Marka w czwartek.',
+    guests:30,
+    _local:true,
+  },
+];
+
+let eventsLocal=[...EVENTS_DEFAULT];
+
 function renderEvents(mc){
-  mc.innerHTML=`<div class="page-bar">
+  mc.innerHTML=`
+  <div style="min-height:100dvh;background:var(--bg);display:flex;flex-direction:column;">
+  <div class="page-bar">
     <button class="section-back-btn" onclick="goHome()">
-      <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
-      Wróć
+      <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>Wróć
     </button>
     <div class="page-bar-title">Wydarzenia</div>
     ${canEdit()?`<button class="btn-primary btn-sm" onclick="openAddEvent()">+ Dodaj</button>`:''}
   </div>
-  <div id="events-list" style="padding:16px;display:flex;flex-direction:column;gap:10px">
-    <div class="spinner" style="margin:40px auto"></div>
-  </div>`;
+  <div id="events-list" style="padding:16px;display:flex;flex-direction:column;gap:10px;flex:1;">
+    <div style="display:flex;align-items:center;justify-content:center;padding:30px;"><div class="spinner"></div></div>
+  </div></div>`;
   loadEvents();
 }
 
 async function loadEvents(){
   const list=document.getElementById('events-list');
   if(!list) return;
+  let rows=[];
   try{
-    const rows=await sbFetch('/rest/v1/events?select=*&order=date.asc&limit=60');
-    if(!Array.isArray(rows)||rows.length===0){
-      list.innerHTML=`<div style="text-align:center;padding:40px 20px;color:var(--text-3);font-size:13px">Brak zaplanowanych wydarzeń</div>`;
-      return;
-    }
-    const tod=today();
-    const upcoming=rows.filter(r=>r.date>=tod);
-    const past=rows.filter(r=>r.date<tod);
-    let html='';
-    if(upcoming.length){
-      html+=`<div style="font-size:10px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--text-3);padding:4px 0 8px">Nadchodzące</div>`;
-      html+=upcoming.map(r=>eventCard(r,false)).join('');
-    }
-    if(past.length){
-      html+=`<div style="font-size:10px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--text-3);padding:12px 0 8px">Archiwum</div>`;
-      html+=past.slice(0,10).map(r=>eventCard(r,true)).join('');
-    }
-    list.innerHTML=html;
+    const fetched=await sbFetch('/rest/v1/events?select=*&order=date.asc&limit=60');
+    if(Array.isArray(fetched)&&fetched.length>0) rows=fetched;
+    else rows=[...eventsLocal];
   }catch(e){
-    list.innerHTML=`<div style="text-align:center;padding:40px;color:var(--text-3);font-size:13px">Trwa konfiguracja sekcji wydarzeń…</div>`;
+    rows=[...eventsLocal];
   }
+  if(rows.length===0){
+    list.innerHTML=`<div style="text-align:center;padding:60px 20px;color:var(--text-3);font-size:13px;">Brak zaplanowanych wydarzeń<br><span style="font-size:11px;margin-top:4px;display:block;">Naciśnij + Dodaj żeby dodać pierwsze</span></div>`;
+    return;
+  }
+  const tod=today();
+  const upcoming=rows.filter(r=>r.date>=tod).sort((a,b)=>a.date.localeCompare(b.date));
+  const past=rows.filter(r=>r.date<tod).sort((a,b)=>b.date.localeCompare(a.date));
+  let html='';
+  if(upcoming.length){
+    html+=`<div style="font-size:10px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--text-3);padding:4px 0 8px;">Nadchodzące</div>`;
+    html+=upcoming.map(r=>eventCard(r,false)).join('');
+  }
+  if(past.length){
+    html+=`<div style="font-size:10px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--text-3);padding:${upcoming.length?'20px':'4px'} 0 8px;">Archiwum</div>`;
+    html+=past.slice(0,10).map(r=>eventCard(r,true)).join('');
+  }
+  list.innerHTML=html;
 }
 
 function eventCard(r,past){
   const d=new Date(r.date+'T12:00:00');
-  const dStr=d.toLocaleDateString('pl-PL',{weekday:'short',day:'numeric',month:'short'});
+  const monthNames=['STY','LUT','MAR','KWI','MAJ','CZE','LIP','SIE','WRZ','PAŹ','LIS','GRU'];
+  const dayNames=['Nd','Pon','Wt','Śr','Czw','Pt','Sob'];
   const typeColors={'event':'#7C3AED','menu':'#C2410C','note':'#0369A1'};
-  const typeLabel={'event':'Wydarzenie','menu':'Menu','note':'Info'};
+  const typeLabel={'event':'Wydarzenie','menu':'Menu specjalne','note':'Info'};
   const col=typeColors[r.type]||'#64748B';
-  return`<div class="info-card" style="padding:14px 16px;${past?'opacity:.55':''}">
-    <div style="display:flex;gap:10px;align-items:flex-start">
-      <div style="text-align:center;min-width:42px;padding:6px 4px;background:${past?'var(--bg)':'var(--brand-soft)'};border-radius:8px;flex-shrink:0">
-        <div style="font-size:18px;font-weight:800;color:${past?'var(--text-3)':'var(--brand)'};line-height:1">${d.getDate()}</div>
-        <div style="font-size:9px;font-weight:600;color:${past?'var(--text-3)':'var(--brand)'};text-transform:uppercase">${dStr.split(' ')[0]}</div>
+  const isLocal=r._local;
+  return`<div style="background:var(--bg-card);border:1px solid ${past?'var(--border-2)':'var(--border)'};border-radius:14px;overflow:hidden;${past?'opacity:.6':''}">
+    <div style="display:flex;gap:0;align-items:stretch;">
+      <!-- Data kafelek -->
+      <div style="width:64px;flex-shrink:0;background:${past?'var(--bg-card2)':'var(--bg-card2)'};display:flex;flex-direction:column;align-items:center;justify-content:center;padding:16px 8px;border-right:1px solid var(--border-2);">
+        <div style="font-size:11px;font-weight:700;color:${past?'var(--text-3)':col};letter-spacing:.5px;">${monthNames[d.getMonth()]}</div>
+        <div style="font-size:28px;font-weight:900;color:${past?'var(--text-3)':'var(--text)'};line-height:1;letter-spacing:-1px;">${d.getDate()}</div>
+        <div style="font-size:10px;color:var(--text-3);margin-top:2px;">${dayNames[d.getDay()]}</div>
       </div>
-      <div style="flex:1;min-width:0">
-        <div style="display:flex;align-items:center;gap:6px;margin-bottom:3px">
-          <span style="font-size:10px;font-weight:700;color:${col};background:${col}18;padding:2px 7px;border-radius:4px">${typeLabel[r.type]||r.type}</span>
+      <!-- Treść -->
+      <div style="flex:1;min-width:0;padding:14px;">
+        <div style="display:flex;align-items:center;gap:6px;margin-bottom:5px;">
+          <span style="font-size:10px;font-weight:700;color:${col};background:${col}18;padding:2px 8px;border-radius:4px;letter-spacing:.3px;">${typeLabel[r.type]||r.type}</span>
+          ${r.guests?`<span style="font-size:10px;color:var(--text-3);">· ${r.guests} gości</span>`:''}
         </div>
-        <div style="font-size:14px;font-weight:700;color:var(--text);letter-spacing:-.2px">${r.title}</div>
-        ${r.description?`<div style="font-size:12px;color:var(--text-2);margin-top:3px;line-height:1.5">${r.description}</div>`:''}
-        ${r.guests?`<div style="font-size:11px;color:var(--text-3);margin-top:4px">Gości: <strong>${r.guests}</strong></div>`:''}
+        <div style="font-size:15px;font-weight:700;color:var(--text);letter-spacing:-.2px;margin-bottom:${r.description?'4px':'0'};">${r.title}</div>
+        ${r.description?`<div style="font-size:12px;color:var(--text-2);line-height:1.5;">${r.description}</div>`:''}
       </div>
-      ${canEdit()?`<button onclick="deleteEvent('${r.id}')" style="background:none;border:none;padding:4px;cursor:pointer;color:var(--text-3)"><svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg></button>`:''}
+      <!-- Akcje -->
+      ${canEdit()?`<div style="display:flex;flex-direction:column;justify-content:center;padding:8px;gap:4px;flex-shrink:0;">
+        <button onclick="openEditEvent(${JSON.stringify(r).replace(/"/g,'&quot;')})" style="background:none;border:none;padding:6px;cursor:pointer;color:var(--text-3);border-radius:6px;">
+          <svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+        </button>
+        <button onclick="deleteEventLocal('${r.id}'${isLocal?',true':''})" style="background:none;border:none;padding:6px;cursor:pointer;color:var(--text-3);border-radius:6px;">
+          <svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
+        </button>
+      </div>`:''}
     </div>
   </div>`;
 }
 
 function openAddEvent(){
+  _openEventModal(null);
+}
+
+function openEditEvent(r){
+  _openEventModal(r);
+}
+
+function _openEventModal(existing){
+  const isEdit=!!existing;
   const overlay=document.createElement('div');
   overlay.className='modal-overlay active'; overlay.id='event-modal';
   overlay.innerHTML=`<div class="modal">
     <div class="modal-pill"></div>
-    <div class="modal-title">Nowe wydarzenie</div>
-    <div class="mfield"><label>Nazwa</label><input type="text" id="ev-title" placeholder="np. Seafood Night, Sylwester…"></div>
-    <div class="mfield"><label>Data</label><input type="date" id="ev-date" value="${today()}"></div>
+    <div class="modal-title">${isEdit?'Edytuj wydarzenie':'Nowe wydarzenie'}</div>
+    <div class="mfield"><label>Nazwa</label><input type="text" id="ev-title" placeholder="np. Seafood Night, Sylwester…" value="${isEdit?(existing.title||''):''}"></div>
+    <div class="mfield"><label>Data</label><input type="date" id="ev-date" value="${isEdit?(existing.date||today()):today()}"></div>
     <div class="mfield"><label>Typ</label>
-      <select id="ev-type" style="width:100%;border:1px solid var(--border);border-radius:8px;padding:10px 12px;font-family:var(--font);font-size:14px;background:var(--bg-card)">
-        <option value="event">Wydarzenie</option>
-        <option value="menu">Menu specjalne</option>
-        <option value="note">Info dla zespołu</option>
+      <select id="ev-type" style="width:100%;border:1px solid var(--border);border-radius:8px;padding:10px 12px;font-family:var(--font);font-size:14px;background:var(--bg-card);color:var(--text);">
+        <option value="event" ${isEdit&&existing.type==='event'?'selected':''}>Wydarzenie</option>
+        <option value="menu" ${isEdit&&existing.type==='menu'?'selected':''}>Menu specjalne</option>
+        <option value="note" ${isEdit&&existing.type==='note'?'selected':''}>Info dla zespołu</option>
       </select>
     </div>
-    <div class="mrow">
-      <div class="mfield"><label>Liczba gości</label><input type="number" id="ev-guests" placeholder="0" min="0"></div>
-    </div>
-    <div class="mfield"><label>Opis / menu (opcjonalnie)</label><textarea id="ev-desc" rows="3" style="width:100%;border:1px solid var(--border);border-radius:8px;padding:10px 12px;font-family:var(--font);font-size:14px;resize:none" placeholder="Szczegóły, dania, notatki…"></textarea></div>
+    <div class="mfield"><label>Liczba gości</label><input type="number" id="ev-guests" placeholder="0" min="0" value="${isEdit&&existing.guests?existing.guests:''}"></div>
+    <div class="mfield"><label>Opis / notatki</label><textarea id="ev-desc" rows="3" style="width:100%;border:1px solid var(--border);border-radius:8px;padding:10px 12px;font-family:var(--font);font-size:14px;resize:none;background:var(--bg-card);color:var(--text);" placeholder="Szczegóły, menu, notatki…">${isEdit&&existing.description?existing.description:''}</textarea></div>
     <div class="modal-actions">
       <button class="mbtn-cancel" onclick="document.getElementById('event-modal').remove()">Anuluj</button>
-      <button class="mbtn-save" onclick="saveEvent()">Dodaj</button>
+      <button class="mbtn-save" onclick="saveEvent(${isEdit?`'${existing.id}',${existing._local?'true':'false'}`:'null,false'})">${isEdit?'Zapisz':'Dodaj'}</button>
     </div>
   </div>`;
   overlay.addEventListener('click',e=>{if(e.target===overlay)overlay.remove();});
   document.body.appendChild(overlay);
 }
 
-async function saveEvent(){
+async function saveEvent(editId,isLocal){
   const title=document.getElementById('ev-title').value.trim();
   const date=document.getElementById('ev-date').value;
   if(!title||!date){showToast('Podaj nazwę i datę');return;}
-  const body={title,date,type:document.getElementById('ev-type').value,
+  const data={title,date,type:document.getElementById('ev-type').value,
     description:document.getElementById('ev-desc').value.trim()||null,
     guests:parseInt(document.getElementById('ev-guests').value)||null};
-  try{
-    await sbFetch('/rest/v1/events',{method:'POST',headers:{'Prefer':'return=minimal'},body:JSON.stringify(body)});
+
+  if(editId&&isLocal){
+    // Edycja lokalnego
+    const idx=eventsLocal.findIndex(x=>x.id===editId);
+    if(idx>=0) eventsLocal[idx]={...eventsLocal[idx],...data};
     document.getElementById('event-modal')?.remove();
-    showToast('✓ Wydarzenie dodane');
-    renderView();
-  }catch(e){showToast('Błąd: '+e.message.slice(0,80));}
+    showToast('Zapisano'); renderView(); return;
+  }
+  if(!editId){
+    // Spróbuj dodać do Supabase, fallback lokalny
+    try{
+      await sbFetch('/rest/v1/events',{method:'POST',headers:{'Prefer':'return=minimal'},body:JSON.stringify(data)});
+    }catch(e){
+      eventsLocal.push({id:'ev-'+Date.now(),...data,_local:true});
+    }
+    document.getElementById('event-modal')?.remove();
+    showToast('✓ Wydarzenie dodane'); renderView(); return;
+  }
+  // Edycja Supabase
+  try{
+    await sbFetch(`/rest/v1/events?id=eq.${editId}`,{method:'PATCH',headers:{'Prefer':'return=minimal'},body:JSON.stringify(data)});
+  }catch(e){ showToast('Błąd: '+e.message.slice(0,60)); return; }
+  document.getElementById('event-modal')?.remove();
+  showToast('Zapisano'); renderView();
 }
 
-async function deleteEvent(id){
+async function deleteEventLocal(id,isLocal){
   if(!confirm('Usunąć wydarzenie?')) return;
+  if(isLocal){
+    eventsLocal=eventsLocal.filter(x=>x.id!==id);
+    showToast('Usunięto'); renderView(); return;
+  }
   try{
     await sbFetch(`/rest/v1/events?id=eq.${id}`,{method:'DELETE'});
     showToast('Usunięto'); renderView();
   }catch(e){showToast('Błąd: '+e.message.slice(0,60));}
+}
+
+async function deleteEvent(id){
+  deleteEventLocal(id,false);
 }
 
 async function changeWeek(d){
