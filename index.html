@@ -2770,7 +2770,8 @@ function eventCard(r,past){
   const typeLabel={'event':'Wydarzenie','menu':'Menu specjalne','note':'Info'};
   const col=typeColors[r.type]||'#64748B';
   const isLocal=r._local;
-  return`<div style="background:var(--bg-card);border:1px solid ${past?'var(--border-2)':'var(--border)'};border-radius:14px;overflow:hidden;${past?'opacity:.6':''}">
+  const clickAct=canEdit()?`openEditEvent('${r.id}')`:`openEventDetail('${r.id}')`;
+  return`<div onclick="${clickAct}" style="background:var(--bg-card);border:1px solid ${past?'var(--border-2)':'var(--border)'};border-radius:14px;overflow:hidden;${past?'opacity:.6':''};cursor:pointer;">
     <div style="display:flex;gap:0;align-items:stretch;">
       <!-- Data kafelek -->
       <div style="width:64px;flex-shrink:0;background:${past?'var(--bg-card2)':'var(--bg-card2)'};display:flex;flex-direction:column;align-items:center;justify-content:center;padding:16px 8px;border-right:1px solid var(--border-2);">
@@ -2788,16 +2789,64 @@ function eventCard(r,past){
         ${r.description?`<div style="font-size:12px;color:var(--text-2);line-height:1.5;">${r.description}</div>`:''}
       </div>
       <!-- Akcje -->
-      ${canEdit()?`<div style="display:flex;flex-direction:column;justify-content:center;padding:8px;gap:4px;flex-shrink:0;">
+      ${canEdit()?`<div onclick="event.stopPropagation()" style="display:flex;flex-direction:column;justify-content:center;padding:8px;gap:4px;flex-shrink:0;">
         <button onclick="openEditEvent('${r.id}')" style="background:none;border:none;padding:6px;cursor:pointer;color:var(--text-3);border-radius:6px;">
           <svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
         </button>
         <button onclick="deleteEventLocal('${r.id}'${isLocal?',true':''})" style="background:none;border:none;padding:6px;cursor:pointer;color:var(--text-3);border-radius:6px;">
           <svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
         </button>
-      </div>`:''}
+      </div>`:`<div style="display:flex;align-items:center;padding:8px 12px;color:var(--text-3);">
+        <svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;"><polyline points="9 18 15 12 9 6"/></svg>
+      </div>`}
     </div>
   </div>`;
+}
+
+function openEventDetail(id){
+  const r=eventsData.find(e=>e.id===id)||eventsLocal.find(e=>e.id===id);
+  if(!r) return;
+  const d=new Date(r.date+'T12:00:00');
+  const monthNames=['Stycznia','Lutego','Marca','Kwietnia','Maja','Czerwca','Lipca','Sierpnia','Września','Października','Listopada','Grudnia'];
+  const dayNames=['Niedziela','Poniedziałek','Wtorek','Środa','Czwartek','Piątek','Sobota'];
+  const typeLabel={'event':'Wydarzenie','menu':'Menu specjalne','note':'Info'};
+  const typeColors={'event':'#7C3AED','menu':'#C2410C','note':'#0369A1'};
+  const col=typeColors[r.type]||'#64748B';
+  const existing=document.getElementById('event-detail-modal');
+  if(existing) existing.remove();
+  const overlay=document.createElement('div');
+  overlay.id='event-detail-modal';
+  overlay.className='modal-overlay active';
+  overlay.innerHTML=`<div style="position:fixed;inset:0;display:flex;align-items:flex-end;justify-content:center;padding:0 0 24px;">
+    <div style="background:var(--bg-card);border-radius:20px;padding:0;width:calc(100% - 32px);max-width:420px;box-shadow:0 8px 32px rgba(0,0,0,0.5);overflow:hidden;">
+      <div style="height:4px;background:${col};"></div>
+      <div style="padding:24px 20px 20px;">
+        <div style="display:flex;align-items:flex-start;gap:16px;margin-bottom:16px;">
+          <div style="text-align:center;min-width:52px;">
+            <div style="font-size:11px;font-weight:800;color:${col};letter-spacing:.8px;">${['STY','LUT','MAR','KWI','MAJ','CZE','LIP','SIE','WRZ','PAŹ','LIS','GRU'][d.getMonth()]}</div>
+            <div style="font-size:36px;font-weight:900;color:var(--text);line-height:1;">${d.getDate()}</div>
+            <div style="font-size:11px;color:var(--text-3);">${dayNames[d.getDay()]}</div>
+          </div>
+          <div style="flex:1;">
+            <div style="font-size:10px;font-weight:700;color:${col};background:${col}20;display:inline-block;padding:3px 10px;border-radius:6px;margin-bottom:8px;">${typeLabel[r.type]||r.type}</div>
+            <div style="font-size:19px;font-weight:800;color:var(--text);letter-spacing:-.3px;line-height:1.3;">${r.title}</div>
+          </div>
+        </div>
+        ${r.guests?`<div style="display:flex;align-items:center;gap:8px;padding:12px;background:var(--bg-card2);border-radius:10px;margin-bottom:10px;">
+          <span style="font-size:18px;">👥</span>
+          <div><div style="font-size:11px;color:var(--text-3);margin-bottom:1px;">Liczba gości</div><div style="font-size:16px;font-weight:700;color:var(--text);">${r.guests}</div></div>
+        </div>`:''}
+        ${r.description?`<div style="padding:12px;background:var(--bg-card2);border-radius:10px;margin-bottom:10px;">
+          <div style="font-size:11px;color:var(--text-3);margin-bottom:4px;">Notatka</div>
+          <div style="font-size:14px;color:var(--text-2);line-height:1.6;">${r.description}</div>
+        </div>`:''}
+        <div style="color:var(--text-3);font-size:12px;text-align:center;margin-bottom:12px;">${d.getDate()} ${monthNames[d.getMonth()]} ${d.getFullYear()} · ${dayNames[d.getDay()]}</div>
+        <button onclick="document.getElementById('event-detail-modal').remove()" style="width:100%;padding:14px;border:1px solid var(--border);border-radius:12px;font-size:16px;cursor:pointer;background:transparent;color:var(--text-2);font-family:var(--font);">Zamknij</button>
+      </div>
+    </div>
+  </div>`;
+  overlay.addEventListener('click',e=>{if(e.target===overlay)overlay.remove();});
+  document.body.appendChild(overlay);
 }
 
 function openAddEvent(){
