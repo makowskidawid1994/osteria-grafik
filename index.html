@@ -1783,15 +1783,13 @@ function showWelcomeSplash(email){
     // Wyciągnij imię z bazy pracowników (jeśli już załadowane) lub z emaila
     const getFirstName=()=>{
       const emp=employees.find(e=>e.email&&e.email.toLowerCase()===email.toLowerCase());
-      if(emp?.name){const p=emp.name.trim().split(/\s+/).filter(Boolean);return p.length>=2?p[p.length-1]:p[0]||'';}
+      if(emp?.name){const p=emp.name.trim().split(/\s+/).filter(Boolean);return p[0]||'';}
       return null; // pracownicy jeszcze nie załadowani
     };
-    // Fallback z emaila (makowskidawid1994 → Dawid)
+    // Fallback z emaila (makowskidawid1994 → Makowskidawid → pierwsze słowo)
     const nameFromEmail=()=>{
       const raw=email.split('@')[0].replace(/[0-9]/g,'').replace(/[._]/g,' ').trim();
       const parts=raw.split(' ').filter(Boolean);
-      // zwróć ostatnią część (imię) jeśli wygląda jak polskie imię
-      if(parts.length>=2) return parts[parts.length-1].charAt(0).toUpperCase()+parts[parts.length-1].slice(1).toLowerCase();
       return parts[0]?parts[0].charAt(0).toUpperCase()+parts[0].slice(1).toLowerCase():'';
     };
 
@@ -2045,11 +2043,9 @@ function renderHome(mc){
   const myEmail=currentUser?.user?.email||'';
   // Użyj imienia z bazy pracowników; fallback na nick z maila tylko gdy brak rekordu
   const rawName=emp?.name||'';
-  // Polskie dane mogą mieć format "Nazwisko Imię" — bierzemy imię (ostatnie słowo) jeśli jest wielka litera
+  // Format w bazie: "Imię Nazwisko" — bierzemy pierwsze słowo
   const nameParts=rawName.trim().split(/\s+/).filter(Boolean);
-  const firstName=nameParts.length>=2
-    ? nameParts[nameParts.length-1]   // ostatnie słowo = imię (Kowalski Jan → Jan)
-    : (nameParts[0]||(myEmail.split('@')[0])||'Witaj');
+  const firstName=nameParts[0]||(myEmail.split('@')[0].replace(/[0-9._]/g,' ').trim().split(' ')[0])||'Witaj';
   const role=currentRole==='owner'?'Właściciel':currentRole==='manager'?'Manager':emp?.department==='kuchnia'?'Kucharz':'Pracownik';
   const isKitchen=emp?.department==='kuchnia';
   const isOwnerOrMgr=canEdit();
@@ -4484,16 +4480,8 @@ async function doClockin(){
   const origHTML=btn?btn.innerHTML:'';
   if(btn){btn.disabled=true; btn.innerHTML=`<span style="font-size:12px">Sprawdzanie GPS…</span>`;}
 
-  // Właściciel i manager pomijają geofence
-  const geo = (currentRole==='owner'||currentRole==='manager')
-    ? {ok:true,lat:null,lon:null}
-    : await checkGeofence();
-  if(!geo.ok){
-    if(btn){btn.disabled=false; btn.innerHTML=origHTML; btn.className='clock-btn-round state-idle'; btn.onclick=()=>doClockin();}
-    const msg=geo.error?`Błąd GPS: ${geo.error}`:`Jesteś ${geo.dist}m od restauracji — musisz być bliżej, żeby zacząć zmianę`;
-    showGeoError(msg);
-    return;
-  }
+  // GPS check wyłączony — wszyscy mogą zacząć zmianę
+  const geo = {ok:true,lat:null,lon:null};
 
   try{
     if(btn){btn.innerHTML=`<span style="font-size:12px">Zapisywanie…</span>`;}
