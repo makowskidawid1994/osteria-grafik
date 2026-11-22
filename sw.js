@@ -1,4 +1,4 @@
-const CACHE = 'osteria-v1';
+const CACHE = 'osteria-v3';
 const PRECACHE = ['/'];
 
 self.addEventListener('install', e => {
@@ -28,5 +28,35 @@ self.addEventListener('fetch', e => {
         return res;
       })
       .catch(() => caches.match(e.request))
+  );
+});
+
+// Obsługa wiadomości z aplikacji (np. powiadomienie o zmianie)
+self.addEventListener('message', e => {
+  if (e.data?.type === 'SHIFT_NOTIFICATION') {
+    const { duration } = e.data;
+    const h = Math.floor(duration / 60), m = duration % 60;
+    const timeStr = h > 0 ? `${h}h ${m}min` : `${m} min`;
+    self.registration.showNotification('⏱ Osteria – zmiana trwa ' + timeStr, {
+      body: 'Pamiętaj o przerwie! Kliknij aby otworzyć aplikację.',
+      icon: '/icon-192.png',
+      badge: '/icon-192.png',
+      tag: 'shift-timer',
+      requireInteraction: false,
+      silent: false
+    });
+  }
+});
+
+// Kliknięcie w powiadomienie otwiera aplikację
+self.addEventListener('notificationclick', e => {
+  e.notification.close();
+  e.waitUntil(
+    clients.matchAll({ type: 'window', includeUncontrolled: true }).then(list => {
+      for (const c of list) {
+        if (c.url.includes(self.location.origin)) return c.focus();
+      }
+      return clients.openWindow('/');
+    })
   );
 });

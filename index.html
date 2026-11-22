@@ -11,6 +11,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Osteria">
 <link rel="apple-touch-icon" href="/icon-192.png">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -1692,7 +1693,7 @@ let availMonthOffset=1; // default: next month
 let workSessions=[], activeSession=null;
 let clockTimerInterval=null;
 // Geofence: Osteria Antonina, Solna 11c, Kołobrzeg
-const GEO_LAT = 54.17659, GEO_LON = 15.57361, GEO_RADIUS = 300; // metry — Solna 11c/2, Kołobrzeg (300m = bezpieczny margines dla GPS w budynku)
+const GEO_LAT = 54.17659, GEO_LON = 15.57361, GEO_RADIUS = 500; // metry — Solna 11c/2, Kołobrzeg
 
 async function sbFetch(path, opts={}) {
   const h={'apikey':SB_KEY,'Content-Type':'application/json'};
@@ -1726,6 +1727,7 @@ async function doLogin() {
     currentUser=data;
     const rows=await sbFetch(`/rest/v1/user_roles?email=eq.${encodeURIComponent(email)}&select=role`).catch(()=>[]);
     currentRole=rows?.[0]?.role||'employee';
+    saveSession();
     // Załaduj dane i splash równolegle — splash czeka min 1.6s, dane ładują się w tle
     const [_splash] = await Promise.all([
       showWelcomeSplash(email),
@@ -1852,8 +1854,29 @@ function showWelcomeSplash(email){
 
 function doLogout(){
   currentUser=null; currentRole=null;
+  try{localStorage.removeItem('oa_session');}catch(_){}
   document.getElementById('app').style.display='none';
   document.getElementById('auth-screen').style.display='flex';
+}
+
+// Zapisz sesję do localStorage
+function saveSession(){
+  if(!currentUser) return;
+  try{localStorage.setItem('oa_session',JSON.stringify({user:currentUser,role:currentRole,ts:Date.now()}));}catch(_){}
+}
+
+// Przywróć sesję z localStorage (max 12h)
+async function tryRestoreSession(){
+  try{
+    const raw=localStorage.getItem('oa_session');
+    if(!raw) return false;
+    const {user,role,ts}=JSON.parse(raw);
+    if(!user||!role||Date.now()-ts>12*3600*1000) return false;
+    // Sprawdź czy token nadal ważny
+    if(user.expires_at && Date.now()/1000 > user.expires_at-60) return false;
+    currentUser=user; currentRole=role;
+    return true;
+  }catch(_){return false;}
 }
 
 function canEdit(){return['owner','manager'].includes(currentRole);}
@@ -3749,7 +3772,7 @@ async function renderDash(mc){
       </div>
       <button class="export-btn" onclick="exportMonthReport(exportMonthOffset)">
         <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-        Pobierz CSV — pełen raport
+        Pobierz Excel — pełen raport
       </button>
     </div>
 
@@ -3991,6 +4014,33 @@ document.querySelectorAll('.modal-overlay').forEach(o=>{
   o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('open');});
 });
 document.getElementById('auth-pass').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin();});
+
+// Auto-restore session przy starcie
+(async()=>{
+  const restored=await tryRestoreSession();
+  if(restored){
+    try{
+      await loadAllData();
+    }catch(_){}
+    const email=currentUser?.user?.email||currentUser?.email||'';
+    document.getElementById('auth-screen').style.display='none';
+    document.getElementById('app').style.display='block';
+    document.getElementById('hdr-role').textContent={owner:'Właściciel',manager:'Manager',kitchen:'Kuchnia',front:'Sala',employee:'Pracownik'}[currentRole]||currentRole;
+    const username=email.split('@')[0];
+    document.getElementById('hdr-user').textContent=username;
+    const av=document.getElementById('hdr-avatar');
+    if(av){const ini=username.slice(0,2).toUpperCase();av.textContent=ini;av.title='Menu';}
+    const menuName=document.getElementById('avatar-menu-name');
+    if(menuName) menuName.textContent=email;
+    if(!canEdit()){
+      const nd=document.getElementById('nav-dash'); if(nd) nd.style.display='flex';
+      const ne=document.getElementById('nav-emps'); if(ne) ne.style.display='none';
+    }
+    renderHome();
+    // Odśwież token w tle
+    saveSession();
+  }
+})();
 
 /* ═══════════════════════════════════════════════
    EWIDENCJA CZASU PRACY
@@ -4237,16 +4287,13 @@ async function exportWorkSessions(monthOff){
     if(!Array.isArray(sessions)) sessions=[];
   }catch(e){showToast('Błąd pobierania: '+e.message.slice(0,60));return;}
 
-  // Buduj CSV z BOM (Excel go lubi)
-  let csv='﻿';
-  csv+='Pracownik;Dział;Data;Dzień tygodnia;Przyjście;Wyjście;Przerwa start;Przerwa koniec;Przerwa (min);Czas pracy (h);Czas pracy (min)\n';
-
   const days=['Niedziela','Poniedziałek','Wtorek','Środa','Czwartek','Piątek','Sobota'];
   const fmtDT=iso=>{if(!iso)return'';const d=new Date(iso);return`${pad2(d.getHours())}:${pad2(d.getMinutes())}`;};
   const fmtD=iso=>{if(!iso)return'';const d=new Date(iso);return`${pad2(d.getDate())}.${pad2(d.getMonth()+1)}.${d.getFullYear()}`;};
 
   // Zbierz podsumowanie per pracownik
   const summary={};
+  const detailRows=[];
 
   for(const s of sessions){
     const name=s.employees?.name||employees.find(e=>e.id===s.employee_id)?.name||'—';
@@ -4257,31 +4304,47 @@ async function exportWorkSessions(monthOff){
     const dow=days[dateD.getDay()];
     const brk=s.break_minutes||0;
     const totalMin=s.total_minutes||0;
-    const totalH=(totalMin/60).toFixed(2).replace('.',',');
-    csv+=`${name};${dept};${dateStr};${dow};${fmtDT(s.clock_in)};${fmtDT(s.clock_out)};${fmtDT(s.break_start)};${fmtDT(s.break_end)};${brk};${totalH};${totalMin}\n`;
+    const totalH=parseFloat((totalMin/60).toFixed(2));
+    detailRows.push([name,dept,dateStr,dow,fmtDT(s.clock_in),fmtDT(s.clock_out),fmtDT(s.break_start),fmtDT(s.break_end),brk,totalH,totalMin]);
     if(!summary[name]) summary[name]={dept,rate,sessions:0,totalMin:0};
     summary[name].sessions++;
     summary[name].totalMin+=totalMin;
   }
 
-  // Podsumowanie per pracownik
-  csv+='\n;;PODSUMOWANIE MIESIĄCA;'+mLabel+'\n';
-  csv+='Pracownik;Dział;Liczba sesji;Łączne godziny;Stawka zł/h;Koszt netto zł\n';
+  // Buduj arkusz xlsx przez SheetJS
+  if(typeof XLSX==='undefined'){showToast('Błąd: biblioteka XLSX nie jest załadowana');return;}
+  const wb=XLSX.utils.book_new();
+
+  // Arkusz 1 — Szczegóły
+  const headerDetail=['Pracownik','Dział','Data','Dzień tygodnia','Przyjście','Wyjście','Przerwa start','Przerwa koniec','Przerwa (min)','Czas pracy (h)','Czas pracy (min)'];
+  const wsDetail=XLSX.utils.aoa_to_sheet([headerDetail,...detailRows]);
+  // Szerokości kolumn
+  wsDetail['!cols']=[{wch:20},{wch:12},{wch:12},{wch:14},{wch:10},{wch:10},{wch:14},{wch:14},{wch:14},{wch:14},{wch:16}];
+  XLSX.utils.book_append_sheet(wb,wsDetail,'Ewidencja');
+
+  // Arkusz 2 — Podsumowanie
   let grandMin=0,grandCost=0;
+  const sumRows=[];
   for(const[name,s] of Object.entries(summary)){
-    const h=(s.totalMin/60).toFixed(2).replace('.',',');
-    const cost=(s.totalMin/60*s.rate).toFixed(2).replace('.',',');
-    csv+=`${name};${s.dept};${s.sessions};${h};${s.rate.toFixed(2).replace('.',',')};${cost}\n`;
+    const h=parseFloat((s.totalMin/60).toFixed(2));
+    const cost=parseFloat((s.totalMin/60*s.rate).toFixed(2));
+    sumRows.push([name,s.dept,s.sessions,h,s.rate,cost]);
     grandMin+=s.totalMin; grandCost+=s.totalMin/60*s.rate;
   }
-  csv+=`ŁĄCZNIE;;;${(grandMin/60).toFixed(2).replace('.',',')};;${grandCost.toFixed(2).replace('.',',')}\n`;
+  sumRows.push(['ŁĄCZNIE','','',parseFloat((grandMin/60).toFixed(2)),'',parseFloat(grandCost.toFixed(2))]);
+  const headerSum=['Pracownik','Dział','Liczba sesji','Łączne godziny','Stawka zł/h','Koszt netto zł'];
+  const wsSum=XLSX.utils.aoa_to_sheet([
+    ['PODSUMOWANIE MIESIĄCA',mLabel],
+    [],
+    headerSum,
+    ...sumRows
+  ]);
+  wsSum['!cols']=[{wch:20},{wch:12},{wch:14},{wch:16},{wch:14},{wch:16}];
+  XLSX.utils.book_append_sheet(wb,wsSum,'Podsumowanie');
 
-  const blob=new Blob([csv],{type:'text/csv;charset=utf-8'});
-  const url=URL.createObjectURL(blob);
-  const a=document.createElement('a');
-  a.href=url; a.download=`ewidencja-czasu-${mLabel.replace(' ','-')}.csv`;
-  document.body.appendChild(a); a.click();
-  document.body.removeChild(a); URL.revokeObjectURL(url);
+  // Pobierz plik
+  const fname=`ewidencja-czasu-${mLabel.replace(' ','-')}.xlsx`;
+  XLSX.writeFile(wb,fname);
   showToast(`✓ Pobrano ewidencję — ${sessions.length} sesji`);
 }
 
@@ -4451,74 +4514,169 @@ function updateClockUI(){
   }
 }
 
-// Aktualizacja wskaźnika GPS — GPS wyłączony, ukryj baner
+// Aktualizacja wskaźnika GPS
 async function updateGeoIndicator(){
   const geo=document.getElementById('clock-geo-status');
   if(!geo) return;
-  // GPS check wyłączony — ukrywamy wskaźnik lokalizacji
-  geo.style.display='none';
+  const result=await checkGeofence();
+  if(!geo.isConnected) return;
+  if(result.error){
+    // Brak dostępu do GPS — ukryj baner
+    geo.style.display='none';
+  } else if(result.ok){
+    geo.style.display='';
+    geo.innerHTML=`<span class="clock-geo-ok">● W restauracji</span>`;
+  } else {
+    geo.style.display='';
+    geo.innerHTML=`<span class="clock-geo-err">● Poza restauracją · ${result.dist}m</span>`;
+  }
+  geo.classList.add('geo-visible');
 }
 
 // Dispatcher dla głównego przycisku (stan idle → clock in)
 function onMainClockBtn(){ doClockin(); }
 
 // CLOCK IN
+// Modal potwierdzenia z ikoną
+function showConfirmModal({icon,title,subtitle,confirmText,confirmClass,onConfirm}){
+  const existing=document.getElementById('confirm-overlay');
+  if(existing) existing.remove();
+  const el=document.createElement('div');
+  el.id='confirm-overlay';
+  el.className='modal-overlay active';
+  el.innerHTML=`<div style="position:fixed;inset:0;display:flex;align-items:flex-end;justify-content:center;padding:0 0 24px;">
+    <div style="background:var(--bg-card);border-radius:20px;padding:28px 24px 20px;width:calc(100% - 32px);max-width:380px;box-shadow:0 8px 32px rgba(0,0,0,0.5);">
+      <div style="font-size:48px;text-align:center;margin-bottom:12px;">${icon}</div>
+      <div style="font-size:20px;font-weight:700;color:var(--text-1);text-align:center;margin-bottom:6px;">${title}</div>
+      ${subtitle?`<div style="font-size:14px;color:var(--text-3);text-align:center;margin-bottom:20px;">${subtitle}</div>`:'<div style="margin-bottom:20px;"></div>'}
+      <button onclick="document.getElementById('confirm-overlay')?.remove();(${onConfirm.toString()})()"
+        style="width:100%;padding:16px;border:none;border-radius:12px;font-size:17px;font-weight:700;cursor:pointer;margin-bottom:10px;font-family:var(--font);${confirmClass==='danger'?'background:#C0392B;color:#fff;':'background:var(--brand);color:#fff;'}">
+        ${confirmText}
+      </button>
+      <button onclick="document.getElementById('confirm-overlay')?.remove()"
+        style="width:100%;padding:14px;border:1px solid var(--border);border-radius:12px;font-size:16px;cursor:pointer;background:transparent;color:var(--text-2);font-family:var(--font);">
+        Anuluj
+      </button>
+    </div>
+  </div>`;
+  el.addEventListener('click',e=>{if(e.target===el)el.remove();});
+  document.body.appendChild(el);
+}
+
 async function doClockin(){
   const emp=getCurrentEmployee();
   if(!emp){showToast('Brak profilu pracownika');return;}
+
+  // Sprawdź GPS najpierw
   const btn=document.getElementById('btn-clock-main');
-  // Zapisz oryginalne innerHTML żeby przywrócić je przy błędzie
-  const origHTML=btn?btn.innerHTML:'';
   if(btn){btn.disabled=true; btn.innerHTML=`<span style="font-size:12px">Sprawdzanie GPS…</span>`;}
 
-  // GPS check wyłączony — wszyscy mogą zacząć zmianę
-  const geo = {ok:true,lat:null,lon:null};
+  let geoResult={error:'pending'};
+  try{ geoResult=await checkGeofence(); }catch(_){}
 
-  try{
-    if(btn){btn.innerHTML=`<span style="font-size:12px">Zapisywanie…</span>`;}
-    const sess=await sbFetch('/rest/v1/work_sessions',{
-      method:'POST',
-      headers:{'Prefer':'return=representation'},
-      body:JSON.stringify({
-        employee_id:emp.id,
-        clock_in:new Date().toISOString(),
-        geo_lat_in:geo.lat,
-        geo_lon_in:geo.lon
-      })
+  if(btn){btn.disabled=false; btn.innerHTML=btn.dataset.origHtml||btn.innerHTML;}
+  updateClockUI();
+
+  // Pracownik poza restauracją — ZABLOKUJ
+  if(currentRole==='employee' && !geoResult.error && !geoResult.ok){
+    showConfirmModal({
+      icon:'📍',
+      title:'Poza restauracją',
+      subtitle:`Jesteś ${geoResult.dist}m od miejsca pracy.\nLogowanie możliwe tylko w restauracji.`,
+      confirmText:'OK, rozumiem',
+      confirmClass:'',
+      onConfirm:()=>{}
     });
-    activeSession=Array.isArray(sess)?sess[0]:sess;
-    workSessions.unshift(activeSession);
-    showToast('Zmiana rozpoczęta ✓');
-    updateClockUI();
-  }catch(e){
-    showToast('Błąd: '+e.message.slice(0,60));
-    updateClockUI();
+    return;
   }
+
+  // GPS niedostępny dla pracownika — też blokuj
+  if(currentRole==='employee' && geoResult.error){
+    showConfirmModal({
+      icon:'📍',
+      title:'Brak GPS',
+      subtitle:'Nie można sprawdzić lokalizacji. Włącz GPS i spróbuj ponownie.',
+      confirmText:'OK',
+      confirmClass:'',
+      onConfirm:()=>{}
+    });
+    return;
+  }
+
+  // Potwierdzenie rozpoczęcia
+  const now=new Date();
+  const timeStr=`${pad2(now.getHours())}:${pad2(now.getMinutes())}`;
+  const geoInfo=geoResult.ok?'✅ Lokalizacja potwierdzona':'';
+  showConfirmModal({
+    icon:'🟢',
+    title:'Rozpocząć zmianę?',
+    subtitle:`Godzina: ${timeStr}${geoInfo?' · '+geoInfo:''}`,
+    confirmText:'Tak, zaczynam pracę',
+    confirmClass:'',
+    onConfirm: async function(){
+      const btn2=document.getElementById('btn-clock-main');
+      if(btn2){btn2.disabled=true; btn2.innerHTML=`<span style="font-size:12px">Zapisywanie…</span>`;}
+      try{
+        const sess=await sbFetch('/rest/v1/work_sessions',{
+          method:'POST',
+          headers:{'Prefer':'return=representation'},
+          body:JSON.stringify({
+            employee_id:emp.id,
+            clock_in:new Date().toISOString(),
+            geo_lat_in:geoResult.lat||null,
+            geo_lon_in:geoResult.lon||null
+          })
+        });
+        activeSession=Array.isArray(sess)?sess[0]:sess;
+        workSessions.unshift(activeSession);
+        showToast('Zmiana rozpoczęta ✓');
+        startShiftNotifTimer();
+        updateClockUI();
+      }catch(e){
+        showToast('Błąd: '+e.message.slice(0,60));
+        updateClockUI();
+      }
+    }
+  });
 }
 
 // CLOCK OUT
 async function doClockout(){
   if(!activeSession){return;}
-  const geo=await checkGeofence();
-  // GPS przy wylogowaniu jest opcjonalne — zapisujemy współrzędne jeśli dostępne
-  try{
-    const body={clock_out:new Date().toISOString()};
-    if(geo.lat) {body.geo_lat_out=geo.lat; body.geo_lon_out=geo.lon;}
-    const updated=await sbFetch(`/rest/v1/work_sessions?id=eq.${activeSession.id}`,{
-      method:'PATCH',
-      headers:{'Prefer':'return=representation'},
-      body:JSON.stringify(body)
-    });
-    const upd=Array.isArray(updated)?updated[0]:updated;
-    workSessions=workSessions.map(s=>s.id===activeSession.id?{...s,...upd}:s);
-    activeSession=null;
-    showToast('Zmiana zakończona ✓');
-    // Przeładuj sesje żeby mieć computed columns
-    await loadWorkSessions();
-    renderView();
-  }catch(e){
-    showToast('Błąd: '+e.message.slice(0,60));
-  }
+  const startTime=new Date(activeSession.clock_in);
+  const now=new Date();
+  const mins=Math.round((now-startTime)/60000);
+  const h=Math.floor(mins/60), m=mins%60;
+  const durStr=h>0?`${h}h ${m}min`:`${m} min`;
+
+  showConfirmModal({
+    icon:'🔴',
+    title:'Zakończyć zmianę?',
+    subtitle:`Czas pracy: ${durStr}`,
+    confirmText:'Tak, kończę pracę',
+    confirmClass:'danger',
+    onConfirm: async function(){
+      try{
+        const geo=await checkGeofence();
+        const body={clock_out:new Date().toISOString()};
+        if(geo.lat){body.geo_lat_out=geo.lat; body.geo_lon_out=geo.lon;}
+        const updated=await sbFetch(`/rest/v1/work_sessions?id=eq.${activeSession.id}`,{
+          method:'PATCH',
+          headers:{'Prefer':'return=representation'},
+          body:JSON.stringify(body)
+        });
+        const upd=Array.isArray(updated)?updated[0]:updated;
+        workSessions=workSessions.map(s=>s.id===activeSession.id?{...s,...upd}:s);
+        activeSession=null;
+        stopShiftNotifTimer();
+        showToast('Zmiana zakończona ✓');
+        await loadWorkSessions();
+        renderView();
+      }catch(e){
+        showToast('Błąd: '+e.message.slice(0,60));
+      }
+    }
+  });
 }
 
 // START BREAK
@@ -4941,6 +5099,44 @@ if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('/sw.js').catch(() => {});
   });
+}
+
+// POWIADOMIENIA — czas aktywnej zmiany co godzinę
+async function requestNotifPermission(){
+  if(!('Notification' in window)) return false;
+  if(Notification.permission==='granted') return true;
+  const p=await Notification.requestPermission();
+  return p==='granted';
+}
+
+function sendShiftNotification(durationMin){
+  if(!('Notification' in window)||Notification.permission!=='granted') return;
+  // Preferuj SW notification (działa też gdy app w tle)
+  if(navigator.serviceWorker?.controller){
+    navigator.serviceWorker.controller.postMessage({type:'SHIFT_NOTIFICATION',duration:durationMin});
+  } else {
+    const h=Math.floor(durationMin/60), m=durationMin%60;
+    const timeStr=h>0?`${h}h ${m}min`:`${m} min`;
+    try{new Notification(`⏱ Osteria – zmiana trwa ${timeStr}`,{body:'Pamiętaj o przerwie!',icon:'/icon-192.png',tag:'shift-timer'});}catch(_){}
+  }
+}
+
+// Uruchom timer powiadomień gdy zmiana aktywna
+let _notifInterval=null;
+function startShiftNotifTimer(){
+  stopShiftNotifTimer();
+  if(!activeSession) return;
+  requestNotifPermission();
+  // Co 60 minut wyślij powiadomienie
+  _notifInterval=setInterval(()=>{
+    if(!activeSession) return stopShiftNotifTimer();
+    const startMs=new Date(activeSession.clock_in).getTime();
+    const durationMin=Math.floor((Date.now()-startMs)/60000);
+    sendShiftNotification(durationMin);
+  }, 60*60*1000);
+}
+function stopShiftNotifTimer(){
+  if(_notifInterval){clearInterval(_notifInterval);_notifInterval=null;}
 }
 
 </script>
