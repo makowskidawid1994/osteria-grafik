@@ -46,141 +46,140 @@
 * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 body { font-family: var(--font); background: var(--bg); color: var(--text); min-height: 100vh; font-size: 14px; line-height: 1.5; -webkit-font-smoothing: antialiased; }
 
-/* ─── AUTH — Osteria, beż + kolory własne ─── */
+/* ─── AUTH — ciemny gradient, styl mobile UI kit ─── */
 #auth-screen {
   min-height: 100vh;
-  display: flex; flex-direction: column; align-items: stretch; justify-content: flex-end;
+  display: flex; flex-direction: column; align-items: stretch; justify-content: center;
   padding: 0; position: relative; overflow: hidden;
-  background: #F2E9DC;
+  background: #1A0A2E;
 }
 
-/* Ciepły beżowy gradient — nie biały, nie kremowy */
+/* Pełnoekranowy gradient — ciemny fioletowo-bordeaux */
 .auth-bg-gradient {
   position: absolute; inset: 0; pointer-events: none;
   background:
-    radial-gradient(ellipse 100% 65% at 50% 0%, #F7EFE3 0%, #F2E9DC 55%, #EAD9C6 100%);
+    linear-gradient(170deg, #3D0A20 0%, #1A0A2E 45%, #0D0520 100%);
 }
-/* Delikatny blask pomarańczu u góry */
 .auth-bg-gradient::before {
   content: '';
   position: absolute; inset: 0;
   background:
-    radial-gradient(ellipse 80% 40% at 70% -5%, rgba(240,90,40,.12) 0%, transparent 55%),
-    radial-gradient(ellipse 50% 30% at 10% 15%, rgba(232,35,58,.07) 0%, transparent 50%);
+    radial-gradient(ellipse 80% 50% at 15% 20%, rgba(240,90,40,.18) 0%, transparent 55%),
+    radial-gradient(ellipse 60% 40% at 85% 10%, rgba(123,29,46,.35) 0%, transparent 50%),
+    radial-gradient(ellipse 70% 60% at 50% 100%, rgba(80,10,30,.6) 0%, transparent 55%);
 }
 .auth-bg-pattern { display: none; }
 
-/* Górna część — logo + nazwa */
+/* Cały ekran — centrum, nie bottom-sheet */
 .auth-top {
-  flex: 1; display: flex; flex-direction: column;
+  display: flex; flex-direction: column;
   align-items: center; justify-content: center;
-  padding: 56px 32px 32px;
+  padding: 60px 36px 0;
   position: relative; z-index: 2;
 }
 
-/* Logo — solid, własny charakter */
+/* Logo — okrąg z ikoną jak w ref */
 .auth-logo-wrap {
-  width: 86px; height: 86px; border-radius: 26px;
+  width: 90px; height: 90px; border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
-  margin: 0 auto 24px;
+  margin: 0 auto 20px;
   position: relative;
-  background: #2A0A10;
-  box-shadow:
-    0 12px 40px rgba(42,10,16,.25),
-    0 2px 8px rgba(42,10,16,.15);
+  background: rgba(240,90,40,.15);
+  border: 2px solid rgba(240,90,40,.35);
 }
-.auth-logo-wrap::before { display: none; }
+.auth-logo-wrap::before {
+  content: '';
+  position: absolute; inset: -8px; border-radius: 50%;
+  border: 1px solid rgba(240,90,40,.12);
+}
 .auth-logo-wrap::after { display: none; }
 .auth-logo-monogram {
-  font-size: 28px; font-weight: 800; color: #F05A28;
+  font-size: 32px; font-weight: 800; color: #F05A28;
   letter-spacing: -1.5px; line-height: 1;
 }
 .auth-logo-wrap img {
-  width: 100%; height: 100%; border-radius: 26px; object-fit: cover;
+  width: 100%; height: 100%; border-radius: 50%; object-fit: cover;
 }
-.auth-avatar-icon { display: none; }
+.auth-avatar-icon {
+  display: block;
+  width: 44px; height: 44px; opacity: .9;
+  stroke: #F05A28;
+}
 
-.auth-app-name {
-  font-size: 10px; font-weight: 600; letter-spacing: 2.5px;
-  color: #B89878; text-align: center;
-  text-transform: uppercase; margin-bottom: 6px;
-}
+/* Nazwa restauracji — duży, biały */
+.auth-app-name { display: none; }
 .auth-restaurant-name {
-  font-size: 28px; font-weight: 700; letter-spacing: -.8px;
-  color: #2A0A10; text-align: center; line-height: 1.1;
+  font-size: 26px; font-weight: 700; letter-spacing: -.5px;
+  color: #fff; text-align: center; line-height: 1.1;
+  margin-bottom: 4px;
 }
 .auth-tagline {
-  font-size: 12px; color: #9E8A78;
-  text-align: center; margin-top: 6px;
+  font-size: 12px; color: rgba(255,255,255,.35);
+  text-align: center;
 }
 .auth-divider { display: none; }
 
-/* Karta logowania — beżowa, lekki cień */
+/* Formularz — bezpośrednio na ekranie, bez karty */
 .auth-sheet {
   position: relative; z-index: 2;
   width: 100%;
-  background: #FDFAF6;
-  border-radius: 28px 28px 0 0;
-  border-top: 1px solid rgba(42,10,16,.07);
-  box-shadow: 0 -4px 32px rgba(42,10,16,.08);
-  padding: 22px 24px calc(env(safe-area-inset-bottom) + 28px);
+  background: transparent;
+  border-radius: 0;
+  border-top: none;
+  box-shadow: none;
+  padding: 32px 32px calc(env(safe-area-inset-bottom) + 36px);
 }
-.auth-sheet-handle {
-  width: 32px; height: 3px;
-  background: #DDD0C0; border-radius: 2px;
-  margin: 0 auto 22px;
-}
-.auth-sheet-title {
-  font-size: 19px; font-weight: 700; letter-spacing: -.4px;
-  color: #2A0A10; margin-bottom: 3px;
-}
-.auth-sheet-sub {
-  font-size: 13px; color: #9E8A78;
-  margin-bottom: 20px;
-}
+.auth-sheet-handle { display: none; }
+.auth-sheet-title { display: none; }
+.auth-sheet-sub { display: none; }
 
-.field { margin-bottom: 14px; position: relative; }
+/* Pola — podkreślenie jak w ref, nie box */
+.field { margin-bottom: 20px; position: relative; }
 .field label {
   display: block; font-size: 11px; font-weight: 500;
-  color: #9E8A78; margin-bottom: 6px; letter-spacing: .2px;
+  color: rgba(255,255,255,.4); margin-bottom: 10px; letter-spacing: .5px;
+  text-transform: uppercase;
 }
 .field input {
-  width: 100%; padding: 13px 16px 13px 44px;
-  border: 1.5px solid #E5D9CC; border-radius: 14px;
-  font-size: 15px; font-family: var(--font); outline: none;
-  color: #2A0A10; caret-color: #F05A28;
-  background: #F5EDE0;
-  transition: all .18s;
+  width: 100%; padding: 12px 16px 12px 44px;
+  border: none;
+  border-bottom: 1.5px solid rgba(255,255,255,.2);
+  border-radius: 0;
+  font-size: 16px; font-family: var(--font); outline: none;
+  color: #fff; caret-color: #F05A28;
+  background: transparent;
+  transition: border-color .2s;
 }
-.field input::placeholder { color: #C4AE98; }
+.field input::placeholder { color: rgba(255,255,255,.25); }
 .field input:focus {
-  background: #FFF8F2;
-  border-color: #F05A28;
-  box-shadow: 0 0 0 3px rgba(240,90,40,.1);
+  border-bottom-color: #F05A28;
+  background: transparent;
+  box-shadow: none;
 }
 .field-icon {
-  position: absolute; left: 14px; bottom: 13px;
+  position: absolute; left: 0; bottom: 12px;
   width: 18px; height: 18px;
-  stroke: #C4AE98; fill: none; stroke-width: 1.8;
+  stroke: rgba(255,255,255,.35); fill: none; stroke-width: 1.8;
   pointer-events: none;
 }
 
-/* Przycisk — ciepły pomarańcz, własny */
+/* Przycisk — gradient Osterii, pełna szerokość */
 .btn-login {
-  width: 100%; padding: 15px;
-  background: #F05A28;
-  color: white; border: none; border-radius: 16px;
-  font-size: 15px; font-weight: 600; cursor: pointer; margin-top: 10px;
-  font-family: var(--font); letter-spacing: -.1px; transition: all .18s;
-  box-shadow: 0 6px 20px rgba(240,90,40,.35);
+  width: 100%; padding: 16px;
+  background: linear-gradient(135deg, #F05A28 0%, #C0391A 100%);
+  color: white; border: none; border-radius: 50px;
+  font-size: 15px; font-weight: 600; cursor: pointer; margin-top: 24px;
+  font-family: var(--font); letter-spacing: .3px; transition: all .18s;
+  box-shadow: 0 8px 28px rgba(240,90,40,.4);
+  text-transform: uppercase;
 }
-.btn-login:active { transform: scale(.97); box-shadow: 0 3px 10px rgba(240,90,40,.25); }
+.btn-login:active { transform: scale(.97); box-shadow: 0 4px 14px rgba(240,90,40,.3); }
 
 .auth-err {
-  color: #C0392B; font-size: 12px; margin-top: 10px; text-align: center;
+  color: #FCA5A5; font-size: 12px; margin-top: 12px; text-align: center;
   display: none; padding: 10px;
-  background: rgba(192,57,43,.08); border-radius: 10px;
-  border: 1px solid rgba(192,57,43,.15);
+  background: rgba(239,68,68,.12); border-radius: 10px;
+  border: 1px solid rgba(239,68,68,.2);
 }
 
 /* ─── App shell ─── */
@@ -191,17 +190,17 @@ body { font-family: var(--font); background: var(--bg); color: var(--text); min-
   border-bottom: 1px solid var(--border); gap: 10px;
   transition: background .2s, border-color .2s;
 }
-/* Na home — beżowy header Osterii */
+/* Na home — ciemny header jak tło aplikacji */
 body.view-home .header {
-  background: rgba(242,233,220,.96);
-  border-bottom-color: rgba(42,10,16,.07);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  background: rgba(26,16,51,.92);
+  border-bottom-color: rgba(255,255,255,.08);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
 }
-body.view-home .header-brand { color: #2A0A10; }
-body.view-home .header-brand em { color: #B89878; }
-body.view-home .role-badge { background: rgba(240,90,40,.1); color: #F05A28; border-color: rgba(240,90,40,.2); }
-body.view-home #main-content { background: #F2E9DC; }
+body.view-home .header-brand { color: #fff; }
+body.view-home .header-brand em { color: rgba(255,255,255,.4); }
+body.view-home .role-badge { background: rgba(180,80,220,.2); color: #CF90FF; border-color: rgba(180,80,220,.3); }
+body.view-home #main-content { background: #1A1033; }
 
 .header-brand { font-size: 15px; font-weight: 800; flex: 1; letter-spacing: -.5px; color: var(--text); display: flex; align-items: center; gap: 6px; transition: color .2s; }
 .header-brand em { color: var(--text-3); font-style: normal; font-weight: 400; transition: color .2s; }
@@ -259,52 +258,55 @@ body.view-home #main-content { background: #F2E9DC; }
 /* ════════════════════════════════════════
    HOME SCREEN
 ════════════════════════════════════════ */
+
+/* ── Tło aplikacji — ciemny gradient jak w ref ── */
 .hw-wrap {
   min-height: 100vh;
-  background: #F2E9DC;
   display: flex; flex-direction: column;
   padding-bottom: max(env(safe-area-inset-bottom), 100px);
   -webkit-tap-highlight-color: transparent;
   position: relative;
+  background: #1A1033;
 }
 
-/* Ciepły beżowy blask — subtelny, nie biały */
+/* Gradient tła — fioletowo-różowy jak Magnific / Mobile UI */
 .hw-wrap::before {
   content: '';
   position: fixed; inset: 0; pointer-events: none; z-index: 0;
   background:
-    radial-gradient(ellipse 90% 55% at 50% -5%, #F7EFE3 0%, transparent 65%),
-    radial-gradient(ellipse 60% 35% at 85% 15%, rgba(240,90,40,.06) 0%, transparent 55%);
+    radial-gradient(ellipse 100% 60% at 50% -10%, #3D1A6E 0%, transparent 60%),
+    radial-gradient(ellipse 70% 50% at 100% 0%,   rgba(190,50,140,.5) 0%, transparent 55%),
+    radial-gradient(ellipse 60% 40% at 0% 30%,    rgba(100,30,180,.4) 0%, transparent 55%),
+    radial-gradient(ellipse 80% 60% at 50% 100%,  rgba(30,10,80,.8)   0%, transparent 60%);
 }
 
 /* Header */
 .hw-header {
-  padding: 24px 20px 14px;
+  padding: 28px 22px 16px;
   position: relative; z-index: 1;
 }
 .hw-greeting-line { overflow: hidden; height: 22px; }
 .hw-greeting-text {
-  font-size: 13px; font-weight: 400; color: #9E8A78;
+  font-size: 13px; font-weight: 400; color: rgba(255,255,255,.45);
   line-height: 22px;
   transform: translateY(22px);
   animation: slideUp .4s cubic-bezier(.4,0,.2,1) .05s forwards;
 }
 .hw-name-line { overflow: hidden; height: 36px; margin-top: 2px; }
 .hw-name-text {
-  font-size: 28px; font-weight: 700; color: #2A0A10;
+  font-size: 28px; font-weight: 700; color: #fff;
   letter-spacing: -.8px; line-height: 36px;
   transform: translateY(36px);
   animation: slideUp .4s cubic-bezier(.4,0,.2,1) .12s forwards;
 }
 @keyframes slideUp { to { transform: translateY(0); } }
 
-/* ── Blok zegarowy — solid, własny Osterii ── */
+/* ── Blok zegarowy ── */
 .hw-clock-block {
   margin: 6px 14px 4px;
   position: relative; overflow: hidden;
   border-radius: 22px;
-  /* Ciemno-bordeaux — własny kolor Osterii, nie ciemny UI kit */
-  background: #2A0A10;
+  background: linear-gradient(135deg, #2D1060 0%, #6B2090 60%, #A030B0 100%);
   padding: 20px 18px 56px;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
@@ -313,60 +315,54 @@ body.view-home #main-content { background: #F2E9DC; }
   opacity: 0;
   animation: fadeInUp .4s cubic-bezier(.4,0,.2,1) .22s forwards;
   z-index: 1;
-  box-shadow: 0 8px 32px rgba(42,10,16,.2), 0 2px 8px rgba(42,10,16,.12);
+  box-shadow: 0 8px 32px rgba(100,0,160,.4);
 }
-/* Dekoracyjny gradient — pomarańcz od góry-prawej */
 .hw-clock-block::before {
   content: '';
   position: absolute; inset: 0; border-radius: inherit;
   background:
-    radial-gradient(ellipse 70% 50% at 90% 0%, rgba(240,90,40,.35) 0%, transparent 55%),
-    radial-gradient(ellipse 50% 60% at -10% 100%, rgba(123,29,46,.4) 0%, transparent 55%);
+    radial-gradient(ellipse 80% 60% at 100% 0%, rgba(220,80,180,.5) 0%, transparent 55%),
+    linear-gradient(to bottom, rgba(255,255,255,.08) 0%, transparent 50%);
   pointer-events: none;
 }
-/* Delikatna linia blasku górna */
 .hw-clock-block::after {
   content: '';
   position: absolute; top: 0; left: 0; right: 0; height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(240,90,40,.4), transparent);
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,.25), transparent);
   pointer-events: none;
 }
 .hw-clock-block:active { transform: scale(.975); }
 .hw-clock-block.working {
-  background: #0A2A14;
-  box-shadow: 0 8px 32px rgba(10,42,20,.25), 0 2px 8px rgba(10,42,20,.15);
+  background: linear-gradient(135deg, #0D3D1A 0%, #1A6B30 60%, #25A045 100%);
+  box-shadow: 0 8px 32px rgba(0,120,50,.35);
 }
 .hw-clock-block.working::before {
   background:
-    radial-gradient(ellipse 70% 50% at 90% 0%, rgba(74,222,128,.2) 0%, transparent 55%),
-    radial-gradient(ellipse 50% 60% at -10% 100%, rgba(10,60,25,.5) 0%, transparent 55%);
+    radial-gradient(ellipse 80% 60% at 100% 0%, rgba(80,220,120,.35) 0%, transparent 55%),
+    linear-gradient(to bottom, rgba(255,255,255,.06) 0%, transparent 50%);
 }
 
 .hw-clock-eyebrow {
   font-size: 9px; font-weight: 700; letter-spacing: 2.5px;
-  text-transform: uppercase; color: rgba(255,255,255,.35);
+  text-transform: uppercase; color: rgba(255,255,255,.4);
   margin-bottom: 10px; position: relative; z-index: 1;
 }
 .hw-clock-title {
-  font-size: 38px; font-weight: 800; color: #fff;
-  letter-spacing: -2px; line-height: 1;
+  font-size: 36px; font-weight: 800; color: #fff;
+  letter-spacing: -1.8px; line-height: 1;
   position: relative; z-index: 1;
 }
-/* Pomarańcz akcent w zegarze */
-.hw-clock-title span { color: #F05A28; }
 .hw-clock-sub {
   position: absolute; bottom: 18px; left: 18px; right: 56px;
-  font-size: 12px; color: rgba(255,255,255,.4); line-height: 1.4;
-  z-index: 1;
+  font-size: 12px; color: rgba(255,255,255,.4); line-height: 1.4; z-index: 1;
 }
 .hw-clock-sub strong { color: rgba(255,255,255,.7); font-weight: 600; }
 .hw-clock-caret {
   position: absolute; right: 16px; bottom: 16px; z-index: 1;
   width: 36px; height: 36px; border-radius: 50%;
-  background: rgba(240,90,40,.2);
-  border: 1px solid rgba(240,90,40,.35);
+  background: rgba(255,255,255,.18);
   display: flex; align-items: center; justify-content: center;
-  font-size: 15px; color: #F05A28;
+  font-size: 15px; color: #fff;
 }
 .hw-clock-pulse {
   position: absolute; top: 20px; right: 20px; z-index: 2;
@@ -389,7 +385,7 @@ body.view-home #main-content { background: #F2E9DC; }
   to   { opacity:1; transform:translateY(0); }
 }
 
-/* ── Siatka kafelków — własne kolory Osterii ── */
+/* ── Siatka kafelków — gradient cards jak w ref ── */
 .hw-blocks {
   padding: 10px 14px 24px;
   display: grid;
@@ -427,71 +423,53 @@ body.view-home #main-content { background: #F2E9DC; }
 }
 .hb-row:active { transform: scale(.96); }
 
-/*
-  Kafelki — własna paleta Osterii
-  Nie ciemne gradienty z UI kitów.
-  Ciepłe, nasycone kolory na jasnych beżowych kartach.
-  Każdy kafelek = inna barwa, własny charakter.
-*/
-
-/* Grafik — pomarańcz — główny kolor Osterii */
+/* Kafelki — fioletowo-różowa paleta jak w referencjach */
 .hb-row[data-id="sched"] {
-  background: #F05A28;
-  box-shadow: 0 6px 24px rgba(240,90,40,.28);
+  background: linear-gradient(145deg, #5B2D9E 0%, #8B4FCF 100%);
+  box-shadow: 0 6px 20px rgba(90,45,158,.5);
 }
-/* Kuchnia — bordeaux — głęboki, własny */
 .hb-row[data-id="kitchen"] {
-  background: #7B1D2E;
-  box-shadow: 0 6px 24px rgba(123,29,46,.25);
+  background: linear-gradient(145deg, #A0206A 0%, #CF4090 100%);
+  box-shadow: 0 6px 20px rgba(160,32,106,.5);
 }
-/* Tablica — ciemny toffi / espresso */
 .hb-row[data-id="board"] {
-  background: #3D1F0A;
-  box-shadow: 0 6px 24px rgba(61,31,10,.22);
+  background: linear-gradient(145deg, #1D3A8A 0%, #3060C0 100%);
+  box-shadow: 0 6px 20px rgba(29,58,138,.5);
 }
-/* Wydarzenia — ceglasto-czerwony neon Osterii */
 .hb-row[data-id="events"] {
-  background: #E8233A;
-  box-shadow: 0 6px 24px rgba(232,35,58,.28);
+  background: linear-gradient(145deg, #8A1A50 0%, #BF3080 100%);
+  box-shadow: 0 6px 20px rgba(138,26,80,.5);
 }
-/* Dyspozycja — ciepły karmel */
 .hb-row[data-id="avail"] {
-  background: #C47C3A;
-  box-shadow: 0 6px 24px rgba(196,124,58,.25);
+  background: linear-gradient(145deg, #2D5A9E 0%, #4A80D0 100%);
+  box-shadow: 0 6px 20px rgba(45,90,158,.5);
 }
-/* Pracownicy — burgundy / głęboki wiśnia */
 .hb-row[data-id="emps"] {
-  background: #5C1030;
-  box-shadow: 0 6px 24px rgba(92,16,48,.22);
+  background: linear-gradient(145deg, #6B1A8A 0%, #9E40C0 100%);
+  box-shadow: 0 6px 20px rgba(107,26,138,.5);
 }
-/* Panel — ciemny kakaowy */
 .hb-row[data-id="dash"] {
-  background: #2D160A;
-  box-shadow: 0 6px 24px rgba(45,22,10,.2);
+  background: linear-gradient(145deg, #1A6B6B 0%, #2A9E9E 100%);
+  box-shadow: 0 6px 20px rgba(26,107,107,.5);
 }
 
-/* Dekoracyjny gradient blasku na każdej karcie (top-left shine) */
+/* Połysk na każdej karcie */
 .hb-row::after {
   content: '';
   position: absolute; inset: 0; border-radius: inherit;
-  background: linear-gradient(145deg, rgba(255,255,255,.18) 0%, transparent 45%);
+  background: linear-gradient(145deg, rgba(255,255,255,.2) 0%, transparent 50%);
   pointer-events: none;
 }
 
-/* Ikona — kwadrat, własny kolor tła */
+/* Ikona */
 .hb-row-icon {
   width: 42px; height: 42px; border-radius: 13px;
   display: flex; align-items: center; justify-content: center;
   margin-bottom: auto;
-  /* Ciemniejszy wariant koloru karty */
-  background: rgba(0,0,0,.18);
+  background: rgba(255,255,255,.18);
   font-size: 20px; line-height: 1;
   position: relative; z-index: 1;
 }
-/* Dla jasnych kart — ciemniejsze tło ikony */
-.hb-row[data-id="sched"] .hb-row-icon   { background: rgba(0,0,0,.2); }
-.hb-row[data-id="events"] .hb-row-icon  { background: rgba(0,0,0,.2); }
-.hb-row[data-id="avail"] .hb-row-icon   { background: rgba(0,0,0,.18); }
 
 .hb-row-label { display: none; }
 .hb-row-title {
@@ -499,17 +477,16 @@ body.view-home #main-content { background: #F2E9DC; }
   letter-spacing: -.3px; line-height: 1.1;
   margin-top: 10px;
   position: relative; z-index: 1;
-  text-shadow: 0 1px 4px rgba(0,0,0,.15);
 }
 .hb-row-arrow { display: none; }
 
 /* Badge */
 .hb-badge {
   position: absolute; top: 10px; right: 10px; z-index: 3;
-  background: #fff; color: #E8233A; font-size: 10px; font-weight: 800;
+  background: #fff; color: #BF3080; font-size: 10px; font-weight: 800;
   min-width: 20px; height: 20px; border-radius: 10px;
   display: flex; align-items: center; justify-content: center; padding: 0 5px;
-  box-shadow: 0 2px 8px rgba(0,0,0,.15);
+  box-shadow: 0 2px 8px rgba(0,0,0,.2);
 }
 
 /* Ripple */
@@ -2322,6 +2299,10 @@ function renderWeek(mc){
   const rng=`${monDate.getDate()}.${pad(monDate.getMonth()+1)} — ${sun.getDate()}.${pad(sun.getMonth()+1)}.${sun.getFullYear()}`;
 
   let html=`<div class="page-bar">
+    <button class="section-back-btn" onclick="goHome()">
+      <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+      Wróć
+    </button>
     <div class="page-bar-title">Grafik</div>
     <div class="view-toggle">
       <button class="vt-btn active" onclick="switchSchedView('week')">Tydzień</button>
@@ -2430,6 +2411,10 @@ function renderMonth(mc){
   });
 
   let html=`<div class="page-bar">
+    <button class="section-back-btn" onclick="goHome()">
+      <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+      Wróć
+    </button>
     <div class="page-bar-title">Grafik</div>
     <div class="view-toggle">
       <button class="vt-btn" onclick="switchSchedView('week')">Tydzień</button>
@@ -2499,7 +2484,7 @@ function renderMonth(mc){
 // ── EMPLOYEES ──
 function renderEmps(mc){
   if(!canEdit()){mc.innerHTML='<div class="empty-state"><p>Brak dostępu</p></div>';return;}
-  let html=`<div class="page-bar"><div class="page-bar-title">Pracownicy <span style="color:var(--text-3);font-weight:400">${employees.length}</span></div></div>`;
+  let html=`<div class="page-bar"><button class="section-back-btn" onclick="goHome()"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>Wróć</button><div class="page-bar-title">Pracownicy <span style="color:var(--text-3);font-weight:400">${employees.length}</span></div></div>`;
   ['kuchnia','sala'].forEach(dept=>{
     const list=employees.filter(e=>e.department===dept);
     if(!list.length) return;
@@ -2573,7 +2558,8 @@ function renderAvail(mc){
   const monthBlocked=blockedDates.filter(b=>b.date.startsWith(prefix));
 
   // ── Header ──
-  let html=`<div class="avail-header">
+  let html=`<div class="page-bar"><button class="section-back-btn" onclick="goHome()"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>Wróć</button><div class="page-bar-title">Dyspozycja</div></div>
+  <div class="avail-header">
     <div>
       <div class="avail-header-title">${monthName(month)} ${year}</div>
       <div class="avail-header-month">Dyspozycyjność</div>
@@ -2986,7 +2972,7 @@ async function renderDash(mc){
     return {off, label: monthName(d.getMonth())+' '+d.getFullYear()};
   });
 
-  let html=`<div class="page-bar"><div class="page-bar-title">Dashboard</div></div>
+  let html=`<div class="page-bar"><button class="section-back-btn" onclick="goHome()"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>Wróć</button><div class="page-bar-title">Dashboard</div></div>
   <div class="dash-wrap">
     <div class="dash-grid">
       <div class="stat-box accent">
@@ -3071,7 +3057,7 @@ async function renderEmpDash(mc){
 
   const hasRate=(emp?.rate_net||0)>1;
 
-  let html=`<div class="page-bar"><div class="page-bar-title">Mój panel</div></div>
+  let html=`<div class="page-bar"><button class="section-back-btn" onclick="goHome()"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>Wróć</button><div class="page-bar-title">Mój panel</div></div>
   <div class="emp-dash">
 
     <div class="emp-stats-grid">
@@ -3328,7 +3314,7 @@ function buildClockHTML(emp, isManager){
   const mySessions=workSessions.filter(s=>s.employee_id===myId && s.clock_out);
   const recentSessions=mySessions.slice(0,5);
 
-  let html=`<div class="clock-wrap">`;
+  let html=`<div class="page-bar"><button class="section-back-btn" onclick="goHome()"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>Wróć</button><div class="page-bar-title">Czas pracy</div></div><div class="clock-wrap">`;
 
   // Hero — ciemny panel z dużym przyciskiem (zawsze — dla pracownika i managera)
   if(emp){
