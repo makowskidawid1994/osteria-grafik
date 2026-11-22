@@ -269,9 +269,9 @@ body.view-home #main-content { background: transparent; }
 
 .main { padding-bottom: calc(62px + max(env(safe-area-inset-bottom), 12px) + 4px); min-height: calc(100dvh - 56px); }
 .main.no-bnav { padding-bottom: 0; }
-.main.view-transition { animation: viewFadeIn .55s cubic-bezier(.16,1,.3,1); }
+.main.view-transition { animation: viewFadeIn .5s cubic-bezier(.16,1,.3,1) both; }
 @keyframes viewFadeIn {
-  from { opacity: 0; transform: translateY(8px); }
+  from { opacity: 0; transform: translateY(6px); }
   to   { opacity: 1; transform: translateY(0); }
 }
 
@@ -1078,13 +1078,14 @@ body:not(.view-home) .chat-fab {
 .sect-label { padding: 14px 16px 5px; font-size: 10px; font-weight: 600; color: var(--text-3); text-transform: uppercase; letter-spacing: .5px; }
 
 /* ─── Ewidencja (Clock) — dark, spójne z resztą aplikacji ─── */
-.clock-wrap { padding: 0 0 90px; display: flex; flex-direction: column; gap: 0; min-height: calc(100dvh - 56px); background: var(--bg); }
+.clock-wrap { padding: 0 0 90px; display: flex; flex-direction: column; gap: 0; min-height: calc(100dvh - 56px); background: #2A0E18; }
 
 /* Hero — ciemny panel z gradientem jak home screen */
 .clock-hero {
   background: #2A0E18;
   padding: 36px 24px 40px; text-align: center; display: flex; flex-direction: column; align-items: center;
   position: relative; overflow: hidden;
+  flex-shrink: 0;
 }
 .clock-hero::before {
   content: ''; position: absolute; inset: 0; pointer-events: none;
@@ -1175,17 +1176,31 @@ body:not(.view-home) .chat-fab {
 .clock-sec-btn.danger:active { background: rgba(220,38,38,.2); }
 
 .clock-geo-status {
-  font-size: 12px; font-weight: 500; margin-top: 14px;
-  display: flex; align-items: center; gap: 6px;
+  font-size: 13px; font-weight: 600; margin-top: 16px;
+  display: flex; align-items: center; justify-content: center; gap: 7px;
   font-family: 'Nunito','Poppins',sans-serif;
   letter-spacing: .1px;
+  padding: 8px 18px;
+  border-radius: 20px;
+  background: rgba(255,255,255,.07);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  transition: opacity .4s ease, transform .4s cubic-bezier(.16,1,.3,1);
+  position: relative; z-index: 1;
 }
-.clock-geo-ok { color: #22C55E; }
-.clock-geo-err { color: rgba(252,165,165,.85); }
-.clock-geo-loading { color: rgba(255,255,255,.3); }
+.clock-geo-status.geo-visible {
+  animation: geoFadeIn .5s cubic-bezier(.16,1,.3,1) both;
+}
+@keyframes geoFadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.clock-geo-ok { color: #4ADE80; }
+.clock-geo-err { color: rgba(252,165,165,.95); }
+.clock-geo-loading { color: rgba(255,255,255,.4); }
 
 /* Reszta widoku — jasna sekcja */
-.clock-body { background: var(--bg); padding: 16px; display: flex; flex-direction: column; gap: 12px; flex: 1; }
+.clock-body { background: var(--bg); padding: 16px; display: flex; flex-direction: column; gap: 12px; flex: 1; border-radius: 20px 20px 0 0; margin-top: -1px; }
 
 @keyframes pulse-dot { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.5;transform:scale(.8)} }
 
@@ -1862,11 +1877,14 @@ function showView(v, pushHistory=true){
     bnav.style.display='none';
     mc.classList.add('no-bnav');
   }
-  if(mc){ mc.classList.remove('view-transition'); void mc.offsetWidth; mc.classList.add('view-transition'); }
   // FAB chat — ukryj w chacie
   const fab=document.getElementById('chat-fab');
   if(fab) fab.style.display=v==='chat'?'none':'flex';
   renderView();
+  // Animacja po wyrenderowaniu (rAF żeby DOM był gotowy)
+  requestAnimationFrame(()=>{
+    if(mc){ mc.classList.remove('view-transition'); void mc.offsetWidth; mc.classList.add('view-transition'); }
+  });
 }
 
 function goHome(){showView('home');}
@@ -3846,6 +3864,8 @@ async function updateGeoIndicator(){
   } else {
     geo.innerHTML=`<span class="clock-geo-err">● Poza restauracją · ${result.dist}m od lokalu</span>`;
   }
+  // Płynne wejście wskaźnika po załadowaniu
+  geo.classList.add('geo-visible');
 }
 
 // Dispatcher dla głównego przycisku (stan idle → clock in)
