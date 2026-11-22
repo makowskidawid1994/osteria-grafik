@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="/icon-192.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
 :root {
   --brand: #7B1D2E;
@@ -39,7 +39,7 @@
   --red-soft: #FEF2F2;
   --radius: 6px;
   --radius-lg: 8px;
-  --font: 'Poppins', -apple-system, 'Segoe UI', sans-serif;
+  --font: 'Nunito', 'Poppins', -apple-system, 'Segoe UI', sans-serif;
   --shadow-sm: 0 1px 2px rgba(0,0,0,.05);
   --shadow: 0 1px 4px rgba(0,0,0,.08);
 }
@@ -275,8 +275,9 @@ body.view-home #main-content { background: #1A1033; }
   content: '';
   position: fixed; inset: 0; pointer-events: none; z-index: 0;
   background:
-    radial-gradient(ellipse 80% 50% at 100% 0%, rgba(180,50,30,.25) 0%, transparent 60%),
-    radial-gradient(ellipse 60% 40% at 0% 100%, rgba(90,15,25,.4) 0%, transparent 55%);
+    radial-gradient(ellipse 70% 55% at 90% 5%, rgba(180,40,50,.35) 0%, transparent 55%),
+    radial-gradient(ellipse 60% 45% at 10% 85%, rgba(100,10,30,.45) 0%, transparent 55%),
+    radial-gradient(ellipse 50% 40% at 50% 50%, rgba(80,10,20,.2) 0%, transparent 60%);
 }
 
 /* Header */
@@ -316,11 +317,14 @@ body.view-home #main-content { background: #1A1033; }
 
 /* ── Blok zegarowy ── */
 .hw-clock-block {
-  margin: 0 20px 10px;
+  margin: 0 20px 14px;
   position: relative; overflow: hidden;
   border-radius: 28px;
-  background: linear-gradient(145deg, #3D0E1A 0%, #5C1420 60%, #7B1D2E 100%);
-  padding: 28px 28px 24px;
+  background: rgba(100,15,30,.45);
+  backdrop-filter: blur(20px) saturate(1.4);
+  -webkit-backdrop-filter: blur(20px) saturate(1.4);
+  border: 1px solid rgba(255,255,255,.1);
+  padding: 32px 28px 28px;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
   transition: transform .15s cubic-bezier(.4,0,.2,1);
@@ -328,10 +332,9 @@ body.view-home #main-content { background: #1A1033; }
   opacity: 0;
   animation: fadeInUp .4s cubic-bezier(.4,0,.2,1) .18s forwards;
   z-index: 1;
-  display: flex; flex-direction: column; align-items: flex-start;
-  box-shadow: 0 16px 48px rgba(80,8,18,.6);
-  min-height: 160px;
-  justify-content: space-between;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  box-shadow: 0 8px 32px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.08);
+  min-height: 170px;
 }
 .hw-clock-block::before {
   content: '';
@@ -351,56 +354,58 @@ body.view-home #main-content { background: #1A1033; }
 
 /* Stan: pracuje */
 .hw-clock-block.working {
-  background: linear-gradient(145deg, #0A2D14 0%, #163D20 60%, #1E5C2E 100%);
-  box-shadow: 0 16px 48px rgba(5,40,15,.65);
+  background: rgba(10,45,20,.55);
+  border-color: rgba(74,222,128,.15);
+  box-shadow: 0 8px 32px rgba(0,0,0,.35), inset 0 1px 0 rgba(74,222,128,.12);
 }
 .hw-clock-block.working::before {
-  background:
-    radial-gradient(ellipse 100% 80% at 100% 0%, rgba(60,200,80,.2) 0%, transparent 55%),
-    linear-gradient(to bottom, rgba(255,255,255,.04) 0%, transparent 60%);
+  background: radial-gradient(ellipse 100% 80% at 50% 0%, rgba(60,200,80,.12) 0%, transparent 55%);
 }
 
-/* Górna część — eyebrow + timer */
-.hw-clock-left { display: flex; flex-direction: column; gap: 6px; width: 100%; }
-.hw-clock-eyebrow {
-  display: block;
-  font-size: 9px; font-weight: 600; color: rgba(255,255,255,.4);
-  letter-spacing: 1.8px; text-transform: uppercase;
+/* Centrum karty zegarowej */
+.hw-clock-center {
+  display: flex; flex-direction: column; align-items: center;
+  gap: 10px; position: relative; z-index: 1; width: 100%;
+  padding: 4px 0;
 }
 /* Duży timer (widoczny tylko podczas pracy) */
 .hw-clock-timer {
-  font-size: 48px; font-weight: 300; color: #fff;
-  letter-spacing: -2px; line-height: 1;
+  font-size: 52px; font-weight: 300; color: #fff;
+  letter-spacing: -3px; line-height: 1;
   font-variant-numeric: tabular-nums;
   display: none;
 }
 .hw-clock-block.working .hw-clock-timer { display: block; }
-.hw-clock-block.working .hw-clock-title { display: none; }
-/* Tytuł (widoczny gdy nie pracuje) */
-.hw-clock-title {
-  font-size: 26px; font-weight: 700; color: #fff;
-  letter-spacing: -.6px; line-height: 1.1;
+.hw-clock-block.working .hw-clock-icon-wrap .hw-clock-play-icon { display: none; }
+.hw-clock-block.working .hw-clock-icon-wrap .hw-clock-stop-icon { display: block; }
+/* Ikona play/stop */
+.hw-clock-icon-wrap {
+  width: 56px; height: 56px; border-radius: 50%;
+  background: rgba(255,255,255,.13);
+  border: 1.5px solid rgba(255,255,255,.22);
+  display: flex; align-items: center; justify-content: center;
   position: relative; z-index: 1;
-  margin-top: 4px;
+  transition: background .18s, transform .15s;
+  box-shadow: 0 4px 16px rgba(0,0,0,.18);
 }
+.hw-clock-block:active .hw-clock-icon-wrap {
+  background: rgba(255,255,255,.22); transform: scale(.92);
+}
+.hw-clock-play-icon { display: block; }
+.hw-clock-stop-icon { display: none; }
+/* Tytuł (widoczny zawsze) */
+.hw-clock-title {
+  font-size: 20px; font-weight: 600; color: rgba(255,255,255,.95);
+  letter-spacing: -.3px; line-height: 1.1;
+  position: relative; z-index: 1;
+  text-align: center;
+}
+.hw-clock-block.working .hw-clock-title { font-size: 15px; font-weight: 500; color: rgba(255,255,255,.6); }
 .hw-clock-sub {
   display: block;
-  font-size: 12px; font-weight: 400; color: rgba(255,255,255,.45);
-  margin-top: 2px;
+  font-size: 12px; font-weight: 400; color: rgba(255,255,255,.4);
+  text-align: center; margin-top: -4px;
 }
-
-/* Dolna część — przycisk akcji */
-.hw-clock-caret {
-  display: flex; align-items: center; justify-content: center;
-  align-self: flex-end;
-  width: 44px; height: 44px; border-radius: 50%;
-  background: rgba(255,255,255,.12);
-  border: 1px solid rgba(255,255,255,.18);
-  font-size: 18px; color: rgba(255,255,255,.9);
-  position: relative; z-index: 1;
-  transition: background .15s;
-}
-.hw-clock-block:active .hw-clock-caret { background: rgba(255,255,255,.2); }
 
 /* Pasek postępu zmiany */
 .hw-clock-progress {
@@ -457,9 +462,9 @@ body.view-home #main-content { background: #1A1033; }
   display: flex; flex-direction: row;
   align-items: center; justify-content: space-between;
   padding: 0 4px;
-  background: transparent;
+  background: rgba(255,255,255,.025);
   border: none;
-  border-bottom: 1px solid rgba(255,255,255,.06);
+  border-bottom: 1px solid rgba(255,255,255,.07);
   width: 100%;
   -webkit-tap-highlight-color: transparent;
   transition: background .1s ease;
@@ -476,7 +481,12 @@ body.view-home #main-content { background: #1A1033; }
 .hw-blocks .hb-row:nth-child(6) { animation-delay: .35s; }
 .hw-blocks .hb-row:nth-child(7) { animation-delay: .39s; }
 @keyframes rowIn { from{opacity:0;transform:translateX(-6px);} to{opacity:1;transform:translateX(0);} }
-.hb-row:active { background: rgba(255,255,255,.04); border-radius: 10px; }
+.hb-row:active { background: rgba(255,255,255,.08); border-radius: 10px; border-color: transparent; }
+@media (hover: hover) {
+  .hb-row:hover { background: rgba(255,255,255,.04); border-radius: 10px; }
+  .hb-row:hover .hb-row-arrow { color: rgba(255,255,255,.5); transform: translateX(2px); }
+}
+.hb-row-arrow { transition: color .15s, transform .15s; }
 
 /* Ikona — małe kółko z kolorem */
 .hb-row-icon {
@@ -1817,8 +1827,9 @@ function renderStub(mc, title, backView, msg){
 function renderHome(mc){
   const emp=getCurrentEmployee();
   const myEmail=currentUser?.user?.email||'';
-  const name=emp?.name||(myEmail.split('@')[0])||'';
-  const firstName=name.split(' ')[0];
+  // Użyj imienia z bazy pracowników; fallback na nick z maila tylko gdy brak rekordu
+  const rawName=emp?.name||'';
+  const firstName=rawName.split(' ')[0]||(myEmail.split('@')[0])||'Witaj';
   const role=currentRole==='owner'?'Właściciel':currentRole==='manager'?'Manager':emp?.department==='kuchnia'?'Kucharz':'Pracownik';
   const isKitchen=emp?.department==='kuchnia';
   const isOwnerOrMgr=canEdit();
@@ -1838,10 +1849,10 @@ function renderHome(mc){
     clockCls=' working';
   } else if(myShiftToday){
     clockTitle='Zacznij pracę';
-    clockHint=`zmiana ${(myShiftToday.start_time||'').slice(0,5)}–${(myShiftToday.end_time||'').slice(0,5)}`;
+    clockHint=`${(myShiftToday.start_time||'').slice(0,5)}–${(myShiftToday.end_time||'').slice(0,5)}`;
   } else {
     clockTitle='Zacznij pracę';
-    clockHint='zarejestruj czas';
+    clockHint='';
   }
 
   const rowHTML=b=>`
@@ -1878,13 +1889,15 @@ function renderHome(mc){
 
     <div class="hw-clock-block${clockCls}" onclick="hbTap(this,'clock')">
       <span class="hw-clock-pulse"></span>
-      <div class="hw-clock-left">
-        <div class="hw-clock-eyebrow">${active?'TRWA ZMIANA':'CZAS PRACY'}</div>
+      <div class="hw-clock-center">
         <div class="hw-clock-timer" id="hw-live-timer">0:00:00</div>
+        <div class="hw-clock-icon-wrap">
+          <svg class="hw-clock-play-icon" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.9)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8" fill="rgba(255,255,255,.9)" stroke="none"/></svg>
+          <svg class="hw-clock-stop-icon" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.9)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><rect x="9" y="9" width="6" height="6" rx="1" fill="rgba(255,255,255,.9)" stroke="none"/></svg>
+        </div>
         <div class="hw-clock-title">${clockTitle}</div>
-        <div class="hw-clock-sub">${clockHint}</div>
+        ${clockHint?`<div class="hw-clock-sub">${clockHint}</div>`:''}
       </div>
-      <div class="hw-clock-caret">→</div>
       <div class="hw-clock-progress"><div class="hw-clock-progress-fill" id="hw-shift-fill"></div></div>
       <div class="hb-ripple-wrap"></div>
     </div>
