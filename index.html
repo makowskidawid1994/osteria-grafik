@@ -1727,11 +1727,11 @@ async function doLogin() {
     const rows=await sbFetch(`/rest/v1/user_roles?email=eq.${encodeURIComponent(email)}&select=role`).catch(()=>[]);
     currentRole=rows?.[0]?.role||'employee';
     saveSession();
-    // Załaduj dane i splash równolegle — splash czeka min 1.6s, dane ładują się w tle
-    const [_splash] = await Promise.all([
-      showWelcomeSplash(email),
-      loadAllData().catch(()=>{})
-    ]);
+    // Załaduj dane najpierw, żeby splash miał imię z bazy
+    await loadAllData().catch(()=>{});
+    const empForName=employees.find(e=>e.email&&e.email.toLowerCase()===email.toLowerCase());
+    const splashName=empForName?.name?.trim().split(/\s+/)[0]||null;
+    await showWelcomeSplash(email, splashName);
     // Teraz dane są gotowe, splash właśnie skończył animację wejścia — pokaż app
     document.getElementById('auth-screen').style.display='none';
     document.getElementById('app').style.display='block';
@@ -1781,25 +1781,12 @@ function startChangePassword(){
     .catch(e=>showToast('Błąd: '+e.message.slice(0,60)));
 }
 
-function showWelcomeSplash(email){
+function showWelcomeSplash(email, overrideName=null){
   return new Promise(resolve=>{
-    // Wyciągnij imię z bazy pracowników (jeśli już załadowane) lub z emaila
-    const getFirstName=()=>{
-      const emp=employees.find(e=>e.email&&e.email.toLowerCase()===email.toLowerCase());
-      if(emp?.name){const p=emp.name.trim().split(/\s+/).filter(Boolean);return p[0]||'';}
-      return null; // pracownicy jeszcze nie załadowani
-    };
-    // Fallback z emaila (makowskidawid1994 → Makowskidawid → pierwsze słowo)
-    const nameFromEmail=()=>{
-      const raw=email.split('@')[0].replace(/[0-9]/g,'').replace(/[._]/g,' ').trim();
-      const parts=raw.split(' ').filter(Boolean);
-      return parts[0]?parts[0].charAt(0).toUpperCase()+parts[0].slice(1).toLowerCase():'';
-    };
-
     const now=new Date(); const h=now.getHours();
     const gr=h<12?'Dzień dobry':(h<18?'Cześć':'Dobry wieczór');
-    // Spróbuj z bazy, fallback z emaila
-    const firstName=getFirstName()||nameFromEmail();
+    // Użyj gotowego imienia (z bazy) lub fallback z emaila jako ostateczność
+    const firstName=overrideName||email.split('@')[0];
 
     const splash=document.createElement('div');
     splash.id='welcome-splash';
