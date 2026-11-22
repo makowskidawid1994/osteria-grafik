@@ -1692,7 +1692,7 @@ let availMonthOffset=1; // default: next month
 let workSessions=[], activeSession=null;
 let clockTimerInterval=null;
 // Geofence: Osteria Antonina, Solna 11c, Kołobrzeg
-const GEO_LAT = 54.17528, GEO_LON = 15.57647, GEO_RADIUS = 200; // metry (GPS w budynku ma dokładność ±50-100m)
+const GEO_LAT = 54.17659, GEO_LON = 15.57361, GEO_RADIUS = 300; // metry — Solna 11c/2, Kołobrzeg (300m = bezpieczny margines dla GPS w budynku)
 
 async function sbFetch(path, opts={}) {
   const h={'apikey':SB_KEY,'Content-Type':'application/json'};
@@ -2004,8 +2004,8 @@ function renderView(){
       // Pokaż szkielet od razu (ciemny, nie biały)
       mc.innerHTML=`<div style="display:flex;flex-direction:column;min-height:100%;background:var(--bg);">
         <div class="page-bar" style="position:sticky;top:0;z-index:10;flex-shrink:0;"><div class="page-bar-title">Chat zespołowy</div></div>
-        <div style="flex:1;background:var(--bg);padding-bottom:calc(70px + max(env(safe-area-inset-bottom),12px) + 62px);"></div>
-        <div class="chat-input-bar" style="position:fixed;bottom:calc(max(env(safe-area-inset-bottom),12px) + 62px);left:0;right:0;z-index:99;">
+        <div style="flex:1;background:var(--bg);padding-bottom:160px;"></div>
+        <div class="chat-input-bar" style="position:fixed;bottom:72px;left:0;right:0;z-index:99;">
           <textarea class="chat-input" placeholder="Napisz coś do zespołu…" rows="1" disabled></textarea>
           <button class="chat-send-btn" disabled><svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button>
         </div>
@@ -4484,7 +4484,10 @@ async function doClockin(){
   const origHTML=btn?btn.innerHTML:'';
   if(btn){btn.disabled=true; btn.innerHTML=`<span style="font-size:12px">Sprawdzanie GPS…</span>`;}
 
-  const geo=await checkGeofence();
+  // Właściciel i manager pomijają geofence
+  const geo = (currentRole==='owner'||currentRole==='manager')
+    ? {ok:true,lat:null,lon:null}
+    : await checkGeofence();
   if(!geo.ok){
     if(btn){btn.disabled=false; btn.innerHTML=origHTML; btn.className='clock-btn-round state-idle'; btn.onclick=()=>doClockin();}
     const msg=geo.error?`Błąd GPS: ${geo.error}`:`Jesteś ${geo.dist}m od restauracji — musisz być bliżej, żeby zacząć zmianę`;
@@ -4593,12 +4596,18 @@ let chatUnread=0;
 
 async function loadChatMessages(){
   try{
-    const msgs=await sbFetch('/rest/v1/team_messages?select=*,employees(name,department)&order=created_at.asc&limit=100');
+    const msgs=await sbFetch('/rest/v1/team_messages?select=*,employees(name,department)&order=created_at.asc&limit=200');
     chatMessages=Array.isArray(msgs)?msgs:[];
+    // Zapisz w localStorage jako cache
+    try{localStorage.setItem('chatCache',JSON.stringify(chatMessages));}catch(_){}
     return true;
   }catch(e){
-    // Tabela może nie istnieć jeszcze
-    return false;
+    // Tabela nie istnieje lub brak połączenia — ładuj z cache localStorage
+    try{
+      const cached=localStorage.getItem('chatCache');
+      if(cached){chatMessages=JSON.parse(cached)||[];}
+    }catch(_){}
+    return chatMessages.length>0;
   }
 }
 
@@ -4612,8 +4621,8 @@ function renderChat(mc){
     <div class="page-bar-title">Chat zespołowy</div>
     <div style="font-size:11px;color:var(--text-3)">${employees.length} os.</div>
   </div>
-  <div class="chat-msgs" id="chat-msgs-list" style="flex:1;overflow-y:auto;padding-bottom:calc(70px + max(env(safe-area-inset-bottom),12px) + 62px);"></div>
-  <div class="chat-input-bar" style="position:fixed;bottom:calc(max(env(safe-area-inset-bottom),12px) + 62px);left:0;right:0;z-index:99;">
+  <div class="chat-msgs" id="chat-msgs-list" style="flex:1;overflow-y:auto;padding-bottom:160px;"></div>
+  <div class="chat-input-bar" style="position:fixed;bottom:72px;left:0;right:0;z-index:99;">
     <textarea class="chat-input" id="chat-input" placeholder="Napisz coś do zespołu…" rows="1" oninput="autoResizeChat(this)" onkeydown="chatKeydown(event)"></textarea>
     <button class="chat-send-btn" onclick="sendChatMsg()">
       <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
@@ -4735,29 +4744,45 @@ async function sendChatMsg(){
   inp.value=''; inp.style.height='auto';
 
   const emp=getCurrentEmployee();
+  const myEmail=currentUser?.user?.email||currentUser?.email||'';
+  // Optymistycznie dodaj wiadomość lokalnie od razu
+  const tempMsg={id:'temp-'+Date.now(),content,sender_email:myEmail,
+    created_at:new Date().toISOString(),
+    employees:{name:emp?.name||myEmail.split('@')[0],department:emp?.department}};
+  chatMessages.push(tempMsg);
+  renderChatMessages();
+  setTimeout(()=>{const list=document.getElementById('chat-msgs-list');if(list)list.scrollTop=list.scrollHeight;},30);
+
   try{
     const msg=await sbFetch('/rest/v1/team_messages',{
       method:'POST',
       headers:{'Prefer':'return=representation'},
       body:JSON.stringify({
         content,
-        sender_email:currentUser?.user?.email||currentUser?.email||'',
+        sender_email:myEmail,
         employee_id:emp?.id||null
       })
     });
+    // Podmień temp na prawdziwy rekord
     const newMsg=Array.isArray(msg)?msg[0]:msg;
-    // Dociągnij employees info
-    const _myEmail2=currentUser?.user?.email||currentUser?.email||'';
-    newMsg.sender_email=_myEmail2;
-    newMsg.employees={name:emp?.name||_myEmail2.split('@')[0],department:emp?.department};
-    chatMessages.push(newMsg);
-    renderChatMessages();
-    setTimeout(()=>{
-      const list=document.getElementById('chat-msgs-list');
-      if(list) list.scrollTop=list.scrollHeight;
-    },30);
+    if(newMsg?.id){
+      newMsg.sender_email=myEmail;
+      newMsg.employees={name:emp?.name||myEmail.split('@')[0],department:emp?.department};
+      const idx=chatMessages.findIndex(m=>m.id===tempMsg.id);
+      if(idx>=0) chatMessages[idx]=newMsg;
+      else chatMessages.push(newMsg);
+      renderChatMessages();
+    }
   }catch(e){
-    showToast('Błąd wysyłania: '+e.message.slice(0,50));
+    console.error('Chat send error:',e);
+    // Zostaw wiadomość lokalnie (działa jako local-only chat)
+    // Zapisz cache żeby inni na tym urządzeniu widzieli
+    try{localStorage.setItem('chatCache',JSON.stringify(chatMessages));}catch(_){}
+    if(e.message&&(e.message.includes('relation')||e.message.includes('does not exist')||e.message.includes('42P01'))){
+      showToast('Czat działa lokalnie — skontaktuj się z administratorem');
+    } else {
+      showToast('Błąd: '+e.message.slice(0,60));
+    }
   }
 }
 
