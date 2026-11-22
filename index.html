@@ -2027,6 +2027,14 @@ function renderView(){
   else if(currentView==='recipe-detail') renderRecipeDetail(mc);
   else if(currentView==='waste') renderStub(mc,'Zeszyt strat','kitchen','Rejestracja strat będzie dostępna wkrótce.');
   else if(currentView==='handover') renderStub(mc,'Przekazanie zmiany','kitchen','Przekazanie zmiany będzie dostępne wkrótce.');
+  else if(currentView==='finance'){
+    mc.innerHTML=`<div style="min-height:calc(100dvh - 56px);background:var(--bg);display:flex;align-items:center;justify-content:center;"><div style="width:36px;height:36px;border:3px solid var(--border);border-top-color:var(--brand);border-radius:50%;animation:spin .7s linear infinite;"></div></div>`;
+    renderFinance(mc).catch(e=>console.error(e));
+  }
+  else if(currentView==='tardiness'){
+    mc.innerHTML=`<div style="min-height:calc(100dvh - 56px);background:var(--bg);display:flex;align-items:center;justify-content:center;"><div style="width:36px;height:36px;border:3px solid var(--border);border-top-color:var(--brand);border-radius:50%;animation:spin .7s linear infinite;"></div></div>`;
+    renderTardiness(mc).catch(e=>console.error(e));
+  }
   else if(currentView==='chat'){
     chatUnread=0; updateChatBadge();
     const triggerAnim=()=>{ mc.classList.remove('view-transition'); void mc.offsetWidth; mc.classList.add('view-transition'); };
@@ -2124,8 +2132,10 @@ function renderHome(mc){
   rows.push({id:'events',  label:'Wydarzenia',  icon:ic('<path d="M22 12h-4l-3 9L9 3l-3 9H2"/>')});
   rows.push({id:'avail',   label:'Dyspozycja',  icon:ic('<circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>')});
   if(isOwnerOrMgr){
-    rows.push({id:'emps',  label:'Pracownicy',  icon:ic('<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>')});
-    rows.push({id:'dash',  label:'Panel',       icon:ic('<rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>')});
+    rows.push({id:'emps',      label:'Pracownicy',    icon:ic('<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>')});
+    rows.push({id:'finance',   label:'Finanse',       icon:ic('<line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>')});
+    rows.push({id:'tardiness', label:'Spóźnienia',    icon:ic('<circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/><line x1="12" y1="2" x2="12" y2="4" stroke-width="2.5"/>')});
+    rows.push({id:'dash',      label:'Panel',         icon:ic('<rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>')});
   }
 
   mc.innerHTML=`
@@ -5224,6 +5234,440 @@ function startShiftNotifTimer(){
 }
 function stopShiftNotifTimer(){
   if(_notifInterval){clearInterval(_notifInterval);_notifInterval=null;}
+}
+
+/* ═══════════════════════════════════════════════
+   DASHBOARD FINANSOWY
+═══════════════════════════════════════════════ */
+
+let financeMonthOffset = 0; // 0 = bieżący miesiąc
+
+async function renderFinance(mc){
+  if(!mc) mc=document.getElementById('main-content');
+  if(!mc) return;
+
+  const now = new Date();
+  const mo = new Date(now.getFullYear(), now.getMonth() + financeMonthOffset, 1);
+  const y = mo.getFullYear();
+  const m = mo.getMonth();
+  const pad = n => String(n).padStart(2,'0');
+  const from = `${y}-${pad(m+1)}-01`;
+  const lastDay = new Date(y, m+1, 0).getDate();
+  const to = `${y}-${pad(m+1)}-${pad(lastDay)}`;
+  const monthLabel = mo.toLocaleDateString('pl-PL',{month:'long',year:'numeric'});
+  const isCurrentMonth = financeMonthOffset === 0;
+
+  // Pobierz dane finansowe
+  let revenues = [];
+  try {
+    revenues = await sbFetch(`/rest/v1/daily_revenue?date=gte.${from}&date=lte.${to}&order=date.asc`);
+    if(!Array.isArray(revenues)) revenues=[];
+  } catch(_){}
+
+  // Pobierz sesje pracy (do kosztu personelu)
+  let wSessions = [];
+  try {
+    wSessions = await sbFetch(`/rest/v1/work_sessions?select=*,employees(name,department,rate_net)&clock_in=gte.${from}T00:00:00&clock_in=lte.${to}T23:59:59&clock_out=not.is.null`);
+    if(!Array.isArray(wSessions)) wSessions=[];
+  } catch(_){}
+
+  // Sumy
+  const totalCash = revenues.reduce((a,r)=>a+parseFloat(r.revenue_cash||0),0);
+  const totalCard = revenues.reduce((a,r)=>a+parseFloat(r.revenue_card||0),0);
+  const totalRev  = totalCash + totalCard;
+  const totalCovers = revenues.reduce((a,r)=>a+parseInt(r.covers||0),0);
+  const avgCover  = totalCovers>0 ? totalRev/totalCovers : 0;
+
+  // Koszt pracy
+  let totalLaborCost = 0;
+  for(const s of wSessions){
+    const rate = parseFloat(s.employees?.rate_net || employees.find(e=>e.id===s.employee_id)?.rate_net || 0);
+    const mins = s.total_minutes || 0;
+    totalLaborCost += rate * (mins/60);
+  }
+
+  const laborPct = totalRev>0 ? (totalLaborCost/totalRev*100) : 0;
+  const margin = totalRev - totalLaborCost;
+
+  // Dane dzisiejsze
+  const todayStr = today();
+  const todayRev = revenues.find(r=>r.date===todayStr);
+
+  const fmt = n => n.toLocaleString('pl-PL',{minimumFractionDigits:0,maximumFractionDigits:0})+' zł';
+  const fmtPct = n => n.toFixed(1)+'%';
+
+  // Wykres tygodniowy (ostatnie 7 dni lub dni miesiąca)
+  const chartDays = 14;
+  const chartData = [];
+  for(let i=chartDays-1;i>=0;i--){
+    const d=new Date(now); d.setDate(now.getDate()-i);
+    const ds=`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+    const r=revenues.find(x=>x.date===ds);
+    chartData.push({date:ds, day:d.getDate(), val:r?(parseFloat(r.revenue_cash||0)+parseFloat(r.revenue_card||0)):null});
+  }
+  const maxVal = Math.max(...chartData.map(d=>d.val||0), 1);
+
+  const barHTML = chartData.map(d=>{
+    const h = d.val!=null ? Math.max(4, Math.round((d.val/maxVal)*56)) : 0;
+    const isToday = d.date===todayStr;
+    const col = isToday ? 'var(--brand)' : (d.val!=null ? 'rgba(123,29,46,.5)' : 'rgba(255,255,255,.07)');
+    return `<div style="display:flex;flex-direction:column;align-items:center;gap:2px;flex:1;min-width:0">
+      <div style="width:100%;max-width:18px;background:${col};height:${h}px;border-radius:3px 3px 0 0;transition:height .3s"></div>
+      <div style="font-size:8px;color:${isToday?'var(--text)':'var(--text-3)'};font-weight:${isToday?'800':'500'}">${d.day}</div>
+    </div>`;
+  }).join('');
+
+  // Lista dni miesiąca
+  const daysHTML = (() => {
+    const rows = [];
+    for(let d=lastDay; d>=1; d--){
+      const ds=`${y}-${pad(m+1)}-${pad(d)}`;
+      const r = revenues.find(x=>x.date===ds);
+      const dateObj = new Date(y,m,d);
+      const dayName = dateObj.toLocaleDateString('pl-PL',{weekday:'short'});
+      const isFuture = ds > todayStr;
+      if(isFuture && !r) continue;
+      rows.push(`<div onclick="openRevenueEdit('${ds}')" style="display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid var(--border-2);cursor:pointer;-webkit-tap-highlight-color:transparent;">
+        <div style="min-width:40px;text-align:center">
+          <div style="font-size:11px;color:var(--text-3);text-transform:capitalize">${dayName}</div>
+          <div style="font-size:17px;font-weight:800;color:var(--text);line-height:1">${d}</div>
+        </div>
+        <div style="flex:1">
+          ${r ? `<div style="font-size:14px;font-weight:700;color:var(--text)">${fmt(parseFloat(r.revenue_cash||0)+parseFloat(r.revenue_card||0))}</div>
+          <div style="font-size:11px;color:var(--text-3);margin-top:1px">gotówka ${fmt(parseFloat(r.revenue_cash||0))} · karta ${fmt(parseFloat(r.revenue_card||0))}${r.covers?' · '+r.covers+' os.':''}</div>`
+          : `<div style="font-size:13px;color:var(--text-3)">— brak danych —</div>`}
+        </div>
+        <div style="color:var(--text-3);font-size:18px">›</div>
+      </div>`);
+    }
+    return rows.join('') || `<div style="padding:24px;text-align:center;color:var(--text-3);font-size:13px">Brak danych za ten miesiąc</div>`;
+  })();
+
+  mc.innerHTML = `
+  <div style="min-height:100dvh;padding-bottom:80px">
+    <div class="page-bar" style="display:flex;align-items:center;justify-content:space-between;padding:0 16px">
+      <button class="section-back-btn" onclick="showView('home')" style="margin:0">‹</button>
+      <div style="display:flex;align-items:center;gap:10px">
+        <button onclick="financeMonthOffset--;renderFinance()" style="background:none;border:none;color:var(--text-2);font-size:20px;padding:4px 8px;cursor:pointer">‹</button>
+        <div style="font-size:14px;font-weight:700;color:var(--text);min-width:120px;text-align:center;text-transform:capitalize">${monthLabel}</div>
+        <button onclick="financeMonthOffset++;if(financeMonthOffset>0)financeMonthOffset=0;renderFinance()" style="background:none;border:none;color:${financeMonthOffset<0?'var(--text-2)':'var(--text-3)'};font-size:20px;padding:4px 8px;cursor:pointer">›</button>
+      </div>
+      <button onclick="openRevenueEdit('${todayStr}')" style="background:var(--brand);color:#fff;border:none;border-radius:8px;padding:7px 12px;font-size:12px;font-weight:700;font-family:var(--font);cursor:pointer">+ Dodaj</button>
+    </div>
+
+    <div style="padding:0 16px;margin-top:8px">
+      <!-- Karty KPI -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px">
+        <div style="background:var(--bg-card);border-radius:14px;padding:14px;border:1px solid var(--border-2)">
+          <div style="font-size:11px;color:var(--text-3);margin-bottom:4px">Przychód ${isCurrentMonth?'(mies.)':''}</div>
+          <div style="font-size:22px;font-weight:800;color:var(--text)">${fmt(totalRev)}</div>
+          <div style="font-size:11px;color:var(--text-3);margin-top:3px">got. ${fmt(totalCash)} · karta ${fmt(totalCard)}</div>
+        </div>
+        <div style="background:var(--bg-card);border-radius:14px;padding:14px;border:1px solid var(--border-2)">
+          <div style="font-size:11px;color:var(--text-3);margin-bottom:4px">Koszt pracy</div>
+          <div style="font-size:22px;font-weight:800;color:${laborPct>35?'var(--danger)':laborPct>28?'var(--warn)':'var(--green)'}">${fmtPct(laborPct)}</div>
+          <div style="font-size:11px;color:var(--text-3);margin-top:3px">${fmt(totalLaborCost)} personel</div>
+        </div>
+        <div style="background:var(--bg-card);border-radius:14px;padding:14px;border:1px solid var(--border-2)">
+          <div style="font-size:11px;color:var(--text-3);margin-bottom:4px">Marża operacyjna</div>
+          <div style="font-size:22px;font-weight:800;color:${margin>=0?'var(--green)':'var(--danger)'}">${fmt(margin)}</div>
+          <div style="font-size:11px;color:var(--text-3);margin-top:3px">przychód − personel</div>
+        </div>
+        <div style="background:var(--bg-card);border-radius:14px;padding:14px;border:1px solid var(--border-2)">
+          <div style="font-size:11px;color:var(--text-3);margin-bottom:4px">Średni rachunek</div>
+          <div style="font-size:22px;font-weight:800;color:var(--text)">${totalCovers>0?fmt(avgCover):'—'}</div>
+          <div style="font-size:11px;color:var(--text-3);margin-top:3px">${totalCovers} gości łącznie</div>
+        </div>
+      </div>
+
+      <!-- Mini wykres -->
+      <div style="background:var(--bg-card);border-radius:14px;padding:14px;border:1px solid var(--border-2);margin-bottom:12px">
+        <div style="font-size:11px;color:var(--text-3);margin-bottom:10px">Ostatnie 14 dni</div>
+        <div style="display:flex;align-items:flex-end;gap:3px;height:60px">${barHTML}</div>
+      </div>
+
+      <!-- Lista dni -->
+      <div style="background:var(--bg-card);border-radius:14px;padding:0 14px;border:1px solid var(--border-2)">
+        <div style="font-size:11px;color:var(--text-3);padding:12px 0 4px;font-weight:700;text-transform:uppercase;letter-spacing:.5px">Dzień po dniu</div>
+        ${daysHTML}
+      </div>
+    </div>
+  </div>`;
+}
+
+function openRevenueEdit(dateStr){
+  // Usuń stary modal jeśli istnieje
+  document.getElementById('revenue-modal')?.remove();
+
+  const existing = [];
+  // Próbujemy pobrać z cache — ale i tak pobierzemy fresh
+  const fmt2 = n => isNaN(n)||n===0?'':String(n);
+
+  const mo = document.createElement('div');
+  mo.id = 'revenue-modal';
+  mo.className = 'modal-overlay active';
+  const dateLabel = new Date(dateStr+'T12:00:00').toLocaleDateString('pl-PL',{weekday:'long',day:'numeric',month:'long'});
+
+  mo.innerHTML = `
+  <div class="modal" style="max-width:360px;width:calc(100% - 32px);padding:24px">
+    <div style="font-size:16px;font-weight:800;color:var(--text);margin-bottom:4px">Utarg</div>
+    <div style="font-size:13px;color:var(--text-2);margin-bottom:20px;text-transform:capitalize">${dateLabel}</div>
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <div>
+        <label style="font-size:12px;color:var(--text-3);display:block;margin-bottom:4px">Gotówka (zł)</label>
+        <input id="rev-cash" type="number" min="0" step="0.01" placeholder="0.00"
+          style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:11px 14px;color:var(--text);font-size:16px;font-family:var(--font);outline:none">
+      </div>
+      <div>
+        <label style="font-size:12px;color:var(--text-3);display:block;margin-bottom:4px">Karta (zł)</label>
+        <input id="rev-card" type="number" min="0" step="0.01" placeholder="0.00"
+          style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:11px 14px;color:var(--text);font-size:16px;font-family:var(--font);outline:none">
+      </div>
+      <div>
+        <label style="font-size:12px;color:var(--text-3);display:block;margin-bottom:4px">Liczba gości</label>
+        <input id="rev-covers" type="number" min="0" step="1" placeholder="0"
+          style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:11px 14px;color:var(--text);font-size:16px;font-family:var(--font);outline:none">
+      </div>
+      <div>
+        <label style="font-size:12px;color:var(--text-3);display:block;margin-bottom:4px">Notatka (opcjonalnie)</label>
+        <input id="rev-note" type="text" placeholder="np. event, deszcz, wakacje…"
+          style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:11px 14px;color:var(--text);font-size:14px;font-family:var(--font);outline:none">
+      </div>
+    </div>
+    <div style="display:flex;gap:10px;margin-top:20px">
+      <button onclick="document.getElementById('revenue-modal').remove()" style="flex:1;padding:12px;background:var(--bg-card2);border:1px solid var(--border);border-radius:10px;color:var(--text-2);font-size:14px;font-weight:700;font-family:var(--font);cursor:pointer">Anuluj</button>
+      <button onclick="saveRevenue('${dateStr}')" style="flex:1;padding:12px;background:var(--brand);border:none;border-radius:10px;color:#fff;font-size:14px;font-weight:700;font-family:var(--font);cursor:pointer">Zapisz</button>
+    </div>
+  </div>`;
+  document.body.appendChild(mo);
+
+  // Załaduj istniejące dane
+  sbFetch(`/rest/v1/daily_revenue?date=eq.${dateStr}`).then(rows=>{
+    if(Array.isArray(rows)&&rows[0]){
+      const r=rows[0];
+      const cashEl=document.getElementById('rev-cash');
+      const cardEl=document.getElementById('rev-card');
+      const covEl=document.getElementById('rev-covers');
+      const noteEl=document.getElementById('rev-note');
+      if(cashEl&&r.revenue_cash) cashEl.value=r.revenue_cash;
+      if(cardEl&&r.revenue_card) cardEl.value=r.revenue_card;
+      if(covEl&&r.covers) covEl.value=r.covers;
+      if(noteEl&&r.note) noteEl.value=r.note;
+    }
+  }).catch(()=>{});
+}
+
+async function saveRevenue(dateStr){
+  const cash = parseFloat(document.getElementById('rev-cash')?.value||0)||0;
+  const card = parseFloat(document.getElementById('rev-card')?.value||0)||0;
+  const covers = parseInt(document.getElementById('rev-covers')?.value||0)||0;
+  const note = document.getElementById('rev-note')?.value?.trim()||null;
+
+  try {
+    // UPSERT przez POST z header Prefer: resolution=merge-duplicates
+    const r = await fetch(`${SB_URL}/rest/v1/daily_revenue`, {
+      method:'POST',
+      headers:{
+        ...SB_HEADERS,
+        'Prefer':'resolution=merge-duplicates,return=minimal'
+      },
+      body: JSON.stringify({date:dateStr, revenue_cash:cash, revenue_card:card, covers, note, source:'manual', updated_at:new Date().toISOString()})
+    });
+    if(r.ok||r.status===201||r.status===200){
+      document.getElementById('revenue-modal')?.remove();
+      showToast('Zapisano utarg ✓');
+      renderFinance(document.getElementById('main-content'));
+    } else {
+      const t=await r.text();
+      showToast('Błąd zapisu: '+t.slice(0,60), 3000, true);
+    }
+  } catch(e){
+    showToast('Błąd: '+e.message.slice(0,50), 3000, true);
+  }
+}
+
+/* ═══════════════════════════════════════════════
+   RAPORT SPÓŹNIEŃ
+═══════════════════════════════════════════════ */
+
+let tardinessMonthOffset = 0;
+
+async function renderTardiness(mc){
+  if(!mc) mc=document.getElementById('main-content');
+  if(!mc) return;
+
+  const now = new Date();
+  const mo = new Date(now.getFullYear(), now.getMonth() + tardinessMonthOffset, 1);
+  const y = mo.getFullYear(), m = mo.getMonth();
+  const pad = n=>String(n).padStart(2,'0');
+  const from = `${y}-${pad(m+1)}-01`;
+  const lastDay = new Date(y,m+1,0).getDate();
+  const to   = `${y}-${pad(m+1)}-${pad(lastDay)}`;
+  const monthLabel = mo.toLocaleDateString('pl-PL',{month:'long',year:'numeric'});
+
+  // Pobierz sesje pracy z tego miesiąca
+  let wSessions=[], monthShifts=[];
+  try {
+    wSessions = await sbFetch(`/rest/v1/work_sessions?select=*,employees(name,department)&clock_in=gte.${from}T00:00:00&clock_in=lte.${to}T23:59:59&order=clock_in.asc`);
+    if(!Array.isArray(wSessions)) wSessions=[];
+  } catch(_){}
+  try {
+    monthShifts = await sbFetch(`/rest/v1/shifts?select=*&date=gte.${from}&date=lte.${to}`);
+    if(!Array.isArray(monthShifts)) monthShifts=[];
+  } catch(_){}
+
+  // Oblicz spóźnienia: porównaj clock_in z shifts.start_time
+  // Spóźnienie = clock_in > start_time + 5 min grace period
+  const GRACE = 5; // minuty
+  const tardyEvents = [];
+
+  for(const s of wSessions){
+    if(!s.clock_in || !s.employee_id) continue;
+    const clockDate = s.clock_in.slice(0,10);
+    const shift = monthShifts.find(sh=>sh.employee_id===s.employee_id && sh.date===clockDate);
+    if(!shift || !shift.start_time) continue;
+
+    const shiftStart = new Date(`${clockDate}T${shift.start_time}`);
+    const clockIn    = new Date(s.clock_in);
+    const diffMin    = Math.round((clockIn - shiftStart)/60000);
+
+    if(diffMin > GRACE){
+      const empName = s.employees?.name || employees.find(e=>e.id===s.employee_id)?.name || '—';
+      const dept    = s.employees?.department || employees.find(e=>e.id===s.employee_id)?.department || '';
+      tardyEvents.push({
+        empId: s.employee_id,
+        empName,
+        dept,
+        date: clockDate,
+        shiftStart: shift.start_time.slice(0,5),
+        clockIn: s.clock_in,
+        diffMin
+      });
+    }
+  }
+
+  // Statystyki per pracownik
+  const byEmp = {};
+  for(const ev of tardyEvents){
+    if(!byEmp[ev.empId]) byEmp[ev.empId]={name:ev.empName, dept:ev.dept, count:0, totalMin:0, worst:0, events:[]};
+    byEmp[ev.empId].count++;
+    byEmp[ev.empId].totalMin += ev.diffMin;
+    byEmp[ev.empId].worst = Math.max(byEmp[ev.empId].worst, ev.diffMin);
+    byEmp[ev.empId].events.push(ev);
+  }
+  const empList = Object.values(byEmp).sort((a,b)=>b.count-a.count||b.totalMin-a.totalMin);
+
+  // Nieobecności: pracownik miał zmianę ale brak sesji
+  const absences = [];
+  const todayStr = today();
+  for(const sh of monthShifts){
+    if(sh.date > todayStr) continue; // przyszłość pomiń
+    const hasSession = wSessions.some(s=>s.employee_id===sh.employee_id && s.clock_in?.startsWith(sh.date));
+    if(!hasSession){
+      const emp = employees.find(e=>e.id===sh.employee_id);
+      if(emp) absences.push({empName:emp.name, dept:emp.department, date:sh.date, start:sh.start_time?.slice(0,5)||'?'});
+    }
+  }
+  absences.sort((a,b)=>b.date.localeCompare(a.date));
+
+  const fmtDate2 = ds => {
+    const d=new Date(ds+'T12:00:00');
+    return d.toLocaleDateString('pl-PL',{weekday:'short',day:'numeric',month:'short'});
+  };
+  const fmtMin = m => m>=60 ? `${Math.floor(m/60)}g ${m%60}min` : `${m} min`;
+
+  // HTML rankingu
+  const rankHTML = empList.length===0
+    ? `<div style="padding:24px;text-align:center;color:var(--green);font-size:13px;font-weight:700">✓ Brak spóźnień w tym miesiącu</div>`
+    : empList.map((e,i)=>`
+      <div style="display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--border-2)">
+        <div style="width:28px;height:28px;border-radius:50%;background:${i===0?'var(--danger-bg)':i===1?'rgba(251,191,36,.12)':'var(--bg-card2)'};display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:${i===0?'var(--danger)':i===1?'var(--warn)':'var(--text-3)'}">${i+1}</div>
+        <div style="flex:1">
+          <div style="font-size:14px;font-weight:700;color:var(--text)">${e.name}</div>
+          <div style="font-size:11px;color:var(--text-3);text-transform:capitalize">${e.dept}</div>
+        </div>
+        <div style="text-align:right">
+          <div style="font-size:16px;font-weight:800;color:var(--danger)">${e.count}×</div>
+          <div style="font-size:11px;color:var(--text-3)">śr. ${fmtMin(Math.round(e.totalMin/e.count))}</div>
+        </div>
+      </div>`).join('');
+
+  // Szczegóły zdarzeń
+  const eventsHTML = tardyEvents.length===0 ? '' : `
+    <div style="background:var(--bg-card);border-radius:14px;padding:0 14px;border:1px solid var(--border-2);margin-top:12px">
+      <div style="font-size:11px;color:var(--text-3);padding:12px 0 4px;font-weight:700;text-transform:uppercase;letter-spacing:.5px">Wszystkie zdarzenia</div>
+      ${[...tardyEvents].sort((a,b)=>b.date.localeCompare(a.date)).slice(0,40).map(ev=>`
+      <div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border-2)">
+        <div style="flex:1">
+          <div style="font-size:13px;font-weight:700;color:var(--text)">${ev.empName}</div>
+          <div style="font-size:11px;color:var(--text-3)">${fmtDate2(ev.date)} · zmiana ${ev.shiftStart}</div>
+        </div>
+        <div style="text-align:right">
+          <div style="font-size:14px;font-weight:800;color:var(--danger)">+${fmtMin(ev.diffMin)}</div>
+          <div style="font-size:11px;color:var(--text-3)">przyszedł ${new Date(ev.clockIn).toLocaleTimeString('pl-PL',{hour:'2-digit',minute:'2-digit'})}</div>
+        </div>
+      </div>`).join('')}
+    </div>`;
+
+  // Nieobecności HTML
+  const absHTML = absences.length===0
+    ? `<div style="padding:16px;text-align:center;color:var(--green);font-size:13px;font-weight:700">✓ Brak nieobecności</div>`
+    : absences.slice(0,20).map(a=>`
+    <div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border-2)">
+      <div style="flex:1">
+        <div style="font-size:13px;font-weight:700;color:var(--text)">${a.empName}</div>
+        <div style="font-size:11px;color:var(--text-3);text-transform:capitalize">${a.dept}</div>
+      </div>
+      <div style="text-align:right">
+        <div style="font-size:12px;color:var(--warn);font-weight:700">${fmtDate2(a.date)}</div>
+        <div style="font-size:11px;color:var(--text-3)">zmiana od ${a.start}</div>
+      </div>
+    </div>`).join('');
+
+  mc.innerHTML = `
+  <div style="min-height:100dvh;padding-bottom:80px">
+    <div class="page-bar" style="display:flex;align-items:center;justify-content:space-between;padding:0 16px">
+      <button class="section-back-btn" onclick="showView('home')" style="margin:0">‹</button>
+      <div style="display:flex;align-items:center;gap:10px">
+        <button onclick="tardinessMonthOffset--;renderTardiness()" style="background:none;border:none;color:var(--text-2);font-size:20px;padding:4px 8px;cursor:pointer">‹</button>
+        <div style="font-size:14px;font-weight:700;color:var(--text);min-width:120px;text-align:center;text-transform:capitalize">${monthLabel}</div>
+        <button onclick="tardinessMonthOffset++;if(tardinessMonthOffset>0)tardinessMonthOffset=0;renderTardiness()" style="background:none;border:none;color:${tardinessMonthOffset<0?'var(--text-2)':'var(--text-3)'};font-size:20px;padding:4px 8px;cursor:pointer">›</button>
+      </div>
+      <div style="width:60px"></div>
+    </div>
+
+    <div style="padding:0 16px;margin-top:8px">
+      <!-- Karty podsumowania -->
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:12px">
+        <div style="background:var(--bg-card);border-radius:14px;padding:12px 10px;border:1px solid var(--border-2);text-align:center">
+          <div style="font-size:24px;font-weight:800;color:${tardyEvents.length>0?'var(--danger)':'var(--green)'}">${tardyEvents.length}</div>
+          <div style="font-size:10px;color:var(--text-3);margin-top:2px">spóźnień</div>
+        </div>
+        <div style="background:var(--bg-card);border-radius:14px;padding:12px 10px;border:1px solid var(--border-2);text-align:center">
+          <div style="font-size:24px;font-weight:800;color:${absences.length>0?'var(--warn)':'var(--green)'}">${absences.length}</div>
+          <div style="font-size:10px;color:var(--text-3);margin-top:2px">nieobecności</div>
+        </div>
+        <div style="background:var(--bg-card);border-radius:14px;padding:12px 10px;border:1px solid var(--border-2);text-align:center">
+          <div style="font-size:24px;font-weight:800;color:var(--text)">${empList.length}</div>
+          <div style="font-size:10px;color:var(--text-3);margin-top:2px">pracowników</div>
+        </div>
+      </div>
+
+      <!-- Ranking spóźnień -->
+      <div style="background:var(--bg-card);border-radius:14px;padding:0 14px;border:1px solid var(--border-2);margin-bottom:12px">
+        <div style="font-size:11px;color:var(--text-3);padding:12px 0 4px;font-weight:700;text-transform:uppercase;letter-spacing:.5px">Ranking spóźnień</div>
+        ${rankHTML}
+      </div>
+
+      <!-- Nieobecności -->
+      <div style="background:var(--bg-card);border-radius:14px;padding:0 14px;border:1px solid var(--border-2);margin-bottom:12px">
+        <div style="font-size:11px;color:var(--text-3);padding:12px 0 4px;font-weight:700;text-transform:uppercase;letter-spacing:.5px">Nieobecności (zmiana bez meldowania)</div>
+        ${absHTML}
+      </div>
+
+      ${eventsHTML}
+    </div>
+  </div>`;
 }
 
 </script>
