@@ -192,6 +192,19 @@ body { font-family: var(--font); background: var(--bg); color: var(--text); min-
   border-bottom: 1px solid var(--border); gap: 10px;
   transition: background .2s, border-color .2s;
 }
+/* Na home — ciemny nav i header */
+body.view-home .bnav {
+  background: rgba(26,8,14,.92);
+  border-top-color: rgba(255,255,255,.07);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+body.view-home .bnav-item { color: rgba(255,255,255,.35); }
+body.view-home .bnav-item svg { stroke: rgba(255,255,255,.35); }
+body.view-home .bnav-item.active { color: rgba(255,255,255,.9); }
+body.view-home .bnav-item.active svg { stroke: rgba(255,255,255,.9); }
+body.view-home .bnav-item.active .bnav-icon-wrap { background: rgba(255,255,255,.1); }
+
 /* Na home — ciemny header jak tło aplikacji */
 body.view-home .header {
   background: rgba(32,8,16,.88);
@@ -251,9 +264,9 @@ body.view-home #main-content { background: transparent; }
 
 .main { padding-bottom: calc(62px + max(env(safe-area-inset-bottom), 12px) + 4px); min-height: calc(100dvh - 56px); }
 .main.no-bnav { padding-bottom: 0; }
-.main.view-transition { animation: viewFadeIn .32s cubic-bezier(.25,0,.25,1); }
+.main.view-transition { animation: viewFadeIn .48s cubic-bezier(.16,1,.3,1); }
 @keyframes viewFadeIn {
-  from { opacity: 0; transform: translateY(6px); }
+  from { opacity: 0; transform: translateY(14px); }
   to   { opacity: 1; transform: translateY(0); }
 }
 
@@ -268,7 +281,7 @@ body.view-home #main-content { background: transparent; }
 .hw-wrap {
   min-height: calc(100dvh - 56px);
   display: flex; flex-direction: column;
-  padding-bottom: 8px;
+  padding-bottom: calc(62px + max(env(safe-area-inset-bottom), 12px) + 8px);
   -webkit-tap-highlight-color: transparent;
   position: relative;
   background: #2A0E18;
@@ -1485,25 +1498,17 @@ body:not(.view-home) .chat-fab {
     <span class="chat-fab-badge" id="chat-fab-badge"></span>
   </button>
   <nav class="bnav" id="bottom-nav">
-    <button class="bnav-item active" id="nav-sched" onclick="showView('sched')">
+    <button class="bnav-item" id="nav-home" onclick="showView('home')">
+      <div class="bnav-icon-wrap"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>
+      Menu
+    </button>
+    <button class="bnav-item" id="nav-sched" onclick="showView('sched')">
       <div class="bnav-icon-wrap"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
       Grafik
     </button>
-    <button class="bnav-item" id="nav-emps" onclick="showView('emps')">
-      <div class="bnav-icon-wrap"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
-      Pracownicy
-    </button>
-    <button class="bnav-item" id="nav-avail" onclick="showView('avail')">
-      <div class="bnav-icon-wrap"><svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div>
-      Dyspoz.
-    </button>
-    <button class="bnav-item" id="nav-dash" onclick="showView('dash')">
-      <div class="bnav-icon-wrap"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg></div>
-      <span>Panel</span>
-    </button>
     <button class="bnav-item" id="nav-clock" onclick="showView('clock')">
       <div class="bnav-icon-wrap"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
-      Czas pracy
+      Ewidencja
     </button>
     <button class="bnav-item" id="nav-chat" onclick="showView('chat')">
       <div class="bnav-icon-wrap" style="position:relative">
@@ -1511,6 +1516,10 @@ body:not(.view-home) .chat-fab {
         <span class="bnav-badge" id="chat-badge" style="display:none">0</span>
       </div>
       Chat
+    </button>
+    <button class="bnav-item" id="nav-dash" onclick="showView('dash')">
+      <div class="bnav-icon-wrap"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg></div>
+      <span>Panel</span>
     </button>
   </nav>
 </div>
@@ -1733,11 +1742,14 @@ function showWelcomeSplash(email){
       });
     });
 
-    // Czekaj 1.6s, potem fade out
+    // Czekaj 1.6s, potem pokaż app (pod splash) i fade out splash
     setTimeout(()=>{
-      splash.style.transition='opacity .5s ease';
+      // Najpierw ukryj auth i pokaż app — pod splashem, niewidoczne dla użytkownika
+      resolve();
+      // Potem fade out splasha
+      splash.style.transition='opacity .45s ease';
       splash.style.opacity='0';
-      setTimeout(()=>{ splash.remove(); resolve(); }, 520);
+      setTimeout(()=>{ splash.remove(); }, 460);
     }, 1600);
   });
 }
@@ -1822,8 +1834,8 @@ function initials(n){return n.split(' ').map(w=>w[0]).join('').toUpperCase().sli
 function wNum(d){const j4=new Date(d.getFullYear(),0,4);return Math.ceil((((d-j4)/86400000)+j4.getDay()+1)/7);}
 function monthName(m){return['Styczeń','Luty','Marzec','Kwiecień','Maj','Czerwiec','Lipiec','Sierpień','Wrzesień','Październik','Listopad','Grudzień'][m];}
 
-// Widoki które mają dolny nav (stare sekcje)
-const VIEWS_WITH_BNAV = new Set(['sched','emps','avail','dash','clock','chat']);
+// Widoki które mają dolny nav
+const VIEWS_WITH_BNAV = new Set(['home','sched','emps','avail','dash','clock','chat']);
 
 function showView(v, pushHistory=true){
   const prev=currentView;
