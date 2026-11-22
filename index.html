@@ -260,103 +260,121 @@ body.view-home #main-content { background: #1A1033; }
 ════════════════════════════════════════ */
 
 /* ── Tło aplikacji ── */
+/* ═══════════════════════════════════
+   HOME SCREEN — ciepły styl restauracji
+   tło: off-white/kremowe, akcenty bordo + krwista pomarańcz
+═══════════════════════════════════ */
 .hw-wrap {
   min-height: 100vh;
   display: flex; flex-direction: column;
-  padding-bottom: max(env(safe-area-inset-bottom), 100px);
+  padding-bottom: max(env(safe-area-inset-bottom), 20px);
   -webkit-tap-highlight-color: transparent;
   position: relative;
-  background: linear-gradient(160deg, #0D0820 0%, #1A0A3A 35%, #12062A 65%, #0A0518 100%);
+  background: #F5EDE6;
 }
 
 .hw-wrap::before {
   content: '';
   position: fixed; inset: 0; pointer-events: none; z-index: 0;
   background:
-    radial-gradient(ellipse 90% 55% at 80% 5%,  rgba(140,40,200,.35) 0%, transparent 55%),
-    radial-gradient(ellipse 70% 45% at 10% 20%, rgba(80,20,160,.25)  0%, transparent 55%),
-    radial-gradient(ellipse 60% 40% at 50% 90%, rgba(60,10,120,.4)   0%, transparent 60%);
+    radial-gradient(ellipse 70% 45% at 90% 0%,   rgba(180,60,30,.12)  0%, transparent 60%),
+    radial-gradient(ellipse 50% 35% at 5%  80%,   rgba(123,29,46,.10)  0%, transparent 55%),
+    radial-gradient(ellipse 60% 40% at 50% 50%,   rgba(240,220,200,.5) 0%, transparent 70%);
 }
 
 /* Header */
 .hw-header {
-  padding: 36px 24px 20px;
+  padding: 52px 28px 16px;
   position: relative; z-index: 1;
+  display: flex; align-items: flex-end; justify-content: space-between;
 }
-.hw-greeting-line { overflow: hidden; height: 22px; }
+.hw-header-left {}
+.hw-greeting-line { overflow: hidden; height: 20px; }
 .hw-greeting-text {
-  font-size: 13px; font-weight: 400; color: rgba(255,255,255,.4);
-  line-height: 22px;
-  transform: translateY(22px);
-  animation: slideUp .4s cubic-bezier(.4,0,.2,1) .05s forwards;
+  font-size: 12px; font-weight: 500; color: rgba(90,40,30,.5);
+  letter-spacing: .8px; text-transform: uppercase;
+  line-height: 20px;
+  transform: translateY(20px);
+  animation: slideUp .45s cubic-bezier(.4,0,.2,1) .05s forwards;
 }
-.hw-name-line { overflow: hidden; height: 34px; margin-top: 4px; }
+.hw-name-line { overflow: hidden; height: 46px; margin-top: 2px; }
 .hw-name-text {
-  font-size: 24px; font-weight: 600; color: #fff;
-  letter-spacing: -.3px; line-height: 34px;
-  transform: translateY(34px);
-  animation: slideUp .4s cubic-bezier(.4,0,.2,1) .12s forwards;
+  font-size: 38px; font-weight: 700; color: #2A0A10;
+  letter-spacing: -1.5px; line-height: 46px;
+  transform: translateY(46px);
+  animation: slideUp .45s cubic-bezier(.4,0,.2,1) .1s forwards;
 }
+.hw-role-pill {
+  background: rgba(123,29,46,.1);
+  border: 1px solid rgba(123,29,46,.15);
+  border-radius: 20px;
+  padding: 6px 14px;
+  font-size: 11px; font-weight: 500; color: #7B1D2E;
+  letter-spacing: .3px;
+  opacity: 0;
+  animation: fadeIn .4s ease .3s forwards;
+}
+@keyframes fadeIn { to { opacity:1; } }
 @keyframes slideUp { to { transform: translateY(0); } }
 
 /* ── Blok zegarowy ── */
 .hw-clock-block {
-  margin: 6px 24px 16px;
+  margin: 20px 20px 0;
   position: relative; overflow: hidden;
-  border-radius: 20px;
-  background: linear-gradient(120deg, rgba(120,40,200,.5) 0%, rgba(180,60,220,.35) 50%, rgba(100,30,170,.5) 100%);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(180,100,255,.2);
-  padding: 22px 24px;
+  border-radius: 22px;
+  background: #7B1D2E;
+  padding: 24px 28px;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
-  transition: transform .12s cubic-bezier(.4,0,.2,1);
+  transition: transform .15s cubic-bezier(.4,0,.2,1);
   will-change: transform;
   opacity: 0;
-  animation: fadeInUp .4s cubic-bezier(.4,0,.2,1) .22s forwards;
+  animation: fadeInUp .45s cubic-bezier(.4,0,.2,1) .2s forwards;
   z-index: 1;
-  box-shadow: 0 4px 24px rgba(100,0,160,.2);
-  display: flex; align-items: center; justify-content: center;
-  min-height: 80px;
+  display: flex; align-items: center; justify-content: space-between;
+  box-shadow: 0 8px 32px rgba(123,29,46,.3);
 }
 .hw-clock-block::before {
   content: '';
   position: absolute; inset: 0; border-radius: inherit;
-  background:
-    radial-gradient(ellipse 80% 60% at 100% 0%, rgba(220,80,180,.5) 0%, transparent 55%),
-    linear-gradient(to bottom, rgba(255,255,255,.08) 0%, transparent 50%);
-  pointer-events: none;
-}
-.hw-clock-block::after {
-  content: '';
-  position: absolute; top: 0; left: 0; right: 0; height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,.25), transparent);
+  background: radial-gradient(ellipse 100% 80% at 100% 0%, rgba(220,100,60,.35) 0%, transparent 55%);
   pointer-events: none;
 }
 .hw-clock-block:active { transform: scale(.975); }
 .hw-clock-block.working {
-  background: linear-gradient(135deg, #0D3D1A 0%, #1A6B30 60%, #25A045 100%);
-  box-shadow: 0 8px 32px rgba(0,120,50,.35);
+  background: #1A4D2E;
+  box-shadow: 0 8px 32px rgba(26,77,46,.35);
 }
 .hw-clock-block.working::before {
-  background:
-    radial-gradient(ellipse 80% 60% at 100% 0%, rgba(80,220,120,.35) 0%, transparent 55%),
-    linear-gradient(to bottom, rgba(255,255,255,.06) 0%, transparent 50%);
+  background: radial-gradient(ellipse 100% 80% at 100% 0%, rgba(60,180,80,.3) 0%, transparent 55%);
 }
 
-.hw-clock-eyebrow { display: none; }
-.hw-clock-title {
-  font-size: 22px; font-weight: 500; color: rgba(255,255,255,.95);
-  letter-spacing: .2px; line-height: 1;
-  position: relative; z-index: 1;
-  text-align: center;
+.hw-clock-left { display: flex; flex-direction: column; gap: 4px; }
+.hw-clock-eyebrow {
+  display: block;
+  font-size: 10px; font-weight: 600; color: rgba(255,255,255,.5);
+  letter-spacing: 1.2px; text-transform: uppercase;
 }
-.hw-clock-sub { display: none; }
-.hw-clock-caret { display: none; }
+.hw-clock-title {
+  font-size: 24px; font-weight: 700; color: #fff;
+  letter-spacing: -.5px; line-height: 1;
+  position: relative; z-index: 1;
+}
+.hw-clock-sub {
+  display: block;
+  font-size: 12px; font-weight: 400; color: rgba(255,255,255,.55);
+  margin-top: 6px;
+}
+.hw-clock-caret {
+  display: flex; align-items: center; justify-content: center;
+  width: 42px; height: 42px; border-radius: 50%;
+  background: rgba(255,255,255,.15);
+  font-size: 18px; color: #fff; flex-shrink: 0;
+  position: relative; z-index: 1;
+}
 .hw-clock-pulse {
-  position: absolute; top: 20px; right: 20px; z-index: 2;
-  width: 8px; height: 8px;
+  position: absolute; top: 22px; right: 76px; z-index: 2;
+  width: 7px; height: 7px;
 }
 .hw-clock-pulse::before, .hw-clock-pulse::after {
   content:''; position:absolute; inset:0; border-radius:50%;
@@ -368,71 +386,83 @@ body.view-home #main-content { background: #1A1033; }
 }
 @keyframes pulse-ring {
   0% { transform:scale(1); opacity:.8; }
-  100% { transform:scale(4.5); opacity:0; }
+  100% { transform:scale(4); opacity:0; }
 }
 @keyframes fadeInUp {
-  from { opacity:0; transform:translateY(14px); }
+  from { opacity:0; transform:translateY(16px); }
   to   { opacity:1; transform:translateY(0); }
 }
 
-/* ── Lista kafelków ── */
+/* ── Siatka kafelków 2×N ── */
 .hw-blocks {
-  padding: 4px 24px 40px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+  padding: 20px 20px 32px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
   position: relative; z-index: 1;
+  flex: 1;
 }
 
 .hb-row {
   position: relative; overflow: hidden;
-  border-radius: 14px;
-  height: 52px;
+  border-radius: 18px;
+  aspect-ratio: 1 / 1;
   cursor: pointer;
-  display: flex; flex-direction: row;
-  align-items: center; justify-content: center;
-  padding: 0 20px;
-  /* bazowe tło — nadpisywane per-kafelek */
-  background: rgba(255,255,255,.05);
-  border: 1px solid rgba(255,255,255,.08);
+  display: flex; flex-direction: column;
+  align-items: flex-start; justify-content: flex-end;
+  padding: 16px;
+  background: #fff;
+  border: none;
   width: 100%;
   -webkit-tap-highlight-color: transparent;
-  transition: transform .12s cubic-bezier(.34,1.56,.64,1);
+  transition: transform .15s cubic-bezier(.34,1.4,.64,1), box-shadow .15s ease;
   will-change: transform;
   opacity: 0;
-  animation: cardIn .3s cubic-bezier(.4,0,.2,1) forwards;
+  animation: cardIn .35s cubic-bezier(.4,0,.2,1) forwards;
+  box-shadow: 0 2px 12px rgba(60,20,10,.07);
 }
-.hw-blocks .hb-row:nth-child(1) { animation-delay: .18s; }
-.hw-blocks .hb-row:nth-child(2) { animation-delay: .24s; }
-.hw-blocks .hb-row:nth-child(3) { animation-delay: .30s; }
-.hw-blocks .hb-row:nth-child(4) { animation-delay: .36s; }
-.hw-blocks .hb-row:nth-child(5) { animation-delay: .42s; }
-.hw-blocks .hb-row:nth-child(6) { animation-delay: .48s; }
-.hw-blocks .hb-row:nth-child(7) { animation-delay: .54s; }
-.hw-blocks .hb-row:nth-child(8) { animation-delay: .60s; }
+.hw-blocks .hb-row:nth-child(1) { animation-delay: .15s; }
+.hw-blocks .hb-row:nth-child(2) { animation-delay: .20s; }
+.hw-blocks .hb-row:nth-child(3) { animation-delay: .25s; }
+.hw-blocks .hb-row:nth-child(4) { animation-delay: .30s; }
+.hw-blocks .hb-row:nth-child(5) { animation-delay: .35s; }
+.hw-blocks .hb-row:nth-child(6) { animation-delay: .40s; }
+.hw-blocks .hb-row:nth-child(7) { animation-delay: .45s; }
 @keyframes cardIn {
-  from { opacity:0; transform: translateY(8px); }
-  to   { opacity:1; transform: translateY(0); }
+  from { opacity:0; transform: scale(.93) translateY(8px); }
+  to   { opacity:1; transform: scale(1) translateY(0); }
 }
-.hb-row:active { transform: scale(.98); }
+.hb-row:active { transform: scale(.96); box-shadow: 0 1px 6px rgba(60,20,10,.06); }
 
-/* Subtelne gradienty per-kafelek — lewa strona lekko rozświetlona */
-.hb-row[data-id="sched"]   { background: linear-gradient(100deg, rgba(120,60,220,.22) 0%, rgba(255,255,255,.04) 100%); border-color: rgba(140,80,240,.2); }
-.hb-row[data-id="kitchen"] { background: linear-gradient(100deg, rgba(200,50,120,.22) 0%, rgba(255,255,255,.04) 100%); border-color: rgba(220,70,140,.2); }
-.hb-row[data-id="board"]   { background: linear-gradient(100deg, rgba(50,100,220,.22) 0%, rgba(255,255,255,.04) 100%); border-color: rgba(70,120,240,.2); }
-.hb-row[data-id="events"]  { background: linear-gradient(100deg, rgba(180,40,160,.22) 0%, rgba(255,255,255,.04) 100%); border-color: rgba(200,60,180,.2); }
-.hb-row[data-id="avail"]   { background: linear-gradient(100deg, rgba(40,120,200,.22) 0%, rgba(255,255,255,.04) 100%); border-color: rgba(60,140,220,.2); }
-.hb-row[data-id="emps"]    { background: linear-gradient(100deg, rgba(100,40,200,.22) 0%, rgba(255,255,255,.04) 100%); border-color: rgba(120,60,220,.2); }
-.hb-row[data-id="dash"]    { background: linear-gradient(100deg, rgba(20,140,140,.22) 0%, rgba(255,255,255,.04) 100%); border-color: rgba(40,160,160,.2); }
+/* Kolory kart — ciepłe, przygluszone */
+.hb-row[data-id="sched"]   { background: #FDF0E8; }
+.hb-row[data-id="kitchen"] { background: #F7EBE8; }
+.hb-row[data-id="board"]   { background: #EEF0F7; }
+.hb-row[data-id="events"]  { background: #F7EEF0; }
+.hb-row[data-id="avail"]   { background: #EDF5EE; }
+.hb-row[data-id="emps"]    { background: #F5EDEE; }
+.hb-row[data-id="dash"]    { background: #EDEEF5; }
 
-.hb-row::after { display: none; }
-.hb-row-icon { display: none; }
+/* Ikona na górze karty */
+.hb-row-icon {
+  display: block;
+  font-size: 28px; line-height: 1;
+  position: absolute; top: 16px; left: 16px;
+}
+
+/* Dot accent na górze prawej */
+.hb-row[data-id="sched"]::before   { content:''; position:absolute; top:14px; right:14px; width:8px; height:8px; border-radius:50%; background:#C45A20; opacity:.7; }
+.hb-row[data-id="kitchen"]::before { content:''; position:absolute; top:14px; right:14px; width:8px; height:8px; border-radius:50%; background:#7B1D2E; opacity:.7; }
+.hb-row[data-id="board"]::before   { content:''; position:absolute; top:14px; right:14px; width:8px; height:8px; border-radius:50%; background:#3A5AAA; opacity:.7; }
+.hb-row[data-id="events"]::before  { content:''; position:absolute; top:14px; right:14px; width:8px; height:8px; border-radius:50%; background:#9B2D42; opacity:.7; }
+.hb-row[data-id="avail"]::before   { content:''; position:absolute; top:14px; right:14px; width:8px; height:8px; border-radius:50%; background:#2A7A40; opacity:.7; }
+.hb-row[data-id="emps"]::before    { content:''; position:absolute; top:14px; right:14px; width:8px; height:8px; border-radius:50%; background:#7B1D2E; opacity:.7; }
+.hb-row[data-id="dash"]::before    { content:''; position:absolute; top:14px; right:14px; width:8px; height:8px; border-radius:50%; background:#3A5AAA; opacity:.7; }
+
 .hb-row-label { display: none; }
 .hb-row-title {
-  font-size: 15px; font-weight: 400; color: rgba(255,255,255,.85);
-  letter-spacing: .5px; line-height: 1;
-  text-align: center;
-  width: 100%;
+  font-size: 13px; font-weight: 600; color: #2A0A10;
+  letter-spacing: -.1px; line-height: 1.2;
   position: relative; z-index: 1;
 }
 .hb-row-arrow { display: none; }
@@ -1784,6 +1814,7 @@ function renderHome(mc){
       <div class="hb-ripple-wrap"></div>
     </div>`;
 
+
   const rows=[];
   rows.push({id:'sched',   label:'Grafik',      icon:'📅'});
   if(isOwnerOrMgr||isKitchen)
@@ -1799,15 +1830,20 @@ function renderHome(mc){
   mc.innerHTML=`
   <div class="hw-wrap">
     <div class="hw-header">
-      <div class="hw-greeting-line"><div class="hw-greeting-text">${greeting},</div></div>
-      <div class="hw-name-line"><div class="hw-name-text">${firstName}.</div></div>
+      <div class="hw-header-left">
+        <div class="hw-greeting-line"><div class="hw-greeting-text">${greeting},</div></div>
+        <div class="hw-name-line"><div class="hw-name-text">${firstName}.</div></div>
+      </div>
+      <div class="hw-role-pill">${role}</div>
     </div>
 
     <div class="hw-clock-block${clockCls}" onclick="hbTap(this,'clock')">
       ${active?`<span class="hw-clock-pulse"></span>`:''}
-      <div class="hw-clock-eyebrow">${active?'TRWA ZMIANA':'CZAS PRACY'}</div>
-      <div class="hw-clock-title">${clockTitle}</div>
-      <div class="hw-clock-sub">${clockHint}</div>
+      <div class="hw-clock-left">
+        <div class="hw-clock-eyebrow">${active?'TRWA ZMIANA':'CZAS PRACY'}</div>
+        <div class="hw-clock-title">${clockTitle}</div>
+        <div class="hw-clock-sub">${clockHint}</div>
+      </div>
       <div class="hw-clock-caret">→</div>
       <div class="hb-ripple-wrap"></div>
     </div>
