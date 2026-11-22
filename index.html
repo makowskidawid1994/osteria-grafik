@@ -1642,8 +1642,12 @@ async function doLogin() {
     currentUser=data;
     const rows=await sbFetch(`/rest/v1/user_roles?email=eq.${encodeURIComponent(email)}&select=role`).catch(()=>[]);
     currentRole=rows?.[0]?.role||'employee';
-    // Splash powitania
-    await showWelcomeSplash(email);
+    // Załaduj dane i splash równolegle — splash czeka min 1.6s, dane ładują się w tle
+    const [_splash] = await Promise.all([
+      showWelcomeSplash(email),
+      loadAllData().catch(()=>{})
+    ]);
+    // Teraz dane są gotowe, splash właśnie skończył animację wejścia — pokaż app
     document.getElementById('auth-screen').style.display='none';
     document.getElementById('app').style.display='block';
     document.getElementById('hdr-role').textContent={owner:'Właściciel',manager:'Manager',kitchen:'Kuchnia',front:'Sala',employee:'Pracownik'}[currentRole]||currentRole;
@@ -1655,14 +1659,11 @@ async function doLogin() {
     const menuName=document.getElementById('avatar-menu-name');
     if(menuName) menuName.textContent=email;
     if(!canEdit()){
-      document.getElementById('nav-dash').style.display='flex'; // show "Mój panel" for employees too
-      document.getElementById('nav-emps').style.display='none';
-      // rename dash label for employees
-      const dashLabel = document.querySelector('#nav-dash span') || document.querySelector('#nav-dash');
+      document.getElementById('nav-dash').style.display='flex';
+      document.getElementById('nav-emps') && (document.getElementById('nav-emps').style.display='none');
       const dashBtn = document.getElementById('nav-dash');
       if(dashBtn) dashBtn.querySelector('span:last-child') && (dashBtn.querySelector('span:last-child').textContent = 'Mój panel');
     }
-    await loadAllData();
     // Załaduj chat w tle i startuj polling
     loadChatMessages().then(()=>startGlobalPolling()).catch(()=>{});
     showView('home');
