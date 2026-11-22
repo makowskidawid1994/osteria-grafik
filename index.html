@@ -2788,8 +2788,8 @@ function eventCard(r,past){
   const typeLabel={'event':'Wydarzenie','menu':'Menu specjalne','note':'Info'};
   const col=typeColors[r.type]||'#64748B';
   const isLocal=r._local;
-  const clickAct=canEdit()?`openEditEvent('${r.id}')`:`openEventDetail('${r.id}')`;
-  return`<div onclick="${clickAct}" style="background:var(--bg-card);border:1px solid ${past?'var(--border-2)':'var(--border)'};border-radius:14px;overflow:hidden;${past?'opacity:.6':''};cursor:pointer;">
+  // Kliknięcie karty zawsze otwiera podgląd — edycja tylko przez ikonkę ołówka
+  return`<div onclick="openEventDetail('${r.id}')" style="background:var(--bg-card);border:1px solid ${past?'var(--border-2)':'var(--border)'};border-radius:14px;overflow:hidden;${past?'opacity:.6':''};cursor:pointer;">
     <div style="display:flex;gap:0;align-items:stretch;">
       <!-- Data kafelek -->
       <div style="width:64px;flex-shrink:0;background:${past?'var(--bg-card2)':'var(--bg-card2)'};display:flex;flex-direction:column;align-items:center;justify-content:center;padding:16px 8px;border-right:1px solid var(--border-2);">
@@ -2859,7 +2859,10 @@ function openEventDetail(id){
           <div style="font-size:14px;color:var(--text-2);line-height:1.6;">${r.description}</div>
         </div>`:''}
         <div style="color:var(--text-3);font-size:12px;text-align:center;margin-bottom:12px;">${d.getDate()} ${monthNames[d.getMonth()]} ${d.getFullYear()} · ${dayNames[d.getDay()]}</div>
-        <button onclick="document.getElementById('event-detail-modal').remove()" style="width:100%;padding:14px;border:1px solid var(--border);border-radius:12px;font-size:16px;cursor:pointer;background:transparent;color:var(--text-2);font-family:var(--font);">Zamknij</button>
+        <div style="display:flex;gap:10px;">
+          <button onclick="document.getElementById('event-detail-modal').remove()" style="flex:1;padding:14px;border:1px solid var(--border);border-radius:12px;font-size:16px;cursor:pointer;background:transparent;color:var(--text-2);font-family:var(--font);">Zamknij</button>
+          ${canEdit()?`<button onclick="document.getElementById('event-detail-modal').remove();openEditEvent('${r.id}')" style="flex:1;padding:14px;border:none;border-radius:12px;font-size:16px;cursor:pointer;background:var(--brand);color:#fff;font-family:var(--font);font-weight:600;">Edytuj</button>`:''}
+        </div>
       </div>
     </div>
   </div>`;
