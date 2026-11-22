@@ -11,10 +11,9 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Osteria">
 <link rel="apple-touch-icon" href="/icon-192.png">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
 :root {
   --brand: #7B1D2E;
@@ -4361,7 +4360,16 @@ async function exportWorkSessions(monthOff){
   }
 
   // Buduj arkusz xlsx przez SheetJS
-  if(typeof XLSX==='undefined'){showToast('Błąd: biblioteka XLSX nie jest załadowana');return;}
+  // Lazy-load SheetJS tylko gdy potrzebny
+  if(typeof XLSX==='undefined'){
+    showToast('Przygotowywanie…');
+    await new Promise((res,rej)=>{
+      const s=document.createElement('script');
+      s.src='https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js';
+      s.onload=res; s.onerror=()=>rej(new Error('Błąd ładowania XLSX'));
+      document.head.appendChild(s);
+    });
+  }
   const wb=XLSX.utils.book_new();
 
   // Arkusz 1 — Szczegóły
