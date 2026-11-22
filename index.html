@@ -1970,7 +1970,12 @@ function renderView(){
   else if(currentView==='sched') renderSched(mc);
   else if(currentView==='emps') renderEmps(mc);
   else if(currentView==='avail') renderAvail(mc);
-  else if(currentView==='dash') renderDash(mc).then(()=>{ mc.classList.remove('view-transition'); void mc.offsetWidth; mc.classList.add('view-transition'); }).catch(e=>console.error(e));
+  else if(currentView==='dash'){
+    // Pokaż ciemny szkielet od razu — bez białego flashu
+    mc.innerHTML=`<div style="min-height:calc(100dvh - 56px);background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;"><div style="width:40px;height:40px;border:3px solid var(--border);border-top-color:var(--brand);border-radius:50%;animation:spin .7s linear infinite;"></div></div>`;
+    mc.classList.remove('view-transition'); void mc.offsetWidth; mc.classList.add('view-transition');
+    renderDash(mc).then(()=>{ mc.classList.remove('view-transition'); void mc.offsetWidth; mc.classList.add('view-transition'); }).catch(e=>console.error(e));
+  }
   else if(currentView==='clock') renderClock(mc);
   else if(currentView==='kitchen') renderKitchen(mc);
   else if(currentView==='events') renderEvents(mc);
@@ -1981,14 +1986,26 @@ function renderView(){
   else if(currentView==='chat'){
     chatUnread=0; updateChatBadge();
     const triggerAnim=()=>{ mc.classList.remove('view-transition'); void mc.offsetWidth; mc.classList.add('view-transition'); };
-    loadChatMessages().then(ok=>{
-      if(ok){ renderChat(mc); triggerAnim(); }
-      else {
-        mc.innerHTML=`<div class="page-bar"><div class="page-bar-title">Chat zespołowy</div></div><div style="padding:40px;text-align:center;color:var(--text-3)"><p style="font-size:14px">Inicjalizacja chatu…</p><p style="font-size:12px;margin-top:8px">Trwa konfiguracja bazy danych.</p></div>`;
-        triggerAnim();
-        createChatTable().then(()=>loadChatMessages().then(()=>renderChat(mc)));
-      }
-    });
+    // Jeśli wiadomości już załadowane — renderuj natychmiast bez czekania
+    if(chatMessages.length>0){
+      renderChat(mc); triggerAnim();
+    } else {
+      // Pokaż szkielet od razu (ciemny, nie biały)
+      mc.innerHTML=`<div style="display:flex;flex-direction:column;height:100%;background:var(--bg);">
+        <div class="page-bar" style="position:sticky;top:0;z-index:10;flex-shrink:0;"><div class="page-bar-title">Chat zespołowy</div></div>
+        <div style="flex:1;background:var(--bg);"></div>
+        <div class="chat-input-bar" style="flex-shrink:0;">
+          <textarea class="chat-input" placeholder="Napisz coś do zespołu…" rows="1" disabled></textarea>
+          <button class="chat-send-btn" disabled><svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button>
+        </div>
+      </div>`;
+      triggerAnim();
+      loadChatMessages().then(ok=>{
+        if(currentView!=='chat') return;
+        if(ok){ renderChat(mc); }
+        else { createChatTable().then(()=>loadChatMessages().then(()=>{ if(currentView==='chat') renderChat(mc); })); }
+      });
+    }
   }
 }
 
@@ -2561,7 +2578,7 @@ function renderWeek(mc){
   const sun=new Date(monDate); sun.setDate(monDate.getDate()+6);
   const rng=`${monDate.getDate()}.${pad(monDate.getMonth()+1)} — ${sun.getDate()}.${pad(sun.getMonth()+1)}.${sun.getFullYear()}`;
 
-  let html=`<div class="page-bar">
+  let html=`<div style="min-height:100dvh;background:var(--bg);display:flex;flex-direction:column;"><div class="page-bar">
     <button class="section-back-btn" onclick="goHome()">
       <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
       Wróć
@@ -2653,7 +2670,7 @@ function renderWeek(mc){
     html+=`</tr>`;
   });
 
-  html+=`</tbody></table></div>`;
+  html+=`</tbody></table></div></div>`;
   mc.innerHTML=html;
 }
 
@@ -2673,7 +2690,7 @@ function renderMonth(mc){
     return{d:i+1,date:dateStr,dow,weekend:dow===0||dow===6};
   });
 
-  let html=`<div class="page-bar">
+  let html=`<div style="min-height:100dvh;background:var(--bg);display:flex;flex-direction:column;"><div class="page-bar">
     <button class="section-back-btn" onclick="goHome()">
       <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
       Wróć
@@ -2740,7 +2757,7 @@ function renderMonth(mc){
     html+=`</tr>`;
   });
 
-  html+=`</tbody></table></div>`;
+  html+=`</tbody></table></div></div>`;
   mc.innerHTML=html;
 }
 
@@ -3333,111 +3350,116 @@ async function renderEmpDash(mc){
   });
 
   const hasRate=(emp?.rate_net||0)>1;
-
   const empColor = avatarColor(emp?.name||'?');
   const empInitials = initials(emp?.name||'?');
+  const tod = today();
+
+  // Buduj HTML
+  let shiftRowsHtml = '';
+  if(myShifts.length===0){
+    shiftRowsHtml=`<div style="font-size:13px;color:var(--text-3);padding:8px 0;text-align:center;">Brak zaplanowanych zmian</div>`;
+  } else {
+    myShifts.slice(0,5).forEach(s=>{
+      const d=new Date(s.date+'T12:00:00');
+      const h=calcH(s.start_time||'10:00:00',s.end_time||'18:00:00');
+      const dayLabel=['Nd','Pon','Wt','Śr','Czw','Pt','Sob'][d.getDay()];
+      const isToday=s.date===tod;
+      shiftRowsHtml+=`<div style="display:flex;align-items:center;justify-content:space-between;padding:11px 0;border-bottom:1px solid var(--border-2);">
+        <div style="display:flex;align-items:center;gap:10px;">
+          ${isToday?`<div style="width:4px;height:36px;background:var(--brand);border-radius:2px;"></div>`:'<div style="width:4px;height:36px;"></div>'}
+          <div>
+            <div style="font-size:13px;font-weight:700;color:${isToday?'var(--text)':'var(--text-2)'};">${dayLabel} ${d.getDate()}.${pad(d.getMonth()+1)}</div>
+            <div style="font-size:11px;color:var(--text-3);margin-top:1px;">${h.toFixed(1)} h</div>
+          </div>
+        </div>
+        <div style="font-size:14px;font-weight:700;color:var(--text);">${(s.start_time||'10:00').slice(0,5)}<span style="color:var(--text-3);font-weight:400;"> – </span>${(s.end_time||'18:00').slice(0,5)}</div>
+      </div>`;
+    });
+  }
+
+  let upcomingHtml='';
+  const upcoming = thisMonthShifts.filter(s=>s.date>tod).sort((a,b)=>a.date.localeCompare(b.date)).slice(0,5);
+  if(upcoming.length>0){
+    upcomingHtml=`<div style="background:var(--bg-card);border:1px solid var(--border-2);border-radius:14px;padding:16px;">
+      <div style="font-size:11px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;">Nadchodzące zmiany</div>`;
+    upcoming.forEach(s=>{
+      const d=new Date(s.date+'T12:00:00');
+      const h=calcH(s.start_time||'10:00:00',s.end_time||'18:00:00');
+      const dayLabel=['Nd','Pon','Wt','Śr','Czw','Pt','Sob'][d.getDay()];
+      upcomingHtml+=`<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border-2);">
+        <div>
+          <div style="font-size:13px;font-weight:600;color:var(--text-2);">${dayLabel} ${d.getDate()}.${pad(d.getMonth()+1)}</div>
+          <div style="font-size:11px;color:var(--text-3);margin-top:1px;">${h.toFixed(1)} h</div>
+        </div>
+        <div style="font-size:13px;font-weight:600;color:var(--text-2);">${(s.start_time||'10:00').slice(0,5)} – ${(s.end_time||'18:00').slice(0,5)}</div>
+      </div>`;
+    });
+    upcomingHtml+=`</div>`;
+  }
+
   let html=`
   <div style="min-height:calc(100dvh - 56px);background:var(--bg);display:flex;flex-direction:column;">
 
-  <!-- Hero ciemny z gradientem -->
-  <div style="background:linear-gradient(180deg,#3A1020 0%,var(--bg) 100%);padding:28px 20px 24px;position:relative;overflow:hidden;">
-    <div style="position:absolute;top:-40px;right:-40px;width:180px;height:180px;border-radius:50%;background:radial-gradient(circle,rgba(123,29,46,.35) 0%,transparent 70%);pointer-events:none;"></div>
-    <div style="display:flex;align-items:center;gap:16px;position:relative;z-index:1;">
-      <div style="width:64px;height:64px;border-radius:50%;background:${empColor};display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700;color:white;flex-shrink:0;border:3px solid rgba(255,255,255,.12);">${empInitials}</div>
-      <div style="flex:1;min-width:0;">
-        <div style="font-size:11px;color:var(--text-3);font-weight:600;letter-spacing:.5px;text-transform:uppercase;margin-bottom:3px;">Witaj z powrotem</div>
-        <div style="font-size:22px;font-weight:800;letter-spacing:-.5px;color:var(--text);line-height:1.1;">${emp?.name||'Pracownik'}</div>
-        <div style="font-size:12px;color:var(--text-3);margin-top:3px;text-transform:capitalize;">${emp?.department||''}</div>
+  <!-- Header z awatarem — ciemny, minimalistyczny -->
+  <div style="padding:24px 20px 20px;border-bottom:1px solid var(--border-2);">
+    <div style="display:flex;align-items:center;gap:14px;">
+      <div style="width:52px;height:52px;border-radius:50%;background:var(--bg-card2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;color:var(--text-2);flex-shrink:0;">${empInitials}</div>
+      <div>
+        <div style="font-size:18px;font-weight:800;letter-spacing:-.4px;color:var(--text);">${emp?.name||'Pracownik'}</div>
+        <div style="font-size:12px;color:var(--text-3);margin-top:2px;text-transform:capitalize;">${emp?.department||'pracownik'}</div>
       </div>
     </div>
-
-    <!-- Stats row -->
-    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:20px;">
-      <div style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:12px 8px;text-align:center;">
-        <div style="font-size:22px;font-weight:800;color:var(--accent);letter-spacing:-.5px;">${thisMonthShifts.length}</div>
-        <div style="font-size:10px;color:var(--text-3);margin-top:2px;font-weight:600;">zmian</div>
+    <!-- Stats w jednym rzędzie -->
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-top:16px;">
+      <div style="text-align:center;padding:10px 4px;background:var(--bg-card2);border-radius:10px;border:1px solid var(--border-2);">
+        <div style="font-size:20px;font-weight:800;color:var(--text);letter-spacing:-.5px;">${thisMonthShifts.length}</div>
+        <div style="font-size:10px;color:var(--text-3);margin-top:1px;">zmian</div>
       </div>
-      <div style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:12px 8px;text-align:center;">
-        <div style="font-size:22px;font-weight:800;color:var(--text);letter-spacing:-.5px;">${mH.toFixed(0)}<span style="font-size:14px;font-weight:400">h</span></div>
-        <div style="font-size:10px;color:var(--text-3);margin-top:2px;font-weight:600;">ten miesiąc</div>
+      <div style="text-align:center;padding:10px 4px;background:var(--bg-card2);border-radius:10px;border:1px solid var(--border-2);">
+        <div style="font-size:20px;font-weight:800;color:var(--text);letter-spacing:-.5px;">${mH.toFixed(0)}<span style="font-size:12px;font-weight:500">h</span></div>
+        <div style="font-size:10px;color:var(--text-3);margin-top:1px;">ten miesiąc</div>
       </div>
-      <div style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:12px 8px;text-align:center;">
-        <div style="font-size:22px;font-weight:800;color:var(--green);letter-spacing:-.5px;">${hasRate?mC.toFixed(0)+'zł':lmH.toFixed(0)+'h'}</div>
-        <div style="font-size:10px;color:var(--text-3);margin-top:2px;font-weight:600;">${hasRate?'zarobki':'poprz. m-c'}</div>
+      <div style="text-align:center;padding:10px 4px;background:var(--bg-card2);border-radius:10px;border:1px solid var(--border-2);">
+        <div style="font-size:20px;font-weight:800;color:var(--text);letter-spacing:-.5px;">${hasRate?mC.toFixed(0):lmH.toFixed(0)}<span style="font-size:12px;font-weight:500">${hasRate?'zł':'h'}</span></div>
+        <div style="font-size:10px;color:var(--text-3);margin-top:1px;">${hasRate?'zarobki':'poprz. m-c'}</div>
       </div>
     </div>
   </div>
 
   <!-- Treść -->
-  <div style="flex:1;padding:0 16px 100px;display:flex;flex-direction:column;gap:12px;">
+  <div style="flex:1;padding:16px;display:flex;flex-direction:column;gap:10px;padding-bottom:100px;">
 
     ${hasRate?`
-    <!-- Zarobki -->
-    <div style="background:var(--bg-card);border:1px solid var(--border-2);border-radius:16px;padding:16px;">
+    <div style="background:var(--bg-card);border:1px solid var(--border-2);border-radius:14px;padding:16px;">
       <div style="font-size:11px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:12px;">Zarobki netto</div>
-      <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border-2);">
-        <span style="font-size:14px;color:var(--text-2);">${monthName(now.getMonth())} ${now.getFullYear()}</span>
-        <span style="font-size:20px;font-weight:800;color:var(--accent);">${mC.toFixed(0)} zł</span>
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border-2);">
+        <span style="font-size:13px;color:var(--text-2);">${monthName(now.getMonth())} ${now.getFullYear()}</span>
+        <span style="font-size:18px;font-weight:800;color:var(--text);">${mC.toFixed(0)} zł</span>
       </div>
-      <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0 0;">
-        <span style="font-size:13px;color:var(--text-3);">${monthName(new Date(now.getFullYear(),now.getMonth()-1,1).getMonth())} (poprzedni)</span>
-        <span style="font-size:16px;font-weight:600;color:var(--text-3);">${lmC.toFixed(0)} zł</span>
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0 0;">
+        <span style="font-size:12px;color:var(--text-3);">${monthName(new Date(now.getFullYear(),now.getMonth()-1,1).getMonth())}</span>
+        <span style="font-size:14px;font-weight:600;color:var(--text-3);">${lmC.toFixed(0)} zł</span>
       </div>
     </div>`:''}
 
-    <!-- CTA dyspozycyjność -->
-    <div style="background:linear-gradient(135deg,var(--brand-dark) 0%,var(--brand) 100%);border-radius:16px;padding:18px;position:relative;overflow:hidden;">
-      <div style="position:absolute;top:-20px;right:-20px;width:100px;height:100px;border-radius:50%;background:rgba(255,255,255,.07);pointer-events:none;"></div>
-      <div style="font-size:15px;font-weight:800;color:white;letter-spacing:-.3px;margin-bottom:4px;">Zgłoś dyspozycyjność</div>
-      <div style="font-size:12px;color:rgba(255,255,255,.65);line-height:1.5;margin-bottom:14px;">Podaj dostępne dni na ${nextMonthName} — manager ułoży grafik.</div>
-      <button onclick="showView('avail')" style="background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.25);color:white;border-radius:10px;padding:9px 18px;font-size:13px;font-weight:700;font-family:var(--font);cursor:pointer;backdrop-filter:blur(8px);">Uzupełnij →</button>
+    <!-- Ten tydzień -->
+    <div style="background:var(--bg-card);border:1px solid var(--border-2);border-radius:14px;padding:16px;">
+      <div style="font-size:11px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;">Ten tydzień</div>
+      ${shiftRowsHtml}
     </div>
 
-    <!-- Grafik -->
-    <div style="background:var(--bg-card);border:1px solid var(--border-2);border-radius:16px;padding:16px;">
-      <div style="font-size:11px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:12px;">Mój grafik — bieżący tydzień</div>`;
+    ${upcomingHtml}
 
-  if(myShifts.length===0){
-    html+=`<div style="font-size:13px;color:var(--text-3);padding:8px 0">Brak zaplanowanych zmian</div>`;
-  } else {
-    myShifts.forEach(s=>{
-      const d=new Date(s.date+'T12:00:00');
-      const h=calcH(s.start_time||'10:00:00',s.end_time||'18:00:00');
-      const dayLabel=['Nd','Pon','Wt','Śr','Czw','Pt','Sob'][d.getDay()];
-      html+=`<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border-2);">
-        <div>
-          <div style="font-size:13px;font-weight:700;color:var(--text);">${dayLabel} ${d.getDate()}.${pad(d.getMonth()+1)}</div>
-          <div style="font-size:11px;color:var(--text-3);margin-top:1px;">${h.toFixed(1)} godz.</div>
-        </div>
-        <div style="font-size:14px;font-weight:700;color:var(--accent);">${(s.start_time||'10:00').slice(0,5)} – ${(s.end_time||'18:00').slice(0,5)}</div>
-      </div>`;
-    });
-  }
+    <!-- Dyspozycyjność -->
+    <div style="background:var(--bg-card);border:1px solid var(--border-2);border-radius:14px;padding:16px;display:flex;align-items:center;justify-content:space-between;gap:12px;">
+      <div style="flex:1;">
+        <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:3px;">Dyspozycyjność — ${nextMonthName}</div>
+        <div style="font-size:12px;color:var(--text-3);line-height:1.4;">Podaj dostępne dni, żeby manager mógł ułożyć grafik.</div>
+      </div>
+      <button onclick="showView('avail')" style="background:var(--bg-card2);border:1px solid var(--border);color:var(--text-2);border-radius:10px;padding:9px 14px;font-size:13px;font-weight:700;font-family:var(--font);cursor:pointer;white-space:nowrap;flex-shrink:0;">Uzupełnij →</button>
+    </div>
 
-  html+=`</div>`;
-
-  // Upcoming shifts (this month beyond current week)
-  const tod = today();
-  const upcoming = thisMonthShifts.filter(s=>s.date>tod).sort((a,b)=>a.date.localeCompare(b.date)).slice(0,5);
-  if(upcoming.length>0){
-    html+=`<div style="background:var(--bg-card);border:1px solid var(--border-2);border-radius:16px;padding:16px;">
-      <div style="font-size:11px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:12px;">Nadchodzące zmiany</div>`;
-    upcoming.forEach(s=>{
-      const d=new Date(s.date+'T12:00:00');
-      const h=calcH(s.start_time||'10:00:00',s.end_time||'18:00:00');
-      const dayLabel=['Nd','Pon','Wt','Śr','Czw','Pt','Sob'][d.getDay()];
-      html+=`<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border-2);">
-        <div>
-          <div style="font-size:13px;font-weight:700;color:var(--text);">${dayLabel} ${d.getDate()}.${pad(d.getMonth()+1)}</div>
-          <div style="font-size:11px;color:var(--text-3);margin-top:1px;">${h.toFixed(1)} godz.</div>
-        </div>
-        <div style="font-size:14px;font-weight:700;color:var(--accent);">${(s.start_time||'10:00').slice(0,5)} – ${(s.end_time||'18:00').slice(0,5)}</div>
-      </div>`;
-    });
-    html+=`</div>`;
-  }
-
-  html+=`</div></div>`;
+  </div></div>`;
   mc.innerHTML=html;
 }
 
