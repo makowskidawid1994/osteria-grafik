@@ -1736,11 +1736,13 @@ async function doLogin() {
     document.getElementById('auth-screen').style.display='none';
     document.getElementById('app').style.display='block';
     document.getElementById('hdr-role').textContent={owner:'Właściciel',manager:'Manager',kitchen:'Kuchnia',front:'Sala',employee:'Pracownik'}[currentRole]||currentRole;
-    const username=email.split('@')[0];
-    document.getElementById('hdr-user').textContent=username;
+    // Imię z tabeli employees (jeśli już załadowane), fallback z emaila
+    const empMatch=employees.find(e=>e.email&&e.email.toLowerCase()===email.toLowerCase());
+    const displayFirst=empMatch?.name?.trim().split(/\s+/)[0]||email.split('@')[0];
+    document.getElementById('hdr-user').textContent=displayFirst;
     // Awatar z inicjałami
     const av=document.getElementById('hdr-avatar');
-    if(av){ const ini=username.slice(0,2).toUpperCase(); av.textContent=ini; av.title='Menu'; }
+    if(av){ const ini=displayFirst.slice(0,2).toUpperCase(); av.textContent=ini; av.title='Menu'; }
     const menuName=document.getElementById('avatar-menu-name');
     if(menuName) menuName.textContent=email;
     if(!canEdit()){
@@ -2737,8 +2739,10 @@ async function loadEvents(){
   let rows=[];
   try{
     const fetched=await sbFetch('/rest/v1/events?select=*&order=date.asc&limit=60');
-    if(Array.isArray(fetched)&&fetched.length>0) rows=fetched;
-    else rows=[...eventsLocal];
+    if(Array.isArray(fetched)&&fetched.length>0){
+      rows=fetched;
+      eventsData=fetched; // zapisz globalnie żeby openEventDetail mógł znaleźć po id
+    } else rows=[...eventsLocal];
   }catch(e){
     rows=[...eventsLocal];
   }
@@ -4074,10 +4078,12 @@ document.getElementById('auth-pass').addEventListener('keydown',e=>{if(e.key==='
     document.getElementById('auth-screen').style.display='none';
     document.getElementById('app').style.display='block';
     document.getElementById('hdr-role').textContent={owner:'Właściciel',manager:'Manager',kitchen:'Kuchnia',front:'Sala',employee:'Pracownik'}[currentRole]||currentRole;
-    const username=email.split('@')[0];
-    document.getElementById('hdr-user').textContent=username;
+    // Imię z tabeli employees (data już załadowana), fallback z emaila
+    const empR=employees.find(e=>e.email&&e.email.toLowerCase()===email.toLowerCase());
+    const displayFirst=empR?.name?.trim().split(/\s+/)[0]||email.split('@')[0];
+    document.getElementById('hdr-user').textContent=displayFirst;
     const av=document.getElementById('hdr-avatar');
-    if(av){const ini=username.slice(0,2).toUpperCase();av.textContent=ini;av.title='Menu';}
+    if(av){const ini=displayFirst.slice(0,2).toUpperCase();av.textContent=ini;av.title='Menu';}
     const menuName=document.getElementById('avatar-menu-name');
     if(menuName) menuName.textContent=email;
     if(!canEdit()){
