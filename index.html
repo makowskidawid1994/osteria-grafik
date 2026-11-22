@@ -1727,11 +1727,21 @@ async function doLogin() {
     const rows=await sbFetch(`/rest/v1/user_roles?email=eq.${encodeURIComponent(email)}&select=role`).catch(()=>[]);
     currentRole=rows?.[0]?.role||'employee';
     saveSession();
-    // Załaduj dane najpierw, żeby splash miał imię z bazy
-    await loadAllData().catch(()=>{});
+    // Załaduj employees (mały request) żeby splash miał imię, max 2s timeout
+    try{
+      const empRows=await Promise.race([
+        sbFetch('/rest/v1/employees?select=id,name,email,department,rate_net&active=eq.true&order=department,name'),
+        new Promise((_,rej)=>setTimeout(()=>rej(new Error('timeout')),2000))
+      ]);
+      if(Array.isArray(empRows)) employees=empRows;
+    }catch(_){}
     const empForName=employees.find(e=>e.email&&e.email.toLowerCase()===email.toLowerCase());
     const splashName=empForName?.name?.trim().split(/\s+/)[0]||null;
-    await showWelcomeSplash(email, splashName);
+    // Splash i reszta danych równolegle
+    await Promise.all([
+      showWelcomeSplash(email, splashName),
+      loadAllData().catch(()=>{})
+    ]);
     // Teraz dane są gotowe, splash właśnie skończył animację wejścia — pokaż app
     document.getElementById('auth-screen').style.display='none';
     document.getElementById('app').style.display='block';
