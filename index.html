@@ -318,9 +318,9 @@ body.view-home #main-content { background: #1A1033; }
 .hw-clock-block {
   margin: 0 20px 10px;
   position: relative; overflow: hidden;
-  border-radius: 20px;
-  background: linear-gradient(130deg, #7B1D2E 0%, #A8302A 100%);
-  padding: 22px 24px;
+  border-radius: 28px;
+  background: linear-gradient(145deg, #3D0E1A 0%, #5C1420 60%, #7B1D2E 100%);
+  padding: 28px 28px 24px;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
   transition: transform .15s cubic-bezier(.4,0,.2,1);
@@ -328,50 +328,100 @@ body.view-home #main-content { background: #1A1033; }
   opacity: 0;
   animation: fadeInUp .4s cubic-bezier(.4,0,.2,1) .18s forwards;
   z-index: 1;
-  display: flex; align-items: center; justify-content: space-between;
-  box-shadow: 0 12px 40px rgba(100,10,20,.5);
+  display: flex; flex-direction: column; align-items: flex-start;
+  box-shadow: 0 16px 48px rgba(80,8,18,.6);
+  min-height: 160px;
+  justify-content: space-between;
 }
 .hw-clock-block::before {
   content: '';
   position: absolute; inset: 0; border-radius: inherit;
-  background: radial-gradient(ellipse 90% 70% at 110% -10%, rgba(255,160,80,.3) 0%, transparent 55%);
+  background:
+    radial-gradient(ellipse 100% 80% at 100% 0%, rgba(220,100,50,.3) 0%, transparent 55%),
+    linear-gradient(to bottom, rgba(255,255,255,.04) 0%, transparent 60%);
   pointer-events: none;
 }
-.hw-clock-block:active { transform: scale(.975); }
+/* linia świetlna na górze */
+.hw-clock-block::after {
+  content: '';
+  position: absolute; top: 0; left: 20px; right: 20px; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,.18), transparent);
+}
+.hw-clock-block:active { transform: scale(.98); }
+
+/* Stan: pracuje */
 .hw-clock-block.working {
-  background: linear-gradient(130deg, #1A5C30 0%, #247A40 100%);
-  box-shadow: 0 12px 40px rgba(10,60,20,.5);
+  background: linear-gradient(145deg, #0A2D14 0%, #163D20 60%, #1E5C2E 100%);
+  box-shadow: 0 16px 48px rgba(5,40,15,.65);
 }
 .hw-clock-block.working::before {
-  background: radial-gradient(ellipse 90% 70% at 110% -10%, rgba(80,220,100,.25) 0%, transparent 55%);
+  background:
+    radial-gradient(ellipse 100% 80% at 100% 0%, rgba(60,200,80,.2) 0%, transparent 55%),
+    linear-gradient(to bottom, rgba(255,255,255,.04) 0%, transparent 60%);
 }
-.hw-clock-left { display: flex; flex-direction: column; gap: 3px; }
+
+/* Górna część — eyebrow + timer */
+.hw-clock-left { display: flex; flex-direction: column; gap: 6px; width: 100%; }
 .hw-clock-eyebrow {
   display: block;
-  font-size: 9px; font-weight: 600; color: rgba(255,255,255,.45);
-  letter-spacing: 1.4px; text-transform: uppercase;
+  font-size: 9px; font-weight: 600; color: rgba(255,255,255,.4);
+  letter-spacing: 1.8px; text-transform: uppercase;
 }
+/* Duży timer (widoczny tylko podczas pracy) */
+.hw-clock-timer {
+  font-size: 48px; font-weight: 300; color: #fff;
+  letter-spacing: -2px; line-height: 1;
+  font-variant-numeric: tabular-nums;
+  display: none;
+}
+.hw-clock-block.working .hw-clock-timer { display: block; }
+.hw-clock-block.working .hw-clock-title { display: none; }
+/* Tytuł (widoczny gdy nie pracuje) */
 .hw-clock-title {
-  font-size: 22px; font-weight: 700; color: #fff;
-  letter-spacing: -.4px; line-height: 1;
+  font-size: 26px; font-weight: 700; color: #fff;
+  letter-spacing: -.6px; line-height: 1.1;
   position: relative; z-index: 1;
+  margin-top: 4px;
 }
 .hw-clock-sub {
   display: block;
-  font-size: 12px; font-weight: 400; color: rgba(255,255,255,.5);
-  margin-top: 4px;
+  font-size: 12px; font-weight: 400; color: rgba(255,255,255,.45);
+  margin-top: 2px;
 }
+
+/* Dolna część — przycisk akcji */
 .hw-clock-caret {
   display: flex; align-items: center; justify-content: center;
-  width: 40px; height: 40px; border-radius: 50%;
-  background: rgba(255,255,255,.15);
-  font-size: 16px; color: rgba(255,255,255,.9); flex-shrink: 0;
+  align-self: flex-end;
+  width: 44px; height: 44px; border-radius: 50%;
+  background: rgba(255,255,255,.12);
+  border: 1px solid rgba(255,255,255,.18);
+  font-size: 18px; color: rgba(255,255,255,.9);
   position: relative; z-index: 1;
+  transition: background .15s;
 }
+.hw-clock-block:active .hw-clock-caret { background: rgba(255,255,255,.2); }
+
+/* Pasek postępu zmiany */
+.hw-clock-progress {
+  position: absolute; bottom: 0; left: 0; right: 0; height: 3px;
+  background: rgba(255,255,255,.08); border-radius: 0 0 28px 28px;
+  overflow: hidden; display: none;
+}
+.hw-clock-block.working .hw-clock-progress { display: block; }
+.hw-clock-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, rgba(255,255,255,.3), rgba(255,255,255,.6));
+  border-radius: inherit;
+  transition: width 1s linear;
+}
+
 .hw-clock-pulse {
-  position: absolute; top: 20px; right: 72px; z-index: 2;
+  position: absolute; top: 28px; right: 28px; z-index: 2;
   width: 7px; height: 7px;
+  display: none;
 }
+.hw-clock-block.working .hw-clock-pulse { display: block; }
 .hw-clock-pulse::before, .hw-clock-pulse::after {
   content:''; position:absolute; inset:0; border-radius:50%;
 }
@@ -1827,13 +1877,15 @@ function renderHome(mc){
     </div>
 
     <div class="hw-clock-block${clockCls}" onclick="hbTap(this,'clock')">
-      ${active?`<span class="hw-clock-pulse"></span>`:''}
+      <span class="hw-clock-pulse"></span>
       <div class="hw-clock-left">
         <div class="hw-clock-eyebrow">${active?'TRWA ZMIANA':'CZAS PRACY'}</div>
+        <div class="hw-clock-timer" id="hw-live-timer">0:00:00</div>
         <div class="hw-clock-title">${clockTitle}</div>
         <div class="hw-clock-sub">${clockHint}</div>
       </div>
       <div class="hw-clock-caret">→</div>
+      <div class="hw-clock-progress"><div class="hw-clock-progress-fill" id="hw-shift-fill"></div></div>
       <div class="hb-ripple-wrap"></div>
     </div>
 
@@ -1843,6 +1895,31 @@ function renderHome(mc){
   </div>`;
 
   updateFabBadge();
+
+  /* Live timer — aktualizuj co sekundę gdy trwa zmiana */
+  if(window._hwTimerInt) clearInterval(window._hwTimerInt);
+  if(active){
+    const startMs = new Date(active.clock_in).getTime();
+    const shiftStart = myShiftToday ? new Date(`${tod}T${(myShiftToday.start_time||'00:00').slice(0,5)}:00`).getTime() : startMs;
+    const shiftEnd   = myShiftToday ? new Date(`${tod}T${(myShiftToday.end_time||'23:59').slice(0,5)}:00`).getTime() : (shiftStart + 8*3600000);
+    const shiftLen   = Math.max(shiftEnd - shiftStart, 1);
+    const tick = () => {
+      const el = document.getElementById('hw-live-timer');
+      const fill = document.getElementById('hw-shift-fill');
+      if(!el) { clearInterval(window._hwTimerInt); return; }
+      const elapsed = Date.now() - startMs;
+      const h = Math.floor(elapsed/3600000);
+      const m = Math.floor((elapsed%3600000)/60000);
+      const s = Math.floor((elapsed%60000)/1000);
+      el.textContent = `${h}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+      if(fill){
+        const pct = Math.min(100, (elapsed / shiftLen) * 100);
+        fill.style.width = pct + '%';
+      }
+    };
+    tick();
+    window._hwTimerInt = setInterval(tick, 1000);
+  }
 }
 
 function hbTap(el, view){
