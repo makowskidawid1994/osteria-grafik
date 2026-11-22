@@ -303,11 +303,11 @@ body.view-home #main-content { background: #1A1033; }
 
 /* ── Blok zegarowy ── */
 .hw-clock-block {
-  margin: 6px 14px 4px;
+  margin: 6px 20px 12px;
   position: relative; overflow: hidden;
-  border-radius: 22px;
+  border-radius: 28px;
   background: linear-gradient(135deg, #2D1060 0%, #6B2090 60%, #A030B0 100%);
-  padding: 20px 18px 56px;
+  padding: 28px 24px;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
   transition: transform .12s cubic-bezier(.4,0,.2,1);
@@ -316,6 +316,8 @@ body.view-home #main-content { background: #1A1033; }
   animation: fadeInUp .4s cubic-bezier(.4,0,.2,1) .22s forwards;
   z-index: 1;
   box-shadow: 0 8px 32px rgba(100,0,160,.4);
+  display: flex; align-items: center; justify-content: center;
+  min-height: 100px;
 }
 .hw-clock-block::before {
   content: '';
@@ -342,28 +344,15 @@ body.view-home #main-content { background: #1A1033; }
     linear-gradient(to bottom, rgba(255,255,255,.06) 0%, transparent 50%);
 }
 
-.hw-clock-eyebrow {
-  font-size: 9px; font-weight: 700; letter-spacing: 2.5px;
-  text-transform: uppercase; color: rgba(255,255,255,.4);
-  margin-bottom: 10px; position: relative; z-index: 1;
-}
+.hw-clock-eyebrow { display: none; }
 .hw-clock-title {
-  font-size: 36px; font-weight: 800; color: #fff;
-  letter-spacing: -1.8px; line-height: 1;
+  font-size: 32px; font-weight: 700; color: #fff;
+  letter-spacing: -.5px; line-height: 1;
   position: relative; z-index: 1;
+  text-align: center;
 }
-.hw-clock-sub {
-  position: absolute; bottom: 18px; left: 18px; right: 56px;
-  font-size: 12px; color: rgba(255,255,255,.4); line-height: 1.4; z-index: 1;
-}
-.hw-clock-sub strong { color: rgba(255,255,255,.7); font-weight: 600; }
-.hw-clock-caret {
-  position: absolute; right: 16px; bottom: 16px; z-index: 1;
-  width: 36px; height: 36px; border-radius: 50%;
-  background: rgba(255,255,255,.18);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 15px; color: #fff;
-}
+.hw-clock-sub { display: none; }
+.hw-clock-caret { display: none; }
 .hw-clock-pulse {
   position: absolute; top: 20px; right: 20px; z-index: 2;
   width: 8px; height: 8px;
@@ -387,27 +376,26 @@ body.view-home #main-content { background: #1A1033; }
 
 /* ── Lista kafelków — jeden na pełną szerokość ── */
 .hw-blocks {
-  padding: 4px 14px 24px;
+  padding: 8px 20px 32px;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
   position: relative; z-index: 1;
 }
 
 .hb-row {
   position: relative; overflow: hidden;
-  border-radius: 22px;
-  height: 76px;
+  border-radius: 50px;
+  height: 60px;
   cursor: pointer;
   display: flex; flex-direction: row;
   align-items: center; justify-content: center;
-  padding: 0 24px;
-  /* glassmorphism — przezroczyste tło */
-  background: rgba(255,255,255,.08);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255,255,255,.12);
-  box-shadow: 0 4px 24px rgba(0,0,0,.25);
+  padding: 0 28px;
+  background: rgba(255,255,255,.07);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255,255,255,.15);
+  box-shadow: none;
   width: 100%;
   -webkit-tap-highlight-color: transparent;
   transition: transform .13s cubic-bezier(.34,1.56,.64,1), background .13s;
@@ -428,8 +416,8 @@ body.view-home #main-content { background: #1A1033; }
   to   { opacity:1; transform: translateY(0); }
 }
 .hb-row:active {
-  transform: scale(.97);
-  background: rgba(255,255,255,.14);
+  transform: scale(.98);
+  background: rgba(255,255,255,.13);
 }
 
 /* Bez kolorów per-kafelek — wszystkie jednakowo przezroczyste */
@@ -442,8 +430,8 @@ body.view-home #main-content { background: #1A1033; }
 
 .hb-row-label { display: none; }
 .hb-row-title {
-  font-size: 22px; font-weight: 600; color: rgba(255,255,255,.95);
-  letter-spacing: .2px; line-height: 1;
+  font-size: 18px; font-weight: 500; color: rgba(255,255,255,.92);
+  letter-spacing: .3px; line-height: 1;
   text-align: center;
   width: 100%;
   position: relative; z-index: 1;
