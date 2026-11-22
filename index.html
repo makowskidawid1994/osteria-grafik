@@ -72,10 +72,12 @@ body { font-family: var(--font); background: var(--bg); color: var(--text); min-
 /* Górna część — logo + nazwa */
 .auth-top {
   display: flex; flex-direction: column;
-  align-items: center; justify-content: center;
-  padding: max(env(safe-area-inset-top), 60px) 36px 0;
+  align-items: center; justify-content: flex-end;
+  padding: max(env(safe-area-inset-top), 60px) 36px 40px;
   position: relative; z-index: 2;
   flex: 1;
+  /* Stały layout — zapobiega skakaniu przy załadowaniu fontu */
+  min-height: 260px;
 }
 
 /* Logo — okrąg z ikoną jak w ref */
@@ -113,10 +115,13 @@ body { font-family: var(--font); background: var(--bg); color: var(--text); min-
   color: #fff; text-align: center; line-height: 1.0;
   margin-bottom: 6px;
   font-family: 'Nunito','Poppins',sans-serif;
+  min-height: 36px;
 }
 .auth-tagline {
   font-size: 13px; font-weight: 500; color: rgba(255,255,255,.3);
   text-align: center; letter-spacing: .3px;
+  line-height: 1.4; min-height: 18px;
+  font-family: 'Nunito','Poppins',sans-serif;
 }
 .auth-divider { display: none; }
 
