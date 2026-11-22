@@ -46,36 +46,36 @@
 * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 body { font-family: var(--font); background: var(--bg); color: var(--text); min-height: 100vh; font-size: 14px; line-height: 1.5; -webkit-font-smoothing: antialiased; }
 
-/* ─── AUTH — ciemny gradient, styl mobile UI kit ─── */
+/* ─── AUTH — pełny ekran ─── */
 #auth-screen {
-  min-height: 100vh;
-  display: flex; flex-direction: column; align-items: stretch; justify-content: center;
+  min-height: 100dvh; height: 100dvh;
+  display: flex; flex-direction: column; align-items: stretch; justify-content: space-between;
   padding: 0; position: relative; overflow: hidden;
-  background: #1A0A2E;
+  background: #200810;
 }
 
-/* Pełnoekranowy gradient — ciemny fioletowo-bordeaux */
+/* Gradient logowania — ciepłe bordo */
 .auth-bg-gradient {
   position: absolute; inset: 0; pointer-events: none;
-  background:
-    linear-gradient(170deg, #3D0A20 0%, #1A0A2E 45%, #0D0520 100%);
+  background: linear-gradient(160deg, #3D1020 0%, #200810 50%, #120408 100%);
 }
 .auth-bg-gradient::before {
   content: '';
   position: absolute; inset: 0;
   background:
-    radial-gradient(ellipse 80% 50% at 15% 20%, rgba(240,90,40,.18) 0%, transparent 55%),
-    radial-gradient(ellipse 60% 40% at 85% 10%, rgba(123,29,46,.35) 0%, transparent 50%),
-    radial-gradient(ellipse 70% 60% at 50% 100%, rgba(80,10,30,.6) 0%, transparent 55%);
+    radial-gradient(ellipse 90% 60% at 20% 15%, rgba(200,60,30,.22) 0%, transparent 55%),
+    radial-gradient(ellipse 70% 50% at 80% 5%, rgba(150,30,50,.3) 0%, transparent 50%),
+    radial-gradient(ellipse 60% 40% at 50% 95%, rgba(240,180,100,.06) 0%, transparent 50%);
 }
 .auth-bg-pattern { display: none; }
 
-/* Cały ekran — centrum, nie bottom-sheet */
+/* Górna część — logo + nazwa */
 .auth-top {
   display: flex; flex-direction: column;
   align-items: center; justify-content: center;
-  padding: 60px 36px 0;
+  padding: max(env(safe-area-inset-top), 60px) 36px 0;
   position: relative; z-index: 2;
+  flex: 1;
 }
 
 /* Logo — okrąg z ikoną jak w ref */
@@ -109,17 +109,18 @@ body { font-family: var(--font); background: var(--bg); color: var(--text); min-
 /* Nazwa restauracji — duży, biały */
 .auth-app-name { display: none; }
 .auth-restaurant-name {
-  font-size: 26px; font-weight: 700; letter-spacing: -.5px;
-  color: #fff; text-align: center; line-height: 1.1;
-  margin-bottom: 4px;
+  font-size: 36px; font-weight: 800; letter-spacing: -1.5px;
+  color: #fff; text-align: center; line-height: 1.0;
+  margin-bottom: 6px;
+  font-family: 'Nunito','Poppins',sans-serif;
 }
 .auth-tagline {
-  font-size: 12px; color: rgba(255,255,255,.35);
-  text-align: center;
+  font-size: 13px; font-weight: 500; color: rgba(255,255,255,.3);
+  text-align: center; letter-spacing: .3px;
 }
 .auth-divider { display: none; }
 
-/* Formularz — bezpośrednio na ekranie, bez karty */
+/* Formularz — dolna część ekranu */
 .auth-sheet {
   position: relative; z-index: 2;
   width: 100%;
@@ -127,7 +128,7 @@ body { font-family: var(--font); background: var(--bg); color: var(--text); min-
   border-radius: 0;
   border-top: none;
   box-shadow: none;
-  padding: 32px 32px calc(env(safe-area-inset-bottom) + 36px);
+  padding: 24px 32px calc(max(env(safe-area-inset-bottom), 20px) + 28px);
 }
 .auth-sheet-handle { display: none; }
 .auth-sheet-title { display: none; }
@@ -136,17 +137,18 @@ body { font-family: var(--font); background: var(--bg); color: var(--text); min-
 /* Pola — podkreślenie jak w ref, nie box */
 .field { margin-bottom: 20px; position: relative; }
 .field label {
-  display: block; font-size: 11px; font-weight: 500;
-  color: rgba(255,255,255,.4); margin-bottom: 10px; letter-spacing: .5px;
+  display: block; font-size: 11px; font-weight: 600;
+  color: rgba(255,255,255,.35); margin-bottom: 10px; letter-spacing: 1px;
   text-transform: uppercase;
+  font-family: 'Nunito','Poppins',sans-serif;
 }
 .field input {
-  width: 100%; padding: 12px 16px 12px 44px;
+  width: 100%; padding: 14px 16px 14px 44px;
   border: none;
-  border-bottom: 1.5px solid rgba(255,255,255,.2);
+  border-bottom: 1.5px solid rgba(255,255,255,.18);
   border-radius: 0;
-  font-size: 16px; font-family: var(--font); outline: none;
-  color: #fff; caret-color: #F05A28;
+  font-size: 17px; font-weight: 600; font-family: var(--font); outline: none;
+  color: #fff; caret-color: #C85A28;
   background: transparent;
   transition: border-color .2s;
 }
@@ -192,15 +194,15 @@ body { font-family: var(--font); background: var(--bg); color: var(--text); min-
 }
 /* Na home — ciemny header jak tło aplikacji */
 body.view-home .header {
-  background: rgba(26,16,51,.92);
-  border-bottom-color: rgba(255,255,255,.08);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  background: rgba(32,8,16,.88);
+  border-bottom-color: rgba(255,255,255,.07);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
 }
 body.view-home .header-brand { color: #fff; }
 body.view-home .header-brand em { color: rgba(255,255,255,.4); }
-body.view-home .role-badge { background: rgba(180,80,220,.2); color: #CF90FF; border-color: rgba(180,80,220,.3); }
-body.view-home #main-content { background: #1A1033; }
+body.view-home .role-badge { background: rgba(255,255,255,.08); color: rgba(255,255,255,.65); border-color: rgba(255,255,255,.12); }
+body.view-home #main-content { background: transparent; }
 
 .header-brand { font-size: 15px; font-weight: 800; flex: 1; letter-spacing: -.5px; color: var(--text); display: flex; align-items: center; gap: 6px; transition: color .2s; }
 .header-brand em { color: var(--text-3); font-style: normal; font-weight: 400; transition: color .2s; }
@@ -247,11 +249,11 @@ body.view-home #main-content { background: #1A1033; }
 }
 .bnav-item svg { width: 22px; height: 22px; stroke: var(--text-3); fill: none; stroke-width: 1.8; transition: stroke .25s cubic-bezier(.4,0,.2,1); }
 
-.main { padding-bottom: calc(62px + max(env(safe-area-inset-bottom), 12px) + 8px); }
+.main { padding-bottom: calc(62px + max(env(safe-area-inset-bottom), 12px) + 4px); min-height: calc(100dvh - 56px); }
 .main.no-bnav { padding-bottom: 0; }
-.main.view-transition { animation: viewFadeIn .28s cubic-bezier(.4,0,.2,1); }
+.main.view-transition { animation: viewFadeIn .32s cubic-bezier(.25,0,.25,1); }
 @keyframes viewFadeIn {
-  from { opacity: 0; transform: translateY(10px); }
+  from { opacity: 0; transform: translateY(6px); }
   to   { opacity: 1; transform: translateY(0); }
 }
 
@@ -264,20 +266,20 @@ body.view-home #main-content { background: #1A1033; }
    HOME SCREEN — dark bordo, lista Revolut-style
 ═══════════════════════════════════ */
 .hw-wrap {
-  min-height: 100vh;
+  min-height: calc(100dvh - 56px);
   display: flex; flex-direction: column;
-  padding-bottom: max(env(safe-area-inset-bottom), 24px);
+  padding-bottom: 8px;
   -webkit-tap-highlight-color: transparent;
   position: relative;
-  background: #1C0810;
+  background: #2A0E18;
 }
 .hw-wrap::before {
   content: '';
   position: fixed; inset: 0; pointer-events: none; z-index: 0;
   background:
-    radial-gradient(ellipse 70% 55% at 90% 5%, rgba(180,40,50,.35) 0%, transparent 55%),
-    radial-gradient(ellipse 60% 45% at 10% 85%, rgba(100,10,30,.45) 0%, transparent 55%),
-    radial-gradient(ellipse 50% 40% at 50% 50%, rgba(80,10,20,.2) 0%, transparent 60%);
+    radial-gradient(ellipse 80% 60% at 85% 0%, rgba(200,80,60,.3) 0%, transparent 55%),
+    radial-gradient(ellipse 60% 50% at 15% 90%, rgba(120,30,40,.35) 0%, transparent 55%),
+    radial-gradient(ellipse 100% 40% at 50% 100%, rgba(240,200,160,.04) 0%, transparent 50%);
 }
 
 /* Header */
@@ -319,26 +321,32 @@ body.view-home #main-content { background: #1A1033; }
 .hw-clock-block {
   margin: 0 20px 14px;
   position: relative; overflow: hidden;
-  border-radius: 28px;
-  background: none;
-  border: none;
-  padding: 8px 28px 32px;
+  border-radius: 24px;
+  background: rgba(255,255,255,.06);
+  border: 1px solid rgba(255,255,255,.1);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  padding: 28px 28px 28px;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
-  transition: transform .15s cubic-bezier(.4,0,.2,1);
+  transition: transform .2s cubic-bezier(.25,0,.25,1), background .15s;
   will-change: transform;
   opacity: 0;
   animation: fadeInUp .4s cubic-bezier(.4,0,.2,1) .18s forwards;
   z-index: 1;
   display: flex; flex-direction: column; align-items: center; justify-content: center;
-  box-shadow: none;
+  box-shadow: 0 4px 32px rgba(0,0,0,.2);
   min-height: 180px;
 }
 .hw-clock-block::before, .hw-clock-block::after { display: none; }
-.hw-clock-block:active { transform: scale(.97); }
+.hw-clock-block:active { transform: scale(.96); background: rgba(255,255,255,.09); }
 
-/* Stan: pracuje — bez ramki, tylko kolor ikony zmienia się */
-.hw-clock-block.working { background: none; border: none; box-shadow: none; }
+/* Stan: pracuje */
+.hw-clock-block.working {
+  background: rgba(22,163,74,.12);
+  border-color: rgba(34,197,94,.2);
+  box-shadow: 0 4px 32px rgba(22,163,74,.15);
+}
 
 /* Centrum karty zegarowej */
 .hw-clock-center {
@@ -359,16 +367,21 @@ body.view-home #main-content { background: #1A1033; }
 .hw-clock-block.working .hw-clock-icon-wrap .hw-clock-stop-icon { display: block; }
 /* Ikona play/stop */
 .hw-clock-icon-wrap {
-  width: 72px; height: 72px; border-radius: 50%;
-  background: rgba(255,255,255,.12);
-  border: 1.5px solid rgba(255,255,255,.25);
+  width: 76px; height: 76px; border-radius: 50%;
+  background: rgba(255,255,255,.14);
+  border: 1.5px solid rgba(255,255,255,.3);
   display: flex; align-items: center; justify-content: center;
   position: relative; z-index: 1;
-  transition: background .18s, transform .15s;
-  box-shadow: 0 6px 24px rgba(0,0,0,.25);
+  transition: background .2s, transform .18s cubic-bezier(.25,0,.25,1);
+  box-shadow: 0 8px 28px rgba(0,0,0,.3), 0 0 0 8px rgba(255,255,255,.04);
+}
+.hw-clock-block.working .hw-clock-icon-wrap {
+  background: rgba(34,197,94,.2);
+  border-color: rgba(34,197,94,.4);
+  box-shadow: 0 8px 28px rgba(22,163,74,.3), 0 0 0 8px rgba(34,197,94,.08);
 }
 .hw-clock-block:active .hw-clock-icon-wrap {
-  background: rgba(255,255,255,.2); transform: scale(.92);
+  background: rgba(255,255,255,.22); transform: scale(.9);
 }
 .hw-clock-play-icon { display: block; }
 .hw-clock-stop-icon { display: none; }
@@ -571,7 +584,10 @@ body:not(.view-home) .chat-fab {
   background: white; border-bottom: 1px solid var(--border);
   padding: 10px 16px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
 }
-.page-bar-title { font-size: 15px; font-weight: 700; flex: 1; min-width: 120px; letter-spacing: -.3px; }
+.page-bar-title {
+  font-size: 16px; font-weight: 800; flex: 1; min-width: 120px;
+  letter-spacing: -.4px; font-family: 'Nunito','Poppins',sans-serif;
+}
 .view-toggle {
   display: flex; background: var(--bg); border-radius: var(--radius); padding: 2px; gap: 1px;
   border: 1px solid var(--border);
@@ -1043,94 +1059,112 @@ body:not(.view-home) .chat-fab {
 @keyframes spin { to { transform: rotate(360deg); } }
 .sect-label { padding: 14px 16px 5px; font-size: 10px; font-weight: 600; color: var(--text-3); text-transform: uppercase; letter-spacing: .5px; }
 
-/* ─── Ewidencja (Clock) — clean, colorful, full-screen ─── */
-.clock-wrap { padding: 0 0 90px; display: flex; flex-direction: column; gap: 0; min-height: calc(100vh - 90px); background: var(--bg); }
+/* ─── Ewidencja (Clock) — dark, spójne z resztą aplikacji ─── */
+.clock-wrap { padding: 0 0 90px; display: flex; flex-direction: column; gap: 0; min-height: calc(100dvh - 56px); background: var(--bg); }
 
-/* Hero — jasny panel ze statusem i przyciskiem */
+/* Hero — ciemny panel z gradientem jak home screen */
 .clock-hero {
-  background: white; color: var(--text);
-  padding: 32px 24px 36px; text-align: center; display: flex; flex-direction: column; align-items: center;
-  position: relative; overflow: hidden; border-bottom: 1px solid var(--border);
+  background: #2A0E18;
+  padding: 36px 24px 40px; text-align: center; display: flex; flex-direction: column; align-items: center;
+  position: relative; overflow: hidden;
 }
 .clock-hero::before {
-  content: ''; position: absolute; inset: 0;
-  background: radial-gradient(ellipse 100% 80% at 50% -20%, rgba(123,29,46,.04) 0%, transparent 70%);
-  pointer-events: none;
+  content: ''; position: absolute; inset: 0; pointer-events: none;
+  background:
+    radial-gradient(ellipse 80% 60% at 50% 0%, rgba(200,80,60,.25) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 50% 100%, rgba(120,30,40,.3) 0%, transparent 55%);
 }
 .clock-time-big {
-  font-size: 56px; font-weight: 800; letter-spacing: -3px; color: var(--text);
-  font-variant-numeric: tabular-nums; line-height: 1; margin-bottom: 4px;
+  font-size: 60px; font-weight: 300; letter-spacing: -3px; color: #fff;
+  font-variant-numeric: tabular-nums; line-height: 1; margin-bottom: 2px;
+  font-family: 'Nunito','Poppins',sans-serif;
+  position: relative; z-index: 1;
 }
-.clock-date { font-size: 13px; color: var(--text-3); margin-bottom: 28px; letter-spacing: .2px; }
+.clock-date {
+  font-size: 13px; color: rgba(255,255,255,.4); margin-bottom: 32px; letter-spacing: .2px;
+  font-family: 'Nunito','Poppins',sans-serif;
+  position: relative; z-index: 1;
+}
 
-/* Wielki okrągły przycisk clock-in jak w Connecteam */
-.clock-big-btn-wrap { position: relative; margin-bottom: 20px; }
+/* Wielki okrągły przycisk */
+.clock-big-btn-wrap { position: relative; margin-bottom: 20px; z-index: 1; }
 .clock-ring {
   width: 160px; height: 160px; border-radius: 50%;
-  border: 2px solid rgba(0,0,0,.08);
+  border: 1.5px solid rgba(255,255,255,.12);
   display: flex; align-items: center; justify-content: center;
   position: relative;
+  box-shadow: 0 0 40px rgba(0,0,0,.3);
 }
 .clock-ring::before {
-  content: ''; position: absolute; inset: 6px; border-radius: 50%;
-  border: 2px solid rgba(0,0,0,.04);
+  content: ''; position: absolute; inset: 7px; border-radius: 50%;
+  border: 1px solid rgba(255,255,255,.07);
 }
 .clock-btn-round {
-  width: 120px; height: 120px; border-radius: 50%; border: none; cursor: pointer;
+  width: 118px; height: 118px; border-radius: 50%; border: none; cursor: pointer;
   display: flex; flex-direction: column; align-items: center; justify-content: center;
-  gap: 6px; font-family: var(--font); font-weight: 700; font-size: 13px; letter-spacing: -.2px;
-  transition: all .2s; position: relative; z-index: 1;
+  gap: 5px; font-family: 'Nunito','Poppins',sans-serif; font-weight: 700; font-size: 14px; letter-spacing: -.2px;
+  transition: transform .18s cubic-bezier(.25,0,.25,1), box-shadow .18s; position: relative; z-index: 1;
 }
-.clock-btn-round:active { transform: scale(.95); }
-.clock-btn-round svg { width: 28px; height: 28px; }
+.clock-btn-round:active { transform: scale(.93); }
+.clock-btn-round svg { width: 30px; height: 30px; }
 
 .clock-btn-round.state-idle {
-  background: #16A34A; color: white;
-  box-shadow: 0 8px 32px rgba(22,163,74,.35), 0 2px 8px rgba(0,0,0,.12);
+  background: linear-gradient(145deg, #22C55E, #16A34A); color: white;
+  box-shadow: 0 8px 36px rgba(22,163,74,.5), 0 2px 8px rgba(0,0,0,.3);
 }
-.clock-btn-round.state-idle:hover { box-shadow: 0 12px 40px rgba(22,163,74,.5); }
-.clock-btn-round.state-idle svg { stroke: white; fill: white; stroke-width: 0; }
+.clock-btn-round.state-idle svg { stroke: none; fill: white; }
 
 .clock-btn-round.state-working {
-  background: #16A34A; color: white;
-  box-shadow: 0 8px 32px rgba(22,163,74,.4), 0 2px 8px rgba(0,0,0,.3);
-  animation: working-glow 2s ease-in-out infinite;
+  background: linear-gradient(145deg, #22C55E, #16A34A); color: white;
+  box-shadow: 0 8px 36px rgba(22,163,74,.55), 0 2px 8px rgba(0,0,0,.3);
+  animation: working-glow 2.5s ease-in-out infinite;
 }
 .clock-btn-round.state-working svg { stroke: white; fill: none; stroke-width: 2; }
 @keyframes working-glow {
-  0%,100% { box-shadow: 0 8px 32px rgba(22,163,74,.4), 0 2px 8px rgba(0,0,0,.3); }
-  50% { box-shadow: 0 8px 48px rgba(22,163,74,.6), 0 2px 8px rgba(0,0,0,.3); }
+  0%,100% { box-shadow: 0 8px 36px rgba(22,163,74,.55), 0 2px 8px rgba(0,0,0,.3); }
+  50% { box-shadow: 0 8px 56px rgba(22,163,74,.75), 0 2px 8px rgba(0,0,0,.3); }
 }
 
 .clock-btn-round.state-break {
-  background: #D97706; color: white;
-  box-shadow: 0 8px 32px rgba(217,119,6,.4), 0 2px 8px rgba(0,0,0,.3);
+  background: linear-gradient(145deg, #FBBF24, #D97706); color: white;
+  box-shadow: 0 8px 36px rgba(217,119,6,.5), 0 2px 8px rgba(0,0,0,.3);
 }
 .clock-btn-round.state-break svg { stroke: white; fill: none; stroke-width: 2; }
-.clock-btn-round:disabled { opacity: .5; cursor: not-allowed; }
+.clock-btn-round:disabled { opacity: .45; cursor: not-allowed; }
 
 .clock-elapsed {
-  font-size: 28px; font-weight: 700; letter-spacing: -1px; color: var(--text);
-  font-variant-numeric: tabular-nums; display: none; margin-bottom: 4px;
+  font-size: 30px; font-weight: 300; letter-spacing: -1px; color: #fff;
+  font-variant-numeric: tabular-nums; display: none; margin-bottom: 2px;
+  font-family: 'Nunito','Poppins',sans-serif;
+  position: relative; z-index: 1;
 }
-.clock-status-label { font-size: 12px; color: var(--text-3); letter-spacing: .2px; margin-bottom: 20px; }
+.clock-status-label {
+  font-size: 12px; color: rgba(255,255,255,.35); letter-spacing: .2px; margin-bottom: 20px;
+  font-family: 'Nunito','Poppins',sans-serif;
+  position: relative; z-index: 1;
+}
 
 /* Przyciski pomocnicze (przerwa / zakończ) w hero */
-.clock-secondary-row { display: flex; gap: 10px; width: 100%; }
+.clock-secondary-row { display: flex; gap: 10px; width: 100%; z-index: 1; position: relative; }
 .clock-sec-btn {
-  flex: 1; padding: 12px; border-radius: 12px; font-size: 13px; font-weight: 600;
-  cursor: pointer; font-family: var(--font); border: 1.5px solid rgba(255,255,255,.15);
-  color: white; background: rgba(255,255,255,.08); transition: all .15s; letter-spacing: -.1px;
+  flex: 1; padding: 12px 10px; border-radius: 14px; font-size: 13px; font-weight: 700;
+  cursor: pointer; font-family: 'Nunito','Poppins',sans-serif; border: 1.5px solid rgba(255,255,255,.14);
+  color: rgba(255,255,255,.85); background: rgba(255,255,255,.08);
+  transition: background .18s, transform .12s; letter-spacing: -.1px;
 }
-.clock-sec-btn:hover { background: rgba(255,255,255,.14); }
-.clock-sec-btn.danger { border-color: rgba(220,38,38,.4); color: #FCA5A5; background: rgba(220,38,38,.12); }
-.clock-sec-btn.danger:hover { background: rgba(220,38,38,.2); }
+.clock-sec-btn:active { transform: scale(.96); background: rgba(255,255,255,.14); }
+.clock-sec-btn.danger { border-color: rgba(220,38,38,.35); color: rgba(252,165,165,.9); background: rgba(220,38,38,.1); }
+.clock-sec-btn.danger:active { background: rgba(220,38,38,.2); }
 
-.clock-geo-status { font-size: 11px; margin-top: 16px; display: flex; align-items: center; gap: 5px; }
-.clock-geo-ok { color: #16A34A; }
-.clock-geo-err { color: var(--danger); }
-.clock-geo-loading { color: var(--text-3); }
-.clock-geo-loading { color: rgba(255,255,255,.35); }
+.clock-geo-status {
+  font-size: 12px; font-weight: 500; margin-top: 14px;
+  display: flex; align-items: center; gap: 6px;
+  font-family: 'Nunito','Poppins',sans-serif;
+  letter-spacing: .1px;
+}
+.clock-geo-ok { color: #22C55E; }
+.clock-geo-err { color: rgba(252,165,165,.85); }
+.clock-geo-loading { color: rgba(255,255,255,.3); }
 
 /* Reszta widoku — jasna sekcja */
 .clock-body { background: var(--bg); padding: 16px; display: flex; flex-direction: column; gap: 12px; flex: 1; }
@@ -3787,9 +3821,9 @@ async function updateGeoIndicator(){
   if(result.error){
     geo.innerHTML=`<span class="clock-geo-err">● ${result.error}</span>`;
   } else if(result.ok){
-    geo.innerHTML=`<span class="clock-geo-ok">● Jesteś w restauracji (${result.dist}m)</span>`;
+    geo.innerHTML=`<span class="clock-geo-ok">● W restauracji · ${result.dist}m</span>`;
   } else {
-    geo.innerHTML=`<span class="clock-geo-err">● Poza restauracją (${result.dist}m, wymagane <${GEO_RADIUS}m)</span>`;
+    geo.innerHTML=`<span class="clock-geo-err">● Poza restauracją · ${result.dist}m od lokalu</span>`;
   }
 }
 
@@ -3809,7 +3843,7 @@ async function doClockin(){
   if(!geo.ok){
     // Pełny reset — przywróć przycisk do stanu idle ręcznie
     if(btn){btn.disabled=false; btn.innerHTML=origHTML; btn.className='clock-btn-round state-idle'; btn.onclick=()=>doClockin();}
-    const msg=geo.error?`Błąd GPS: ${geo.error}`:`Poza restauracją (${geo.dist}m). Wymagane: <${GEO_RADIUS}m`;
+    const msg=geo.error?`Błąd GPS: ${geo.error}`:`Jesteś ${geo.dist}m od restauracji — musisz być bliżej`;
     showToast(msg,4000);
     return;
   }
