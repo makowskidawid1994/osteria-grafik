@@ -2078,9 +2078,7 @@ function renderHome(mc){
   const myEmail=currentUser?.user?.email||'';
   // Użyj imienia z bazy pracowników; fallback na nick z maila tylko gdy brak rekordu
   const rawName=emp?.name||'';
-  // Format w bazie: "Imię Nazwisko" — bierzemy pierwsze słowo
-  const nameParts=rawName.trim().split(/\s+/).filter(Boolean);
-  const firstName=nameParts[0]||(myEmail.split('@')[0].replace(/[0-9._]/g,' ').trim().split(' ')[0])||'Witaj';
+  const firstName=rawName.trim().split(/\s+/)[0]||getDisplayName(myEmail);
   const role=currentRole==='owner'?'Właściciel':currentRole==='manager'?'Manager':emp?.department==='kuchnia'?'Kucharz':'Pracownik';
   const isKitchen=emp?.department==='kuchnia';
   const isOwnerOrMgr=canEdit();
