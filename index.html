@@ -4451,21 +4451,12 @@ function updateClockUI(){
   }
 }
 
-// Aktualizacja wskaźnika GPS
+// Aktualizacja wskaźnika GPS — GPS wyłączony, ukryj baner
 async function updateGeoIndicator(){
   const geo=document.getElementById('clock-geo-status');
   if(!geo) return;
-  const result=await checkGeofence();
-  if(!geo.isConnected) return; // widok mógł się zmienić
-  if(result.error){
-    geo.innerHTML=`<span class="clock-geo-err">● ${result.error}</span>`;
-  } else if(result.ok){
-    geo.innerHTML=`<span class="clock-geo-ok">● W restauracji · ${result.dist}m</span>`;
-  } else {
-    geo.innerHTML=`<span class="clock-geo-err">● Poza restauracją · ${result.dist}m od lokalu</span>`;
-  }
-  // Płynne wejście wskaźnika po załadowaniu
-  geo.classList.add('geo-visible');
+  // GPS check wyłączony — ukrywamy wskaźnik lokalizacji
+  geo.style.display='none';
 }
 
 // Dispatcher dla głównego przycisku (stan idle → clock in)
