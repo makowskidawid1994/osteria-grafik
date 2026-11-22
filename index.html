@@ -2074,6 +2074,8 @@ function renderStub(mc, title, backView, msg){
    HOME SCREEN — vertical stack
 ═══════════════════════════════════════════════ */
 function renderHome(mc){
+  if(!mc) mc=document.getElementById('main-content');
+  if(!mc) return;
   const emp=getCurrentEmployee();
   const myEmail=currentUser?.user?.email||'';
   // Użyj imienia z bazy pracowników; fallback na nick z maila tylko gdy brak rekordu
@@ -4091,7 +4093,10 @@ document.getElementById('auth-pass').addEventListener('keydown',e=>{if(e.key==='
   const restored=await tryRestoreSession();
   if(restored){
     try{
-      await loadAllData();
+      await Promise.race([
+        loadAllData(),
+        new Promise((_,rej)=>setTimeout(()=>rej(new Error('timeout')),5000))
+      ]);
     }catch(_){}
     const email=currentUser?.user?.email||currentUser?.email||'';
     document.getElementById('auth-screen').style.display='none';
