@@ -269,9 +269,9 @@ body.view-home #main-content { background: transparent; }
 
 .main { padding-bottom: calc(62px + max(env(safe-area-inset-bottom), 12px) + 4px); min-height: calc(100dvh - 56px); }
 .main.no-bnav { padding-bottom: 0; }
-.main.view-transition { animation: viewFadeIn .48s cubic-bezier(.16,1,.3,1); }
+.main.view-transition { animation: viewFadeIn .55s cubic-bezier(.16,1,.3,1); }
 @keyframes viewFadeIn {
-  from { opacity: 0; transform: translateY(14px); }
+  from { opacity: 0; transform: translateY(8px); }
   to   { opacity: 1; transform: translateY(0); }
 }
 
@@ -2043,7 +2043,10 @@ function hbTap(el, view){
     wrap.innerHTML=''; wrap.appendChild(r);
     setTimeout(()=>r.remove(),500);
   }
-  setTimeout(()=>showView(view), 110);
+  // Delikatne wygaszenie całego home wrapu przed przejściem
+  const hw=el.closest('.hw-wrap');
+  if(hw){ hw.style.transition='opacity .18s ease'; hw.style.opacity='0'; }
+  setTimeout(()=>showView(view), 200);
 }
 
 /* ═══════════════════════════════════════════════
