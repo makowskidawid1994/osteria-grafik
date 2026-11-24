@@ -2774,12 +2774,12 @@ async function loadWaste(){
       <tbody>
         ${rows.map(r=>`
         <tr style="border-bottom:1px solid var(--border-subtle,rgba(255,255,255,.06))">
-          <td style="padding:10px 6px;font-weight:600;color:var(--text)">${r.ingredient}</td>
-          <td style="padding:10px 6px;text-align:right;color:var(--text-2)">${r.qty} ${r.unit}</td>
+          <td style="padding:10px 6px;font-weight:600;color:var(--text)">${r.ingredient||r.item_name}</td>
+          <td style="padding:10px 6px;text-align:right;color:var(--text-2)">${r.qty||r.quantity} ${r.unit}</td>
           <td style="padding:10px 6px;color:var(--text-3);font-size:12px">${reasonLabel[r.reason]||r.reason}</td>
           <td style="padding:10px 6px;color:var(--text-3);font-size:12px">${r.employees?.name||'—'}</td>
         </tr>
-        ${r.note?`<tr><td colspan="4" style="padding:0 6px 10px;color:var(--text-3);font-size:12px;font-style:italic">${r.note}</td></tr>`:''}
+        ${(r.note||r.notes)?`<tr><td colspan="4" style="padding:0 6px 10px;color:var(--text-3);font-size:12px;font-style:italic">${r.note||r.notes}</td></tr>`:''}
         `).join('')}
       </tbody>
     </table>`;
@@ -2852,7 +2852,7 @@ async function saveWaste(){
     await sbFetch('/rest/v1/waste_items',{
       method:'POST',
       headers:{'Prefer':'return=minimal'},
-      body:JSON.stringify({ingredient,qty,unit,reason,note,date,employee_id:emp?.id||null})
+      body:JSON.stringify({item_name:ingredient,quantity:qty,unit,reason,notes:note,date,employee_id:emp?.id||null})
     });
     closeWasteModal();
     showToast('✓ Strata zapisana');
@@ -2970,19 +2970,21 @@ async function loadHandover(){
     }
     const pColor={high:'#DC2626',medium:'#D97706',low:'#16A34A'};
     const pLabel={high:'Wysoki',medium:'Średni',low:'Niski'};
-    list.innerHTML=rows.map(r=>`
-      <div class="info-card" style="padding:14px 16px;margin-bottom:10px;border-left:3px solid ${pColor[r.priority]||'#64748B'}">
+    list.innerHTML=rows.map(r=>{
+      const pKey=r.priority||(r.priority_order===1?'high':r.priority_order===3?'low':'medium');
+      return `
+      <div class="info-card" style="padding:14px 16px;margin-bottom:10px;border-left:3px solid ${pColor[pKey]||'#64748B'}">
         <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
-          <span style="font-size:10px;font-weight:700;color:${pColor[r.priority]||'#64748B'};background:${pColor[r.priority]||'#64748B'}18;padding:2px 7px;border-radius:4px">
-            ${pLabel[r.priority]||r.priority}
+          <span style="font-size:10px;font-weight:700;color:${pColor[pKey]||'#64748B'};background:${pColor[pKey]||'#64748B'}18;padding:2px 7px;border-radius:4px">
+            ${pLabel[pKey]||pKey}
           </span>
           <span style="font-size:11px;color:var(--text-3);margin-left:auto">${fmtDate(r.created_at)}</span>
         </div>
-        <div style="font-size:14px;color:var(--text);line-height:1.5;margin-bottom:6px">${r.task}</div>
-        ${r.note?`<div style="font-size:12px;color:var(--text-3);font-style:italic;margin-bottom:6px">${r.note}</div>`:''}
+        <div style="font-size:14px;color:var(--text);line-height:1.5;margin-bottom:6px">${r.task||r.title}</div>
+        ${(r.note||r.description)?`<div style="font-size:12px;color:var(--text-3);font-style:italic;margin-bottom:6px">${r.note||r.description}</div>`:''}
         <div style="font-size:11px;color:var(--text-3)">— ${r.employees?.name||'nieznany'}</div>
-      </div>`
-    ).join('');
+      </div>`;
+    }).join('');
   }catch(e){
     list.innerHTML=`<div style="text-align:center;padding:40px;color:var(--text-3);font-size:13px">
       Trwa konfiguracja…<br>
@@ -3034,7 +3036,7 @@ async function saveHandover(){
     await sbFetch('/rest/v1/handover_items',{
       method:'POST',
       headers:{'Prefer':'return=minimal'},
-      body:JSON.stringify({task,priority,priority_order:priorityOrder,note,date,employee_id:emp?.id||null})
+      body:JSON.stringify({title:task,description:note,priority_order:priorityOrder,date,employee_id:emp?.id||null})
     });
     closeHandoverModal();
     showToast('✓ Przekazanie zapisane');
