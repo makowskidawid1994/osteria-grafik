@@ -1753,7 +1753,7 @@ async function doLogin() {
     // Teraz dane są gotowe, splash właśnie skończył animację wejścia — pokaż app
     document.getElementById('auth-screen').style.display='none';
     document.getElementById('app').style.display='block';
-    document.getElementById('hdr-role').textContent={owner:'Właściciel',manager:'Manager',kitchen:'Kuchnia',front:'Sala',employee:'Pracownik'}[currentRole]||currentRole;
+    document.getElementById('hdr-role').textContent={owner:'Właściciel',manager:'Manager',kitchen:'Szef kuchni',front:'Sala',employee:'Pracownik'}[currentRole]||currentRole;
     // Imię z tabeli employees (jeśli już załadowane), fallback z emaila
     const empMatch=employees.find(e=>e.email&&e.email.toLowerCase()===email.toLowerCase());
     const displayFirst=getDisplayName(email, empMatch?.name);
@@ -1899,7 +1899,9 @@ async function tryRestoreSession(){
   }catch(_){return false;}
 }
 
-function canEdit(){return['owner','manager'].includes(currentRole);}
+function canEdit(){return['owner','manager','kitchen','front'].includes(currentRole);}
+function isKitchenRole(){return['owner','manager','kitchen'].includes(currentRole);}
+function isFrontRole(){return['owner','manager','front'].includes(currentRole);}
 
 async function loadAllData(){
   employees=await sbFetch('/rest/v1/employees?select=*&active=eq.true&order=department,name').catch(()=>[]);
@@ -2097,9 +2099,9 @@ function renderHome(mc){
   // Użyj imienia z bazy pracowników; fallback na nick z maila tylko gdy brak rekordu
   const rawName=emp?.name||'';
   const firstName=rawName.trim().split(/\s+/)[0]||getDisplayName(myEmail);
-  const role=currentRole==='owner'?'Właściciel':currentRole==='manager'?'Manager':emp?.department==='kuchnia'?'Kucharz':'Pracownik';
-  const isKitchen=emp?.department==='kuchnia';
-  const isOwnerOrMgr=canEdit();
+  const role=currentRole==='owner'?'Właściciel':currentRole==='manager'?'Manager':currentRole==='kitchen'?'Szef kuchni':currentRole==='front'?'Sala':emp?.department==='kuchnia'?'Kucharz':'Pracownik';
+  const isKitchen=emp?.department==='kuchnia'||currentRole==='kitchen';
+  const isOwnerOrMgr=['owner','manager'].includes(currentRole);
 
   const tod=today();
   const myShiftToday=shifts.find(s=>s.employee_id===emp?.id&&s.date===tod);
@@ -4543,7 +4545,7 @@ document.getElementById('auth-pass').addEventListener('keydown',e=>{if(e.key==='
     const email=currentUser?.user?.email||currentUser?.email||'';
     document.getElementById('auth-screen').style.display='none';
     document.getElementById('app').style.display='block';
-    document.getElementById('hdr-role').textContent={owner:'Właściciel',manager:'Manager',kitchen:'Kuchnia',front:'Sala',employee:'Pracownik'}[currentRole]||currentRole;
+    document.getElementById('hdr-role').textContent={owner:'Właściciel',manager:'Manager',kitchen:'Szef kuchni',front:'Sala',employee:'Pracownik'}[currentRole]||currentRole;
     // Imię z tabeli employees (data już załadowana), fallback z emaila
     const empR=employees.find(e=>e.email&&e.email.toLowerCase()===email.toLowerCase());
     const displayFirst=getDisplayName(email, empR?.name);
@@ -5512,7 +5514,7 @@ function startGlobalPolling(){
 function openProfileSheet(){
   const emp=getCurrentEmployee();
   const username=currentUser?.email?.split('@')[0]||'';
-  const roleName={owner:'Właściciel',manager:'Manager',kitchen:'Kuchnia',front:'Sala',employee:'Pracownik'}[currentRole]||currentRole;
+  const roleName={owner:'Właściciel',manager:'Manager',kitchen:'Szef kuchni',front:'Sala',employee:'Pracownik'}[currentRole]||currentRole;
 
   // Dane statystyczne — zmiany w tym tygodniu
   const{from,to}=getWeekRange(0);
