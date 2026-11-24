@@ -2230,98 +2230,699 @@ function hbTap(el, view){
    RECEPTURY — dane lokalne (Supabase-ready)
 ═══════════════════════════════════════════════ */
 const RECIPE_CATEGORIES = [
-  { id:'przystawki',   label:'Przystawki',   svg:'<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z" fill="none"/><circle cx="12" cy="12" r="10" stroke-width="1.5"/><path d="M8 12h8M12 8v8" stroke-width="1.5"/>' },
-  { id:'pizza',        label:'Pizza',        svg:'<path d="M12 2l9 18H3L12 2z" stroke-width="1.5"/><line x1="12" y1="8" x2="12" y2="14" stroke-width="1.5"/><line x1="8" y1="14" x2="16" y2="14" stroke-width="1.5"/>' },
-  { id:'pasta',        label:'Pasta & Risotto', svg:'<path d="M5 12c0-3.87 3.13-7 7-7s7 3.13 7 7" stroke-width="1.5"/><path d="M3 12h18" stroke-width="1.5"/><path d="M5 16c0 2.21 3.13 4 7 4s7-1.79 7-4" stroke-width="1.5"/><line x1="12" y1="5" x2="12" y2="20" stroke-width="1.5"/>' },
-  { id:'dania-glowne', label:'Dania główne', svg:'<rect x="3" y="11" width="18" height="2" rx="1" stroke-width="1.5"/><path d="M12 2v9M12 13v9" stroke-width="1.5"/><circle cx="12" cy="12" r="3" stroke-width="1.5"/>' },
-  { id:'desery',       label:'Desery',       svg:'<path d="M12 2C8 2 4 5 4 9c0 5 8 13 8 13s8-8 8-13c0-4-4-7-8-7z" stroke-width="1.5"/><circle cx="12" cy="9" r="2" stroke-width="1.5"/>' },
-  { id:'napoje',       label:'Napoje',       svg:'<path d="M6 2h12l-2 7H8L6 2z" stroke-width="1.5"/><path d="M8 9c0 4 1 7 4 9s4-5 4-9" stroke-width="1.5"/><line x1="6" y1="2" x2="4" y2="11" stroke-width="1.5"/>' },
+  { id:'antipasti',      label:'Antipasti',         svg:'<path d="M3 11l19-9-9 19-2-8-8-2z" stroke-width="1.5"/>' },
+  { id:'zuppe',          label:'Zuppe',             svg:'<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z" stroke-width="1.5"/><path d="M8 12h8M12 8v8" stroke-width="1.5" fill="none"/>' },
+  { id:'pasta-fresca',   label:'Pasta Fresca',      svg:'<path d="M5 12c0-3.87 3.13-7 7-7s7 3.13 7 7" stroke-width="1.5"/><path d="M3 12h18" stroke-width="1.5"/><path d="M5 16c0 2.21 3.13 4 7 4s7-1.79 7-4" stroke-width="1.5"/><line x1="12" y1="5" x2="12" y2="20" stroke-width="1.5"/>' },
+  { id:'risotto',        label:'Risotto',           svg:'<circle cx="12" cy="12" r="9" stroke-width="1.5"/><circle cx="12" cy="12" r="4" stroke-width="1.5"/><line x1="12" y1="3" x2="12" y2="8" stroke-width="1.5"/>' },
+  { id:'secondi',        label:'Secondi',           svg:'<rect x="3" y="11" width="18" height="2" rx="1" stroke-width="1.5"/><path d="M12 2v9M12 13v9" stroke-width="1.5"/><circle cx="12" cy="12" r="3" stroke-width="1.5"/>' },
+  { id:'pizza-speciale', label:'Pizza Speciale',    svg:'<path d="M12 2l9 18H3L12 2z" stroke-width="1.5"/><line x1="12" y1="8" x2="12" y2="14" stroke-width="1.5"/><line x1="8" y1="14" x2="16" y2="14" stroke-width="1.5"/>' },
+  { id:'pizza',          label:'Pizza',             svg:'<circle cx="12" cy="12" r="9" stroke-width="1.5"/><path d="M12 3v18M3 12h18" stroke-width="1" stroke-dasharray="2 2"/>' },
+  { id:'bambini',        label:'Bambini',           svg:'<path d="M12 2C8.5 2 6 4.5 6 8c0 2.5 1.5 4.5 3.5 5.5L9 20h6l-.5-6.5C16.5 12.5 18 10.5 18 8c0-3.5-2.5-6-6-6z" stroke-width="1.5"/>' },
+  { id:'dolci',          label:'Dolci',             svg:'<path d="M12 2C8 2 4 5 4 9c0 5 8 13 8 13s8-8 8-13c0-4-4-7-8-7z" stroke-width="1.5"/><circle cx="12" cy="9" r="2" stroke-width="1.5"/>' },
 ];
 
-// Przykładowe receptury — do zastąpienia danymi z Supabase
+// Receptury z POSbistro — składniki pobrane 2024-11, kroki przygotowania do uzupełnienia
 const RECIPES_DEFAULT = [
+  /* ═══ ANTIPASTI ═══ */
   {
-    id:'r1', category:'przystawki', name:'Tatar wołowy',
-    portions:1, prep_time:15, allergens:['gluten','jajka','musztarda'],
+    id:'p-tatar', category:'antipasti', name:'Tatar Bavette',
+    portions:1, prep_time:0, allergens:[],
     ingredients:[
-      {name:'Polędwica wołowa',qty:'160',unit:'g'},
-      {name:'Żółtko jajka',qty:'1',unit:'szt.'},
-      {name:'Kapary',qty:'10',unit:'g'},
-      {name:'Ogórek kiszony',qty:'20',unit:'g'},
-      {name:'Cebula czerwona',qty:'15',unit:'g'},
-      {name:'Musztarda Dijon',qty:'5',unit:'g'},
-      {name:'Olej z pestek winogron',qty:'10',unit:'ml'},
-      {name:'Tabasco',qty:'2',unit:'krople'},
-      {name:'Sól morska, pieprz cayenne',qty:'',unit:'do smaku'},
-      {name:'Grzanka z chleba żytniego',qty:'2',unit:'szt.'},
+      {name:'Bavette',qty:'120',unit:'g'},
+      {name:'Masło domowe Osteria',qty:'40',unit:'g'},
+      {name:'Oliwa truflowa',qty:'10',unit:'ml'},
+      {name:'Żółtko płynne',qty:'10',unit:'g'},
+      {name:'Topinambur',qty:'10',unit:'g'},
+      {name:'Majonez z czarnej trufli Osteria',qty:'10',unit:'g'},
+      {name:'Sos sojowy',qty:'2',unit:'ml'},
+      {name:'Cebula czerwona',qty:'6',unit:'g'},
+      {name:'Parmezan',qty:'5',unit:'g'},
+      {name:'Szczypiorek świeży',qty:'10',unit:'g'},
+      {name:'Pieprz czarny',qty:'1',unit:'g'},
+      {name:'Oliwa extra virgin',qty:'5',unit:'ml'},
+      {name:'Sól płatki',qty:'4',unit:'g'},
+      {name:'Ciasto na pizze Osteria',qty:'½',unit:'szt.'},
     ],
-    method:`1. Polędwicę oczyść z błon i ścięgien. Posiekaj nożem na drobną kostkę (~3 mm) — NIE miel.
-2. W miseczce wymieszaj żółtko, musztardę, olej — emulguj widelcem.
-3. Kapary, ogórek i cebulę posiekaj bardzo drobno, dodaj do mięsa.
-4. Dodaj emulsję, tabasco, dopraw solą i pieprzem. Wymieszaj delikatnie.
-5. Uformuj ringiem na talerzu, udekoruj żółtkiem w połówce skorupki jajka.
-6. Podawaj z grzankami i oliwą truflową. Serwuj natychmiast.`,
-    notes:'Mięso kroić wyłącznie na zimno, bezpośrednio przed serwisem. Temp. max. 4°C do wydania.',
+    method:'',
+    notes:'Wariant premium: +Czarna trufla 2g',
   },
   {
-    id:'r2', category:'pizza', name:'Margherita STG',
-    portions:1, prep_time:90, allergens:['gluten','laktoza'],
+    id:'p-arancini', category:'antipasti', name:'Arancini z wołowym ragout',
+    portions:1, prep_time:0, allergens:[],
     ingredients:[
-      {name:'Ciasto neapolitańskie (kulka)',qty:'260',unit:'g'},
-      {name:'Passata pomidorowa San Marzano',qty:'80',unit:'g'},
-      {name:'Mozzarella fior di latte',qty:'80',unit:'g'},
-      {name:'Oliwa EVO',qty:'10',unit:'ml'},
-      {name:'Bazylia świeża',qty:'3',unit:'listki'},
-      {name:'Sól morska',qty:'',unit:'szczypta'},
+      {name:'Risotto krewetka baza Osteria',qty:'90',unit:'g'},
+      {name:'Ragout Osteria',qty:'25',unit:'g'},
+      {name:'Mozzarella fior di latte',qty:'15',unit:'g'},
+      {name:'Panierka panko',qty:'60',unit:'g'},
+      {name:'Jaja',qty:'1',unit:'szt.'},
+      {name:'Mąka',qty:'15',unit:'g'},
+      {name:'Aioli własnej produkcji',qty:'15',unit:'g'},
+      {name:'Parmezan',qty:'10',unit:'g'},
+      {name:'Demi glace koncentrat',qty:'3',unit:'ml'},
     ],
-    method:`1. Kulkę ciasta (dojrzałą, temp. pokojowa) rozciągnij ręcznie na 30–33 cm — nie używaj wałka.
-2. Passatę rozsmaruj spiralnie od środka, zostaw 1–1,5 cm brzegu.
-3. Połóż mozzarellę porwaną w kawałki równomiernie.
-4. Skrop oliwą EVO. Lekko posól brzegi.
-5. Piecz w piecu opałowym w 430–480°C przez 60–90 sekund, obracaj co 30 s.
-6. Po wyjęciu dodaj świeżą bazylię i krop oliwą.`,
-    notes:'Ciasto: protokół AVPN — bezpośrednie, 48–72 h fermentacja w 4°C. Sprawdzaj wilgotność passaty — zbyt rzadka podmoczy spód.',
+    method:'',
+    notes:'',
   },
   {
-    id:'r3', category:'pasta', name:'Cacio e Pepe',
-    portions:2, prep_time:20, allergens:['gluten','laktoza'],
+    id:'p-krewetki', category:'antipasti', name:'Krewetki marynowane',
+    portions:1, prep_time:0, allergens:[],
     ingredients:[
-      {name:'Spaghetti (własny wyrób lub De Cecco)',qty:'200',unit:'g'},
-      {name:'Pecorino Romano DOP (starty)',qty:'80',unit:'g'},
-      {name:'Parmigiano Reggiano (starty)',qty:'40',unit:'g'},
-      {name:'Pieprz czarny całe ziarna',qty:'2',unit:'łyżeczki'},
-      {name:'Woda z makaronu',qty:'150',unit:'ml'},
-      {name:'Sól',qty:'',unit:'do wody'},
+      {name:'Krewetka 16/20',qty:'120',unit:'g'},
+      {name:'Ciasto na pizze Osteria',qty:'0.167',unit:'szt.'},
+      {name:'Bisque krewetkowe Osteria',qty:'60',unit:'g'},
+      {name:'Masło',qty:'30',unit:'g'},
+      {name:'Wino białe kuchnia',qty:'50',unit:'ml'},
+      {name:'Pomidorki koktajlowe',qty:'50',unit:'g'},
+      {name:'Czosnek obrany',qty:'10',unit:'g'},
+      {name:'Marynata do krewetek',qty:'1',unit:'szt.'},
+      {name:'Oliwa ziołowa domowa',qty:'2',unit:'ml'},
+      {name:'Sos rybny',qty:'5',unit:'ml'},
+      {name:'Olej',qty:'10',unit:'ml'},
+      {name:'Natka pietruszki świeża',qty:'5',unit:'g'},
+      {name:'Peperoncino',qty:'1',unit:'g'},
+      {name:'Sól drobnoziarnista',qty:'2',unit:'g'},
+      {name:'Cukier biały',qty:'2',unit:'g'},
     ],
-    method:`1. Pieprz uprać na suchej patelni (śr.) do uwolnienia aromatu. Grubo roztłucz w moździerzu.
-2. Makaron gotuj w mocno osolonej wodzie al dente (zostaw 2 min do al dente).
-3. Na patelni rozgrzej łyżkę wody z makaronu z pieprzem — stwórz bazę.
-4. Wymieszaj oba sery z 3 łyżkami zimnej wody makaronowej na gładką pastę.
-5. Przełóż al dente makaron na patelnię z pieprzem, dodaj wodę, mieszaj.
-6. Zdejmij z ognia — dodaj pastę serową, szybko mieszaj ruchem obrotowym. Creamy, nie grudkowe.
-7. Serwuj natychmiast, posyp pieprzem i startym pecorino.`,
-    notes:'Kluczowe: nigdy ser bezpośrednio na gorącą patelnię — zetnie się. Temperatura maks. 70°C przy serze.',
+    method:'',
+    notes:'',
   },
   {
-    id:'r4', category:'desery', name:'Tiramisu Classico',
-    portions:6, prep_time:30, allergens:['gluten','jajka','laktoza'],
+    id:'p-bruksela', category:'antipasti', name:'Smażona bruksela z miodem',
+    portions:1, prep_time:0, allergens:[],
     ingredients:[
-      {name:'Żółtka jaj',qty:'4',unit:'szt.'},
-      {name:'Cukier drobny',qty:'100',unit:'g'},
-      {name:'Mascarpone',qty:'500',unit:'g'},
-      {name:'Śmietanka 36% (ubita)',qty:'200',unit:'ml'},
-      {name:'Espresso mocne (ostudzone)',qty:'300',unit:'ml'},
-      {name:'Amaretto',qty:'30',unit:'ml'},
-      {name:'Ladyfingers (savoiardi)',qty:'200',unit:'g'},
-      {name:'Kakao holenderskie (do oprószenia)',qty:'',unit:'do dekoracji'},
+      {name:'Brukselka',qty:'110',unit:'g'},
+      {name:'Sos z parmezanu Osteria',qty:'90',unit:'g'},
+      {name:'Guanciale',qty:'60',unit:'g'},
+      {name:'Czosnek obrany',qty:'10',unit:'g'},
+      {name:'Miód',qty:'8',unit:'g'},
+      {name:'Pecorino',qty:'8',unit:'g'},
     ],
-    method:`1. Żółtka utrzyj z cukrem do bladej, puszystej masy (ribbon stage).
-2. Wmieszaj mascarpone — delikatnie, żeby nie zwarzył.
-3. Wmieszaj ubitą śmietankę na przemian — lekki krem.
-4. Połącz espresso z amaretto. Każde savoiardi zamaczaj 1–2 s — nie namaczaj.
-5. Pierwsza warstwa biszkoptów, połowa kremu, druga warstwa biszkoptów, reszta kremu.
-6. Schłódź min. 6 h (optymalnie noc). Przed podaniem obficie oprósz kakao przez sitko.`,
-    notes:'Bez surowych jaj: pasteryzuj żółtka w kąpieli wodnej 60°C przez 5 min mieszając. Tiramisu trzyma 48 h w lodówce.',
+    method:'',
+    notes:'',
+  },
+  {
+    id:'p-deska', category:'antipasti', name:'Deska antipasti',
+    portions:1, prep_time:0, allergens:[],
+    ingredients:[
+      {name:'Pancetta',qty:'80',unit:'g'},
+      {name:'Oliwki',qty:'80',unit:'g'},
+      {name:'Salami piccante',qty:'60',unit:'g'},
+      {name:'Parmezan',qty:'60',unit:'g'},
+      {name:'Pecorino',qty:'60',unit:'g'},
+      {name:'Szynka parma',qty:'50',unit:'g'},
+      {name:'Scamorza affumicata',qty:'50',unit:'g'},
+      {name:'Salami napoli',qty:'30',unit:'g'},
+      {name:'Ventricina picante salami',qty:'30',unit:'g'},
+    ],
+    method:'',
+    notes:'',
+  },
+  /* ═══ ZUPPE ═══ */
+  {
+    id:'z-trippa', category:'zuppe', name:'Trippa alla florentina',
+    portions:1, prep_time:0, allergens:[],
+    ingredients:[
+      {name:'Flaki wołowe prep. Osteria',qty:'1',unit:'szt.'},
+      {name:'Natka pietruszki świeża',qty:'10',unit:'g'},
+      {name:'Oregano świeże',qty:'5',unit:'g'},
+    ],
+    method:'',
+    notes:'',
+  },
+  {
+    id:'z-dynia', category:'zuppe', name:'Krem z pieczonej dyni',
+    portions:1, prep_time:0, allergens:[],
+    ingredients:[
+      {name:'Krem z dyni Osteria',qty:'300',unit:'g'},
+      {name:'Pestki dyni',qty:'10',unit:'g'},
+      {name:'Olej',qty:'5',unit:'ml'},
+      {name:'Papryka wędzona',qty:'2',unit:'g'},
+    ],
+    method:'',
+    notes:'',
+  },
+  {
+    id:'z-grzyby', category:'zuppe', name:'Zupa grzybowa',
+    portions:1, prep_time:0, allergens:[],
+    ingredients:[
+      {name:'Bulion grzybowy Osteria',qty:'270',unit:'ml'},
+      {name:'Grzyby shimeji',qty:'40',unit:'g'},
+      {name:'Ravioli z borowikami',qty:'35',unit:'g'},
+      {name:'Tymianek świeży',qty:'10',unit:'g'},
+    ],
+    method:'',
+    notes:'',
+  },
+  /* ═══ PASTA FRESCA ═══ */
+  {
+    id:'pf-pappardelle-ragu', category:'pasta-fresca', name:'Papardelle Ragù',
+    portions:1, prep_time:0, allergens:[],
+    ingredients:[
+      {name:'Ciasto na makaron Osteria',qty:'160',unit:'g'},
+      {name:'Ragout Osteria',qty:'150',unit:'g'},
+      {name:'Pecorino',qty:'20',unit:'g'},
+      {name:'Masło',qty:'20',unit:'g'},
+      {name:'Demi glace koncentrat',qty:'5',unit:'ml'},
+    ],
+    method:'',
+    notes:'Wariant truflowy: +Czarna trufla 2g',
+  },
+  {
+    id:'pf-carbonara', category:'pasta-fresca', name:'Orchiette Carbonara',
+    portions:1, prep_time:0, allergens:[],
+    ingredients:[
+      {name:'Ciasto na makaron Osteria',qty:'160',unit:'g'},
+      {name:'Guanciale',qty:'80',unit:'g'},
+      {name:'Pecorino',qty:'35',unit:'g'},
+      {name:'Żółtko płynne pasteryzowane',qty:'25',unit:'g'},
+      {name:'Pieprz czarny',qty:'3',unit:'g'},
+      {name:'Pieprz czarny ziarnisty',qty:'2',unit:'g'},
+      {name:'Sól drobnoziarnista',qty:'1',unit:'g'},
+    ],
+    method:'',
+    notes:'Wariant: +Czarna trufla 4g',
+  },
+  {
+    id:'pf-pacchieri', category:'pasta-fresca', name:'Pacchieri z krewetkami',
+    portions:1, prep_time:0, allergens:[],
+    ingredients:[
+      {name:'Ciasto na makaron Osteria',qty:'160',unit:'g'},
+      {name:'Krewetka 16/20',qty:'100',unit:'g'},
+      {name:'Bisque krewetkowe Osteria',qty:'75',unit:'g'},
+      {name:'Pomidory Pelati',qty:'75',unit:'g'},
+      {name:'Cebula szalotka',qty:'30',unit:'g'},
+      {name:'Czosnek obrany',qty:'20',unit:'g'},
+      {name:'Olej',qty:'15',unit:'ml'},
+      {name:'Masło',qty:'15',unit:'g'},
+      {name:'Wino białe kuchnia',qty:'25',unit:'ml'},
+      {name:'Sos rybny',qty:'3',unit:'ml'},
+      {name:'Bazylia świeża',qty:'5',unit:'g'},
+      {name:'Peperoncino',qty:'2',unit:'g'},
+      {name:'Sól drobnoziarnista',qty:'3',unit:'g'},
+      {name:'Cukier biały',qty:'2',unit:'g'},
+    ],
+    method:'',
+    notes:'Wariant: +Czarna trufla 4g',
+  },
+  {
+    id:'pf-alfredo', category:'pasta-fresca', name:'Fettuccine alfredo z czarną truflą',
+    portions:1, prep_time:0, allergens:[],
+    ingredients:[
+      {name:'Ciasto na makaron Osteria',qty:'160',unit:'g'},
+      {name:'Czarna trufla',qty:'4',unit:'g'},
+      {name:'Masło',qty:'25',unit:'g'},
+      {name:'Parmezan',qty:'20',unit:'g'},
+      {name:'Oliwa truflowa',qty:'8',unit:'ml'},
+      {name:'Sól drobnoziarnista',qty:'3',unit:'g'},
+    ],
+    method:'',
+    notes:'Wariant extra: +Czarna trufla 2g',
+  },
+  {
+    id:'pf-kurczak', category:'pasta-fresca', name:'Rigatoni z kurczakiem',
+    portions:1, prep_time:0, allergens:[],
+    ingredients:[
+      {name:'Ciasto na makaron Osteria',qty:'160',unit:'g'},
+      {name:'Filet z kurczaka',qty:'170',unit:'g'},
+      {name:'Sos do alfredo Manana',qty:'70',unit:'g'},
+      {name:'Masło',qty:'20',unit:'g'},
+      {name:'Parmezan',qty:'10',unit:'g'},
+      {name:'Rozmaryn',qty:'5',unit:'g'},
+      {name:'Pieprz czarny ziarnisty',qty:'2',unit:'g'},
+    ],
+    method:'',
+    notes:'Warianty: +Czarna trufla 3g / +Czosnek obrany 5g',
+  },
+  {
+    id:'pf-watrobka', category:'pasta-fresca', name:'Papardelle z wątróbką',
+    portions:1, prep_time:0, allergens:[],
+    ingredients:[
+      {name:'Ciasto na makaron Osteria',qty:'160',unit:'g'},
+      {name:'Wątróbka drobiowa',qty:'90',unit:'g'},
+      {name:'Sos pieprzowy Osteria',qty:'70',unit:'ml'},
+      {name:'Demi glace koncentrat',qty:'10',unit:'ml'},
+      {name:'Masło',qty:'1',unit:'g'},
+    ],
+    method:'',
+    notes:'Wariant: +Czarna trufla 3g',
+  },
+  {
+    id:'pf-gnocchi', category:'pasta-fresca', name:'Gnocchi z kalafiorem i truflą',
+    portions:1, prep_time:0, allergens:[],
+    ingredients:[
+      {name:'Gnocchi',qty:'200',unit:'g'},
+      {name:'Kalafior',qty:'100',unit:'g'},
+      {name:'Sos z kalafiora Osteria',qty:'100',unit:'g'},
+      {name:'Czarna trufla',qty:'4',unit:'g'},
+      {name:'Parmezan',qty:'10',unit:'g'},
+      {name:'Oliwa truflowa',qty:'5',unit:'ml'},
+    ],
+    method:'',
+    notes:'',
+  },
+  {
+    id:'pf-ravioli-kaczka', category:'pasta-fresca', name:'Ravioli z Kaczką',
+    portions:1, prep_time:0, allergens:[],
+    ingredients:[
+      {name:'Ravioli z kaczką',qty:'100',unit:'g'},
+      {name:'Bulion grzybowy Osteria',qty:'90',unit:'ml'},
+      {name:'Grzyby shimeji',qty:'20',unit:'g'},
+      {name:'Masło',qty:'15',unit:'g'},
+      {name:'Tymianek świeży',qty:'10',unit:'g'},
+      {name:'Pieprz czarny ziarnisty',qty:'2',unit:'g'},
+    ],
+    method:'',
+    notes:'',
+  },
+  /* ═══ RISOTTO ═══ */
+  {
+    id:'r-krewetki', category:'risotto', name:'Risotto z Krewetkami',
+    portions:1, prep_time:0, allergens:[],
+    ingredients:[
+      {name:'Risotto krewetka baza Osteria',qty:'180',unit:'g'},
+      {name:'Krewetka 16/20',qty:'110',unit:'g'},
+      {name:'Nduja',qty:'40',unit:'g'},
+      {name:'Mascarpone',qty:'40',unit:'g'},
+      {name:'Bisque krewetkowe Osteria',qty:'50',unit:'g'},
+      {name:'Parmezan',qty:'8',unit:'g'},
+      {name:'Natka pietruszki świeża',qty:'8',unit:'g'},
+      {name:'Fond z owoców morza',qty:'5',unit:'g'},
+      {name:'Sos rybny',qty:'5',unit:'ml'},
+      {name:'Masło',qty:'5',unit:'g'},
+    ],
+    method:'',
+    notes:'',
+  },
+  {
+    id:'r-dynia', category:'risotto', name:'Risotto z pieczoną dynią',
+    portions:1, prep_time:0, allergens:[],
+    ingredients:[
+      {name:'Risotto krewetka baza Osteria',qty:'160',unit:'g'},
+      {name:'Dynia',qty:'110',unit:'g'},
+      {name:'Śmietana 30%',qty:'30',unit:'g'},
+      {name:'Masło',qty:'15',unit:'g'},
+      {name:'Parmezan',qty:'12',unit:'g'},
+      {name:'Pestki dyni',qty:'10',unit:'g'},
+      {name:'Chilli w oleju',qty:'10',unit:'g'},
+    ],
+    method:'',
+    notes:'',
+  },
+  /* ═══ SECONDI ═══ */
+  {
+    id:'s-cotoletta', category:'secondi', name:'Cotoletta Alla Antonina',
+    portions:1, prep_time:0, allergens:[],
+    ingredients:[
+      {name:'Filet z kurczaka',qty:'170',unit:'g'},
+      {name:'Frytki',qty:'130',unit:'g'},
+      {name:'Pomidory',qty:'130',unit:'g'},
+      {name:'Masło ziołowe Osteria',qty:'45',unit:'g'},
+      {name:'Panierka panko',qty:'20',unit:'g'},
+      {name:'Bułka tarta',qty:'20',unit:'g'},
+      {name:'Mąka',qty:'15',unit:'g'},
+      {name:'Olej',qty:'15',unit:'ml'},
+      {name:'Parmezan',qty:'30',unit:'g'},
+      {name:'Jaja',qty:'1',unit:'szt.'},
+      {name:'Cebula czerwona',qty:'6',unit:'g'},
+      {name:'Oliwa extra virgin',qty:'5',unit:'ml'},
+      {name:'Szczypiorek świeży',qty:'5',unit:'g'},
+      {name:'Sól drobnoziarnista',qty:'2',unit:'g'},
+      {name:'Pieprz czarny',qty:'2',unit:'g'},
+    ],
+    method:'',
+    notes:'',
+  },
+  {
+    id:'s-mielony', category:'secondi', name:'Il nostro Mielony',
+    portions:1, prep_time:0, allergens:[],
+    ingredients:[
+      {name:'Kotlet mielony Osteria',qty:'1',unit:'szt.'},
+      {name:'Ziemniaki puree gotowiec',qty:'150',unit:'g'},
+      {name:'Kapusta biała',qty:'120',unit:'g'},
+      {name:'Sos do mielonego Osteria',qty:'100',unit:'g'},
+      {name:'Śmietana 30%',qty:'40',unit:'g'},
+      {name:'Żółtko płynne pasteryzowane',qty:'15',unit:'g'},
+      {name:'Szczypiorek świeży',qty:'10',unit:'g'},
+    ],
+    method:'',
+    notes:'',
+  },
+  {
+    id:'s-pstrag', category:'secondi', name:'Pstrąg z Zielenicy',
+    portions:1, prep_time:0, allergens:[],
+    ingredients:[
+      {name:'Pstrąg',qty:'170',unit:'g'},
+      {name:'Risotto krewetka baza Osteria',qty:'130',unit:'g'},
+      {name:'Beurre blanc Osteria',qty:'1',unit:'szt.'},
+      {name:'Masło',qty:'10',unit:'g'},
+      {name:'Parmezan',qty:'8',unit:'g'},
+      {name:'Oliwa extra virgin',qty:'2',unit:'ml'},
+      {name:'Sól płatki',qty:'1',unit:'g'},
+      {name:'Szafran',qty:'0.1',unit:'g'},
+    ],
+    method:'',
+    notes:'',
+  },
+  {
+    id:'s-baklazhan', category:'secondi', name:'Bakłażan',
+    portions:1, prep_time:0, allergens:[],
+    ingredients:[
+      {name:'Bakłażan',qty:'280',unit:'g'},
+      {name:'Sos z parmezanu Osteria',qty:'100',unit:'g'},
+      {name:'Pomidorki koktajlowe',qty:'100',unit:'g'},
+      {name:'Pomidory Pelati',qty:'100',unit:'g'},
+      {name:'Czosnek obrany',qty:'8',unit:'g'},
+      {name:'Bazylia świeża',qty:'8',unit:'g'},
+      {name:'Oliwa extra virgin',qty:'10',unit:'ml'},
+      {name:'Sól drobnoziarnista',qty:'5',unit:'g'},
+      {name:'Cukier biały',qty:'5',unit:'g'},
+      {name:'Pieprz czarny',qty:'2',unit:'g'},
+    ],
+    method:'',
+    notes:'',
+  },
+  {
+    id:'s-papryka', category:'secondi', name:'Papryka',
+    portions:1, prep_time:0, allergens:[],
+    ingredients:[
+      {name:'Papryka czerwona',qty:'100',unit:'g'},
+      {name:'Sos z parmezanu Osteria',qty:'80',unit:'g'},
+      {name:'Risotto krewetka baza Osteria',qty:'80',unit:'g'},
+      {name:'Sos paprykowy Osteria',qty:'80',unit:'g'},
+      {name:'Filet z kurczaka',qty:'30',unit:'g'},
+      {name:'Tymianek świeży',qty:'8',unit:'g'},
+      {name:'Sos sojowy',qty:'5',unit:'ml'},
+      {name:'Demi glace koncentrat',qty:'5',unit:'ml'},
+    ],
+    method:'',
+    notes:'',
+  },
+  /* ═══ PIZZA SPECIALE ═══ */
+  {
+    id:'ps-guanciale', category:'pizza-speciale', name:'Pizza Guanciale',
+    portions:1, prep_time:0, allergens:[],
+    ingredients:[
+      {name:'Ciasto na pizze Osteria',qty:'1',unit:'szt.'},
+      {name:'Mozzarella fior di latte',qty:'95',unit:'g'},
+      {name:'Creme fraiche',qty:'90',unit:'g'},
+      {name:'Guanciale',qty:'50',unit:'g'},
+      {name:'Taleggio',qty:'20',unit:'g'},
+      {name:'Czosnek obrany',qty:'5',unit:'g'},
+      {name:'Pecorino',qty:'8',unit:'g'},
+    ],
+    method:'',
+    notes:'',
+  },
+  {
+    id:'ps-pancetta', category:'pizza-speciale', name:'Pancetta e spinaci',
+    portions:1, prep_time:0, allergens:[],
+    ingredients:[
+      {name:'Ciasto na pizze Osteria',qty:'1',unit:'szt.'},
+      {name:'Mozzarella fior di latte',qty:'100',unit:'g'},
+      {name:'Pancetta',qty:'55',unit:'g'},
+      {name:'Creme fraiche',qty:'80',unit:'g'},
+      {name:'Szpinak',qty:'15',unit:'g'},
+      {name:'Czosnek obrany',qty:'8',unit:'g'},
+      {name:'Pecorino',qty:'8',unit:'g'},
+      {name:'Rozmaryn',qty:'5',unit:'g'},
+    ],
+    method:'',
+    notes:'',
+  },
+  {
+    id:'ps-straciatella', category:'pizza-speciale', name:"Pizza Straciatella 'Nduja",
+    portions:1, prep_time:0, allergens:[],
+    ingredients:[
+      {name:'Ciasto na pizze Osteria',qty:'1',unit:'szt.'},
+      {name:'Mozzarella fior di latte',qty:'100',unit:'g'},
+      {name:'Straciatella',qty:'65',unit:'g'},
+      {name:'Creme fraiche',qty:'80',unit:'g'},
+      {name:'Nduja',qty:'40',unit:'g'},
+      {name:'Bazylia świeża',qty:'8',unit:'g'},
+      {name:'Miód',qty:'7',unit:'g'},
+      {name:'Peperoncino',qty:'2',unit:'g'},
+    ],
+    method:'',
+    notes:'',
+  },
+  {
+    id:'ps-zucca', category:'pizza-speciale', name:'Zucca',
+    portions:1, prep_time:0, allergens:[],
+    ingredients:[
+      {name:'Ciasto na pizze Osteria',qty:'1',unit:'szt.'},
+      {name:'Mozzarella fior di latte',qty:'100',unit:'g'},
+      {name:'Mus z dyni domowy Osteria',qty:'90',unit:'g'},
+      {name:'Dynia',qty:'60',unit:'g'},
+      {name:'Pestki dyni',qty:'10',unit:'g'},
+      {name:'Szpinak',qty:'10',unit:'g'},
+    ],
+    method:'',
+    notes:'',
+  },
+  {
+    id:'ps-salsicia', category:'pizza-speciale', name:'Salsicia e peperoni',
+    portions:1, prep_time:0, allergens:[],
+    ingredients:[
+      {name:'Ciasto na pizze Osteria',qty:'1',unit:'szt.'},
+      {name:'Mozzarella fior di latte',qty:'100',unit:'g'},
+      {name:'Sos paprykowy Osteria',qty:'100',unit:'g'},
+      {name:'Salsiccia',qty:'65',unit:'g'},
+      {name:'Friarielli',qty:'20',unit:'g'},
+      {name:'Peperoncino',qty:'2',unit:'g'},
+    ],
+    method:'',
+    notes:'',
+  },
+  {
+    id:'ps-dolce-parma', category:'pizza-speciale', name:'Dolce parma',
+    portions:1, prep_time:0, allergens:[],
+    ingredients:[
+      {name:'Ciasto na pizze Osteria',qty:'1',unit:'szt.'},
+      {name:'Mozzarella fior di latte',qty:'100',unit:'g'},
+      {name:'Mascarpone',qty:'40',unit:'g'},
+      {name:'Szynka parma',qty:'40',unit:'g'},
+      {name:'Brzoskwinia w syropie',qty:'30',unit:'g'},
+      {name:'Cebula czerwona',qty:'20',unit:'g'},
+      {name:'Bazylia świeża',qty:'7',unit:'g'},
+    ],
+    method:'',
+    notes:'',
+  },
+  {
+    id:'ps-prosciutto', category:'pizza-speciale', name:'Pizza Prosciutto di parma',
+    portions:1, prep_time:0, allergens:[],
+    ingredients:[
+      {name:'Ciasto na pizze Osteria',qty:'1',unit:'szt.'},
+      {name:'Mozzarella fior di latte',qty:'100',unit:'g'},
+      {name:'Pomidory Pelati',qty:'115',unit:'g'},
+      {name:'Szynka parma',qty:'40',unit:'g'},
+      {name:'Pomidorki koktajlowe',qty:'50',unit:'g'},
+      {name:'Rukola',qty:'15',unit:'g'},
+      {name:'Parmezan',qty:'8',unit:'g'},
+      {name:'Oliwa extra virgin',qty:'3',unit:'ml'},
+    ],
+    method:'',
+    notes:'',
+  },
+  {
+    id:'ps-habanero', category:'pizza-speciale', name:'Habanero diavola',
+    portions:1, prep_time:0, allergens:[],
+    ingredients:[
+      {name:'Ciasto na pizze Osteria',qty:'1',unit:'szt.'},
+      {name:'Mozzarella fior di latte',qty:'100',unit:'g'},
+      {name:'Pomidory Pelati',qty:'100',unit:'g'},
+      {name:'Ventricina picante salami',qty:'60',unit:'g'},
+      {name:'Brzoskwinia w syropie',qty:'30',unit:'g'},
+      {name:'Papryka habanero',qty:'10',unit:'g'},
+    ],
+    method:'',
+    notes:'',
+  },
+  {
+    id:'ps-miesiac', category:'pizza-speciale', name:'Pizza miesiąca',
+    portions:1, prep_time:0, allergens:[],
+    ingredients:[
+      {name:'Ciasto na pizze Osteria',qty:'1',unit:'szt.'},
+      {name:'Mozzarella fior di latte',qty:'95',unit:'g'},
+      {name:'Podgrzybek',qty:'100',unit:'g'},
+      {name:'Creme fraiche',qty:'60',unit:'g'},
+      {name:'Scamorza affumicata',qty:'40',unit:'g'},
+      {name:'Sos do mielonego Osteria',qty:'40',unit:'g'},
+      {name:'Oliwa truflowa',qty:'8',unit:'ml'},
+      {name:'Fond grzybowy',qty:'10',unit:'g'},
+      {name:'Natka pietruszki świeża',qty:'1',unit:'g'},
+    ],
+    method:'',
+    notes:'',
+  },
+  {
+    id:'ps-amatriciana', category:'pizza-speciale', name:'Amatriciana',
+    portions:1, prep_time:0, allergens:[],
+    ingredients:[
+      {name:'Ciasto na pizze Osteria',qty:'1',unit:'szt.'},
+      {name:'Mozzarella fior di latte',qty:'100',unit:'g'},
+      {name:'Pomidory Pelati',qty:'100',unit:'g'},
+      {name:'Guanciale',qty:'60',unit:'g'},
+      {name:'Pecorino',qty:'8',unit:'g'},
+      {name:'Peperoncino',qty:'3',unit:'g'},
+    ],
+    method:'',
+    notes:'',
+  },
+  /* ═══ PIZZA ═══ */
+  {
+    id:'pi-margherita', category:'pizza', name:'Pizza Margherita',
+    portions:1, prep_time:0, allergens:[],
+    ingredients:[
+      {name:'Ciasto na pizze Osteria',qty:'1',unit:'szt.'},
+      {name:'Mozzarella fior di latte',qty:'100',unit:'g'},
+      {name:'Pomidory Pelati',qty:'115',unit:'g'},
+      {name:'Oliwa extra virgin',qty:'7',unit:'ml'},
+      {name:'Bazylia świeża',qty:'5',unit:'g'},
+    ],
+    method:'',
+    notes:'',
+  },
+  {
+    id:'pi-prosciutto-cotto', category:'pizza', name:'Pizza Prosciutto Cotto',
+    portions:1, prep_time:0, allergens:[],
+    ingredients:[
+      {name:'Ciasto na pizze Osteria',qty:'1',unit:'szt.'},
+      {name:'Mozzarella fior di latte',qty:'100',unit:'g'},
+      {name:'Pomidory Pelati',qty:'115',unit:'g'},
+      {name:'Prosciutto cotto',qty:'100',unit:'g'},
+    ],
+    method:'',
+    notes:'',
+  },
+  {
+    id:'pi-pepperoni', category:'pizza', name:'Pizza Pepperoni',
+    portions:1, prep_time:0, allergens:[],
+    ingredients:[
+      {name:'Ciasto na pizze Osteria',qty:'1',unit:'szt.'},
+      {name:'Mozzarella fior di latte',qty:'95',unit:'g'},
+      {name:'Salami piccante',qty:'70',unit:'g'},
+      {name:'Pomidory Pelati',qty:'100',unit:'g'},
+      {name:'Oregano świeże',qty:'2',unit:'g'},
+    ],
+    method:'',
+    notes:'',
+  },
+  {
+    id:'pi-salami', category:'pizza', name:'Pizza Salami Napoli',
+    portions:1, prep_time:0, allergens:[],
+    ingredients:[
+      {name:'Ciasto na pizze Osteria',qty:'1',unit:'szt.'},
+      {name:'Mozzarella fior di latte',qty:'100',unit:'g'},
+      {name:'Pomidory Pelati',qty:'115',unit:'g'},
+      {name:'Salami napoli',qty:'45',unit:'g'},
+      {name:'Oliwki',qty:'35',unit:'g'},
+    ],
+    method:'',
+    notes:'',
+  },
+  {
+    id:'pi-quattro', category:'pizza', name:'Pizza Quattro formaggi',
+    portions:1, prep_time:0, allergens:[],
+    ingredients:[
+      {name:'Ciasto na pizze Osteria',qty:'1',unit:'szt.'},
+      {name:'Mozzarella fior di latte',qty:'50',unit:'g'},
+      {name:'Taleggio',qty:'30',unit:'g'},
+      {name:'Gorgonzola picante',qty:'30',unit:'g'},
+      {name:'Orzechy włoskie',qty:'25',unit:'g'},
+      {name:'Parmezan',qty:'10',unit:'g'},
+    ],
+    method:'',
+    notes:'',
+  },
+  {
+    id:'pi-mortadella', category:'pizza', name:'Mortadella e straciatella',
+    portions:1, prep_time:0, allergens:[],
+    ingredients:[
+      {name:'Ciasto na pizze Osteria',qty:'1',unit:'szt.'},
+      {name:'Mozzarella fior di latte',qty:'100',unit:'g'},
+      {name:'Straciatella',qty:'65',unit:'g'},
+      {name:'Mortadella',qty:'75',unit:'g'},
+      {name:'Creme fraiche',qty:'90',unit:'g'},
+      {name:'Pistacje',qty:'10',unit:'g'},
+    ],
+    method:'',
+    notes:'',
+  },
+  {
+    id:'pi-focaccia', category:'pizza', name:'Focaccia',
+    portions:1, prep_time:0, allergens:[],
+    ingredients:[
+      {name:'Ciasto na pizze Osteria',qty:'1',unit:'szt.'},
+    ],
+    method:'',
+    notes:'',
+  },
+  /* ═══ BAMBINI ═══ */
+  {
+    id:'b-pomodoro', category:'bambini', name:'Kids fettucine pomodoro',
+    portions:1, prep_time:0, allergens:[],
+    ingredients:[
+      {name:'Ciasto na makaron Osteria',qty:'120',unit:'g'},
+      {name:'Sos san marzano Osteria',qty:'90',unit:'g'},
+      {name:'Parmezan',qty:'7',unit:'g'},
+      {name:'Masło',qty:'6',unit:'g'},
+      {name:'Sól drobnoziarnista',qty:'2',unit:'g'},
+      {name:'Cukier biały',qty:'2',unit:'g'},
+    ],
+    method:'',
+    notes:'',
+  },
+  {
+    id:'b-burro', category:'bambini', name:'Fettuccine al burro',
+    portions:1, prep_time:0, allergens:[],
+    ingredients:[
+      {name:'Ciasto na makaron Osteria',qty:'120',unit:'g'},
+      {name:'Parmezan',qty:'10',unit:'g'},
+      {name:'Masło',qty:'5',unit:'g'},
+      {name:'Sól drobnoziarnista',qty:'2',unit:'g'},
+    ],
+    method:'',
+    notes:'',
+  },
+  {
+    id:'b-kurczaczki', category:'bambini', name:'Kurczaczki bambino',
+    portions:1, prep_time:0, allergens:[],
+    ingredients:[
+      {name:'Filet z kurczaka',qty:'125',unit:'g'},
+      {name:'Frytki',qty:'150',unit:'g'},
+      {name:'Panierka panko',qty:'30',unit:'g'},
+      {name:'Jaja',qty:'1',unit:'szt.'},
+      {name:'Mąka',qty:'10',unit:'g'},
+    ],
+    method:'',
+    notes:'',
+  },
+  /* ═══ DOLCI ═══ */
+  {
+    id:'d-tiramisu', category:'dolci', name:'Tiramisu',
+    portions:1, prep_time:0, allergens:[],
+    ingredients:[
+      {name:'Tiramisu Osteria',qty:'1',unit:'szt.'},
+    ],
+    method:'',
+    notes:'',
+  },
+  {
+    id:'d-sliwki', category:'dolci', name:'Pieczone śliwki',
+    portions:1, prep_time:0, allergens:[],
+    ingredients:[
+      {name:'Śliwki',qty:'200',unit:'g'},
+      {name:'Ricotta',qty:'100',unit:'g'},
+      {name:'Śmietana 30%',qty:'50',unit:'g'},
+      {name:'Syrop ze śliwki Osteria',qty:'70',unit:'g'},
+      {name:'Ciastka',qty:'20',unit:'g'},
+      {name:'Cynamon',qty:'5',unit:'g'},
+      {name:'Cukier puder',qty:'5',unit:'g'},
+      {name:'Laska wanilii',qty:'¼',unit:'szt.'},
+    ],
+    method:'',
+    notes:'',
   },
 ];
 
@@ -2331,7 +2932,7 @@ function renderRecipes(mc){
   const cat = currentRecipeCategory;
 
   if(!cat){
-    // Widok kategorii
+    // Widok kategorii z wyszukiwarką
     mc.innerHTML=`
     <div style="min-height:100dvh;background:var(--bg);display:flex;flex-direction:column;">
     <div class="page-bar">
@@ -2341,7 +2942,16 @@ function renderRecipes(mc){
       <div class="page-bar-title">Receptury</div>
       ${canEdit()?`<button class="btn-primary btn-sm" onclick="openAddRecipe()">+ Dodaj</button>`:''}
     </div>
-    <div style="padding:16px;display:flex;flex-direction:column;gap:8px;flex:1;">
+    <!-- Wyszukiwarka -->
+    <div style="padding:12px 16px 0;">
+      <div style="position:relative;">
+        <svg viewBox="0 0 24 24" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);width:16px;height:16px;stroke:var(--text-3);fill:none;stroke-width:2;pointer-events:none;"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input id="recipe-search" type="search" placeholder="Szukaj receptury…" oninput="filterRecipesSearch(this.value)"
+          style="width:100%;padding:10px 12px 10px 36px;border:1px solid var(--border-2);border-radius:10px;background:var(--bg-card);color:var(--text);font-size:14px;font-family:var(--font);box-sizing:border-box;outline:none;-webkit-appearance:none;">
+      </div>
+    </div>
+    <div id="recipe-search-results" style="display:none;padding:12px 16px;flex-direction:column;gap:6px;"></div>
+    <div id="recipe-categories-list" style="padding:12px 16px 16px;display:flex;flex-direction:column;gap:8px;flex:1;">
       ${RECIPE_CATEGORIES.map(c=>{
         const count=recipesLocal.filter(r=>r.category===c.id).length;
         return`<div onclick="currentRecipeCategory='${c.id}';renderView();" style="display:flex;align-items:center;gap:14px;background:var(--bg-card);border:1px solid var(--border-2);border-radius:14px;padding:16px;cursor:pointer;-webkit-tap-highlight-color:transparent;">
@@ -2369,7 +2979,7 @@ function renderRecipes(mc){
     <button class="section-back-btn" onclick="currentRecipeCategory=null;renderView();">
       <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>Receptury
     </button>
-    <div class="page-bar-title">${catInfo.icon} ${catInfo.label}</div>
+    <div class="page-bar-title">${catInfo.label}</div>
     ${canEdit()?`<button class="btn-primary btn-sm" onclick="openAddRecipe('${cat}')">+ Dodaj</button>`:''}
   </div>
   <div style="padding:16px;display:flex;flex-direction:column;gap:8px;flex:1;">
@@ -2381,8 +2991,9 @@ function renderRecipes(mc){
           <div style="flex:1;min-width:0;">
             <div style="font-size:15px;font-weight:700;color:var(--text);margin-bottom:3px;">${r.name}</div>
             <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
-              <span style="font-size:11px;color:var(--text-3);">${r.portions} ${r.portions===1?'porcja':'porcje'} · ${r.prep_time} min</span>
-              ${r.allergens.map(a=>`<span style="font-size:10px;padding:1px 6px;border-radius:4px;background:rgba(248,113,113,.12);color:#F87171;">${a}</span>`).join('')}
+              <span style="font-size:11px;color:var(--text-3);">${r.ingredients.length} skł.</span>
+              ${r.allergens&&r.allergens.length>0?r.allergens.map(a=>`<span style="font-size:10px;padding:1px 6px;border-radius:4px;background:rgba(248,113,113,.12);color:#F87171;">${a}</span>`).join(''):''}
+              ${r.notes?`<span style="font-size:10px;padding:1px 6px;border-radius:4px;background:rgba(99,102,241,.12);color:#818CF8;">uwagi</span>`:''}
             </div>
           </div>
           <svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:var(--text-3);fill:none;stroke-width:2;flex-shrink:0"><polyline points="9 18 15 12 9 6"/></svg>
@@ -2409,23 +3020,19 @@ function renderRecipeDetail(mc){
   <div style="flex:1;padding:16px;display:flex;flex-direction:column;gap:12px;padding-bottom:100px;">
 
     <!-- Meta -->
-    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
       <div style="text-align:center;padding:12px 6px;background:var(--bg-card2);border-radius:10px;border:1px solid var(--border-2);">
-        <div style="font-size:18px;font-weight:800;color:var(--text);">${r.portions}</div>
-        <div style="font-size:10px;color:var(--text-3);margin-top:1px;">porcj${r.portions===1?'a':'e'}</div>
+        <div style="font-size:18px;font-weight:800;color:var(--text);">${r.ingredients.length}</div>
+        <div style="font-size:10px;color:var(--text-3);margin-top:1px;">składników</div>
       </div>
       <div style="text-align:center;padding:12px 6px;background:var(--bg-card2);border-radius:10px;border:1px solid var(--border-2);">
-        <div style="font-size:18px;font-weight:800;color:var(--text);">${r.prep_time}</div>
-        <div style="font-size:10px;color:var(--text-3);margin-top:1px;">minut</div>
-      </div>
-      <div style="text-align:center;padding:12px 6px;background:var(--bg-card2);border-radius:10px;border:1px solid var(--border-2);">
-        <div style="font-size:14px;font-weight:800;color:var(--text);">${r.allergens.length>0?r.allergens.length:'—'}</div>
+        <div style="font-size:14px;font-weight:800;color:var(--text);">${r.allergens&&r.allergens.length>0?r.allergens.length:'—'}</div>
         <div style="font-size:10px;color:var(--text-3);margin-top:1px;">alergenów</div>
       </div>
     </div>
 
     <!-- Alergeny -->
-    ${r.allergens.length>0?`
+    ${r.allergens&&r.allergens.length>0?`
     <div style="display:flex;flex-wrap:wrap;gap:6px;">
       ${r.allergens.map(a=>`<span style="font-size:12px;padding:4px 10px;border-radius:6px;background:rgba(248,113,113,.12);color:#F87171;border:1px solid rgba(248,113,113,.2);">${a}</span>`).join('')}
     </div>`:''}
@@ -2447,7 +3054,10 @@ function renderRecipeDetail(mc){
       <div style="padding:14px 16px;border-bottom:1px solid var(--border-2);">
         <div style="font-size:11px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:.5px;">Opis technologiczny</div>
       </div>
-      <div style="padding:16px;font-size:14px;color:var(--text);line-height:1.75;white-space:pre-wrap;">${r.method}</div>
+      ${r.method
+        ?`<div style="padding:16px;font-size:14px;color:var(--text);line-height:1.75;white-space:pre-wrap;">${r.method}</div>`
+        :`<div style="padding:16px;font-size:13px;color:var(--text-3);font-style:italic;line-height:1.6;">Opis przygotowania do uzupełnienia. Użyj przycisku „Edytuj" aby dodać kroki technologiczne.</div>`
+      }
     </div>
 
     <!-- Uwagi szefa -->
@@ -2458,6 +3068,41 @@ function renderRecipeDetail(mc){
     </div>`:''}
 
   </div></div>`;
+}
+
+function filterRecipesSearch(q){
+  const resultsEl = document.getElementById('recipe-search-results');
+  const catsEl = document.getElementById('recipe-categories-list');
+  if(!resultsEl||!catsEl) return;
+  const term = q.trim().toLowerCase();
+  if(!term){
+    resultsEl.style.display='none';
+    catsEl.style.display='flex';
+    resultsEl.innerHTML='';
+    return;
+  }
+  const hits = recipesLocal.filter(r=>
+    r.name.toLowerCase().includes(term) ||
+    r.ingredients.some(i=>i.name.toLowerCase().includes(term))
+  );
+  catsEl.style.display='none';
+  resultsEl.style.display='flex';
+  if(hits.length===0){
+    resultsEl.innerHTML=`<div style="text-align:center;padding:40px 20px;color:var(--text-3);font-size:13px;">Brak wyników dla „${q}"</div>`;
+  } else {
+    const catMap={};
+    RECIPE_CATEGORIES.forEach(c=>catMap[c.id]=c.label);
+    resultsEl.innerHTML=hits.map(r=>`
+      <div onclick="currentRecipeId='${r.id}';showView('recipe-detail');" style="background:var(--bg-card);border:1px solid var(--border-2);border-radius:14px;padding:14px 16px;cursor:pointer;-webkit-tap-highlight-color:transparent;">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;">
+          <div style="flex:1;min-width:0;">
+            <div style="font-size:15px;font-weight:700;color:var(--text);margin-bottom:2px;">${r.name}</div>
+            <div style="font-size:11px;color:var(--text-3);">${catMap[r.category]||r.category} · ${r.ingredients.length} skł.</div>
+          </div>
+          <svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:var(--text-3);fill:none;stroke-width:2;flex-shrink:0"><polyline points="9 18 15 12 9 6"/></svg>
+        </div>
+      </div>`).join('');
+  }
 }
 
 function openAddRecipe(categoryPreset){
