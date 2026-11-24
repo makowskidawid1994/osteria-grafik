@@ -2785,8 +2785,7 @@ async function loadWaste(){
     </table>`;
   }catch(e){
     list.innerHTML=`<div style="text-align:center;padding:40px;color:var(--text-3);font-size:13px">
-      Trwa konfiguracja…<br>
-      <small style="font-size:11px;display:block;margin-top:4px">Tabela waste_items zostanie utworzona przy pierwszym wpisie</small>
+      Błąd: ${e.message}
     </div>`;
   }
 }
@@ -2987,8 +2986,7 @@ async function loadHandover(){
     }).join('');
   }catch(e){
     list.innerHTML=`<div style="text-align:center;padding:40px;color:var(--text-3);font-size:13px">
-      Trwa konfiguracja…<br>
-      <small style="font-size:11px;display:block;margin-top:4px">Tabela zostanie utworzona przy pierwszym wpisie</small>
+      Błąd: ${e.message}
     </div>`;
   }
 }
