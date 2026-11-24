@@ -1733,7 +1733,9 @@ async function doLogin() {
     if(data.error||!data.access_token) throw new Error(data.error_description||'Błąd logowania');
     currentUser=data;
     const rows=await sbFetch(`/rest/v1/user_roles?email=eq.${encodeURIComponent(email)}&select=role`).catch(()=>[]);
-    currentRole=rows?.[0]?.role||'employee';
+    // Role overrides: kitchen managers and front managers
+    const ROLE_OVERRIDES={'vanacka6note@gmail.com':'kitchen','oliwka.roloff@gmail.com':'front'};
+    currentRole=ROLE_OVERRIDES[email.toLowerCase()]||rows?.[0]?.role||'employee';
     saveSession();
     // Załaduj employees (mały request) żeby splash miał imię, max 2s timeout
     try{
