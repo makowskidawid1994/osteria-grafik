@@ -341,15 +341,14 @@ body.view-home .bnav-item.active .bnav-icon-wrap { background: rgba(255,255,255,
 /* Hero — wypełnia cały ekran (bez listy kafelków) */
 .hw-hero {
   position: relative; z-index: 1;
-  padding: 52px 18px calc(env(safe-area-inset-bottom) + 83px);
+  padding: 52px 18px calc(env(safe-area-inset-bottom) + 90px);
   flex: 1;
   display: flex; flex-direction: column;
-  justify-content: flex-start;
+  justify-content: space-between;
   background: transparent;
 }
 .hw-bottom-group {
-  margin-top: auto;
-  display: flex; flex-direction: column; gap: 16px;
+  display: flex; flex-direction: column; gap: 14px;
 }
 .hw-hero::before {
   content: '';
@@ -2438,20 +2437,16 @@ function renderHome(mc){
 
   /* Szybkie akcje — kółka jak w Revolut */
   const qaIcon = (path) => `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.95)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${path}</svg>`;
-  const clockAccent = active ? 'accent-red' : 'accent-green';
-  const clockIcon = active
-    ? qaIcon('<rect x="6" y="6" width="12" height="12" rx="2" fill="rgba(255,255,255,.9)" stroke="none"/>')
-    : qaIcon('<polygon points="8 6 20 12 8 18 8 6" fill="rgba(255,255,255,.9)" stroke="none"/>');
   const row1 = [
-    { id:'clock',   label: active ? 'Zakończ' : 'Zacznij', icon: clockIcon, accent: clockAccent },
     { id:'sched',   label:'Grafik',     icon: qaIcon('<rect x="3" y="4" width="18" height="18" rx="2.5"/><path d="M16 2v4M8 2v4M3 10h18"/>') },
-    { id:'board',   label:'Ogłoszenia', icon: qaIcon('<path d="M3 11l19-9-9 19-2-8-8-2z"/>') },
+    { id:'board',   label:'Ogłoszenia', icon: qaIcon('<path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/>') },
     { id:'avail',   label:'Dyspozycja', icon: qaIcon('<circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15.5 15.5"/>') },
+    { id:'chat',    label:'Chat',       icon: qaIcon('<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>') },
   ];
   const row2base = [
     { id:'kitchen', label:'Kuchnia',    icon: qaIcon('<path d="M6 2v20M6 15H2M6 9H2"/><path d="M22 15a6 6 0 0 0-6-6V2"/><path d="M22 15H10"/>') },
     { id:'recipes', label:'Receptury',  icon: qaIcon('<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/><line x1="12" y1="7" x2="12" y2="13"/><line x1="9" y1="10" x2="15" y2="10"/>') },
-    { id:'chat',    label:'Chat',       icon: qaIcon('<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>') },
+    { id:'clock',   label: active ? 'Zakończ' : 'Zacznij', icon: active ? qaIcon('<rect x="6" y="6" width="12" height="12" rx="2" fill="rgba(255,255,255,.9)" stroke="none"/>') : qaIcon('<polygon points="8 6 20 12 8 18 8 6" fill="rgba(255,255,255,.9)" stroke="none"/>'), accent: active ? 'accent-red' : 'accent-green' },
   ];
   if(isOwnerOrMgr){
     row2base.push({ id:'panel', label:'Panel', icon: qaIcon('<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>') });
