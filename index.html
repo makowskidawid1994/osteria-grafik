@@ -1881,7 +1881,7 @@ body:not(.view-home) .chat-fab {
       Chat
     </button>
     <button class="bnav-item" id="nav-dash" onclick="showView('dash')">
-      <div class="bnav-icon-wrap"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg></div>
+      <div class="bnav-icon-wrap"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/></svg></div>
       <span>Panel</span>
     </button>
   </nav>
@@ -2453,17 +2453,22 @@ function renderHome(mc){
     { id:'avail',   label:'Dyspozycja', icon: qaIcon('<circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15.5 15.5"/>') },
     { id:'chat',    label:'Chat',       icon: qaIcon('<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>') },
   ];
-  const row2base = [
-    { id:'kitchen', label:'Kuchnia',    icon: qaIcon('<path d="M6 2v20M6 15H2M6 9H2"/><path d="M22 15a6 6 0 0 0-6-6V2"/><path d="M22 15H10"/>') },
-    { id:'recipes', label:'Receptury',  icon: qaIcon('<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/><line x1="12" y1="7" x2="12" y2="13"/><line x1="9" y1="10" x2="15" y2="10"/>') },
-    { id:'clock',   label: active ? 'Zakończ' : 'Rozpocznij pracę', icon: active ? qaIcon('<rect x="6" y="6" width="12" height="12" rx="2" fill="rgba(255,255,255,.9)" stroke="none"/>') : qaIcon('<polygon points="8 6 20 12 8 18 8 6" fill="rgba(255,255,255,.9)" stroke="none"/>'), accent: active ? 'accent-red' : 'accent-green' },
-  ];
+  let row2;
   if(isOwnerOrMgr){
-    row2base.push({ id:'panel', label:'Panel', icon: qaIcon('<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>') });
+    row2 = [
+      { id:'kitchen',     label:'Kuchnia',      icon: qaIcon('<path d="M6 2v20M6 15H2M6 9H2"/><path d="M22 15a6 6 0 0 0-6-6V2"/><path d="M22 15H10"/>') },
+      { id:'recipes',     label:'Receptury',    icon: qaIcon('<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/><line x1="12" y1="7" x2="12" y2="13"/><line x1="9" y1="10" x2="15" y2="10"/>') },
+      { id:'settlements', label:'Rozliczenia',  icon: qaIcon('<rect x="2" y="6" width="20" height="13" rx="2.5"/><path d="M2 11h20"/><path d="M6 15h4M15 15h3"/>') },
+      { id:'panel',       label:'Panel',        icon: qaIcon('<rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/>') },
+    ];
   } else {
-    row2base.push({ id:'sched', label:'Mój grafik', icon: qaIcon('<circle cx="12" cy="8" r="4"/><path d="M6 20v-1a6 6 0 0 1 12 0v1"/>') });
+    row2 = [
+      { id:'kitchen', label:'Kuchnia',    icon: qaIcon('<path d="M6 2v20M6 15H2M6 9H2"/><path d="M22 15a6 6 0 0 0-6-6V2"/><path d="M22 15H10"/>') },
+      { id:'recipes', label:'Receptury',  icon: qaIcon('<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/><line x1="12" y1="7" x2="12" y2="13"/><line x1="9" y1="10" x2="15" y2="10"/>') },
+      { id:'clock',   label: active ? 'Zakończ' : 'Rozpocznij', icon: active ? qaIcon('<rect x="6" y="6" width="12" height="12" rx="2" fill="rgba(255,255,255,.9)" stroke="none"/>') : qaIcon('<polygon points="8 6 20 12 8 18 8 6" fill="rgba(255,255,255,.9)" stroke="none"/>'), accent: active ? 'accent-red' : 'accent-green' },
+      { id:'sched',   label:'Mój grafik', icon: qaIcon('<circle cx="12" cy="8" r="4"/><path d="M6 20v-1a6 6 0 0 1 12 0v1"/>') },
+    ];
   }
-  const row2 = row2base;
 
   /* ── Dane do banerów ── */
   const nowWorking = workSessions.filter(s=>!s.clock_out);
@@ -2504,18 +2509,6 @@ function renderHome(mc){
       </div>
     </div>`;
 
-  /* Baner "Rozliczenia" — tylko właściciel/manager */
-  const bannerSettlements = isOwnerOrMgr ? `
-    <div class="hw-banner hw-banner-team" onclick="hbTap(this,'settlements')" style="background:linear-gradient(135deg,rgba(100,20,15,.85) 0%,rgba(60,10,5,.85) 100%);border:1px solid rgba(220,80,20,.2)">
-      <div class="hw-banner-left">
-        <div class="hw-banner-eyebrow">Kasjer</div>
-        <div class="hw-banner-big" style="font-size:20px">Rozliczenia kelnerskie</div>
-        <div class="hw-banner-sub">Koperty · utargi · weryfikacja POS</div>
-      </div>
-      <div class="hw-banner-right-icon">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.7)" stroke-width="1.8"><rect x="2" y="6" width="20" height="13" rx="2.5"/><path d="M2 11h20"/><path d="M6 15h4M15 15h3"/></svg>
-      </div>
-    </div>` : '';
 
   /* Baner 2: zespół / grafik — tylko właściciel/manager */
   const banner2 = isOwnerOrMgr ? (() => {
@@ -2697,8 +2690,6 @@ function renderHome(mc){
           </div>
         </div>
 
-        <!-- Baner rozliczeń — tylko właściciel/manager -->
-        ${bannerSettlements}
       </div>
     </div>
 
