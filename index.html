@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="/icon-192.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root {
   --brand: #8B1A2E;
@@ -42,7 +42,7 @@
   --red-soft: rgba(220,38,38,.12);
   --radius: 12px;
   --radius-lg: 16px;
-  --font: 'Nunito', 'Poppins', -apple-system, 'Segoe UI', sans-serif;
+  --font: 'Inter', -apple-system, 'Segoe UI', sans-serif;
   --shadow-sm: 0 1px 4px rgba(80,20,10,.1);
   --shadow: 0 2px 12px rgba(80,20,10,.14);
 }
@@ -118,14 +118,14 @@ body { font-family: var(--font); background: var(--bg); color: var(--text); min-
   font-size: 36px; font-weight: 800; letter-spacing: -1.5px;
   color: #fff; text-align: center; line-height: 1.0;
   margin-bottom: 6px;
-  font-family: 'Nunito','Poppins',sans-serif;
+  font-family: 'Inter',sans-serif;
   min-height: 36px;
 }
 .auth-tagline {
   font-size: 13px; font-weight: 500; color: rgba(255,255,255,.3);
   text-align: center; letter-spacing: .3px;
   line-height: 1.4; min-height: 18px;
-  font-family: 'Nunito','Poppins',sans-serif;
+  font-family: 'Inter',sans-serif;
 }
 .auth-divider { display: none; }
 
@@ -149,7 +149,7 @@ body { font-family: var(--font); background: var(--bg); color: var(--text); min-
   display: block; font-size: 11px; font-weight: 600;
   color: rgba(255,255,255,.35); margin-bottom: 10px; letter-spacing: 1px;
   text-transform: uppercase;
-  font-family: 'Nunito','Poppins',sans-serif;
+  font-family: 'Inter',sans-serif;
 }
 .field input {
   width: 100%; padding: 14px 16px 14px 44px;
@@ -201,13 +201,7 @@ body { font-family: var(--font); background: var(--bg); color: var(--text); min-
   border-bottom: 1px solid rgba(139,26,46,.12); gap: 10px;
   transition: background .2s, border-color .2s;
 }
-/* Na home — ciemny nav i header */
-body.view-home .bnav {
-  background: rgba(253,250,246,.97);
-  border-top-color: rgba(139,26,46,.12);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-}
+/* Na home — floating nav */
 body.view-home .bnav-item { color: rgba(90,56,40,.45); }
 body.view-home .bnav-item svg { stroke: rgba(90,56,40,.45); }
 body.view-home .bnav-item.active { color: #8B1A2E; }
@@ -249,29 +243,37 @@ body.view-home #main-content { background: transparent; }
 .btn-out:hover { color: var(--text-2); border-color: var(--border-2); }
 
 /* ─── Bottom nav — app style ─── */
+/* ── Floating bottom nav (FB/IG chmurka) ── */
 .bnav {
-  position: fixed; bottom: 0; left: 0; right: 0; background: rgba(26,8,14,.96);
-  border-top: 1px solid var(--border); display: flex; z-index: 100;
-  padding-bottom: max(env(safe-area-inset-bottom), 12px);
-  padding-top: 10px;
-  height: calc(62px + max(env(safe-area-inset-bottom), 12px));
+  position: fixed;
+  bottom: max(env(safe-area-inset-bottom), 12px);
+  left: 16px; right: 16px;
+  background: rgba(253,250,246,.96);
+  border: 1px solid rgba(139,26,46,.1);
+  border-radius: 24px;
+  box-shadow: 0 4px 24px rgba(80,20,10,.14), 0 1px 4px rgba(80,20,10,.08);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  display: flex; z-index: 100;
+  padding: 8px 4px;
+  height: 60px;
 }
 .bnav-item {
-  flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-start;
-  gap: 3px; cursor: pointer; color: var(--text-3); font-size: 10px; font-weight: 500;
-  border: none; background: none; font-family: var(--font); transition: color .25s cubic-bezier(.4,0,.2,1); position: relative;
-  padding: 0 4px;
+  flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 3px; cursor: pointer; color: rgba(90,56,40,.45); font-size: 10px; font-weight: 500;
+  border: none; background: none; font-family: var(--font); transition: color .2s; position: relative;
+  padding: 0 4px; letter-spacing: -.1px;
 }
 .bnav-item.active { color: var(--brand); }
-.bnav-item.active .bnav-icon-wrap { background: var(--brand-soft); }
+.bnav-item.active .bnav-icon-wrap { background: rgba(139,26,46,.1); }
 .bnav-item.active svg { stroke: var(--brand); }
 .bnav-icon-wrap {
   width: 44px; height: 28px; display: flex; align-items: center; justify-content: center;
-  border-radius: 14px; transition: background .25s cubic-bezier(.4,0,.2,1);
+  border-radius: 14px; transition: background .2s;
 }
-.bnav-item svg { width: 22px; height: 22px; stroke: var(--text-3); fill: none; stroke-width: 1.8; transition: stroke .25s cubic-bezier(.4,0,.2,1); }
+.bnav-item svg { width: 22px; height: 22px; stroke: rgba(90,56,40,.45); fill: none; stroke-width: 1.8; transition: stroke .2s; }
 
-.main { padding-bottom: calc(62px + max(env(safe-area-inset-bottom), 12px) + 4px); min-height: calc(100dvh - 56px); background: var(--bg); }
+.main { padding-bottom: calc(60px + max(env(safe-area-inset-bottom), 12px) + 20px); min-height: calc(100dvh - 56px); background: var(--bg); }
 .main.no-bnav { padding-bottom: 0; }
 /* Chat wypełnia dostępną przestrzeń */
 .main.chat-view { display: flex; flex-direction: column; height: calc(100dvh - 56px); min-height: 0; padding-bottom: 0; overflow: hidden; }
@@ -565,7 +567,7 @@ body:not(.view-home) .chat-fab {
 }
 .page-bar-title {
   font-size: 16px; font-weight: 800; flex: 1; min-width: 120px;
-  letter-spacing: -.4px; font-family: 'Nunito','Poppins',sans-serif;
+  letter-spacing: -.4px; font-family: 'Inter',sans-serif;
 }
 .view-toggle {
   display: flex; background: var(--bg); border-radius: var(--radius); padding: 2px; gap: 1px;
@@ -1066,16 +1068,16 @@ body:not(.view-home) .chat-fab {
 }
 .geo-error-title {
   font-size: 17px; font-weight: 800; color: #F5E8EC; letter-spacing: -.3px; margin-bottom: 10px;
-  font-family: 'Nunito','Poppins',sans-serif;
+  font-family: 'Inter',sans-serif;
 }
 .geo-error-msg {
   font-size: 14px; color: rgba(245,232,236,.6); line-height: 1.55; margin-bottom: 24px;
-  font-family: 'Nunito','Poppins',sans-serif;
+  font-family: 'Inter',sans-serif;
 }
 .geo-error-btn {
   width: 100%; padding: 14px; border-radius: 14px; border: none; cursor: pointer;
   background: rgba(255,255,255,.1); color: #F5E8EC;
-  font-size: 15px; font-weight: 700; font-family: 'Nunito','Poppins',sans-serif;
+  font-size: 15px; font-weight: 700; font-family: 'Inter',sans-serif;
   transition: background .15s;
 }
 .geo-error-btn:active { background: rgba(255,255,255,.18); }
@@ -1108,12 +1110,12 @@ body:not(.view-home) .chat-fab {
 .clock-time-big {
   font-size: 60px; font-weight: 300; letter-spacing: -3px; color: #fff;
   font-variant-numeric: tabular-nums; line-height: 1; margin-bottom: 2px;
-  font-family: 'Nunito','Poppins',sans-serif;
+  font-family: 'Inter',sans-serif;
   position: relative; z-index: 1;
 }
 .clock-date {
   font-size: 13px; color: rgba(255,255,255,.4); margin-bottom: 32px; letter-spacing: .2px;
-  font-family: 'Nunito','Poppins',sans-serif;
+  font-family: 'Inter',sans-serif;
   position: relative; z-index: 1;
 }
 
@@ -1133,7 +1135,7 @@ body:not(.view-home) .chat-fab {
 .clock-btn-round {
   width: 118px; height: 118px; border-radius: 50%; border: none; cursor: pointer;
   display: flex; flex-direction: column; align-items: center; justify-content: center;
-  gap: 5px; font-family: 'Nunito','Poppins',sans-serif; font-weight: 700; font-size: 14px; letter-spacing: -.2px;
+  gap: 5px; font-family: 'Inter',sans-serif; font-weight: 700; font-size: 14px; letter-spacing: -.2px;
   transition: transform .18s cubic-bezier(.25,0,.25,1), box-shadow .18s; position: relative; z-index: 1;
 }
 .clock-btn-round:active { transform: scale(.93); }
@@ -1166,12 +1168,12 @@ body:not(.view-home) .chat-fab {
 .clock-elapsed {
   font-size: 30px; font-weight: 300; letter-spacing: -1px; color: #fff;
   font-variant-numeric: tabular-nums; display: none; margin-bottom: 2px;
-  font-family: 'Nunito','Poppins',sans-serif;
+  font-family: 'Inter',sans-serif;
   position: relative; z-index: 1;
 }
 .clock-status-label {
   font-size: 12px; color: rgba(255,255,255,.35); letter-spacing: .2px; margin-bottom: 20px;
-  font-family: 'Nunito','Poppins',sans-serif;
+  font-family: 'Inter',sans-serif;
   position: relative; z-index: 1;
 }
 
@@ -1179,7 +1181,7 @@ body:not(.view-home) .chat-fab {
 .clock-secondary-row { display: flex; gap: 10px; width: 100%; z-index: 1; position: relative; }
 .clock-sec-btn {
   flex: 1; padding: 12px 10px; border-radius: 14px; font-size: 13px; font-weight: 700;
-  cursor: pointer; font-family: 'Nunito','Poppins',sans-serif; border: 1.5px solid rgba(255,255,255,.14);
+  cursor: pointer; font-family: 'Inter',sans-serif; border: 1.5px solid rgba(255,255,255,.14);
   color: rgba(255,255,255,.85); background: rgba(255,255,255,.08);
   transition: background .18s, transform .12s; letter-spacing: -.1px;
 }
@@ -1190,7 +1192,7 @@ body:not(.view-home) .chat-fab {
 .clock-geo-status {
   font-size: 13px; font-weight: 600; margin-top: 16px;
   display: flex; align-items: center; justify-content: center; gap: 7px;
-  font-family: 'Nunito','Poppins',sans-serif;
+  font-family: 'Inter',sans-serif;
   letter-spacing: .1px;
   padding: 8px 18px;
   border-radius: 20px;
@@ -1788,7 +1790,7 @@ function showWelcomeSplash(email, overrideName=null){
     `;
     splash.innerHTML=`
       <div style="
-        font-family:'Nunito','Poppins',sans-serif;
+        font-family:'Inter',sans-serif;
         font-size:17px;font-weight:500;
         color:rgba(255,255,255,.45);
         letter-spacing:.3px;
@@ -1797,7 +1799,7 @@ function showWelcomeSplash(email, overrideName=null){
         transition:opacity .5s ease,transform .5s ease;
       " id="sp-greet">${gr},</div>
       <div style="
-        font-family:'Nunito','Poppins',sans-serif;
+        font-family:'Inter',sans-serif;
         font-size:48px;font-weight:800;
         color:#fff;
         letter-spacing:-2px;
@@ -2098,7 +2100,7 @@ function renderHome(mc){
   rows.push({id:'sched',   label:'Grafik',      icon:ic('<rect x="3" y="4" width="18" height="18" rx="2.5"/><path d="M16 2v4M8 2v4M3 10h18"/>')});
   if(isOwnerOrMgr||isKitchen)
     rows.push({id:'kitchen', label:'Kuchnia',   icon:ic('<path d="M12 2a7 7 0 0 1 7 7c0 3-1.5 5-3.5 6.5V19a1 1 0 0 1-1 1h-5a1 1 0 0 1-1-1v-3.5C6.5 14 5 12 5 9a7 7 0 0 1 7-7z"/><line x1="12" y1="15" x2="12" y2="22"/>')});
-  rows.push({id:'board',   label:'Tablica',     icon:ic('<rect x="3" y="3" width="18" height="18" rx="2.5"/><path d="M9 3v18M13 8h5M13 12h5M13 16h5"/>')});
+  rows.push({id:'board',   label:'Ogłoszenia',     icon:ic('<rect x="3" y="3" width="18" height="18" rx="2.5"/><path d="M9 3v18M13 8h5M13 12h5M13 16h5"/>')});
   rows.push({id:'events',  label:'Wydarzenia',  icon:ic('<path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>')});
   rows.push({id:'avail',   label:'Dyspozycja',  icon:ic('<circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15.5 15.5"/>')});
   if(isOwnerOrMgr){
@@ -3383,7 +3385,7 @@ async function loadWaste(){
       </thead>
       <tbody>
         ${rows.map(r=>`
-        <tr style="border-bottom:1px solid var(--border-subtle,rgba(255,255,255,.06))">
+        <tr style="border-bottom:1px solid rgba(139,26,46,.06)">
           <td style="padding:10px 6px;font-weight:600;color:var(--text)">${r.ingredient||r.item_name}</td>
           <td style="padding:10px 6px;text-align:right;color:var(--text-2)">${r.qty||r.quantity} ${r.unit}</td>
           <td style="padding:10px 6px;color:var(--text-3);font-size:12px">${reasonLabel[r.reason]||r.reason}</td>
@@ -3428,13 +3430,13 @@ function filterIngredients(val){
   box.innerHTML = matches.map(i=>
     `<div onclick="selectIngredient('${i.replace(/'/g,"\\'")}');event.stopPropagation()"
       style="padding:10px 14px;cursor:pointer;font-size:14px;border-bottom:1px solid var(--border)"
-      onmouseenter="this.style.background='rgba(255,255,255,.06)'"
+      onmouseenter="this.style.background='rgba(139,26,46,.04)'"
       onmouseleave="this.style.background=''">${i}</div>`
   ).join('');
   if(q && !DEFAULT_INGREDIENTS.some(i=>i.toLowerCase()===q)){
     box.innerHTML+=`<div onclick="selectIngredient('${val.replace(/'/g,"\\'")}');event.stopPropagation()"
       style="padding:10px 14px;cursor:pointer;font-size:14px;color:var(--brand)"
-      onmouseenter="this.style.background='rgba(255,255,255,.06)'"
+      onmouseenter="this.style.background='rgba(139,26,46,.04)'"
       onmouseleave="this.style.background=''">+ Dodaj "${val}"</div>`;
   }
   box.style.display='block';
@@ -3734,7 +3736,7 @@ function renderSettlementsUI(mc, rows){
   const missingCount = days.filter(d=>d.missing).length;
 
   mc.innerHTML=`
-  <div style="position:sticky;top:0;z-index:20;background:var(--bg);border-bottom:1px solid rgba(255,255,255,.07);padding:0 20px;height:56px;display:flex;align-items:center;gap:12px">
+  <div style="position:sticky;top:0;z-index:20;background:var(--bg);border-bottom:1px solid rgba(139,26,46,.08);padding:0 20px;height:56px;display:flex;align-items:center;gap:12px">
     <button onclick="goHome()" style="display:flex;align-items:center;gap:4px;background:none;border:none;color:var(--text-2);font-size:15px;font-weight:500;cursor:pointer;font-family:var(--font);padding:8px 0;-webkit-tap-highlight-color:transparent">
       <svg viewBox="0 0 24 24" style="width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2.5"><polyline points="15 18 9 12 15 6"/></svg>
       Wróć
@@ -3749,7 +3751,7 @@ function renderSettlementsUI(mc, rows){
   <div style="padding:0 0 calc(80px + env(safe-area-inset-bottom));min-height:calc(100dvh - 56px);display:flex;flex-direction:column">
 
     <!-- FORMULARZ (ukryty domyślnie) -->
-    <div id="settlement-form-wrap" style="display:none;margin:16px 16px 0;background:rgba(255,255,255,.04);border-radius:16px;padding:20px;border:1px solid rgba(255,255,255,.08)">
+    <div id="settlement-form-wrap" style="display:none;margin:16px 16px 0;background:#FDFAF6;border-radius:16px;padding:20px;border:1px solid rgba(139,26,46,.1)"
       <div style="font-size:16px;font-weight:700;color:var(--text);margin-bottom:16px">Nowe rozliczenie</div>
 
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
@@ -3784,24 +3786,24 @@ function renderSettlementsUI(mc, rows){
 
       <div style="margin-bottom:16px">
         <label style="font-size:12px;color:var(--text-2);display:block;margin-bottom:6px;font-weight:600">Zdjęcie koperty</label>
-        <label style="display:flex;align-items:center;gap:12px;background:rgba(255,255,255,.04);border:1.5px dashed rgba(255,255,255,.12);border-radius:10px;padding:12px 14px;cursor:pointer">
-          <svg viewBox="0 0 24 24" style="width:18px;height:18px;stroke:rgba(255,255,255,.35);fill:none;stroke-width:2;flex-shrink:0"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+        <label style="display:flex;align-items:center;gap:12px;background:rgba(139,26,46,.04);border:1.5px dashed rgba(139,26,46,.2);border-radius:10px;padding:12px 14px;cursor:pointer">
+          <svg viewBox="0 0 24 24" style="width:18px;height:18px;stroke:rgba(139,26,46,.4);fill:none;stroke-width:2;flex-shrink:0"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
           <span style="font-size:14px;color:var(--text-2)" id="sf-photo-label">Zrób zdjęcie lub wybierz z telefonu</span>
           <input type="file" id="sf-photo" accept="image/*" capture="environment" onchange="onSettlementPhotoChange(this)" style="display:none">
         </label>
         <div id="sf-photo-preview" style="margin-top:8px;display:none">
-          <img id="sf-photo-img" style="width:100%;max-height:200px;object-fit:contain;border-radius:10px;border:1px solid rgba(255,255,255,.1)">
+          <img id="sf-photo-img" style="width:100%;max-height:200px;object-fit:contain;border-radius:10px;border:1px solid rgba(139,26,46,.1)">
         </div>
       </div>
 
       <div style="display:flex;gap:8px">
-        <button onclick="cancelSettlementForm()" style="flex:1;padding:13px;background:rgba(255,255,255,.06);border:none;border-radius:10px;color:var(--text-2);font-size:15px;font-weight:600;cursor:pointer;font-family:var(--font)">Anuluj</button>
+        <button onclick="cancelSettlementForm()" style="flex:1;padding:13px;background:rgba(139,26,46,.06);border:none;border-radius:10px;color:var(--text-2);font-size:15px;font-weight:600;cursor:pointer;font-family:var(--font)">Anuluj</button>
         <button onclick="saveSettlement()" style="flex:2;padding:13px;background:var(--brand);border:none;border-radius:10px;color:#fff;font-size:15px;font-weight:700;cursor:pointer;font-family:var(--font)" id="sf-save-btn">Zapisz</button>
       </div>
     </div>
 
     <!-- LISTA DNI -->
-    <div id="settlements-list" style="margin:16px 16px 0;border-radius:16px;overflow:hidden;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07)">
+    <div id="settlements-list" style="margin:16px 16px 0;border-radius:16px;overflow:hidden;background:#FDFAF6;border:1px solid rgba(139,26,46,.08)">
       ${days.map((day,i)=>{
         const isToday = day.date===today;
         const label = isToday ? 'Dziś' : fmtDatePL(day.date);
@@ -3810,22 +3812,22 @@ function renderSettlementsUI(mc, rows){
         }
         // Dzień bez rozliczenia
         const isMissing = day.missing;
-        return `<div style="display:flex;align-items:center;padding:14px 16px;${i<days.length-1?'border-bottom:1px solid rgba(255,255,255,.05)':''}">
-          <div style="width:36px;height:36px;border-radius:10px;background:${isMissing?'rgba(251,191,36,.1)':'rgba(255,255,255,.05)'};display:flex;align-items:center;justify-content:center;flex-shrink:0">
+        return `<div style="display:flex;align-items:center;padding:14px 16px;${i<days.length-1?'border-bottom:1px solid rgba(139,26,46,.06)':''}">
+          <div style="width:36px;height:36px;border-radius:10px;background:${isMissing?'rgba(251,191,36,.1)':'rgba(139,26,46,.05)'};display:flex;align-items:center;justify-content:center;flex-shrink:0">
             ${isMissing
-              ? `<svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:#FBBF24;fill:none;stroke-width:2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>`
-              : `<svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:rgba(255,255,255,.25);fill:none;stroke-width:2"><rect x="2" y="6" width="20" height="13" rx="2"/><path d="M2 11h20"/></svg>`
+              ? `<svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:#C05A22;fill:none;stroke-width:2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>`
+              : `<svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:rgba(139,26,46,.25);fill:none;stroke-width:2"><rect x="2" y="6" width="20" height="13" rx="2"/><path d="M2 11h20"/></svg>`
             }
           </div>
           <div style="margin-left:12px;flex:1">
-            <div style="font-size:15px;font-weight:600;color:${isMissing?'rgba(255,255,255,.8)':'rgba(255,255,255,.35)'}">
+            <div style="font-size:15px;font-weight:600;color:${isMissing?'#1A0A08':'rgba(90,56,40,.4)'}">
               ${isToday?'<span style="color:var(--brand);font-weight:700">Dziś</span>':label}
             </div>
-            <div style="font-size:13px;color:${isMissing?'rgba(251,191,36,.7)':'rgba(255,255,255,.25)'};margin-top:1px">
+            <div style="font-size:13px;color:${isMissing?'#C05A22':'rgba(90,56,40,.35)'};margin-top:1px">
               ${isMissing?'Brak rozliczenia':'Brak danych'}
             </div>
           </div>
-          ${isMissing?`<button onclick="openSettlementFormFor('${day.date}')" style="padding:6px 12px;background:rgba(251,191,36,.12);border:1px solid rgba(251,191,36,.2);border-radius:8px;color:#FBBF24;font-size:12px;font-weight:600;cursor:pointer;font-family:var(--font)">Dodaj</button>`:''}
+          ${isMissing?`<button onclick="openSettlementFormFor('${day.date}')" style="padding:6px 14px;background:rgba(192,90,34,.1);border:1px solid rgba(192,90,34,.2);border-radius:8px;color:#C05A22;font-size:12px;font-weight:600;cursor:pointer;font-family:var(--font)">Dodaj</button>`:''}
         </div>`;
       }).join('')}
     </div>
@@ -3834,13 +3836,13 @@ function renderSettlementsUI(mc, rows){
 
 function sfField(id, label){
   return `<div>
-    <label style="font-size:12px;color:rgba(255,255,255,.4);display:block;margin-bottom:6px;font-weight:600">${label}</label>
+    <label style="font-size:12px;color:rgba(90,56,40,.55);display:block;margin-bottom:6px;font-weight:600">${label}</label>
     <input type="number" id="${id}" step="0.01" placeholder="0.00" style="${inputStyle()}">
   </div>`;
 }
 
 function inputStyle(){
-  return `width:100%;padding:11px 12px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:10px;color:#fff;font-size:15px;font-family:var(--font);`;
+  return `width:100%;padding:11px 12px;background:rgba(139,26,46,.04);border:1px solid rgba(139,26,46,.12);border-radius:10px;color:#1A0A08;font-size:15px;font-family:var(--font);`;
 }
 
 function fmtDatePL(ds){
@@ -3855,19 +3857,19 @@ function settlementCard(r){
   const diffColor = diff===null ? 'var(--text-3)' : Math.abs(diff)<1 ? 'var(--green)' : diff>0 ? '#FBBF24' : 'var(--danger)';
   const diffLabel = diff===null ? '' : `${diff>=0?'+':''}${diff.toFixed(2)} zł`;
   const verifiedBadge = r.verified
-    ? `<span style="font-size:11px;padding:3px 9px;border-radius:20px;background:rgba(74,222,128,.12);color:#4ade80;font-weight:700;flex-shrink:0;letter-spacing:.2px">OK</span>`
-    : `<span style="font-size:11px;padding:3px 9px;border-radius:20px;background:rgba(251,191,36,.12);color:#FBBF24;font-weight:700;flex-shrink:0;letter-spacing:.2px">Weryfikacja</span>`;
+    ? `<span style="font-size:11px;padding:3px 9px;border-radius:20px;background:rgba(34,197,94,.1);color:#15803d;font-weight:700;flex-shrink:0;letter-spacing:.2px">OK</span>`
+    : `<span style="font-size:11px;padding:3px 9px;border-radius:20px;background:rgba(192,90,34,.1);color:#C05A22;font-weight:700;flex-shrink:0;letter-spacing:.2px">Weryfikacja</span>`;
 
   const utarg = r.field_c!=null ? parseFloat(r.field_c).toFixed(2) : null;
-  return `<div style="display:flex;align-items:center;padding:16px 20px;border-bottom:1px solid rgba(255,255,255,.06);cursor:pointer;-webkit-tap-highlight-color:transparent;transition:background .12s" onclick="openSettlementDetail('${r.id}')" ontouchstart="this.style.background='rgba(255,255,255,.04)'" ontouchend="this.style.background=''">
-    <div style="width:46px;height:46px;border-radius:14px;background:rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:800;color:rgba(255,255,255,.7);flex-shrink:0;margin-right:16px">${(r.waiter_name||'?')[0].toUpperCase()}</div>
+  return `<div style="display:flex;align-items:center;padding:16px 20px;border-bottom:1px solid rgba(139,26,46,.06);cursor:pointer;-webkit-tap-highlight-color:transparent;transition:background .12s" onclick="openSettlementDetail('${r.id}')" ontouchstart="this.style.background='rgba(139,26,46,.03)'" ontouchend="this.style.background=''">
+    <div style="width:46px;height:46px;border-radius:14px;background:rgba(139,26,46,.1);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:800;color:#8B1A2E;flex-shrink:0;margin-right:16px">${(r.waiter_name||'?')[0].toUpperCase()}</div>
     <div style="flex:1;min-width:0">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
-        <div style="font-size:16px;font-weight:700;color:#fff;letter-spacing:-.2px">${r.waiter_name}</div>
-        ${utarg?`<div style="font-size:16px;font-weight:700;color:#fff">${utarg} zł</div>`:''}
+        <div style="font-size:16px;font-weight:700;color:#1A0A08;letter-spacing:-.2px">${r.waiter_name}</div>
+        ${utarg?`<div style="font-size:16px;font-weight:700;color:#1A0A08">${utarg} zł</div>`:''}
       </div>
       <div style="display:flex;align-items:center;justify-content:space-between">
-        <div style="font-size:14px;color:rgba(255,255,255,.4)">${fmtDatePL(r.date)}</div>
+        <div style="font-size:14px;color:rgba(90,56,40,.5)">${fmtDatePL(r.date)}</div>
         <div style="display:flex;align-items:center;gap:8px">
           ${diff!==null?`<span style="font-size:13px;font-weight:600;color:${diffColor}">${diffLabel}</span>`:''}
           ${verifiedBadge}
@@ -4049,7 +4051,7 @@ function renderBoard(mc){
       <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
       Wróć
     </button>
-    <div class="page-bar-title">Tablica</div>
+    <div class="page-bar-title">Ogłoszenia</div>
     ${canEdit()?`<button class="btn-primary btn-sm" onclick="openAddBoard()">+ Dodaj</button>`:''}
   </div>
   <div id="board-list" style="padding:16px;display:flex;flex-direction:column;gap:10px">
@@ -5258,17 +5260,17 @@ async function renderDash(mc){
         <div style="font-size:24px;font-weight:800;color:white;letter-spacing:-.5px;">${tc.toFixed(0)}<span style="font-size:14px;font-weight:400"> zł</span></div>
         <div style="font-size:11px;color:rgba(255,255,255,.5);margin-top:2px;">${th.toFixed(1)} godz.</div>
       </div>
-      <div style="background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:16px;">
+      <div style="background:#FDFAF6;border:1px solid rgba(139,26,46,.1);border-radius:16px;padding:16px;">
         <div style="font-size:10px;color:var(--text-3);font-weight:600;text-transform:uppercase;letter-spacing:.3px;margin-bottom:4px;">Pracownicy</div>
         <div style="font-size:24px;font-weight:800;color:var(--text);letter-spacing:-.5px;">${employees.length}</div>
         <div style="font-size:11px;color:var(--text-3);margin-top:2px;">${shifts.length} zmian</div>
       </div>
-      <div style="background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:16px;">
+      <div style="background:#FDFAF6;border:1px solid rgba(139,26,46,.1);border-radius:16px;padding:16px;">
         <div style="font-size:10px;color:var(--text-3);font-weight:600;text-transform:uppercase;letter-spacing:.3px;margin-bottom:4px;">Kuchnia</div>
         <div style="font-size:22px;font-weight:800;color:var(--text);letter-spacing:-.5px;">${kC.toFixed(0)}<span style="font-size:12px;font-weight:400"> zł</span></div>
         <div style="font-size:11px;color:var(--text-3);margin-top:2px;">${kH.toFixed(1)}h · ${employees.filter(e=>e.department==='kuchnia').length} os.</div>
       </div>
-      <div style="background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:16px;">
+      <div style="background:#FDFAF6;border:1px solid rgba(139,26,46,.1);border-radius:16px;padding:16px;">
         <div style="font-size:10px;color:var(--text-3);font-weight:600;text-transform:uppercase;letter-spacing:.3px;margin-bottom:4px;">Sala</div>
         <div style="font-size:22px;font-weight:800;color:var(--text);letter-spacing:-.5px;">${sC.toFixed(0)}<span style="font-size:12px;font-weight:400"> zł</span></div>
         <div style="font-size:11px;color:var(--text-3);margin-top:2px;">${sH.toFixed(1)}h · ${employees.filter(e=>e.department==='sala').length} os.</div>
