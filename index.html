@@ -48,19 +48,21 @@
 }
 * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 body {
-  font-family: var(--font); background: #1E0A08; color: var(--text);
+  font-family: var(--font); color: var(--text);
   min-height: 100vh; font-size: 14px; line-height: 1.5;
   -webkit-font-smoothing: antialiased; overscroll-behavior-y: none;
 }
-/* Globalne prześwietlenia pomarańczowe — przez cały app */
+/* Globalne tło — spójne na wszystkich widokach */
+body {
+  background: linear-gradient(180deg, #6B1A14 0%, #3D0C09 30%, #200706 65%, #150403 100%) fixed;
+}
 body::before {
   content: '';
   position: fixed; inset: 0; pointer-events: none; z-index: 0;
   background:
-    radial-gradient(ellipse 100% 55% at 55% -5%, rgba(220,100,10,.65) 0%, rgba(160,60,0,.35) 35%, transparent 65%),
-    radial-gradient(ellipse 60% 50% at 5% 35%, rgba(180,70,0,.2) 0%, transparent 55%),
-    radial-gradient(ellipse 70% 40% at 50% 60%, rgba(160,60,0,.18) 0%, transparent 60%),
-    radial-gradient(ellipse 55% 40% at 95% 75%, rgba(140,50,0,.15) 0%, transparent 55%);
+    radial-gradient(ellipse 110% 50% at 50% 0%, rgba(220,100,10,.55) 0%, rgba(160,60,0,.25) 40%, transparent 65%),
+    radial-gradient(ellipse 70% 45% at 10% 40%, rgba(180,60,0,.15) 0%, transparent 55%),
+    radial-gradient(ellipse 70% 45% at 90% 60%, rgba(140,40,0,.12) 0%, transparent 55%);
 }
 #app { background: transparent; }
 
@@ -210,17 +212,13 @@ body::before {
 /* ─── App shell ─── */
 #app { display: none; }
 .header {
-  background: #2A1000; color: var(--text); height: 56px; padding: 0 16px;
+  background: rgba(26,5,4,.85); color: var(--text); height: 56px; padding: 0 16px;
   display: flex; align-items: center; position: sticky; top: 0; z-index: 100;
   border-bottom: 1px solid rgba(255,255,255,.07); gap: 10px;
   transition: background .2s, border-color .2s;
-  position: relative; z-index: 100;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
 }
-/* Na home — ciemno-czerwone tło pokrywa cały ekran włącznie z obszarem pod bnav */
-body.view-home {
-  background: #1A0504;
-}
-
 /* Na home — floating nav */
 body.view-home .bnav-item { color: rgba(90,56,40,.45); }
 body.view-home .bnav-item svg { stroke: rgba(90,56,40,.45); }
