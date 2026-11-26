@@ -341,10 +341,10 @@ body.view-home .bnav-item.active .bnav-icon-wrap { background: rgba(255,255,255,
 /* Hero — wypełnia cały ekran (bez listy kafelków) */
 .hw-hero {
   position: relative; z-index: 1;
-  padding: 52px 18px calc(env(safe-area-inset-bottom) + 90px);
+  padding: 52px 18px 0;
   flex: 1;
   display: flex; flex-direction: column;
-  justify-content: space-between;
+  justify-content: flex-start;
   background: transparent;
 }
 .hw-hero::before {
@@ -433,7 +433,8 @@ body.view-home .bnav-item.active .bnav-icon-wrap { background: rgba(255,255,255,
   display: flex; flex-direction: row; flex-wrap: nowrap;
   align-items: flex-start;
   justify-content: space-around;
-  margin-top: 32px;
+  margin-top: auto;
+  margin-bottom: calc(env(safe-area-inset-bottom) + 80px);
   padding: 0 4px;
   position: relative; z-index: 1;
   opacity: 0; animation: fadeIn .4s ease .2s forwards;
