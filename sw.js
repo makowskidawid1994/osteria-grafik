@@ -1,4 +1,4 @@
-const CACHE = 'osteria-v14';
+const CACHE = 'osteria-v15';
 const PRECACHE = ['/'];
 
 self.addEventListener('install', e => {
