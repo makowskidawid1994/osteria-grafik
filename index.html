@@ -196,14 +196,14 @@ body { font-family: var(--font); background: var(--bg); color: var(--text); min-
 /* ─── App shell ─── */
 #app { display: none; }
 .header {
-  background: #1A0810; color: var(--text); height: 56px; padding: 0 16px;
+  background: #111111; color: var(--text); height: 56px; padding: 0 16px;
   display: flex; align-items: center; position: sticky; top: 0; z-index: 100;
   border-bottom: 1px solid rgba(255,255,255,.08); gap: 10px;
   transition: background .2s, border-color .2s;
 }
 /* Na home — ciemny nav i header */
 body.view-home .bnav {
-  background: rgba(26,8,14,.92);
+  background: rgba(17,17,17,.92);
   border-top-color: rgba(255,255,255,.07);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
@@ -216,7 +216,7 @@ body.view-home .bnav-item.active .bnav-icon-wrap { background: rgba(255,255,255,
 
 /* Na home — ciemny header jak tło aplikacji */
 body.view-home .header {
-  background: rgba(32,8,16,.88);
+  background: rgba(17,17,17,.88);
   border-bottom-color: rgba(255,255,255,.07);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
