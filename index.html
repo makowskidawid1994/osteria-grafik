@@ -3741,90 +3741,89 @@ function renderSettlementsUI(mc, rows){
   }
 
   mc.innerHTML=`
-  <div class="page-bar" style="position:sticky;top:0;z-index:20">
-    <button class="section-back-btn" onclick="goHome()">
-      <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>Wróć
+  <div style="position:sticky;top:0;z-index:20;background:var(--bg);border-bottom:1px solid rgba(255,255,255,.07);padding:14px 20px 14px;display:flex;align-items:center;gap:12px">
+    <button onclick="goHome()" style="display:flex;align-items:center;gap:6px;background:none;border:none;color:var(--text-2);font-size:16px;font-weight:600;cursor:pointer;font-family:var(--font);padding:0;-webkit-tap-highlight-color:transparent">
+      <svg viewBox="0 0 24 24" style="width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:2.2"><polyline points="15 18 9 12 15 6"/></svg>
+      Wróć
     </button>
-    <div class="page-bar-title">Rozliczenia</div>
-    <button onclick="openSettlementForm()" style="display:flex;align-items:center;gap:6px;padding:8px 16px;background:var(--brand);border:none;border-radius:10px;color:#fff;font-size:13px;font-weight:700;cursor:pointer;font-family:var(--font)">
-      <svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:#fff;fill:none;stroke-width:2.8"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+    <div style="flex:1;font-size:20px;font-weight:800;color:var(--text);letter-spacing:-.5px">Rozliczenia</div>
+    <button onclick="openSettlementForm()" style="display:flex;align-items:center;gap:5px;padding:9px 18px;background:var(--brand);border:none;border-radius:12px;color:#fff;font-size:14px;font-weight:700;cursor:pointer;font-family:var(--font)">
+      <svg viewBox="0 0 24 24" style="width:15px;height:15px;stroke:#fff;fill:none;stroke-width:2.8"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
       Dodaj
     </button>
   </div>
 
-  <div style="padding-bottom:100px">
+  <div style="padding:0 0 calc(80px + env(safe-area-inset-bottom))">
 
     ${missing.length>0?`
-    <div style="margin:16px 16px 0;background:rgba(251,191,36,.08);border-radius:14px;padding:14px 16px;display:flex;align-items:center;gap:14px">
-      <div style="width:36px;height:36px;border-radius:50%;background:rgba(251,191,36,.15);display:flex;align-items:center;justify-content:center;flex-shrink:0">
-        <svg viewBox="0 0 24 24" style="width:17px;height:17px;stroke:#FBBF24;fill:none;stroke-width:2.2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-      </div>
+    <div style="margin:20px 20px 0;background:rgba(251,191,36,.07);border-radius:16px;padding:16px 18px;display:flex;align-items:center;gap:16px;border:1px solid rgba(251,191,36,.15)">
+      <svg viewBox="0 0 24 24" style="width:22px;height:22px;stroke:#FBBF24;fill:none;stroke-width:2;flex-shrink:0"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
       <div>
-        <div style="font-size:14px;font-weight:700;color:rgba(255,255,255,.9)">Brak ${missing.length} ${missing.length===1?'rozliczenia':'rozliczeń'}</div>
-        <div style="font-size:12px;color:var(--text-3);margin-top:2px">${fmtDatePL(missing[missing.length-1])} – ${fmtDatePL(missing[0])}</div>
+        <div style="font-size:15px;font-weight:700;color:rgba(255,255,255,.9)">Brak ${missing.length} ${missing.length===1?'rozliczenia':'rozliczeń'}</div>
+        <div style="font-size:13px;color:rgba(255,255,255,.45);margin-top:2px">${fmtDatePL(missing[missing.length-1])} – ${fmtDatePL(missing[0])}</div>
       </div>
     </div>`:''}
 
     <!-- FORMULARZ (ukryty domyślnie) -->
-    <div id="settlement-form-wrap" style="display:none;margin:16px 16px 0;background:var(--bg-card);border-radius:16px;padding:20px">
-      <div style="font-size:15px;font-weight:700;color:var(--text);margin-bottom:14px">Nowe rozliczenie</div>
+    <div id="settlement-form-wrap" style="display:none;margin:20px 20px 0;background:rgba(255,255,255,.04);border-radius:20px;padding:22px;border:1px solid rgba(255,255,255,.08)">
+      <div style="font-size:17px;font-weight:800;color:var(--text);margin-bottom:18px;letter-spacing:-.3px">Nowe rozliczenie</div>
 
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
         <div>
-          <label style="font-size:11px;color:var(--text-3);display:block;margin-bottom:4px">Data</label>
+          <label style="font-size:12px;color:rgba(255,255,255,.4);display:block;margin-bottom:6px;font-weight:600">Data</label>
           <input type="date" id="sf-date" value="${today}" style="${inputStyle()}">
         </div>
         <div>
-          <label style="font-size:11px;color:var(--text-3);display:block;margin-bottom:4px">Kelner</label>
+          <label style="font-size:12px;color:rgba(255,255,255,.4);display:block;margin-bottom:6px;font-weight:600">Kelner</label>
           <input type="text" id="sf-waiter" placeholder="Imię i nazwisko" style="${inputStyle()}">
         </div>
       </div>
 
-      <div style="font-size:11px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:.5px;margin:12px 0 8px">Pola z raportu kasjera</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
+      <div style="font-size:11px;font-weight:700;color:rgba(255,255,255,.3);letter-spacing:.8px;margin:16px 0 10px">RAPORT KASJERA</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">
         ${sfField('sf-c','C — Utarg')}
-        ${sfField('sf-d','D — Gotówka (Got:)')}
+        ${sfField('sf-d','D — Gotówka')}
         ${sfField('sf-e','E — Stan końcowy')}
-        ${sfField('sf-g','G — Kasa wydała (KW)')}
-        ${sfField('sf-h','H — Dokumenty KW')}
-        ${sfField('sf-j','J — Terminal ZAMKNIĘCIE')}
-        ${sfField('sf-k','K — Karta (kasjer)')}
+        ${sfField('sf-g','G — KW')}
+        ${sfField('sf-h','H — Dok. KW')}
+        ${sfField('sf-j','J — Terminal')}
+        ${sfField('sf-k','K — Karta')}
         ${sfField('sf-n','N — Napiwki')}
         ${sfField('sf-p','P — Online')}
         ${sfField('sf-l','L — Zmiany kart')}
       </div>
 
-      <div style="margin-bottom:10px">
-        <label style="font-size:11px;color:var(--text-3);display:block;margin-bottom:4px">Komentarz</label>
+      <div style="margin-bottom:12px">
+        <label style="font-size:12px;color:rgba(255,255,255,.4);display:block;margin-bottom:6px;font-weight:600">Komentarz</label>
         <textarea id="sf-comment" rows="2" placeholder="Uwagi, rozbieżności..." style="${inputStyle()}resize:none;"></textarea>
       </div>
 
-      <div style="margin-bottom:14px">
-        <label style="font-size:11px;color:var(--text-3);display:block;margin-bottom:6px">📷 Zdjęcie koperty (backup)</label>
-        <label style="display:flex;align-items:center;gap:10px;background:var(--bg);border:1.5px dashed var(--border);border-radius:10px;padding:12px 14px;cursor:pointer">
-          <svg viewBox="0 0 24 24" style="width:20px;height:20px;stroke:var(--text-3);fill:none;stroke-width:2;flex-shrink:0"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
-          <span style="font-size:13px;color:var(--text-2)" id="sf-photo-label">Zrób zdjęcie lub wybierz z telefonu</span>
+      <div style="margin-bottom:18px">
+        <label style="font-size:12px;color:rgba(255,255,255,.4);display:block;margin-bottom:8px;font-weight:600">Zdjęcie koperty</label>
+        <label style="display:flex;align-items:center;gap:12px;background:rgba(255,255,255,.04);border:1.5px dashed rgba(255,255,255,.12);border-radius:12px;padding:14px 16px;cursor:pointer">
+          <svg viewBox="0 0 24 24" style="width:20px;height:20px;stroke:rgba(255,255,255,.35);fill:none;stroke-width:2;flex-shrink:0"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+          <span style="font-size:14px;color:rgba(255,255,255,.4)" id="sf-photo-label">Zrób zdjęcie lub wybierz z telefonu</span>
           <input type="file" id="sf-photo" accept="image/*" capture="environment" onchange="onSettlementPhotoChange(this)" style="display:none">
         </label>
-        <div id="sf-photo-preview" style="margin-top:8px;display:none">
-          <img id="sf-photo-img" style="width:100%;max-height:200px;object-fit:contain;border-radius:8px;border:1px solid var(--border)">
+        <div id="sf-photo-preview" style="margin-top:10px;display:none">
+          <img id="sf-photo-img" style="width:100%;max-height:200px;object-fit:contain;border-radius:10px;border:1px solid rgba(255,255,255,.1)">
         </div>
       </div>
 
       <div style="display:flex;gap:10px">
-        <button onclick="cancelSettlementForm()" style="flex:1;padding:12px;background:var(--bg);border:1px solid var(--border);border-radius:10px;color:var(--text-2);font-size:14px;font-weight:600;cursor:pointer;font-family:var(--font)">Anuluj</button>
-        <button onclick="saveSettlement()" style="flex:2;padding:12px;background:var(--brand);border:none;border-radius:10px;color:#fff;font-size:14px;font-weight:700;cursor:pointer;font-family:var(--font)" id="sf-save-btn">Zapisz rozliczenie</button>
+        <button onclick="cancelSettlementForm()" style="flex:1;padding:14px;background:rgba(255,255,255,.06);border:none;border-radius:12px;color:rgba(255,255,255,.6);font-size:15px;font-weight:600;cursor:pointer;font-family:var(--font)">Anuluj</button>
+        <button onclick="saveSettlement()" style="flex:2;padding:14px;background:var(--brand);border:none;border-radius:12px;color:#fff;font-size:15px;font-weight:700;cursor:pointer;font-family:var(--font)" id="sf-save-btn">Zapisz</button>
       </div>
     </div>
 
     <!-- LISTA ROZLICZEŃ -->
-    ${rows.length>0?`<div style="padding:16px 16px 6px;font-size:11px;font-weight:700;color:var(--text-3);letter-spacing:.8px;text-transform:uppercase">Ostatnie rozliczenia</div>`:''}
-    <div id="settlements-list" style="background:var(--bg-card);border-radius:14px;margin:0 16px;overflow:hidden">
+    ${rows.length>0?`<div style="padding:24px 20px 10px;font-size:12px;font-weight:700;color:rgba(255,255,255,.3);letter-spacing:.8px">OSTATNIE ROZLICZENIA</div>`:''}
+    <div id="settlements-list" style="margin:0 20px;border-radius:18px;overflow:hidden;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07)">
       ${rows.length===0?
-        `<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:52px 24px;gap:10px">
-          <svg viewBox="0 0 24 24" style="width:32px;height:32px;stroke:var(--text-3);fill:none;stroke-width:1.5"><rect x="2" y="6" width="20" height="13" rx="2.5"/><path d="M2 11h20"/><path d="M6 15h4M15 15h3"/></svg>
-          <div style="font-size:15px;color:var(--text-2);font-weight:600">Brak rozliczeń</div>
-          <div style="font-size:13px;color:var(--text-3)">Kliknij <strong style="color:var(--brand)">+ Dodaj</strong></div>
+        `<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 24px;gap:14px">
+          <svg viewBox="0 0 24 24" style="width:40px;height:40px;stroke:rgba(255,255,255,.18);fill:none;stroke-width:1.5"><rect x="2" y="6" width="20" height="13" rx="2.5"/><path d="M2 11h20"/><path d="M6 15h4M15 15h3"/></svg>
+          <div style="font-size:17px;color:rgba(255,255,255,.35);font-weight:600">Brak rozliczeń</div>
+          <div style="font-size:14px;color:rgba(255,255,255,.25)">Kliknij <strong style="color:var(--brand)">+ Dodaj</strong></div>
         </div>`
         : rows.map(r=>settlementCard(r)).join('')
       }
@@ -3834,13 +3833,13 @@ function renderSettlementsUI(mc, rows){
 
 function sfField(id, label){
   return `<div>
-    <label style="font-size:11px;color:var(--text-3);display:block;margin-bottom:4px">${label}</label>
+    <label style="font-size:12px;color:rgba(255,255,255,.4);display:block;margin-bottom:6px;font-weight:600">${label}</label>
     <input type="number" id="${id}" step="0.01" placeholder="0.00" style="${inputStyle()}">
   </div>`;
 }
 
 function inputStyle(){
-  return `width:100%;padding:9px 10px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:13px;font-family:var(--font);`;
+  return `width:100%;padding:11px 12px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:10px;color:#fff;font-size:15px;font-family:var(--font);`;
 }
 
 function fmtDatePL(ds){
@@ -3859,17 +3858,17 @@ function settlementCard(r){
     : `<span style="font-size:11px;padding:3px 9px;border-radius:20px;background:rgba(251,191,36,.12);color:#FBBF24;font-weight:700;flex-shrink:0;letter-spacing:.2px">Weryfikacja</span>`;
 
   const utarg = r.field_c!=null ? parseFloat(r.field_c).toFixed(2) : null;
-  return `<div style="display:flex;align-items:center;padding:14px 16px;border-bottom:1px solid rgba(255,255,255,.05);cursor:pointer;-webkit-tap-highlight-color:transparent;transition:background .1s" onclick="openSettlementDetail('${r.id}')" ontouchstart="this.style.background='rgba(255,255,255,.05)'" ontouchend="this.style.background=''">
-    <div style="width:42px;height:42px;border-radius:50%;background:var(--brand);display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800;color:#fff;flex-shrink:0;margin-right:14px">${(r.waiter_name||'?')[0].toUpperCase()}</div>
+  return `<div style="display:flex;align-items:center;padding:16px 20px;border-bottom:1px solid rgba(255,255,255,.06);cursor:pointer;-webkit-tap-highlight-color:transparent;transition:background .12s" onclick="openSettlementDetail('${r.id}')" ontouchstart="this.style.background='rgba(255,255,255,.04)'" ontouchend="this.style.background=''">
+    <div style="width:46px;height:46px;border-radius:14px;background:rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:800;color:rgba(255,255,255,.7);flex-shrink:0;margin-right:16px">${(r.waiter_name||'?')[0].toUpperCase()}</div>
     <div style="flex:1;min-width:0">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:3px">
-        <div style="font-size:15px;font-weight:700;color:var(--text)">${r.waiter_name}</div>
-        ${utarg?`<div style="font-size:15px;font-weight:700;color:var(--text)">${utarg} zł</div>`:''}
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
+        <div style="font-size:16px;font-weight:700;color:#fff;letter-spacing:-.2px">${r.waiter_name}</div>
+        ${utarg?`<div style="font-size:16px;font-weight:700;color:#fff">${utarg} zł</div>`:''}
       </div>
       <div style="display:flex;align-items:center;justify-content:space-between">
-        <div style="font-size:13px;color:var(--text-3)">${fmtDatePL(r.date)}</div>
+        <div style="font-size:14px;color:rgba(255,255,255,.4)">${fmtDatePL(r.date)}</div>
         <div style="display:flex;align-items:center;gap:8px">
-          ${diff!==null?`<span style="font-size:12px;font-weight:600;color:${diffColor}">${diffLabel}</span>`:''}
+          ${diff!==null?`<span style="font-size:13px;font-weight:600;color:${diffColor}">${diffLabel}</span>`:''}
           ${verifiedBadge}
         </div>
       </div>
