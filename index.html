@@ -49,7 +49,7 @@
 }
 * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 body {
-  font-family: var(--font); background: #2A1000; color: var(--text);
+  font-family: var(--font); background: #3D1A00; color: var(--text);
   min-height: 100vh; font-size: 14px; line-height: 1.5;
   -webkit-font-smoothing: antialiased; overscroll-behavior-y: none;
 }
@@ -58,9 +58,9 @@ body::before {
   content: '';
   position: fixed; inset: 0; pointer-events: none; z-index: 0;
   background:
-    radial-gradient(ellipse 120% 70% at 60% 0%, #E06000 0%, #A03800 30%, transparent 65%),
-    radial-gradient(ellipse 80% 60% at 10% 40%, rgba(200,80,0,.35) 0%, transparent 60%),
-    radial-gradient(ellipse 70% 50% at 90% 80%, rgba(160,55,0,.25) 0%, transparent 60%);
+    radial-gradient(ellipse 100% 55% at 55% -5%, rgba(220,100,10,.65) 0%, rgba(160,60,0,.35) 35%, transparent 65%),
+    radial-gradient(ellipse 60% 50% at 5% 35%, rgba(180,70,0,.2) 0%, transparent 55%),
+    radial-gradient(ellipse 55% 40% at 95% 75%, rgba(140,50,0,.15) 0%, transparent 55%);
 }
 #app { background: transparent; }
 
@@ -331,17 +331,17 @@ body.view-home .bnav-item.active .bnav-icon-wrap { background: rgba(255,255,255,
   padding-bottom: calc(62px + max(env(safe-area-inset-bottom), 12px) + 8px);
   -webkit-tap-highlight-color: transparent;
   position: relative;
-  background: #2A1000;
+  background: #3D1A00;
 }
-/* Prześwietlenia — jasne pomarańczowe, rozlane przez cały ekran */
+/* Prześwietlenia — ciepłe, nie za intensywne */
 .hw-wrap::before {
   content: '';
   position: fixed; inset: 0; pointer-events: none; z-index: 0;
   display: block;
   background:
-    radial-gradient(ellipse 120% 70% at 60% 0%, #E06000 0%, #A03800 30%, transparent 65%),
-    radial-gradient(ellipse 80% 60% at 10% 40%, rgba(200,80,0,.45) 0%, transparent 60%),
-    radial-gradient(ellipse 70% 50% at 90% 80%, rgba(160,55,0,.35) 0%, transparent 60%);
+    radial-gradient(ellipse 100% 55% at 55% -5%, rgba(220,100,10,.75) 0%, rgba(160,60,0,.4) 35%, transparent 65%),
+    radial-gradient(ellipse 60% 50% at 5% 35%, rgba(180,70,0,.25) 0%, transparent 55%),
+    radial-gradient(ellipse 55% 40% at 95% 75%, rgba(140,50,0,.18) 0%, transparent 55%);
 }
 
 /* ── Hero ── */
@@ -384,30 +384,34 @@ body.view-home .bnav-item.active .bnav-icon-wrap { background: rgba(255,255,255,
 @keyframes slideUp { to { transform: translateY(0); } }
 @keyframes fadeInUp { from{opacity:0;transform:translateY(12px);} to{opacity:1;transform:none;} }
 
-/* ── Kółka szybkich akcji — jak w Revolut ── */
+/* ── Kółka szybkich akcji — jak w Revolut, jeden rząd poziomy ── */
 .hw-quick-actions {
-  display: flex; gap: 0;
-  justify-content: space-around;
+  display: flex; flex-direction: row; flex-wrap: nowrap;
+  gap: 0;
+  justify-content: space-between;
   margin-top: 28px;
   position: relative; z-index: 1;
   opacity: 0; animation: fadeIn .4s ease .15s forwards;
+  overflow: hidden;
 }
 .hw-qa-item {
-  display: flex; flex-direction: column; align-items: center; gap: 8px;
+  display: flex; flex-direction: column; align-items: center; gap: 7px;
   cursor: pointer; -webkit-tap-highlight-color: transparent;
-  flex: 1;
+  flex: 1; min-width: 0;
 }
-.hw-qa-item:active .hw-qa-circle { background: rgba(255,255,255,.25); }
+.hw-qa-item:active .hw-qa-circle { transform: scale(.9); background: rgba(255,255,255,.26); }
 .hw-qa-circle {
-  width: 56px; height: 56px; border-radius: 50%;
+  width: 58px; height: 58px; border-radius: 50%;
   background: rgba(255,255,255,.18);
   display: flex; align-items: center; justify-content: center;
-  transition: background .12s;
+  transition: transform .12s, background .12s;
+  backdrop-filter: blur(4px);
 }
 .hw-qa-circle svg { opacity: 1; }
 .hw-qa-label {
-  font-size: 12px; font-weight: 500; color: rgba(255,255,255,.85);
-  text-align: center; white-space: nowrap;
+  font-size: 11px; font-weight: 500; color: rgba(255,255,255,.8);
+  text-align: center; white-space: nowrap; overflow: hidden;
+  text-overflow: ellipsis; max-width: 100%;
 }
 
 /* ── Blok zegarowy (ewidencja czasu) — tylko gdy na zmianie ── */
@@ -506,25 +510,28 @@ body.view-home .bnav-item.active .bnav-icon-wrap { background: rgba(255,255,255,
   border: none;
   border-radius: 0;
   overflow: visible;
-  padding: 0;
-  gap: 0;
+  padding: 0 16px;
+  gap: 10px;
 }
 .hw-blocks-label { display: none; }
 
-/* Kafelek — Revolut style: transparentny, ikona kółko, tekst biały */
+/* Kafelek — Revolut style: szklana karta, ikona + tekst poziomo */
 .hb-row {
   position: relative; overflow: hidden;
   cursor: pointer;
   display: flex; flex-direction: row;
   align-items: center; gap: 14px;
-  padding: 12px 20px;
-  background: transparent;
-  border: none;
+  padding: 14px 16px;
+  background: rgba(255,255,255,.09);
+  border: 1px solid rgba(255,255,255,.1);
+  border-radius: 16px;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   -webkit-tap-highlight-color: transparent;
-  transition: background .1s;
+  transition: background .1s, transform .1s;
   opacity: 0; animation: rowIn .3s ease forwards;
 }
-.hb-row:active { background: rgba(255,255,255,.07); }
+.hb-row:active { background: rgba(255,255,255,.15); transform: scale(.98); }
 .hb-row:nth-child(1) { animation-delay: .06s; }
 .hb-row:nth-child(2) { animation-delay: .10s; }
 .hb-row:nth-child(3) { animation-delay: .14s; }
@@ -535,13 +542,13 @@ body.view-home .bnav-item.active .bnav-icon-wrap { background: rgba(255,255,255,
 .hb-row:nth-child(8) { animation-delay: .34s; }
 .hb-row:nth-child(9) { animation-delay: .38s; }
 .hb-row:nth-child(10){ animation-delay: .42s; }
-@keyframes rowIn { from{opacity:0;transform:translateX(-8px);} to{opacity:1;transform:none;} }
+@keyframes rowIn { from{opacity:0;transform:translateY(10px);} to{opacity:1;transform:none;} }
 
-/* Ikona — kółko jak w Revolut */
+/* Ikona — kółko */
 .hb-row-icon {
   display: flex; align-items: center; justify-content: center;
-  width: 46px; height: 46px; border-radius: 50%;
-  background: rgba(255,255,255,.12);
+  width: 44px; height: 44px; border-radius: 50%;
+  background: rgba(255,255,255,.14);
   flex-shrink: 0;
 }
 .hb-row-icon svg { stroke: rgba(255,255,255,.9) !important; }
@@ -551,7 +558,7 @@ body.view-home .bnav-item.active .bnav-icon-wrap { background: rgba(255,255,255,
 .hb-row-label { display: none; }
 .hb-row-title {
   display: block;
-  font-size: 16px; font-weight: 600; color: #fff;
+  font-size: 15px; font-weight: 600; color: #fff;
   letter-spacing: -.2px; line-height: 1.2;
 }
 .hb-row-sub {
@@ -560,7 +567,7 @@ body.view-home .bnav-item.active .bnav-icon-wrap { background: rgba(255,255,255,
 
 /* Strzałka */
 .hb-row-arrow { display: flex; align-items: center; flex-shrink: 0; }
-.hb-row-arrow svg { width: 15px; height: 15px; stroke: rgba(255,255,255,.25); }
+.hb-row-arrow svg { width: 15px; height: 15px; stroke: rgba(255,255,255,.3); }
 
 /* Badge */
 .hb-badge {
@@ -588,11 +595,27 @@ body.view-home .bnav-item.active .bnav-icon-wrap { background: rgba(255,255,255,
   to { transform: translate(-50%,-50%) scale(1); opacity: 0; }
 }
 
-/* ── Menu rows — ciemne pomarańczowe tło ── */
-.hb-row:active { background: rgba(255,255,255,.07) !important; }
-.hb-row-icon {
-  background: rgba(255,255,255,.15) !important;
+/* Przycisk "Więcej" */
+.hw-more-btn {
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+  padding: 12px 20px;
+  background: rgba(255,255,255,.07);
+  border: 1px solid rgba(255,255,255,.1);
+  border-radius: 14px;
+  cursor: pointer;
+  font-size: 14px; font-weight: 500; color: rgba(255,255,255,.65);
+  font-family: var(--font);
+  -webkit-tap-highlight-color: transparent;
+  transition: background .12s;
+  width: 100%;
 }
+.hw-more-btn:active { background: rgba(255,255,255,.12); }
+.hw-more-btn svg { width: 16px; height: 16px; stroke: rgba(255,255,255,.5); fill: none; stroke-width: 2; transition: transform .2s; }
+.hw-more-btn.open svg { transform: rotate(180deg); }
+.hw-extra-rows { display: none; flex-direction: column; gap: 10px; }
+.hw-extra-rows.open { display: flex; }
+/* Wymuś białe ikony w menu */
+.hb-row-icon { background: rgba(255,255,255,.14) !important; }
 .hb-row-icon svg { stroke: rgba(255,255,255,.9) !important; }
 .hb-row-title { color: #fff !important; }
 .hb-row-arrow svg { stroke: rgba(255,255,255,.3) !important; }
@@ -2324,7 +2347,15 @@ function renderHome(mc){
     <!-- ═══ MENU ═══ -->
     <div class="hw-body">
       <div class="hw-blocks">
-        ${rows.map(rowHTML).join('')}
+        ${rows.slice(0, 4).map(rowHTML).join('')}
+        ${rows.length > 4 ? `
+        <div class="hw-extra-rows" id="hw-extra-rows">
+          ${rows.slice(4).map(rowHTML).join('')}
+        </div>
+        <button class="hw-more-btn" id="hw-more-btn" onclick="toggleHwMore(this)">
+          <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+          Więcej
+        </button>` : ''}
       </div>
     </div>
 
@@ -2356,6 +2387,17 @@ function renderHome(mc){
     tick();
     window._hwTimerInt = setInterval(tick, 1000);
   }
+}
+
+function toggleHwMore(btn){
+  const extra = document.getElementById('hw-extra-rows');
+  if(!extra) return;
+  const open = extra.classList.toggle('open');
+  btn.classList.toggle('open', open);
+  btn.querySelector('span') && (btn.querySelector('span').textContent = open ? 'Mniej' : 'Więcej');
+  // Zamień tekst w przycisku
+  const textNode = [...btn.childNodes].find(n=>n.nodeType===3);
+  if(textNode) textNode.textContent = open ? ' Mniej' : ' Więcej';
 }
 
 function hbTap(el, view){
