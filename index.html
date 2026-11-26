@@ -295,15 +295,12 @@ body.view-home #main-content { background: transparent; }
   padding-bottom: calc(62px + max(env(safe-area-inset-bottom), 12px) + 8px);
   -webkit-tap-highlight-color: transparent;
   position: relative;
-  background: #1A080E;
+  background: #111111;
 }
 .hw-wrap::before {
   content: '';
   position: fixed; inset: 0; pointer-events: none; z-index: 0;
-  background:
-    radial-gradient(ellipse 90% 55% at 80% 5%, rgba(180,50,40,.55) 0%, transparent 50%),
-    radial-gradient(ellipse 70% 60% at 10% 85%, rgba(140,30,50,.5) 0%, transparent 55%),
-    radial-gradient(ellipse 60% 40% at 50% 50%, rgba(100,20,30,.2) 0%, transparent 60%);
+  background: radial-gradient(ellipse 70% 40% at 50% 0%, rgba(192,57,43,.12) 0%, transparent 60%);
 }
 
 /* Header */
@@ -332,8 +329,8 @@ body.view-home #main-content { background: transparent; }
   margin: 0 20px 10px;
   position: relative; overflow: hidden;
   border-radius: 14px;
-  background: rgba(180,50,40,.18);
-  border: 1px solid rgba(255,255,255,.1);
+  background: rgba(255,255,255,.05);
+  border: 1px solid rgba(255,255,255,.08);
   padding: 12px 16px;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
@@ -345,7 +342,7 @@ body.view-home #main-content { background: transparent; }
   gap: 4px;
   text-align: center;
 }
-.hw-clock-block:active { background: rgba(180,50,40,.28); }
+.hw-clock-block:active { background: rgba(255,255,255,.08); }
 
 /* Stan: pracuje */
 .hw-clock-block.working {
@@ -1972,11 +1969,6 @@ function goHome(){showView('home');}
 
 // Obsługa przycisku wstecz przeglądarki
 window.addEventListener('popstate',e=>{
-  // Na iOS scroll/klawiatura mogą wywołać popstate — ignoruj gdy jesteśmy w settlements
-  if(currentView==='settlements'){
-    history.pushState({view:'settlements'},'','#settlements');
-    return;
-  }
   const v=e.state?.view||'home';
   showView(v, false);
 });
@@ -3731,56 +3723,48 @@ async function renderSettlements(mc){
 function renderSettlementsUI(mc, rows){
   const today = new Date().toISOString().slice(0,10);
 
-  // Sprawdź brakujące dni (ostatnie 7 dni)
-  const missing = [];
-  for(let i=1;i<=7;i++){
-    const d=new Date(); d.setDate(d.getDate()-i);
-    const ds=d.toISOString().slice(0,10);
-    const hasDay = rows.some(r=>r.date===ds);
-    if(!hasDay) missing.push(ds);
+  // Zbuduj listę ostatnich 14 dni — każdy dzień jako osobny wpis
+  const days = [];
+  for(let i=0; i<14; i++){
+    const d = new Date(); d.setDate(d.getDate()-i);
+    const ds = d.toISOString().slice(0,10);
+    const dayRows = rows.filter(r=>r.date===ds);
+    days.push({date:ds, rows:dayRows, missing: i>0 && dayRows.length===0});
   }
+  const missingCount = days.filter(d=>d.missing).length;
 
   mc.innerHTML=`
-  <div style="position:sticky;top:0;z-index:20;background:var(--bg);border-bottom:1px solid rgba(255,255,255,.07);padding:14px 20px 14px;display:flex;align-items:center;gap:12px">
-    <button onclick="goHome()" style="display:flex;align-items:center;gap:6px;background:none;border:none;color:var(--text-2);font-size:16px;font-weight:600;cursor:pointer;font-family:var(--font);padding:0;-webkit-tap-highlight-color:transparent">
-      <svg viewBox="0 0 24 24" style="width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:2.2"><polyline points="15 18 9 12 15 6"/></svg>
+  <div style="position:sticky;top:0;z-index:20;background:var(--bg);border-bottom:1px solid rgba(255,255,255,.07);padding:0 20px;height:56px;display:flex;align-items:center;gap:12px">
+    <button onclick="goHome()" style="display:flex;align-items:center;gap:4px;background:none;border:none;color:var(--text-2);font-size:15px;font-weight:500;cursor:pointer;font-family:var(--font);padding:8px 0;-webkit-tap-highlight-color:transparent">
+      <svg viewBox="0 0 24 24" style="width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2.5"><polyline points="15 18 9 12 15 6"/></svg>
       Wróć
     </button>
-    <div style="flex:1;font-size:20px;font-weight:800;color:var(--text);letter-spacing:-.5px">Rozliczenia</div>
-    <button onclick="openSettlementForm()" style="display:flex;align-items:center;gap:5px;padding:9px 18px;background:var(--brand);border:none;border-radius:12px;color:#fff;font-size:14px;font-weight:700;cursor:pointer;font-family:var(--font)">
-      <svg viewBox="0 0 24 24" style="width:15px;height:15px;stroke:#fff;fill:none;stroke-width:2.8"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+    <div style="flex:1;font-size:17px;font-weight:700;color:var(--text)">Rozliczenia</div>
+    <button onclick="openSettlementForm()" style="display:flex;align-items:center;gap:5px;padding:8px 16px;background:var(--brand);border:none;border-radius:10px;color:#fff;font-size:14px;font-weight:600;cursor:pointer;font-family:var(--font)">
+      <svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:#fff;fill:none;stroke-width:2.8"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
       Dodaj
     </button>
   </div>
 
-  <div style="padding:0 0 calc(80px + env(safe-area-inset-bottom));min-height:calc(100dvh - 56px - 60px);display:flex;flex-direction:column">
-
-    ${missing.length>0?`
-    <div style="margin:20px 20px 0;background:rgba(251,191,36,.07);border-radius:16px;padding:16px 18px;display:flex;align-items:center;gap:16px;border:1px solid rgba(251,191,36,.15)">
-      <svg viewBox="0 0 24 24" style="width:22px;height:22px;stroke:#FBBF24;fill:none;stroke-width:2;flex-shrink:0"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-      <div>
-        <div style="font-size:15px;font-weight:700;color:rgba(255,255,255,.9)">Brak ${missing.length} ${missing.length===1?'rozliczenia':'rozliczeń'}</div>
-        <div style="font-size:13px;color:rgba(255,255,255,.45);margin-top:2px">${fmtDatePL(missing[missing.length-1])} – ${fmtDatePL(missing[0])}</div>
-      </div>
-    </div>`:''}
+  <div style="padding:0 0 calc(80px + env(safe-area-inset-bottom));min-height:calc(100dvh - 56px);display:flex;flex-direction:column">
 
     <!-- FORMULARZ (ukryty domyślnie) -->
-    <div id="settlement-form-wrap" style="display:none;margin:20px 20px 0;background:rgba(255,255,255,.04);border-radius:20px;padding:22px;border:1px solid rgba(255,255,255,.08)">
-      <div style="font-size:17px;font-weight:800;color:var(--text);margin-bottom:18px;letter-spacing:-.3px">Nowe rozliczenie</div>
+    <div id="settlement-form-wrap" style="display:none;margin:16px 16px 0;background:rgba(255,255,255,.04);border-radius:16px;padding:20px;border:1px solid rgba(255,255,255,.08)">
+      <div style="font-size:16px;font-weight:700;color:var(--text);margin-bottom:16px">Nowe rozliczenie</div>
 
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
         <div>
-          <label style="font-size:12px;color:rgba(255,255,255,.4);display:block;margin-bottom:6px;font-weight:600">Data</label>
+          <label style="font-size:12px;color:var(--text-2);display:block;margin-bottom:5px;font-weight:600">Data</label>
           <input type="date" id="sf-date" value="${today}" style="${inputStyle()}">
         </div>
         <div>
-          <label style="font-size:12px;color:rgba(255,255,255,.4);display:block;margin-bottom:6px;font-weight:600">Kelner</label>
+          <label style="font-size:12px;color:var(--text-2);display:block;margin-bottom:5px;font-weight:600">Kelner</label>
           <input type="text" id="sf-waiter" placeholder="Imię i nazwisko" style="${inputStyle()}">
         </div>
       </div>
 
-      <div style="font-size:11px;font-weight:700;color:rgba(255,255,255,.3);letter-spacing:.8px;margin:16px 0 10px">RAPORT KASJERA</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">
+      <div style="font-size:11px;font-weight:600;color:var(--text-3);letter-spacing:.6px;margin:14px 0 8px;text-transform:uppercase">Raport kasjera</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px">
         ${sfField('sf-c','C — Utarg')}
         ${sfField('sf-d','D — Gotówka')}
         ${sfField('sf-e','E — Stan końcowy')}
@@ -3793,40 +3777,57 @@ function renderSettlementsUI(mc, rows){
         ${sfField('sf-l','L — Zmiany kart')}
       </div>
 
-      <div style="margin-bottom:12px">
-        <label style="font-size:12px;color:rgba(255,255,255,.4);display:block;margin-bottom:6px;font-weight:600">Komentarz</label>
+      <div style="margin-bottom:10px">
+        <label style="font-size:12px;color:var(--text-2);display:block;margin-bottom:5px;font-weight:600">Komentarz</label>
         <textarea id="sf-comment" rows="2" placeholder="Uwagi, rozbieżności..." style="${inputStyle()}resize:none;"></textarea>
       </div>
 
-      <div style="margin-bottom:18px">
-        <label style="font-size:12px;color:rgba(255,255,255,.4);display:block;margin-bottom:8px;font-weight:600">Zdjęcie koperty</label>
-        <label style="display:flex;align-items:center;gap:12px;background:rgba(255,255,255,.04);border:1.5px dashed rgba(255,255,255,.12);border-radius:12px;padding:14px 16px;cursor:pointer">
-          <svg viewBox="0 0 24 24" style="width:20px;height:20px;stroke:rgba(255,255,255,.35);fill:none;stroke-width:2;flex-shrink:0"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
-          <span style="font-size:14px;color:rgba(255,255,255,.4)" id="sf-photo-label">Zrób zdjęcie lub wybierz z telefonu</span>
+      <div style="margin-bottom:16px">
+        <label style="font-size:12px;color:var(--text-2);display:block;margin-bottom:6px;font-weight:600">Zdjęcie koperty</label>
+        <label style="display:flex;align-items:center;gap:12px;background:rgba(255,255,255,.04);border:1.5px dashed rgba(255,255,255,.12);border-radius:10px;padding:12px 14px;cursor:pointer">
+          <svg viewBox="0 0 24 24" style="width:18px;height:18px;stroke:rgba(255,255,255,.35);fill:none;stroke-width:2;flex-shrink:0"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+          <span style="font-size:14px;color:var(--text-2)" id="sf-photo-label">Zrób zdjęcie lub wybierz z telefonu</span>
           <input type="file" id="sf-photo" accept="image/*" capture="environment" onchange="onSettlementPhotoChange(this)" style="display:none">
         </label>
-        <div id="sf-photo-preview" style="margin-top:10px;display:none">
+        <div id="sf-photo-preview" style="margin-top:8px;display:none">
           <img id="sf-photo-img" style="width:100%;max-height:200px;object-fit:contain;border-radius:10px;border:1px solid rgba(255,255,255,.1)">
         </div>
       </div>
 
-      <div style="display:flex;gap:10px">
-        <button onclick="cancelSettlementForm()" style="flex:1;padding:14px;background:rgba(255,255,255,.06);border:none;border-radius:12px;color:rgba(255,255,255,.6);font-size:15px;font-weight:600;cursor:pointer;font-family:var(--font)">Anuluj</button>
-        <button onclick="saveSettlement()" style="flex:2;padding:14px;background:var(--brand);border:none;border-radius:12px;color:#fff;font-size:15px;font-weight:700;cursor:pointer;font-family:var(--font)" id="sf-save-btn">Zapisz</button>
+      <div style="display:flex;gap:8px">
+        <button onclick="cancelSettlementForm()" style="flex:1;padding:13px;background:rgba(255,255,255,.06);border:none;border-radius:10px;color:var(--text-2);font-size:15px;font-weight:600;cursor:pointer;font-family:var(--font)">Anuluj</button>
+        <button onclick="saveSettlement()" style="flex:2;padding:13px;background:var(--brand);border:none;border-radius:10px;color:#fff;font-size:15px;font-weight:700;cursor:pointer;font-family:var(--font)" id="sf-save-btn">Zapisz</button>
       </div>
     </div>
 
-    <!-- LISTA ROZLICZEŃ -->
-    ${rows.length>0?`<div style="padding:24px 20px 10px;font-size:12px;font-weight:700;color:rgba(255,255,255,.3);letter-spacing:.8px">OSTATNIE ROZLICZENIA</div>`:''}
-    <div id="settlements-list" style="margin:0 20px;border-radius:18px;overflow:hidden;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);flex:1">
-      ${rows.length===0?
-        `<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 24px;gap:14px;min-height:280px">
-          <svg viewBox="0 0 24 24" style="width:40px;height:40px;stroke:rgba(255,255,255,.18);fill:none;stroke-width:1.5"><rect x="2" y="6" width="20" height="13" rx="2.5"/><path d="M2 11h20"/><path d="M6 15h4M15 15h3"/></svg>
-          <div style="font-size:17px;color:rgba(255,255,255,.35);font-weight:600">Brak rozliczeń</div>
-          <div style="font-size:14px;color:rgba(255,255,255,.25)">Kliknij <strong style="color:var(--brand)">+ Dodaj</strong></div>
-        </div>`
-        : rows.map(r=>settlementCard(r)).join('')
-      }
+    <!-- LISTA DNI -->
+    <div id="settlements-list" style="margin:16px 16px 0;border-radius:16px;overflow:hidden;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07)">
+      ${days.map((day,i)=>{
+        const isToday = day.date===today;
+        const label = isToday ? 'Dziś' : fmtDatePL(day.date);
+        if(day.rows.length>0){
+          return day.rows.map(r=>settlementCard(r,label,i>0&&days[i-1]?.date!==r.date)).join('');
+        }
+        // Dzień bez rozliczenia
+        const isMissing = day.missing;
+        return `<div style="display:flex;align-items:center;padding:14px 16px;${i<days.length-1?'border-bottom:1px solid rgba(255,255,255,.05)':''}">
+          <div style="width:36px;height:36px;border-radius:10px;background:${isMissing?'rgba(251,191,36,.1)':'rgba(255,255,255,.05)'};display:flex;align-items:center;justify-content:center;flex-shrink:0">
+            ${isMissing
+              ? `<svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:#FBBF24;fill:none;stroke-width:2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>`
+              : `<svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:rgba(255,255,255,.25);fill:none;stroke-width:2"><rect x="2" y="6" width="20" height="13" rx="2"/><path d="M2 11h20"/></svg>`
+            }
+          </div>
+          <div style="margin-left:12px;flex:1">
+            <div style="font-size:15px;font-weight:600;color:${isMissing?'rgba(255,255,255,.8)':'rgba(255,255,255,.35)'}">
+              ${isToday?'<span style="color:var(--brand);font-weight:700">Dziś</span>':label}
+            </div>
+            <div style="font-size:13px;color:${isMissing?'rgba(251,191,36,.7)':'rgba(255,255,255,.25)'};margin-top:1px">
+              ${isMissing?'Brak rozliczenia':'Brak danych'}
+            </div>
+          </div>
+          ${isMissing?`<button onclick="openSettlementFormFor('${day.date}')" style="padding:6px 12px;background:rgba(251,191,36,.12);border:1px solid rgba(251,191,36,.2);border-radius:8px;color:#FBBF24;font-size:12px;font-weight:600;cursor:pointer;font-family:var(--font)">Dodaj</button>`:''}
+        </div>`;
+      }).join('')}
     </div>
   </div>`;
 }
@@ -3879,6 +3880,12 @@ function settlementCard(r){
 function openSettlementForm(){
   const wrap = document.getElementById('settlement-form-wrap');
   if(wrap){ wrap.style.display='block'; wrap.scrollIntoView({behavior:'smooth',block:'start'}); }
+}
+
+function openSettlementFormFor(date){
+  const inp = document.getElementById('sf-date');
+  if(inp) inp.value = date;
+  openSettlementForm();
 }
 
 function cancelSettlementForm(){
