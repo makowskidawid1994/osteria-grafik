@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Osteria Antonina</title>
 <link rel="manifest" href="/manifest.json">
-<meta name="theme-color" content="#7B1D2E">
+<meta name="theme-color" content="#7A1E17">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -336,12 +336,12 @@ body.view-home .bnav-item.active .bnav-icon-wrap { background: rgba(255,255,255,
 
 /* Wrapper — cały ekran (header ukryty na home, więc 100dvh) */
 .hw-wrap {
-  min-height: 100dvh;
+  position: fixed; inset: 0;
   display: flex; flex-direction: column;
   -webkit-tap-highlight-color: transparent;
-  position: relative;
   background: linear-gradient(180deg, #7A1E17 0%, #5C1210 20%, #3D0C09 45%, #2A0807 70%, #1A0504 100%);
   overflow: hidden;
+  overflow-y: auto;
 }
 
 /* Górny pasek — jak Revolut top bar */
