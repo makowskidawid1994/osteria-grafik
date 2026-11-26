@@ -3802,18 +3802,19 @@ function renderSettlementsUI(mc, rows){
     </button>
   </div>
 
-  <div style="padding:20px 16px;padding-bottom:120px">
+  <div style="padding-bottom:100px">
 
     ${missing.length>0?`
-    <div style="border-radius:14px;padding:16px 18px;margin-bottom:20px;border-left:3px solid #FBBF24;background:rgba(251,191,36,.07)">
-      <div style="font-size:11px;font-weight:700;color:#FBBF24;letter-spacing:.6px;text-transform:uppercase;margin-bottom:10px">Brak rozliczenia</div>
-      <div style="display:flex;flex-direction:column;gap:6px">
-        ${missing.map(d=>`<div style="display:flex;align-items:center;gap:10px"><span style="width:5px;height:5px;border-radius:50%;background:#FBBF24;flex-shrink:0"></span><span style="font-size:14px;color:var(--text-2)">${fmtDatePL(d)}</span></div>`).join('')}
+    <div style="padding:14px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px;background:rgba(251,191,36,.06)">
+      <div style="width:8px;height:8px;border-radius:50%;background:#FBBF24;flex-shrink:0"></div>
+      <div>
+        <div style="font-size:12px;font-weight:700;color:#FBBF24;margin-bottom:2px">Brak rozliczenia</div>
+        <div style="font-size:13px;color:var(--text-2)">${missing.map(d=>fmtDatePL(d)).join(', ')}</div>
       </div>
     </div>`:''}
 
     <!-- FORMULARZ (ukryty domyślnie) -->
-    <div id="settlement-form-wrap" style="display:none;background:var(--bg-card);border:1px solid var(--border);border-radius:16px;padding:20px;margin-bottom:24px">
+    <div id="settlement-form-wrap" style="display:none;background:var(--bg-card);border-bottom:1px solid var(--border);padding:20px;margin-bottom:0">
       <div style="font-size:15px;font-weight:700;color:var(--text);margin-bottom:14px">Nowe rozliczenie</div>
 
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
@@ -3865,9 +3866,9 @@ function renderSettlementsUI(mc, rows){
     </div>
 
     <!-- LISTA ROZLICZEŃ -->
-    <div id="settlements-list">
+    <div id="settlements-list" style="background:var(--bg-card)">
       ${rows.length===0?
-        `<div style="text-align:center;padding:60px 24px;color:var(--text-3);font-size:13px">Brak rozliczeń. Dodaj pierwsze klikając <strong>+ Dodaj</strong>.</div>`
+        `<div style="text-align:center;padding:60px 24px;color:var(--text-3);font-size:14px">Brak rozliczeń.<br>Kliknij <strong style="color:var(--text)">Dodaj</strong> powyżej.</div>`
         : rows.map(r=>settlementCard(r)).join('')
       }
     </div>
@@ -3900,21 +3901,23 @@ function settlementCard(r){
     ? `<span style="font-size:11px;padding:4px 10px;border-radius:6px;background:var(--green-bg);color:var(--green);font-weight:700;flex-shrink:0">✓ OK</span>`
     : `<span style="font-size:11px;padding:4px 10px;border-radius:6px;background:rgba(251,191,36,.12);color:#FBBF24;font-weight:700;flex-shrink:0">Weryfikacja</span>`;
 
-  return `<div style="background:var(--bg-card);border:1px solid var(--border);border-radius:16px;padding:18px 20px;margin-bottom:12px;cursor:pointer;transition:opacity .15s" onclick="openSettlementDetail('${r.id}')">
-    <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px">
-      <div>
-        <div style="font-size:17px;font-weight:700;color:var(--text);letter-spacing:-.2px">${r.waiter_name}</div>
-        <div style="font-size:13px;color:var(--text-3);margin-top:3px">${fmtDatePL(r.date)}</div>
+  return `<div style="background:var(--bg-card);border-bottom:1px solid var(--border);padding:16px;cursor:pointer;active:opacity:.7" onclick="openSettlementDetail('${r.id}')">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+      <div style="display:flex;align-items:center;gap:12px">
+        <div style="width:40px;height:40px;border-radius:50%;background:var(--brand);display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:800;color:#fff;flex-shrink:0">${(r.waiter_name||'?')[0].toUpperCase()}</div>
+        <div>
+          <div style="font-size:15px;font-weight:700;color:var(--text)">${r.waiter_name}</div>
+          <div style="font-size:12px;color:var(--text-3);margin-top:1px">${fmtDatePL(r.date)}</div>
+        </div>
       </div>
       ${verifiedBadge}
     </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-      ${r.field_c!=null?`<div style="background:var(--bg);border-radius:10px;padding:11px 14px"><div style="font-size:11px;color:var(--text-3);margin-bottom:3px">Utarg</div><div style="font-size:16px;font-weight:700;color:var(--text)">${parseFloat(r.field_c).toFixed(2)} <span style="font-size:12px;font-weight:400">zł</span></div></div>`:''}
-      ${r.field_j!=null?`<div style="background:var(--bg);border-radius:10px;padding:11px 14px"><div style="font-size:11px;color:var(--text-3);margin-bottom:3px">Terminal</div><div style="font-size:16px;font-weight:700;color:var(--text)">${parseFloat(r.field_j).toFixed(2)} <span style="font-size:12px;font-weight:400">zł</span></div></div>`:''}
-      ${diff!==null?`<div style="background:var(--bg);border-radius:10px;padding:11px 14px"><div style="font-size:11px;color:var(--text-3);margin-bottom:3px">Różnica</div><div style="font-size:16px;font-weight:700;color:${diffColor}">${diffLabel}</div></div>`:''}
-      ${r.photo_url?`<div style="background:var(--bg);border-radius:10px;padding:11px 14px;display:flex;align-items:center;gap:8px"><svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:var(--text-3);fill:none;stroke-width:2;flex-shrink:0"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg><span style="font-size:12px;color:var(--text-3)">Zdjęcie</span></div>`:''}
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);border-radius:10px;overflow:hidden;margin-left:52px">
+      ${r.field_c!=null?`<div style="background:var(--bg);padding:10px 12px;text-align:center"><div style="font-size:10px;color:var(--text-3);margin-bottom:2px">UTARG</div><div style="font-size:15px;font-weight:700;color:var(--text)">${parseFloat(r.field_c).toFixed(0)}<span style="font-size:10px;font-weight:400"> zł</span></div></div>`:``}
+      ${r.field_j!=null?`<div style="background:var(--bg);padding:10px 12px;text-align:center"><div style="font-size:10px;color:var(--text-3);margin-bottom:2px">TERMINAL</div><div style="font-size:15px;font-weight:700;color:var(--text)">${parseFloat(r.field_j).toFixed(0)}<span style="font-size:10px;font-weight:400"> zł</span></div></div>`:``}
+      ${diff!==null?`<div style="background:var(--bg);padding:10px 12px;text-align:center"><div style="font-size:10px;color:var(--text-3);margin-bottom:2px">RÓŻNICA</div><div style="font-size:15px;font-weight:700;color:${diffColor}">${diffLabel}</div></div>`:``}
     </div>
-    ${r.comment?`<div style="font-size:13px;color:var(--text-3);margin-top:12px;padding-top:12px;border-top:1px solid var(--border)">${r.comment}</div>`:''}
+    ${r.comment?`<div style="font-size:12px;color:var(--text-3);margin-top:8px;margin-left:52px">${r.comment}</div>`:''}
   </div>`;
 }
 
