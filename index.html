@@ -4476,6 +4476,9 @@ function openSettlementForm(){
   const wrap = document.getElementById('settlement-form-wrap');
   const overlay = document.getElementById('sf-overlay');
   if(!wrap) return;
+  // Przenieś do body, żeby uniknąć containing-block z transform na #main-content
+  if(overlay && overlay.parentElement !== document.body) document.body.appendChild(overlay);
+  if(wrap.parentElement !== document.body) document.body.appendChild(wrap);
   overlay && (overlay.style.display='block');
   wrap.style.visibility='visible';
   requestAnimationFrame(()=>{
