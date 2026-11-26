@@ -428,16 +428,20 @@ body.view-home .bnav-item.active .bnav-icon-wrap { background: rgba(255,255,255,
 .hw-status-bar.working .hw-status-pulse { display: block; }
 @keyframes pulse-dot { 0%,100%{opacity:1;transform:scale(1);} 50%{opacity:.5;transform:scale(.7);} }
 
-/* ── Kółka szybkich akcji — identyczne z Revolut, 4 kółka ── */
+/* ── Kółka szybkich akcji — dwa rzędy ── */
 .hw-quick-actions {
-  display: flex; flex-direction: row; flex-wrap: nowrap;
-  align-items: flex-start;
-  justify-content: space-around;
+  display: flex; flex-direction: column;
+  gap: 20px;
   margin-top: auto;
-  margin-bottom: calc(env(safe-area-inset-bottom) + 260px);
+  margin-bottom: calc(env(safe-area-inset-bottom) + 16px);
   padding: 0 4px;
   position: relative; z-index: 1;
   opacity: 0; animation: fadeIn .4s ease .2s forwards;
+}
+.hw-qa-row {
+  display: flex; flex-direction: row;
+  justify-content: space-around;
+  align-items: flex-start;
 }
 .hw-qa-item {
   display: flex; flex-direction: column; align-items: center; gap: 8px;
@@ -446,16 +450,57 @@ body.view-home .bnav-item.active .bnav-icon-wrap { background: rgba(255,255,255,
 }
 .hw-qa-item:active .hw-qa-circle { transform: scale(.88); background: rgba(255,255,255,.28); }
 .hw-qa-circle {
-  width: 62px; height: 62px; border-radius: 50%;
+  width: 58px; height: 58px; border-radius: 50%;
   background: rgba(255,255,255,.18);
   display: flex; align-items: center; justify-content: center;
   transition: transform .12s, background .12s;
+  backdrop-filter: blur(4px);
 }
+.hw-qa-circle.accent-green { background: rgba(34,197,94,.25); border: 1px solid rgba(34,197,94,.35); }
+.hw-qa-circle.accent-red   { background: rgba(239,68,68,.25);  border: 1px solid rgba(239,68,68,.35); }
 .hw-qa-label {
-  font-size: 11px; font-weight: 500; color: rgba(255,255,255,.75);
+  font-size: 10.5px; font-weight: 500; color: rgba(255,255,255,.75);
   text-align: center; white-space: nowrap; overflow: hidden;
-  text-overflow: ellipsis; max-width: 72px;
+  text-overflow: ellipsis; max-width: 68px;
   letter-spacing: .1px;
+}
+
+/* ── Live stats card ── */
+.hw-stats-card {
+  margin: 0 0 4px;
+  border-radius: 18px;
+  background: rgba(255,255,255,.08);
+  border: 1px solid rgba(255,255,255,.1);
+  padding: 14px 18px;
+  display: flex; gap: 0;
+  opacity: 0; animation: fadeIn .4s ease .15s forwards;
+  backdrop-filter: blur(8px);
+  position: relative; z-index: 1;
+  overflow: hidden;
+}
+.hw-stats-card::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,.04) 0%, transparent 60%);
+  pointer-events: none;
+}
+.hw-stat {
+  flex: 1; display: flex; flex-direction: column; align-items: center; gap: 2px;
+  position: relative;
+}
+.hw-stat + .hw-stat::before {
+  content: '';
+  position: absolute; left: 0; top: 10%; height: 80%;
+  width: 1px; background: rgba(255,255,255,.12);
+}
+.hw-stat-val {
+  font-size: 22px; font-weight: 800; color: #fff;
+  letter-spacing: -.5px; line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+.hw-stat-lbl {
+  font-size: 10px; font-weight: 500; color: rgba(255,255,255,.45);
+  text-transform: uppercase; letter-spacing: .5px; text-align: center;
 }
 
 /* ── Blok zegarowy (ewidencja czasu) — tylko gdy na zmianie ── */
@@ -2389,14 +2434,27 @@ function renderHome(mc){
 
   /* Szybkie akcje — kółka jak w Revolut */
   const qaIcon = (path) => `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.95)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${path}</svg>`;
-  const quickActions = [
-    { id:'clock', label: active ? 'Zakończ' : 'Zacznij', icon: active
-        ? qaIcon('<rect x="6" y="6" width="12" height="12" rx="2"/>')
-        : qaIcon('<polygon points="8 6 20 12 8 18 8 6" fill="rgba(255,255,255,.85)" stroke="none"/>') },
-    { id:'sched',  label:'Grafik',    icon: qaIcon('<rect x="3" y="4" width="18" height="18" rx="2.5"/><path d="M16 2v4M8 2v4M3 10h18"/>') },
-    { id:'board',  label:'Ogłoszenia',icon: qaIcon('<path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/>') },
-    { id:'avail',  label:'Dyspozycja',icon: qaIcon('<circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15.5 15.5"/>') },
+  const clockAccent = active ? 'accent-red' : 'accent-green';
+  const clockIcon = active
+    ? qaIcon('<rect x="6" y="6" width="12" height="12" rx="2" fill="rgba(255,255,255,.9)" stroke="none"/>')
+    : qaIcon('<polygon points="8 6 20 12 8 18 8 6" fill="rgba(255,255,255,.9)" stroke="none"/>');
+  const row1 = [
+    { id:'clock',   label: active ? 'Zakończ' : 'Zacznij', icon: clockIcon, accent: clockAccent },
+    { id:'sched',   label:'Grafik',     icon: qaIcon('<rect x="3" y="4" width="18" height="18" rx="2.5"/><path d="M16 2v4M8 2v4M3 10h18"/>') },
+    { id:'board',   label:'Ogłoszenia', icon: qaIcon('<path d="M3 11l19-9-9 19-2-8-8-2z"/>') },
+    { id:'avail',   label:'Dyspozycja', icon: qaIcon('<circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15.5 15.5"/>') },
   ];
+  const row2base = [
+    { id:'kitchen', label:'Kuchnia',    icon: qaIcon('<path d="M6 2v20M6 15H2M6 9H2"/><path d="M22 15a6 6 0 0 0-6-6V2"/><path d="M22 15H10"/>') },
+    { id:'recipes', label:'Receptury',  icon: qaIcon('<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/><line x1="12" y1="7" x2="12" y2="13"/><line x1="9" y1="10" x2="15" y2="10"/>') },
+    { id:'chat',    label:'Chat',       icon: qaIcon('<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>') },
+  ];
+  if(isOwnerOrMgr){
+    row2base.push({ id:'panel', label:'Panel', icon: qaIcon('<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>') });
+  } else {
+    row2base.push({ id:'sched', label:'Mój grafik', icon: qaIcon('<circle cx="12" cy="8" r="4"/><path d="M6 20v-1a6 6 0 0 1 12 0v1"/>') });
+  }
+  const row2 = row2base;
 
   /* ── Dane do banerów ── */
   const nowWorking = workSessions.filter(s=>!s.clock_out);
@@ -2530,13 +2588,38 @@ function renderHome(mc){
       <!-- Status zegarka (compact) -->
       ${statusBar}
 
-      <!-- Dokładnie 4 kółka jak w Revolut — bez "Więcej" -->
+      <!-- Live stats card -->
+      <div class="hw-stats-card" onclick="hbTap(this,'panel')">
+        <div class="hw-stat">
+          <div class="hw-stat-val" style="color:${nowWorking.length>0?'#4ADE80':'rgba(255,255,255,.9)'}">${nowWorking.length}</div>
+          <div class="hw-stat-lbl">Na zmianie</div>
+        </div>
+        <div class="hw-stat">
+          <div class="hw-stat-val">${todayShifts.length}</div>
+          <div class="hw-stat-lbl">Zmian dziś</div>
+        </div>
+        <div class="hw-stat">
+          <div class="hw-stat-val">${employees.filter(e=>e.active!==false).length}</div>
+          <div class="hw-stat-lbl">Pracowników</div>
+        </div>
+      </div>
+
+      <!-- Dwa rzędy kółek akcji -->
       <div class="hw-quick-actions">
-        ${quickActions.map(a=>`
-          <div class="hw-qa-item" onclick="hbTap(this,'${a.id}')">
-            <div class="hw-qa-circle">${a.icon}</div>
-            <span class="hw-qa-label">${a.label}</span>
-          </div>`).join('')}
+        <div class="hw-qa-row">
+          ${row1.map(a=>`
+            <div class="hw-qa-item" onclick="hbTap(this,'${a.id}')">
+              <div class="hw-qa-circle${a.accent?' '+a.accent:''}">${a.icon}</div>
+              <span class="hw-qa-label">${a.label}</span>
+            </div>`).join('')}
+        </div>
+        <div class="hw-qa-row">
+          ${row2.map(a=>`
+            <div class="hw-qa-item" onclick="hbTap(this,'${a.id}')">
+              <div class="hw-qa-circle">${a.icon}</div>
+              <span class="hw-qa-label">${a.label}</span>
+            </div>`).join('')}
+        </div>
       </div>
     </div>
 
