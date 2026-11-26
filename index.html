@@ -5810,20 +5810,20 @@ async function renderDash(mc){
         <div style="font-size:24px;font-weight:800;color:white;letter-spacing:-.5px;">${tc.toFixed(0)}<span style="font-size:14px;font-weight:400"> zł</span></div>
         <div style="font-size:11px;color:rgba(255,255,255,.5);margin-top:2px;">${th.toFixed(1)} godz.</div>
       </div>
-      <div style="background:#FDFAF6;border:1px solid rgba(139,26,46,.1);border-radius:16px;padding:16px;">
-        <div style="font-size:10px;color:var(--text-3);font-weight:600;text-transform:uppercase;letter-spacing:.3px;margin-bottom:4px;">Pracownicy</div>
-        <div style="font-size:24px;font-weight:800;color:var(--text);letter-spacing:-.5px;">${employees.length}</div>
-        <div style="font-size:11px;color:var(--text-3);margin-top:2px;">${shifts.length} zmian</div>
+      <div style="background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:16px;">
+        <div style="font-size:10px;color:rgba(255,255,255,.45);font-weight:600;text-transform:uppercase;letter-spacing:.3px;margin-bottom:4px;">Pracownicy</div>
+        <div style="font-size:24px;font-weight:800;color:#fff;letter-spacing:-.5px;">${employees.length}</div>
+        <div style="font-size:11px;color:rgba(255,255,255,.4);margin-top:2px;">${shifts.length} zmian</div>
       </div>
-      <div style="background:#FDFAF6;border:1px solid rgba(139,26,46,.1);border-radius:16px;padding:16px;">
-        <div style="font-size:10px;color:var(--text-3);font-weight:600;text-transform:uppercase;letter-spacing:.3px;margin-bottom:4px;">Kuchnia</div>
-        <div style="font-size:22px;font-weight:800;color:var(--text);letter-spacing:-.5px;">${kC.toFixed(0)}<span style="font-size:12px;font-weight:400"> zł</span></div>
-        <div style="font-size:11px;color:var(--text-3);margin-top:2px;">${kH.toFixed(1)}h · ${employees.filter(e=>e.department==='kuchnia').length} os.</div>
+      <div style="background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:16px;">
+        <div style="font-size:10px;color:rgba(255,255,255,.45);font-weight:600;text-transform:uppercase;letter-spacing:.3px;margin-bottom:4px;">Kuchnia</div>
+        <div style="font-size:22px;font-weight:800;color:#fff;letter-spacing:-.5px;">${kC.toFixed(0)}<span style="font-size:12px;font-weight:400;opacity:.7"> zł</span></div>
+        <div style="font-size:11px;color:rgba(255,255,255,.4);margin-top:2px;">${kH.toFixed(1)}h · ${employees.filter(e=>e.department==='kuchnia').length} os.</div>
       </div>
-      <div style="background:#FDFAF6;border:1px solid rgba(139,26,46,.1);border-radius:16px;padding:16px;">
-        <div style="font-size:10px;color:var(--text-3);font-weight:600;text-transform:uppercase;letter-spacing:.3px;margin-bottom:4px;">Sala</div>
-        <div style="font-size:22px;font-weight:800;color:var(--text);letter-spacing:-.5px;">${sC.toFixed(0)}<span style="font-size:12px;font-weight:400"> zł</span></div>
-        <div style="font-size:11px;color:var(--text-3);margin-top:2px;">${sH.toFixed(1)}h · ${employees.filter(e=>e.department==='sala').length} os.</div>
+      <div style="background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:16px;">
+        <div style="font-size:10px;color:rgba(255,255,255,.45);font-weight:600;text-transform:uppercase;letter-spacing:.3px;margin-bottom:4px;">Sala</div>
+        <div style="font-size:22px;font-weight:800;color:#fff;letter-spacing:-.5px;">${sC.toFixed(0)}<span style="font-size:12px;font-weight:400;opacity:.7"> zł</span></div>
+        <div style="font-size:11px;color:rgba(255,255,255,.4);margin-top:2px;">${sH.toFixed(1)}h · ${employees.filter(e=>e.department==='sala').length} os.</div>
       </div>
     </div>
   </div>
