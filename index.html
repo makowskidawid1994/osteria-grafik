@@ -6616,22 +6616,12 @@ function toggleAvatarMenu(e){
   });
 })();
 
-// PWA — rejestracja service workera z wymuszeniem aktualizacji
+// PWA — rejestracja service workera
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', async () => {
     try {
-      // Odinstaluj wszystkie stare SW, zostaw tylko aktualny
-      const regs = await navigator.serviceWorker.getRegistrations();
-      for (const r of regs) await r.unregister();
-
-      // Wyczyść wszystkie cache
-      const keys = await caches.keys();
-      await Promise.all(keys.map(k => caches.delete(k)));
-
-      // Zarejestruj świeży SW
       const reg = await navigator.serviceWorker.register('/sw.js');
       reg.update();
-
       reg.addEventListener('updatefound', () => {
         const newSW = reg.installing;
         newSW?.addEventListener('statechange', () => {
@@ -6640,7 +6630,6 @@ if ('serviceWorker' in navigator) {
           }
         });
       });
-
       let refreshing = false;
       navigator.serviceWorker.addEventListener('controllerchange', () => {
         if (!refreshing) { refreshing = true; window.location.reload(); }
