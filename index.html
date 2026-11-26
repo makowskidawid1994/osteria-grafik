@@ -324,13 +324,13 @@ body.view-home .bnav-item.active .bnav-icon-wrap { background: rgba(255,255,255,
    Lista kafelków wypełnia resztę
    ═══════════════════════════════════════ */
 
-/* Wrapper — cały ekran */
+/* Wrapper — cały ekran (header ukryty na home, więc 100dvh) */
 .hw-wrap {
-  min-height: calc(100dvh - 56px);
+  height: 100dvh;
   display: flex; flex-direction: column;
   -webkit-tap-highlight-color: transparent;
   position: relative;
-  background: linear-gradient(180deg, #3D0C08 0%, #1E0A08 40%, #110504 100%);
+  background: linear-gradient(180deg, #4A1008 0%, #2A0806 35%, #150403 70%, #0D0302 100%);
   overflow: hidden;
 }
 
@@ -422,28 +422,15 @@ body.view-home .bnav-item.active .bnav-icon-wrap { background: rgba(255,255,255,
 .hw-status-bar.working .hw-status-pulse { display: block; }
 @keyframes pulse-dot { 0%,100%{opacity:1;transform:scale(1);} 50%{opacity:.5;transform:scale(.7);} }
 
-/* ── Kółka szybkich akcji — jak w Revolut, jeden rząd ── */
+/* ── Kółka szybkich akcji — identyczne z Revolut, 4 kółka ── */
 .hw-quick-actions {
   display: flex; flex-direction: row; flex-wrap: nowrap;
-  gap: 0;
   align-items: flex-start;
-  justify-content: space-between;
-  margin-top: 18px;
+  justify-content: space-around;
+  margin-top: 24px;
+  padding: 0 4px;
   position: relative; z-index: 1;
   opacity: 0; animation: fadeIn .4s ease .2s forwards;
-}
-.hw-qa-more {
-  display: flex; flex-direction: column; align-items: center; gap: 7px;
-  cursor: pointer; flex-shrink: 0; flex: 1;
-}
-.hw-qa-more-circle {
-  width: 54px; height: 54px; border-radius: 50%;
-  background: rgba(255,255,255,.12);
-  display: flex; align-items: center; justify-content: center;
-}
-.hw-qa-more-label {
-  font-size: 11px; font-weight: 500; color: rgba(255,255,255,.5);
-  text-align: center;
 }
 .hw-qa-item {
   display: flex; flex-direction: column; align-items: center; gap: 8px;
@@ -451,17 +438,17 @@ body.view-home .bnav-item.active .bnav-icon-wrap { background: rgba(255,255,255,
   flex: 1; min-width: 0;
 }
 .hw-qa-item:active .hw-qa-circle { transform: scale(.88); background: rgba(255,255,255,.28); }
-.hw-qa-more:active .hw-qa-more-circle { transform: scale(.88); background: rgba(255,255,255,.2); }
 .hw-qa-circle {
-  width: 54px; height: 54px; border-radius: 50%;
+  width: 62px; height: 62px; border-radius: 50%;
   background: rgba(255,255,255,.18);
   display: flex; align-items: center; justify-content: center;
   transition: transform .12s, background .12s;
 }
 .hw-qa-label {
-  font-size: 11px; font-weight: 500; color: rgba(255,255,255,.8);
+  font-size: 11px; font-weight: 500; color: rgba(255,255,255,.75);
   text-align: center; white-space: nowrap; overflow: hidden;
-  text-overflow: ellipsis; max-width: 68px;
+  text-overflow: ellipsis; max-width: 72px;
+  letter-spacing: .1px;
 }
 
 /* ── Blok zegarowy (ewidencja czasu) — tylko gdy na zmianie ── */
@@ -2209,6 +2196,9 @@ function showView(v, pushHistory=true){
   currentView=v;
   if(pushHistory && prev!==v) history.pushState({view:v},'',`#${v}`);
   document.body.classList.toggle('view-home', v==='home');
+  // Header — ukryj całkowicie na home
+  const hdr=document.querySelector('.header');
+  if(hdr) hdr.style.display=v==='home'?'none':'flex';
 
   // Dolny nav — tylko w starych widokach
   const bnav=document.getElementById('bottom-nav');
@@ -2533,19 +2523,13 @@ function renderHome(mc){
       <!-- Status zegarka (compact) -->
       ${statusBar}
 
-      <!-- 4 kółka + Więcej jak Revolut -->
+      <!-- Dokładnie 4 kółka jak w Revolut — bez "Więcej" -->
       <div class="hw-quick-actions">
         ${quickActions.map(a=>`
           <div class="hw-qa-item" onclick="hbTap(this,'${a.id}')">
             <div class="hw-qa-circle">${a.icon}</div>
             <span class="hw-qa-label">${a.label}</span>
           </div>`).join('')}
-        <div class="hw-qa-more" onclick="hbTap(this,'menu')">
-          <div class="hw-qa-more-circle">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.6)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
-          </div>
-          <span class="hw-qa-more-label">Więcej</span>
-        </div>
       </div>
     </div>
 
@@ -5991,6 +5975,8 @@ document.getElementById('auth-pass').addEventListener('keydown',e=>{if(e.key==='
     }
     currentView='home';
     document.body.classList.add('view-home');
+    const _hdr=document.querySelector('.header');
+    if(_hdr) _hdr.style.display='none';
     renderHome();
     // Odśwież token w tle
     saveSession();
