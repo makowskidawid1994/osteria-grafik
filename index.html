@@ -208,30 +208,30 @@ body.view-home .bnav-item.active { color: #8B1A2E; }
 body.view-home .bnav-item.active svg { stroke: #8B1A2E; }
 body.view-home .bnav-item.active .bnav-icon-wrap { background: rgba(139,26,46,.1); }
 
-/* Na home — ciemny header spójny z tłem */
+/* Na home — jasny header jak reszta app */
 body.view-home .header {
-  background: #1C0A02;
-  border-bottom: 1px solid rgba(255,255,255,.06);
+  background: #F5EDE3;
+  border-bottom: 1px solid rgba(139,26,46,.1);
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
 }
-body.view-home .header-brand { color: rgba(255,255,255,.9); }
-body.view-home .header-brand em { color: rgba(255,255,255,.4); }
-body.view-home .header-brand-dot { background: #E07030; }
-body.view-home .role-badge { background: rgba(255,255,255,.1); color: rgba(255,255,255,.65); border-color: rgba(255,255,255,.12); }
-body.view-home .header-avatar { border: 1.5px solid rgba(255,255,255,.2); }
+body.view-home .header-brand { color: #1A0A08; }
+body.view-home .header-brand em { color: #9A7060; }
+body.view-home .header-brand-dot { background: #8B1A2E; }
+body.view-home .role-badge { background: rgba(139,26,46,.1); color: #8B1A2E; border-color: rgba(139,26,46,.15); }
+body.view-home .header-avatar { border: 1.5px solid rgba(139,26,46,.2); }
 body.view-home #main-content { background: transparent; }
 
-/* Bottom nav na home — ciemny */
+/* Bottom nav na home — jasny jak reszta */
 body.view-home .bnav {
-  background: rgba(28,10,2,.96);
-  border-top-color: rgba(255,255,255,.07);
+  background: rgba(245,237,227,.97);
+  border-top-color: rgba(139,26,46,.1);
 }
-body.view-home .bnav-item { color: rgba(255,255,255,.4); }
-body.view-home .bnav-item svg { stroke: rgba(255,255,255,.4); }
-body.view-home .bnav-item.active { color: #fff; }
-body.view-home .bnav-item.active svg { stroke: #fff; }
-body.view-home .bnav-item.active .bnav-icon-wrap { background: rgba(255,255,255,.1); }
+body.view-home .bnav-item { color: rgba(90,56,40,.45); }
+body.view-home .bnav-item svg { stroke: rgba(90,56,40,.45); }
+body.view-home .bnav-item.active { color: #8B1A2E; }
+body.view-home .bnav-item.active svg { stroke: #8B1A2E; }
+body.view-home .bnav-item.active .bnav-icon-wrap { background: rgba(139,26,46,.1); }
 
 .header-brand { font-size: 15px; font-weight: 800; flex: 1; letter-spacing: -.5px; color: var(--text); display: flex; align-items: center; gap: 6px; transition: color .2s; }
 .header-brand em { color: var(--text-3); font-style: normal; font-weight: 400; transition: color .2s; }
@@ -316,23 +316,14 @@ body.view-home .bnav-item.active .bnav-icon-wrap { background: rgba(255,255,255,
   padding-bottom: calc(62px + max(env(safe-area-inset-bottom), 12px) + 8px);
   -webkit-tap-highlight-color: transparent;
   position: relative;
-  /* Ciemny pomarańcz-bordo — jedno spójne tło */
-  background: #1C0A02;
+  background: #F5EDE3;
 }
-/* Prześwietlenia — subtelne, jak w Revolut */
-.hw-wrap::before {
-  content: '';
-  position: fixed; inset: 0; pointer-events: none; z-index: 0;
-  background:
-    radial-gradient(ellipse 80% 50% at 90% 0%, rgba(180,70,10,.7) 0%, transparent 60%),
-    radial-gradient(ellipse 60% 40% at 0% 60%, rgba(120,20,20,.5) 0%, transparent 55%),
-    radial-gradient(ellipse 40% 30% at 50% 100%, rgba(100,30,5,.4) 0%, transparent 60%);
-}
+.hw-wrap::before { display: none; }
 
 /* ── Hero ── */
 .hw-hero {
   position: relative; z-index: 1;
-  padding: 16px 20px 24px;
+  padding: 16px 20px 20px;
   flex-shrink: 0;
 }
 .hw-hero-top {
@@ -341,26 +332,25 @@ body.view-home .bnav-item.active .bnav-icon-wrap { background: rgba(255,255,255,
 }
 .hw-hero-avatar {
   width: 38px; height: 38px; border-radius: 50%;
-  background: rgba(255,255,255,.18);
+  background: #8B1A2E;
   display: flex; align-items: center; justify-content: center;
   font-size: 13px; font-weight: 700; color: #fff;
   flex-shrink: 0;
-  border: 1.5px solid rgba(255,255,255,.25);
   cursor: pointer;
 }
 /* Rola — mały text obok avatara */
 .hw-hero-role {
-  font-size: 12px; color: rgba(255,255,255,.45); font-weight: 500;
+  font-size: 12px; color: rgba(26,10,8,.45); font-weight: 500;
   letter-spacing: .3px;
 }
 
 /* Powitanie */
 .hw-greeting-text {
-  font-size: 13px; font-weight: 400; color: rgba(255,255,255,.45);
+  font-size: 13px; font-weight: 400; color: rgba(26,10,8,.45);
   opacity: 0; animation: fadeIn .35s ease .05s forwards;
 }
 .hw-name-text {
-  font-size: 34px; font-weight: 800; color: #fff;
+  font-size: 34px; font-weight: 800; color: #1A0A08;
   letter-spacing: -1.5px; line-height: 1.0; margin-top: 2px;
   opacity: 0; animation: fadeIn .35s ease .1s forwards;
 }
@@ -383,25 +373,25 @@ body.view-home .bnav-item.active .bnav-icon-wrap { background: rgba(255,255,255,
   cursor: pointer; -webkit-tap-highlight-color: transparent;
   flex: 1;
 }
-.hw-qa-item:active .hw-qa-circle { background: rgba(255,255,255,.25); }
+.hw-qa-item:active .hw-qa-circle { opacity: .8; }
 .hw-qa-circle {
   width: 56px; height: 56px; border-radius: 50%;
-  background: rgba(255,255,255,.14);
+  background: #8B1A2E;
   display: flex; align-items: center; justify-content: center;
-  transition: background .12s;
+  transition: opacity .12s;
 }
-.hw-qa-circle svg { opacity: .9; }
+.hw-qa-circle svg { opacity: 1; }
 .hw-qa-label {
-  font-size: 12px; font-weight: 500; color: rgba(255,255,255,.75);
+  font-size: 12px; font-weight: 500; color: #1A0A08;
   text-align: center; white-space: nowrap;
 }
 
 /* ── Blok zegarowy (ewidencja czasu) — tylko gdy na zmianie ── */
 .hw-clock-block {
   position: relative; overflow: hidden; z-index: 1;
-  margin: 20px 20px 0;
+  margin: 16px 20px 0;
   border-radius: 18px;
-  background: rgba(255,255,255,.08);
+  background: rgba(139,26,46,.08);
   border: none;
   padding: 14px 18px;
   cursor: pointer;
@@ -410,14 +400,14 @@ body.view-home .bnav-item.active .bnav-icon-wrap { background: rgba(255,255,255,
   transition: background .12s;
   opacity: 0; animation: fadeIn .4s ease .2s forwards;
 }
-.hw-clock-block:active { background: rgba(255,255,255,.13); }
+.hw-clock-block:active { background: rgba(139,26,46,.14); }
 .hw-clock-block.working {
-  background: rgba(34,197,94,.15);
+  background: rgba(34,197,94,.12);
 }
 
 .hw-clock-center { display: flex; flex-direction: column; gap: 1px; flex: 1; }
 .hw-clock-timer {
-  font-size: 26px; font-weight: 300; color: #fff;
+  font-size: 26px; font-weight: 300; color: #1A0A08;
   letter-spacing: -1px; line-height: 1;
   font-variant-numeric: tabular-nums; display: none;
 }
@@ -427,20 +417,20 @@ body.view-home .bnav-item.active .bnav-icon-wrap { background: rgba(255,255,255,
 
 .hw-clock-icon-wrap {
   width: 44px; height: 44px; border-radius: 50%;
-  background: rgba(255,255,255,.15);
+  background: rgba(139,26,46,.15);
   display: flex; align-items: center; justify-content: center;
   flex-shrink: 0; transition: background .15s;
 }
-.hw-clock-block.working .hw-clock-icon-wrap { background: rgba(34,197,94,.25); }
+.hw-clock-block.working .hw-clock-icon-wrap { background: rgba(34,197,94,.2); }
 .hw-clock-play-icon { display: block; }
 .hw-clock-stop-icon { display: none; }
 
 .hw-clock-title {
-  font-size: 15px; font-weight: 600; color: rgba(255,255,255,.9);
+  font-size: 15px; font-weight: 600; color: #1A0A08;
   letter-spacing: -.2px;
 }
-.hw-clock-block.working .hw-clock-title { color: rgba(255,255,255,.5); font-size: 11px; }
-.hw-clock-sub { font-size: 12px; color: rgba(255,255,255,.45); margin-top: 1px; }
+.hw-clock-block.working .hw-clock-title { color: rgba(26,10,8,.5); font-size: 11px; }
+.hw-clock-sub { font-size: 12px; color: rgba(26,10,8,.45); margin-top: 1px; }
 
 .hw-clock-progress {
   position: absolute; bottom: 0; left: 0; right: 0; height: 2px;
@@ -481,7 +471,7 @@ body.view-home .bnav-item.active .bnav-icon-wrap { background: rgba(255,255,255,
 }
 .hw-section-label {
   display: block;
-  font-size: 11px; font-weight: 600; color: rgba(255,255,255,.3);
+  font-size: 11px; font-weight: 600; color: rgba(26,10,8,.3);
   letter-spacing: .8px; text-transform: uppercase;
   padding: 0 20px 8px;
 }
@@ -573,6 +563,15 @@ body.view-home .bnav-item.active .bnav-icon-wrap { background: rgba(255,255,255,
 @keyframes ripple-anim {
   to { transform: translate(-50%,-50%) scale(1); opacity: 0; }
 }
+
+/* ── Menu rows — jasne tło ── */
+.hb-row:active { background: rgba(139,26,46,.06) !important; }
+.hb-row-icon {
+  background: rgba(139,26,46,.1) !important;
+}
+.hb-row-icon svg { stroke: #8B1A2E !important; }
+.hb-row-title { color: #1A0A08 !important; }
+.hb-row-arrow svg { stroke: rgba(26,10,8,.2) !important; }
 
 /* ── Chat FAB — zawsze widoczny ── */
 .chat-fab {
@@ -2155,7 +2154,7 @@ function renderHome(mc){
       <div class="hb-ripple-wrap"></div>
     </div>`;
 
-  const ic=(p)=>`<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#8B1A2E" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">${p}</svg>`;
+  const ic=(p)=>`<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#8B1A2E" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="stroke:#8B1A2E!important">${p}</svg>`;
   const rows=[];
   rows.push({id:'sched',   label:'Grafik',      icon:ic('<rect x="3" y="4" width="18" height="18" rx="2.5"/><path d="M16 2v4M8 2v4M3 10h18"/>')});
   if(isOwnerOrMgr||isKitchen)
@@ -2181,7 +2180,7 @@ function renderHome(mc){
   const initials = firstName ? firstName.slice(0,1).toUpperCase() : '?';
 
   /* Szybkie akcje — kółka jak w Revolut */
-  const qaIcon = (path) => `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${path}</svg>`;
+  const qaIcon = (path) => `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.95)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${path}</svg>`;
   const quickActions = [
     { id:'clock', label: active ? 'Zakończ' : 'Zacznij', icon: active
         ? qaIcon('<rect x="6" y="6" width="12" height="12" rx="2"/>')
