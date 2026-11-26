@@ -334,176 +334,154 @@ body.view-home .bnav-item.active .bnav-icon-wrap { background: rgba(255,255,255,
   display: flex; flex-direction: column;
   -webkit-tap-highlight-color: transparent;
   position: relative;
-  background: linear-gradient(180deg, #5A1510 0%, #3A0C09 40%, #220706 75%, #180504 100%);
+  background: linear-gradient(180deg, #6B1A14 0%, #3D0C09 35%, #200706 70%, #150403 100%);
   overflow: hidden;
 }
 
-/* Hero — wypełnia cały ekran (bez listy kafelków) */
+/* Górny pasek — jak Revolut top bar */
+.hw-topbar {
+  position: relative; z-index: 2;
+  padding: calc(env(safe-area-inset-top) + 12px) 20px 0;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.hw-topbar-left {
+  display: flex; flex-direction: column;
+}
+.hw-greeting-text {
+  font-size: 12px; font-weight: 400; color: rgba(255,255,255,.5);
+  letter-spacing: .2px;
+}
+.hw-name-text {
+  font-size: 16px; font-weight: 700; color: #fff;
+  letter-spacing: -.2px; margin-top: 1px;
+}
+.hw-hero-avatar {
+  width: 38px; height: 38px; border-radius: 50%;
+  background: rgba(255,255,255,.18);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; font-weight: 700; color: #fff;
+  flex-shrink: 0; cursor: pointer;
+  border: 1.5px solid rgba(255,255,255,.2);
+  backdrop-filter: blur(4px);
+}
+.hw-role-pill { display: none; }
+
+/* Środek — duże dane jak saldo w Revolut */
 .hw-hero {
   position: relative; z-index: 1;
-  padding: 52px 18px calc(env(safe-area-inset-bottom) + 90px);
   flex: 1;
   display: flex; flex-direction: column;
-  justify-content: space-between;
-  background: transparent;
-}
-.hw-bottom-group {
-  display: flex; flex-direction: column; gap: 14px;
+  align-items: center;
+  justify-content: center;
+  padding-bottom: calc(env(safe-area-inset-bottom) + 88px);
 }
 .hw-hero::before {
   content: '';
   position: absolute; inset: 0; pointer-events: none;
-  background:
-    radial-gradient(ellipse 90% 60% at 60% -10%, rgba(255,100,50,.65) 0%, rgba(200,40,10,.3) 40%, transparent 70%);
+  background: radial-gradient(ellipse 80% 50% at 50% 10%, rgba(255,80,30,.5) 0%, rgba(180,30,10,.2) 50%, transparent 80%);
 }
-.hw-hero-top {
-  display: flex; align-items: flex-start; justify-content: space-between;
+.hw-center-block {
+  display: flex; flex-direction: column; align-items: center;
+  position: relative; z-index: 1;
   margin-bottom: 36px;
+}
+.hw-center-label {
+  font-size: 13px; font-weight: 500; color: rgba(255,255,255,.55);
+  letter-spacing: .3px; margin-bottom: 6px;
+}
+.hw-center-value {
+  font-size: 68px; font-weight: 800; color: #fff;
+  letter-spacing: -3px; line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+.hw-center-sub {
+  font-size: 14px; font-weight: 400; color: rgba(255,255,255,.5);
+  margin-top: 6px; letter-spacing: -.1px;
+}
+.hw-bottom-group {
+  display: flex; flex-direction: column; gap: 14px;
+  width: 100%; padding: 0 6px;
   position: relative; z-index: 1;
 }
-.hw-hero-avatar {
-  width: 40px; height: 40px; border-radius: 50%;
-  background: rgba(255,255,255,.18);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 14px; font-weight: 700; color: #fff;
-  flex-shrink: 0;
-  cursor: pointer;
-  border: 1.5px solid rgba(255,255,255,.2);
-}
-
-/* Powitanie */
-.hw-greeting-text {
-  font-size: 13px; font-weight: 400; color: rgba(255,255,255,.55);
-  opacity: 0; animation: fadeIn .35s ease .05s forwards;
-}
-.hw-name-text {
-  font-size: 32px; font-weight: 800; color: #fff;
-  letter-spacing: -1.2px; line-height: 1.05; margin-top: 2px;
-  opacity: 0; animation: fadeIn .35s ease .1s forwards;
-}
-.hw-role-pill { display: none; }
 
 @keyframes fadeIn { to { opacity:1; } }
 @keyframes slideUp { to { transform: translateY(0); } }
 @keyframes fadeInUp { from{opacity:0;transform:translateY(12px);} to{opacity:1;transform:none;} }
 
-/* ── Status baner zegarka — w hero, pod powitaniem ── */
-.hw-status-bar {
-  position: relative; z-index: 1;
-  margin-top: 12px;
-  display: flex; align-items: center; gap: 10px;
-  background: rgba(255,255,255,.12);
-  border-radius: 14px;
-  padding: 12px 14px;
-  cursor: pointer;
-  -webkit-tap-highlight-color: transparent;
-  transition: background .12s;
-  opacity: 0; animation: fadeIn .35s ease .15s forwards;
-}
-.hw-status-bar:active { background: rgba(255,255,255,.18); }
-.hw-status-bar.working {
-  background: rgba(34,197,94,.2);
-  border: 1px solid rgba(34,197,94,.3);
-}
-.hw-status-icon {
-  width: 36px; height: 36px; border-radius: 50%;
-  background: rgba(255,255,255,.15);
-  display: flex; align-items: center; justify-content: center;
-  flex-shrink: 0;
-}
-.hw-status-bar.working .hw-status-icon { background: rgba(34,197,94,.3); }
-.hw-status-body { flex: 1; }
-.hw-status-label {
-  font-size: 11px; font-weight: 600; color: rgba(255,255,255,.5);
-  text-transform: uppercase; letter-spacing: .5px;
-}
-.hw-status-value {
-  font-size: 17px; font-weight: 700; color: #fff;
-  letter-spacing: -.3px; margin-top: 1px;
-  font-variant-numeric: tabular-nums;
-}
-.hw-status-pulse {
-  width: 8px; height: 8px; border-radius: 50%;
-  background: #4ADE80; flex-shrink: 0;
-  animation: pulse-dot 2s ease-in-out infinite;
-  display: none;
-}
-.hw-status-bar.working .hw-status-pulse { display: block; }
+/* ── Status bar (ukryty, zachowany dla timera) ── */
+.hw-status-bar { display: none; }
 @keyframes pulse-dot { 0%,100%{opacity:1;transform:scale(1);} 50%{opacity:.5;transform:scale(.7);} }
 
-/* ── Kółka szybkich akcji — dwa rzędy ── */
+/* ── Kółka szybkich akcji — jak Revolut ── */
 .hw-quick-actions {
-  display: flex; flex-direction: column;
-  gap: 14px;
-  margin-top: 0;
-  margin-bottom: 0;
-  padding: 0 4px;
-  position: relative; z-index: 1;
-  opacity: 0; animation: fadeIn .4s ease .2s forwards;
-}
-.hw-qa-row {
   display: flex; flex-direction: row;
   justify-content: space-around;
   align-items: flex-start;
+  position: relative; z-index: 1;
+  opacity: 0; animation: fadeIn .4s ease .2s forwards;
+  padding: 0 4px;
 }
+.hw-qa-row { display: contents; }
 .hw-qa-item {
   display: flex; flex-direction: column; align-items: center; gap: 8px;
   cursor: pointer; -webkit-tap-highlight-color: transparent;
   flex: 1; min-width: 0;
 }
-.hw-qa-item:active .hw-qa-circle { transform: scale(.88); background: rgba(255,255,255,.28); }
+.hw-qa-item:active .hw-qa-circle { transform: scale(.88); background: rgba(255,255,255,.26); }
 .hw-qa-circle {
-  width: 58px; height: 58px; border-radius: 50%;
-  background: rgba(255,255,255,.18);
+  width: 56px; height: 56px; border-radius: 50%;
+  background: rgba(255,255,255,.14);
+  border: 1px solid rgba(255,255,255,.12);
   display: flex; align-items: center; justify-content: center;
   transition: transform .12s, background .12s;
-  backdrop-filter: blur(4px);
+  backdrop-filter: blur(6px);
 }
-.hw-qa-circle.accent-green { background: rgba(34,197,94,.25); border: 1px solid rgba(34,197,94,.35); }
-.hw-qa-circle.accent-red   { background: rgba(239,68,68,.25);  border: 1px solid rgba(239,68,68,.35); }
+.hw-qa-circle.accent-green { background: rgba(34,197,94,.22); border: 1px solid rgba(34,197,94,.3); }
+.hw-qa-circle.accent-red   { background: rgba(239,68,68,.22); border: 1px solid rgba(239,68,68,.3); }
 .hw-qa-label {
-  font-size: 10.5px; font-weight: 500; color: rgba(255,255,255,.75);
+  font-size: 11px; font-weight: 500; color: rgba(255,255,255,.7);
   text-align: center; white-space: nowrap; overflow: hidden;
-  text-overflow: ellipsis; max-width: 68px;
-  letter-spacing: .1px;
+  text-overflow: ellipsis; max-width: 64px;
+  letter-spacing: .05px;
 }
 
-/* ── Live stats card ── */
+/* ── Live stats card — jak sekcja "Karty" w Revolut ── */
 .hw-stats-card {
-  margin: 0 0 4px;
-  border-radius: 18px;
-  background: rgba(255,255,255,.08);
-  border: 1px solid rgba(255,255,255,.1);
-  padding: 14px 18px;
+  border-radius: 20px;
+  background: rgba(255,255,255,.1);
+  border: 1px solid rgba(255,255,255,.12);
+  padding: 16px 20px;
   display: flex; gap: 0;
   opacity: 0; animation: fadeIn .4s ease .15s forwards;
-  backdrop-filter: blur(8px);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   position: relative; z-index: 1;
   overflow: hidden;
+  cursor: pointer;
 }
 .hw-stats-card::before {
   content: '';
-  position: absolute; inset: 0;
-  background: linear-gradient(135deg, rgba(255,255,255,.04) 0%, transparent 60%);
+  position: absolute; top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,.2), transparent);
   pointer-events: none;
 }
 .hw-stat {
-  flex: 1; display: flex; flex-direction: column; align-items: center; gap: 2px;
+  flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px;
   position: relative;
 }
 .hw-stat + .hw-stat::before {
   content: '';
-  position: absolute; left: 0; top: 10%; height: 80%;
-  width: 1px; background: rgba(255,255,255,.12);
+  position: absolute; left: 0; top: 15%; height: 70%;
+  width: 1px; background: rgba(255,255,255,.1);
 }
 .hw-stat-val {
-  font-size: 22px; font-weight: 800; color: #fff;
+  font-size: 24px; font-weight: 800; color: #fff;
   letter-spacing: -.5px; line-height: 1;
   font-variant-numeric: tabular-nums;
 }
 .hw-stat-lbl {
-  font-size: 10px; font-weight: 500; color: rgba(255,255,255,.45);
-  text-transform: uppercase; letter-spacing: .5px; text-align: center;
+  font-size: 10px; font-weight: 500; color: rgba(255,255,255,.4);
+  text-transform: uppercase; letter-spacing: .6px; text-align: center;
 }
 
 /* ── Blok zegarowy (ewidencja czasu) — tylko gdy na zmianie ── */
@@ -2571,58 +2549,98 @@ function renderHome(mc){
     }
   }
 
+  /* ── Centrum ekranu — różne dla właściciela i pracownika ── */
+  let centerBlock = '';
+  if(isOwnerOrMgr){
+    /* Właściciel: kto jest teraz w pracy */
+    const workingNames = nowWorking.slice(0,3).map(s=>s.employees?.name?.split(' ')[0]||'?');
+    const moreCount = nowWorking.length > 3 ? `+${nowWorking.length-3}` : '';
+    const workingLine = nowWorking.length === 0
+      ? 'Nikt nie pracuje'
+      : workingNames.join(', ') + (moreCount ? ', ' + moreCount : '');
+    centerBlock = `
+      <div class="hw-center-block" onclick="hbTap(this,'panel')">
+        <div class="hw-center-label">Teraz w pracy</div>
+        <div class="hw-center-value" style="font-size:${nowWorking.length===0?'32px':'64px'};color:${nowWorking.length>0?'#4ADE80':'rgba(255,255,255,.4)'}">
+          ${nowWorking.length > 0 ? nowWorking.length : '—'}
+        </div>
+        <div class="hw-center-sub">${workingLine}</div>
+        <div class="hw-center-sub" style="margin-top:2px;font-size:12px;opacity:.6">${todayShifts.length} zmian zaplanowanych dziś</div>
+      </div>`;
+  } else {
+    /* Pracownik: jego zmiana dziś */
+    if(active){
+      centerBlock = `
+        <div class="hw-center-block" onclick="hbTap(this,'clock')">
+          <div class="hw-center-label">Trwa zmiana</div>
+          <div class="hw-center-value" id="hw-live-timer" style="color:#4ADE80">0:00:00</div>
+          <div class="hw-center-sub">Naciśnij aby zakończyć</div>
+        </div>`;
+    } else if(myShiftToday){
+      const st = (myShiftToday.start_time||'').slice(0,5);
+      const en = (myShiftToday.end_time||'').slice(0,5);
+      centerBlock = `
+        <div class="hw-center-block" onclick="hbTap(this,'clock')">
+          <div class="hw-center-label">Twoja zmiana dziś</div>
+          <div class="hw-center-value" style="font-size:44px;letter-spacing:-2px">${st} – ${en}</div>
+          <div class="hw-center-sub">Naciśnij Zacznij gdy jesteś gotowy</div>
+        </div>`;
+    } else {
+      centerBlock = `
+        <div class="hw-center-block">
+          <div class="hw-center-label">Dziś wolne</div>
+          <div class="hw-center-value" style="font-size:48px;color:rgba(255,255,255,.3)">—</div>
+          <div class="hw-center-sub">Brak zaplanowanej zmiany</div>
+        </div>`;
+    }
+  }
+
+  /* Kółka akcji — jeden rząd (4 ikony) dla obu ról, pod centrum */
+  const allActions = [...row1, ...row2];
+
   mc.innerHTML=`
   <div class="hw-wrap">
 
-    <!-- ═══ HERO z gradientem ═══ -->
+    <!-- Górny pasek — jak Revolut -->
+    <div class="hw-topbar">
+      <div class="hw-topbar-left">
+        <div class="hw-greeting-text">${dateStr}</div>
+        <div class="hw-name-text">${greeting}, ${firstName}</div>
+      </div>
+      <div class="hw-hero-avatar" onclick="hbTap(this,'profile')">${initials}</div>
+    </div>
+
+    <!-- Centrum — główna informacja (jak saldo w Revolut) -->
     <div class="hw-hero">
-      <div class="hw-hero-top">
-        <div>
-          <div class="hw-greeting-text">${dateStr}</div>
-          <div class="hw-name-text">${greeting}, ${firstName}</div>
-        </div>
-        <div class="hw-hero-avatar" onclick="hbTap(this,'profile')">${initials}</div>
-      </div>
+      ${centerBlock}
 
-      <!-- Status zegarka (compact) -->
-      ${statusBar}
-
-      <!-- Stats + kółka razem na dole -->
+      <!-- Dół: kółka + karta -->
       <div class="hw-bottom-group">
-      <!-- Live stats card -->
-      <div class="hw-stats-card" onclick="hbTap(this,'panel')">
-        <div class="hw-stat">
-          <div class="hw-stat-val" style="color:${nowWorking.length>0?'#4ADE80':'rgba(255,255,255,.9)'}">${nowWorking.length}</div>
-          <div class="hw-stat-lbl">Na zmianie</div>
-        </div>
-        <div class="hw-stat">
-          <div class="hw-stat-val">${todayShifts.length}</div>
-          <div class="hw-stat-lbl">Zmian dziś</div>
-        </div>
-        <div class="hw-stat">
-          <div class="hw-stat-val">${employees.filter(e=>e.active!==false).length}</div>
-          <div class="hw-stat-lbl">Pracowników</div>
-        </div>
-      </div>
-
-      <!-- Dwa rzędy kółek akcji -->
-      <div class="hw-quick-actions">
-        <div class="hw-qa-row">
-          ${row1.map(a=>`
+        <!-- Kółka akcji — jeden rząd -->
+        <div class="hw-quick-actions">
+          ${allActions.map(a=>`
             <div class="hw-qa-item" onclick="hbTap(this,'${a.id}')">
               <div class="hw-qa-circle${a.accent?' '+a.accent:''}">${a.icon}</div>
               <span class="hw-qa-label">${a.label}</span>
             </div>`).join('')}
         </div>
-        <div class="hw-qa-row">
-          ${row2.map(a=>`
-            <div class="hw-qa-item" onclick="hbTap(this,'${a.id}')">
-              <div class="hw-qa-circle">${a.icon}</div>
-              <span class="hw-qa-label">${a.label}</span>
-            </div>`).join('')}
+
+        <!-- Karta statystyk — jak "Karty" w Revolut -->
+        <div class="hw-stats-card" onclick="hbTap(this,'panel')">
+          <div class="hw-stat">
+            <div class="hw-stat-val" style="color:${nowWorking.length>0?'#4ADE80':'rgba(255,255,255,.9)'}">${nowWorking.length}</div>
+            <div class="hw-stat-lbl">Na zmianie</div>
+          </div>
+          <div class="hw-stat">
+            <div class="hw-stat-val">${todayShifts.length}</div>
+            <div class="hw-stat-lbl">Zmian dziś</div>
+          </div>
+          <div class="hw-stat">
+            <div class="hw-stat-val">${employees.filter(e=>e.active!==false).length}</div>
+            <div class="hw-stat-lbl">Pracowników</div>
+          </div>
         </div>
       </div>
-      </div><!-- /hw-bottom-group -->
     </div>
 
   </div>`;
