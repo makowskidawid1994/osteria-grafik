@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="/icon-192.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root {
   /* ═══ OSTERIA — bordeaux czerwień z pomarańczowym akcentem ═══ */
@@ -42,7 +42,7 @@
   --red-soft: rgba(220,38,38,.15);
   --radius: 12px;
   --radius-lg: 16px;
-  --font: 'Inter', -apple-system, 'Segoe UI', sans-serif;
+  --font: 'DM Sans', -apple-system, 'Segoe UI', sans-serif;
   --shadow-sm: 0 1px 4px rgba(0,0,0,.3);
   --shadow: 0 2px 12px rgba(0,0,0,.4);
 }
@@ -4343,7 +4343,7 @@ function renderSettlementsUI(mc, rows){
 
   <!-- BOTTOM SHEET FORMULARZ -->
   <div id="sf-overlay" onclick="cancelSettlementForm()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:100;backdrop-filter:blur(2px)"></div>
-  <div id="settlement-form-wrap" style="position:fixed;bottom:0;left:0;right:0;z-index:101;background:#1a0a08;border-radius:24px 24px 0 0;height:95dvh;transform:translateY(100%);transition:transform .32s cubic-bezier(.32,0,.67,0);display:flex;flex-direction:column;visibility:hidden">
+  <div id="settlement-form-wrap" style="position:fixed;bottom:0;left:0;right:0;z-index:101;background:#1a0a08;border-radius:24px 24px 0 0;height:95dvh;transform:translateY(100%);transition:transform .32s cubic-bezier(.32,0,.67,0);display:flex;flex-direction:column;visibility:hidden;overflow-x:hidden">
 
     <!-- Handle + nagłówek — przyklejone, nie scrollują -->
     <div style="flex-shrink:0;padding-bottom:8px">
@@ -4351,7 +4351,7 @@ function renderSettlementsUI(mc, rows){
         <div style="width:36px;height:4px;border-radius:2px;background:rgba(255,255,255,.18)"></div>
       </div>
       <div style="display:flex;align-items:center;justify-content:space-between;padding:0 20px 12px;border-bottom:1px solid rgba(255,255,255,.07)">
-        <div style="font-size:18px;font-weight:800;color:var(--text);letter-spacing:-.4px">Nowe rozliczenie</div>
+        <div style="font-size:17px;font-weight:600;color:var(--text);letter-spacing:-.3px">Nowe rozliczenie</div>
         <button onclick="cancelSettlementForm()" style="width:32px;height:32px;border-radius:16px;background:rgba(255,255,255,.1);border:none;display:flex;align-items:center;justify-content:center;cursor:pointer">
           <svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:rgba(255,255,255,.7);fill:none;stroke-width:2.5;stroke-linecap:round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
         </button>
@@ -4359,23 +4359,23 @@ function renderSettlementsUI(mc, rows){
     </div>
 
     <!-- Scrollowalny content -->
-    <div style="flex:1;overflow-y:scroll;-webkit-overflow-scrolling:touch;overscroll-behavior:contain">
+    <div style="flex:1;overflow-y:scroll;overflow-x:hidden;-webkit-overflow-scrolling:touch;overscroll-behavior:contain">
     <div style="padding:16px 20px calc(env(safe-area-inset-bottom) + 40px)">
       <!-- Data + Kelner -->
       <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:20px">
         <div>
-          <div style="font-size:12px;font-weight:600;color:var(--text-3);margin-bottom:6px">Data</div>
-          <input type="date" id="sf-date" style="${inputStyle()}box-sizing:border-box;">
+          <div style="font-size:11px;font-weight:500;color:var(--text-3);margin-bottom:5px;letter-spacing:.3px;text-transform:uppercase">Data</div>
+          <input type="date" id="sf-date" style="${inputStyle()}">
         </div>
         <div>
-          <div style="font-size:12px;font-weight:600;color:var(--text-3);margin-bottom:6px">Kelner</div>
-          <input type="text" id="sf-waiter" placeholder="Imię i nazwisko" style="${inputStyle()}box-sizing:border-box;">
+          <div style="font-size:11px;font-weight:500;color:var(--text-3);margin-bottom:5px;letter-spacing:.3px;text-transform:uppercase">Kelner</div>
+          <input type="text" id="sf-waiter" placeholder="Imię i nazwisko" style="${inputStyle()}">
         </div>
       </div>
 
       <!-- Zdjęcie koperty — na górze, jak IG -->
       <div style="margin-bottom:20px">
-        <div style="font-size:12px;font-weight:600;color:var(--text-3);margin-bottom:8px">Zdjęcie koperty</div>
+        <div style="font-size:11px;font-weight:500;color:var(--text-3);margin-bottom:8px;letter-spacing:.3px;text-transform:uppercase">Zdjęcie koperty</div>
         <label id="sf-photo-btn" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;min-height:120px;background:rgba(255,255,255,.04);border:1.5px dashed rgba(255,255,255,.12);border-radius:14px;cursor:pointer;padding:16px;transition:background .12s"
           ontouchstart="this.style.background='rgba(255,255,255,.08)'" ontouchend="this.style.background='rgba(255,255,255,.04)'">
           <div id="sf-photo-preview" style="display:none;width:100%">
@@ -4391,27 +4391,28 @@ function renderSettlementsUI(mc, rows){
 
       <!-- Utarg — najważniejsze pole -->
       <div style="margin-bottom:14px">
-        <div style="font-size:12px;font-weight:600;color:var(--text-3);margin-bottom:6px">C — Utarg dzienny</div>
-        <input type="number" id="sf-c" step="0.01" placeholder="0.00" inputmode="decimal" style="${inputStyle()}font-size:20px;font-weight:700;padding:14px 16px;">
+        <div style="font-size:11px;font-weight:500;color:var(--text-3);margin-bottom:5px;letter-spacing:.3px;text-transform:uppercase">Utarg dzienny</div>
+        <input type="number" id="sf-c" step="0.01" placeholder="0.00" inputmode="decimal" style="${inputStyle()}font-size:22px;font-weight:600;padding:14px 16px;letter-spacing:-.5px;">
       </div>
 
       <!-- Reszta pól — grid 2 kolumny -->
-      <div style="font-size:12px;font-weight:600;color:var(--text-3);margin-bottom:8px;margin-top:4px">Pozostałe pola raportu</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px">
-        ${sfField('sf-d','D — Gotówka')}
-        ${sfField('sf-e','E — Stan końcowy')}
-        ${sfField('sf-g','G — KW')}
-        ${sfField('sf-h','H — Dok. KW')}
-        ${sfField('sf-j','J — Terminal')}
-        ${sfField('sf-k','K — Karta')}
-        ${sfField('sf-n','N — Napiwki')}
-        ${sfField('sf-p','P — Online')}
-        ${sfField('sf-l','L — Zmiany kart')}
+      <div style="font-size:11px;font-weight:500;color:var(--text-3);margin-bottom:10px;margin-top:4px;letter-spacing:.3px;text-transform:uppercase">Pola raportu</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px;min-width:0">
+        ${sfField('sf-d','Gotówka')}
+        ${sfField('sf-e','Stan końcowy')}
+        ${sfField('sf-g','KW')}
+        ${sfField('sf-h','Dok. KW')}
+        ${sfField('sf-j','Terminal')}
+        ${sfField('sf-k','Karta')}
+        ${sfField('sf-n','Napiwki sala')}
+        ${sfField('sf-nk','Napiwki kuchnia')}
+        ${sfField('sf-p','Online')}
+        ${sfField('sf-l','Zmiany kart')}
       </div>
 
       <!-- Komentarz -->
       <div style="margin-bottom:24px">
-        <div style="font-size:12px;font-weight:600;color:var(--text-3);margin-bottom:6px">Komentarz (opcjonalnie)</div>
+        <div style="font-size:11px;font-weight:500;color:var(--text-3);margin-bottom:5px;letter-spacing:.3px;text-transform:uppercase">Komentarz</div>
         <textarea id="sf-comment" rows="2" placeholder="Uwagi, rozbieżności..." style="${inputStyle()}resize:none;"></textarea>
       </div>
 
@@ -4426,14 +4427,14 @@ function renderSettlementsUI(mc, rows){
 }
 
 function sfField(id, label){
-  return `<div>
-    <label style="font-size:12px;color:var(--text-3);display:block;margin-bottom:6px;font-weight:600">${label}</label>
-    <input type="number" id="${id}" step="0.01" placeholder="0.00" style="${inputStyle()}">
+  return `<div style="min-width:0">
+    <label style="font-size:11px;color:var(--text-3);display:block;margin-bottom:5px;font-weight:500;letter-spacing:.3px;text-transform:uppercase">${label}</label>
+    <input type="number" id="${id}" step="0.01" placeholder="0.00" inputmode="decimal" style="${inputStyle()}">
   </div>`;
 }
 
 function inputStyle(){
-  return `width:100%;padding:11px 12px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:10px;color:var(--text);font-size:15px;font-family:var(--font);box-sizing:border-box;`;
+  return `width:100%;padding:12px 14px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:12px;color:var(--text);font-size:15px;font-weight:400;font-family:var(--font);box-sizing:border-box;outline:none;-webkit-appearance:none;`;
 }
 
 function fmtDatePL(ds){
@@ -4569,6 +4570,7 @@ async function saveSettlement(){
       field_j: numVal('sf-j'),
       field_k: numVal('sf-k'),
       field_n: numVal('sf-n'),
+      field_nk: numVal('sf-nk'),
       field_p: numVal('sf-p'),
       field_l: numVal('sf-l'),
       comment: document.getElementById('sf-comment')?.value||null,
@@ -4576,12 +4578,23 @@ async function saveSettlement(){
       created_by: currentUser?.user?.email||currentUser?.email||null
     };
 
-    const res = await sbFetch('/rest/v1/cash_settlements', {
+    let res = await sbFetch('/rest/v1/cash_settlements', {
       method:'POST',
       headers:{'Prefer':'return=representation'},
       body: JSON.stringify(payload)
     });
-    if(!res.ok) throw new Error(await res.text());
+    // Jeśli field_nk nie istnieje jeszcze w bazie — zapisz bez niego
+    if(!res.ok){
+      const errText = await res.text();
+      if(errText.includes('field_nk')){
+        const {field_nk:_, ...payloadWithout} = payload;
+        res = await sbFetch('/rest/v1/cash_settlements', {
+          method:'POST', headers:{'Prefer':'return=representation'},
+          body: JSON.stringify(payloadWithout)
+        });
+      }
+      if(!res.ok) throw new Error(errText);
+    }
 
     // Odśwież listę — zostań w widoku settlements
     showToast('Rozliczenie zapisano ✓');
