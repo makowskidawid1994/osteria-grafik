@@ -3753,7 +3753,7 @@ function renderSettlementsUI(mc, rows){
     </button>
   </div>
 
-  <div style="padding:0 0 calc(80px + env(safe-area-inset-bottom))">
+  <div style="padding:0 0 calc(80px + env(safe-area-inset-bottom));min-height:calc(100dvh - 56px - 60px);display:flex;flex-direction:column">
 
     ${missing.length>0?`
     <div style="margin:20px 20px 0;background:rgba(251,191,36,.07);border-radius:16px;padding:16px 18px;display:flex;align-items:center;gap:16px;border:1px solid rgba(251,191,36,.15)">
