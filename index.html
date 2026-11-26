@@ -326,11 +326,12 @@ body.view-home .bnav-item.active .bnav-icon-wrap { background: rgba(255,255,255,
 
 /* Jedno tło przez cały ekran */
 .hw-wrap {
-  min-height: calc(100dvh - 56px);
+  height: calc(100dvh - 56px);
   display: flex; flex-direction: column;
   padding-bottom: calc(62px + max(env(safe-area-inset-bottom), 12px) + 8px);
   -webkit-tap-highlight-color: transparent;
   position: relative;
+  overflow: hidden;
   background: linear-gradient(175deg, #7A3500 0%, #4A1A00 50%, #2E0F00 100%);
 }
 .hw-wrap::before {
