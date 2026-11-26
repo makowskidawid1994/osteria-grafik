@@ -513,13 +513,17 @@ body.view-home #main-content { background: transparent; }
   font-size: 18px; flex-shrink: 0;
   margin-right: 14px;
 }
-.hb-row[data-id="sched"]   .hb-row-icon { background: rgba(180,70,30,.25); }
-.hb-row[data-id="kitchen"] .hb-row-icon { background: rgba(123,29,46,.35); }
-.hb-row[data-id="board"]   .hb-row-icon { background: rgba(50,80,160,.3); }
-.hb-row[data-id="events"]  .hb-row-icon { background: rgba(140,40,80,.3); }
-.hb-row[data-id="avail"]   .hb-row-icon { background: rgba(30,100,60,.35); }
-.hb-row[data-id="emps"]    .hb-row-icon { background: rgba(123,29,46,.25); }
-.hb-row[data-id="dash"]    .hb-row-icon { background: rgba(50,80,160,.2); }
+.hb-row-icon { background: rgba(255,255,255,.07); }
+.hb-row[data-id="sched"]       .hb-row-icon { background: rgba(255,255,255,.07); }
+.hb-row[data-id="kitchen"]     .hb-row-icon { background: rgba(255,255,255,.07); }
+.hb-row[data-id="board"]       .hb-row-icon { background: rgba(255,255,255,.07); }
+.hb-row[data-id="events"]      .hb-row-icon { background: rgba(255,255,255,.07); }
+.hb-row[data-id="avail"]       .hb-row-icon { background: rgba(255,255,255,.07); }
+.hb-row[data-id="emps"]        .hb-row-icon { background: rgba(255,255,255,.07); }
+.hb-row[data-id="finance"]     .hb-row-icon { background: rgba(255,255,255,.07); }
+.hb-row[data-id="settlements"] .hb-row-icon { background: rgba(255,255,255,.07); }
+.hb-row[data-id="tardiness"]   .hb-row-icon { background: rgba(255,255,255,.07); }
+.hb-row[data-id="dash"]        .hb-row-icon { background: rgba(255,255,255,.07); }
 
 .hb-row-body { flex: 1; min-width: 0; }
 .hb-row-label { display: none; }
@@ -2145,20 +2149,20 @@ function renderHome(mc){
       <div class="hb-ripple-wrap"></div>
     </div>`;
 
-  const ic=(p)=>`<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.75)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${p}</svg>`;
+  const ic=(p)=>`<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">${p}</svg>`;
   const rows=[];
-  rows.push({id:'sched',   label:'Grafik',      icon:ic('<rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>')});
+  rows.push({id:'sched',   label:'Grafik',      icon:ic('<rect x="3" y="4" width="18" height="18" rx="2.5"/><path d="M16 2v4M8 2v4M3 10h18"/>')});
   if(isOwnerOrMgr||isKitchen)
-    rows.push({id:'kitchen', label:'Kuchnia',   icon:ic('<path d="M6 3v7a6 6 0 0 0 12 0V3"/><path d="M12 3v7"/><path d="M6 21h12"/>')});
-  rows.push({id:'board',   label:'Tablica',     icon:ic('<rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="3" x2="9" y2="21"/><path d="M13 8h4"/><path d="M13 12h4"/><path d="M13 16h4"/>')});
-  rows.push({id:'events',  label:'Wydarzenia',  icon:ic('<path d="M22 12h-4l-3 9L9 3l-3 9H2"/>')});
-  rows.push({id:'avail',   label:'Dyspozycja',  icon:ic('<circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>')});
+    rows.push({id:'kitchen', label:'Kuchnia',   icon:ic('<path d="M12 2a7 7 0 0 1 7 7c0 3-1.5 5-3.5 6.5V19a1 1 0 0 1-1 1h-5a1 1 0 0 1-1-1v-3.5C6.5 14 5 12 5 9a7 7 0 0 1 7-7z"/><line x1="12" y1="15" x2="12" y2="22"/>')});
+  rows.push({id:'board',   label:'Tablica',     icon:ic('<rect x="3" y="3" width="18" height="18" rx="2.5"/><path d="M9 3v18M13 8h5M13 12h5M13 16h5"/>')});
+  rows.push({id:'events',  label:'Wydarzenia',  icon:ic('<path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>')});
+  rows.push({id:'avail',   label:'Dyspozycja',  icon:ic('<circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15.5 15.5"/>')});
   if(isOwnerOrMgr){
-    rows.push({id:'emps',        label:'Pracownicy',          icon:ic('<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>')});
-    rows.push({id:'finance',     label:'Finanse',             icon:ic('<line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>')});
-    rows.push({id:'settlements', label:'Rozliczenia',         icon:ic('<rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/>')});
-    rows.push({id:'tardiness',   label:'Spóźnienia',          icon:ic('<circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/><line x1="12" y1="2" x2="12" y2="4" stroke-width="2.5"/>')});
-    rows.push({id:'dash',        label:'Panel',               icon:ic('<rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>')});
+    rows.push({id:'emps',        label:'Pracownicy',   icon:ic('<circle cx="9" cy="7" r="4"/><path d="M2 21v-1a7 7 0 0 1 14 0v1"/><path d="M19 8v6M22 11h-6"/>')});
+    rows.push({id:'finance',     label:'Finanse',      icon:ic('<path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>')});
+    rows.push({id:'settlements', label:'Rozliczenia',  icon:ic('<rect x="2" y="6" width="20" height="13" rx="2.5"/><path d="M2 11h20"/><path d="M6 15h4M15 15h3"/>')});
+    rows.push({id:'tardiness',   label:'Spóźnienia',   icon:ic('<circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15.5 15.5"/><path d="M18.4 5.6l1.4-1.4"/>')});
+    rows.push({id:'dash',        label:'Panel',        icon:ic('<rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/>')});
   }
 
   mc.innerHTML=`
