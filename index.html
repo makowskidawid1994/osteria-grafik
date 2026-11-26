@@ -208,30 +208,30 @@ body.view-home .bnav-item.active { color: #8B1A2E; }
 body.view-home .bnav-item.active svg { stroke: #8B1A2E; }
 body.view-home .bnav-item.active .bnav-icon-wrap { background: rgba(139,26,46,.1); }
 
-/* Na home — jasny header jak reszta app */
+/* Na home — ciemny pomarańczowy header jak FC Barcelona */
 body.view-home .header {
-  background: #F5EDE3;
-  border-bottom: 1px solid rgba(139,26,46,.1);
+  background: #A63200;
+  border-bottom: 1px solid rgba(255,255,255,.08);
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
 }
-body.view-home .header-brand { color: #1A0A08; }
-body.view-home .header-brand em { color: #9A7060; }
-body.view-home .header-brand-dot { background: #8B1A2E; }
-body.view-home .role-badge { background: rgba(139,26,46,.1); color: #8B1A2E; border-color: rgba(139,26,46,.15); }
-body.view-home .header-avatar { border: 1.5px solid rgba(139,26,46,.2); }
+body.view-home .header-brand { color: rgba(255,255,255,.95); }
+body.view-home .header-brand em { color: rgba(255,255,255,.5); }
+body.view-home .header-brand-dot { background: rgba(255,255,255,.7); }
+body.view-home .role-badge { background: rgba(255,255,255,.12); color: rgba(255,255,255,.8); border-color: rgba(255,255,255,.15); }
+body.view-home .header-avatar { border: 1.5px solid rgba(255,255,255,.25); }
 body.view-home #main-content { background: transparent; }
 
-/* Bottom nav na home — jasny jak reszta */
+/* Bottom nav na home — ciemny pomarańczowy */
 body.view-home .bnav {
-  background: rgba(245,237,227,.97);
-  border-top-color: rgba(139,26,46,.1);
+  background: rgba(140,42,0,.97);
+  border-top-color: rgba(255,255,255,.08);
 }
-body.view-home .bnav-item { color: rgba(90,56,40,.45); }
-body.view-home .bnav-item svg { stroke: rgba(90,56,40,.45); }
-body.view-home .bnav-item.active { color: #8B1A2E; }
-body.view-home .bnav-item.active svg { stroke: #8B1A2E; }
-body.view-home .bnav-item.active .bnav-icon-wrap { background: rgba(139,26,46,.1); }
+body.view-home .bnav-item { color: rgba(255,255,255,.4); }
+body.view-home .bnav-item svg { stroke: rgba(255,255,255,.4); }
+body.view-home .bnav-item.active { color: #fff; }
+body.view-home .bnav-item.active svg { stroke: #fff; }
+body.view-home .bnav-item.active .bnav-icon-wrap { background: rgba(255,255,255,.12); }
 
 .header-brand { font-size: 15px; font-weight: 800; flex: 1; letter-spacing: -.5px; color: var(--text); display: flex; align-items: center; gap: 6px; transition: color .2s; }
 .header-brand em { color: var(--text-3); font-style: normal; font-weight: 400; transition: color .2s; }
@@ -316,9 +316,18 @@ body.view-home .bnav-item.active .bnav-icon-wrap { background: rgba(139,26,46,.1
   padding-bottom: calc(62px + max(env(safe-area-inset-bottom), 12px) + 8px);
   -webkit-tap-highlight-color: transparent;
   position: relative;
-  background: #F5EDE3;
+  background: #A63200;
 }
-.hw-wrap::before { display: none; }
+/* Prześwietlenia pomarańczowe — jak Revolut ma jasno-niebieskie */
+.hw-wrap::before {
+  content: '';
+  position: fixed; inset: 0; pointer-events: none; z-index: 0;
+  display: block;
+  background:
+    radial-gradient(ellipse 70% 55% at 50% 0%, #E8540A 0%, transparent 65%),
+    radial-gradient(ellipse 50% 35% at 100% 50%, rgba(255,120,30,.35) 0%, transparent 55%),
+    radial-gradient(ellipse 40% 30% at 0% 80%, rgba(180,60,0,.4) 0%, transparent 55%);
+}
 
 /* ── Hero ── */
 .hw-hero {
@@ -332,7 +341,7 @@ body.view-home .bnav-item.active .bnav-icon-wrap { background: rgba(139,26,46,.1
 }
 .hw-hero-avatar {
   width: 38px; height: 38px; border-radius: 50%;
-  background: #8B1A2E;
+  background: rgba(255,255,255,.18);
   display: flex; align-items: center; justify-content: center;
   font-size: 13px; font-weight: 700; color: #fff;
   flex-shrink: 0;
@@ -340,17 +349,17 @@ body.view-home .bnav-item.active .bnav-icon-wrap { background: rgba(139,26,46,.1
 }
 /* Rola — mały text obok avatara */
 .hw-hero-role {
-  font-size: 12px; color: rgba(26,10,8,.45); font-weight: 500;
+  font-size: 12px; color: rgba(255,255,255,.55); font-weight: 500;
   letter-spacing: .3px;
 }
 
 /* Powitanie */
 .hw-greeting-text {
-  font-size: 13px; font-weight: 400; color: rgba(26,10,8,.45);
+  font-size: 13px; font-weight: 400; color: rgba(255,255,255,.55);
   opacity: 0; animation: fadeIn .35s ease .05s forwards;
 }
 .hw-name-text {
-  font-size: 34px; font-weight: 800; color: #1A0A08;
+  font-size: 34px; font-weight: 800; color: #fff;
   letter-spacing: -1.5px; line-height: 1.0; margin-top: 2px;
   opacity: 0; animation: fadeIn .35s ease .1s forwards;
 }
@@ -373,16 +382,16 @@ body.view-home .bnav-item.active .bnav-icon-wrap { background: rgba(139,26,46,.1
   cursor: pointer; -webkit-tap-highlight-color: transparent;
   flex: 1;
 }
-.hw-qa-item:active .hw-qa-circle { opacity: .8; }
+.hw-qa-item:active .hw-qa-circle { background: rgba(255,255,255,.25); }
 .hw-qa-circle {
   width: 56px; height: 56px; border-radius: 50%;
-  background: #8B1A2E;
+  background: rgba(255,255,255,.18);
   display: flex; align-items: center; justify-content: center;
-  transition: opacity .12s;
+  transition: background .12s;
 }
 .hw-qa-circle svg { opacity: 1; }
 .hw-qa-label {
-  font-size: 12px; font-weight: 500; color: #1A0A08;
+  font-size: 12px; font-weight: 500; color: rgba(255,255,255,.85);
   text-align: center; white-space: nowrap;
 }
 
@@ -391,7 +400,7 @@ body.view-home .bnav-item.active .bnav-icon-wrap { background: rgba(139,26,46,.1
   position: relative; overflow: hidden; z-index: 1;
   margin: 16px 20px 0;
   border-radius: 18px;
-  background: rgba(139,26,46,.08);
+  background: rgba(255,255,255,.12);
   border: none;
   padding: 14px 18px;
   cursor: pointer;
@@ -400,14 +409,14 @@ body.view-home .bnav-item.active .bnav-icon-wrap { background: rgba(139,26,46,.1
   transition: background .12s;
   opacity: 0; animation: fadeIn .4s ease .2s forwards;
 }
-.hw-clock-block:active { background: rgba(139,26,46,.14); }
+.hw-clock-block:active { background: rgba(255,255,255,.18); }
 .hw-clock-block.working {
-  background: rgba(34,197,94,.12);
+  background: rgba(34,197,94,.18);
 }
 
 .hw-clock-center { display: flex; flex-direction: column; gap: 1px; flex: 1; }
 .hw-clock-timer {
-  font-size: 26px; font-weight: 300; color: #1A0A08;
+  font-size: 26px; font-weight: 300; color: #fff;
   letter-spacing: -1px; line-height: 1;
   font-variant-numeric: tabular-nums; display: none;
 }
@@ -417,20 +426,20 @@ body.view-home .bnav-item.active .bnav-icon-wrap { background: rgba(139,26,46,.1
 
 .hw-clock-icon-wrap {
   width: 44px; height: 44px; border-radius: 50%;
-  background: rgba(139,26,46,.15);
+  background: rgba(255,255,255,.18);
   display: flex; align-items: center; justify-content: center;
   flex-shrink: 0; transition: background .15s;
 }
-.hw-clock-block.working .hw-clock-icon-wrap { background: rgba(34,197,94,.2); }
+.hw-clock-block.working .hw-clock-icon-wrap { background: rgba(34,197,94,.3); }
 .hw-clock-play-icon { display: block; }
 .hw-clock-stop-icon { display: none; }
 
 .hw-clock-title {
-  font-size: 15px; font-weight: 600; color: #1A0A08;
+  font-size: 15px; font-weight: 600; color: rgba(255,255,255,.95);
   letter-spacing: -.2px;
 }
-.hw-clock-block.working .hw-clock-title { color: rgba(26,10,8,.5); font-size: 11px; }
-.hw-clock-sub { font-size: 12px; color: rgba(26,10,8,.45); margin-top: 1px; }
+.hw-clock-block.working .hw-clock-title { color: rgba(255,255,255,.55); font-size: 11px; }
+.hw-clock-sub { font-size: 12px; color: rgba(255,255,255,.5); margin-top: 1px; }
 
 .hw-clock-progress {
   position: absolute; bottom: 0; left: 0; right: 0; height: 2px;
@@ -471,7 +480,7 @@ body.view-home .bnav-item.active .bnav-icon-wrap { background: rgba(139,26,46,.1
 }
 .hw-section-label {
   display: block;
-  font-size: 11px; font-weight: 600; color: rgba(26,10,8,.3);
+  font-size: 11px; font-weight: 600; color: rgba(255,255,255,.35);
   letter-spacing: .8px; text-transform: uppercase;
   padding: 0 20px 8px;
 }
@@ -564,14 +573,14 @@ body.view-home .bnav-item.active .bnav-icon-wrap { background: rgba(139,26,46,.1
   to { transform: translate(-50%,-50%) scale(1); opacity: 0; }
 }
 
-/* ── Menu rows — jasne tło ── */
-.hb-row:active { background: rgba(139,26,46,.06) !important; }
+/* ── Menu rows — ciemne pomarańczowe tło ── */
+.hb-row:active { background: rgba(255,255,255,.07) !important; }
 .hb-row-icon {
-  background: rgba(139,26,46,.1) !important;
+  background: rgba(255,255,255,.15) !important;
 }
-.hb-row-icon svg { stroke: #8B1A2E !important; }
-.hb-row-title { color: #1A0A08 !important; }
-.hb-row-arrow svg { stroke: rgba(26,10,8,.2) !important; }
+.hb-row-icon svg { stroke: rgba(255,255,255,.9) !important; }
+.hb-row-title { color: #fff !important; }
+.hb-row-arrow svg { stroke: rgba(255,255,255,.3) !important; }
 
 /* ── Chat FAB — zawsze widoczny ── */
 .chat-fab {
