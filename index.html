@@ -326,12 +326,11 @@ body.view-home .bnav-item.active .bnav-icon-wrap { background: rgba(255,255,255,
 
 /* Jedno tło przez cały ekran */
 .hw-wrap {
-  height: calc(100dvh - 56px);
+  min-height: calc(100dvh - 56px);
   display: flex; flex-direction: column;
   padding-bottom: calc(62px + max(env(safe-area-inset-bottom), 12px) + 8px);
   -webkit-tap-highlight-color: transparent;
   position: relative;
-  overflow: hidden;
   background: linear-gradient(175deg, #7A3500 0%, #4A1A00 50%, #2E0F00 100%);
 }
 .hw-wrap::before {
@@ -387,11 +386,25 @@ body.view-home .bnav-item.active .bnav-icon-wrap { background: rgba(255,255,255,
 .hw-quick-actions {
   display: flex; flex-direction: row; flex-wrap: nowrap;
   gap: 0;
+  align-items: flex-start;
   justify-content: space-between;
   margin-top: 28px;
   position: relative; z-index: 1;
   opacity: 0; animation: fadeIn .4s ease .15s forwards;
-  overflow: hidden;
+}
+.hw-qa-more {
+  display: flex; flex-direction: column; align-items: center; gap: 7px;
+  cursor: pointer; flex-shrink: 0; width: 48px;
+}
+.hw-qa-more-circle {
+  width: 42px; height: 42px; border-radius: 50%;
+  background: rgba(255,255,255,.12);
+  display: flex; align-items: center; justify-content: center;
+  margin-top: 8px;
+}
+.hw-qa-more-label {
+  font-size: 11px; font-weight: 500; color: rgba(255,255,255,.5);
+  text-align: center;
 }
 .hw-qa-item {
   display: flex; flex-direction: column; align-items: center; gap: 7px;
@@ -622,17 +635,13 @@ body.view-home .bnav-item.active .bnav-icon-wrap { background: rgba(255,255,255,
 /* ── Banery ── */
 .hw-banners {
   display: flex; flex-direction: column; gap: 12px;
-  padding: 12px 20px 20px;
+  padding: 12px 20px 0;
   position: relative; z-index: 1;
-  flex: 1;
-  min-height: 0;
 }
 .hw-banner {
   position: relative; overflow: hidden;
   border-radius: 22px;
-  padding: 28px 24px;
-  flex: 1;
-  min-height: 120px;
+  padding: 22px 20px;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
   display: flex; align-items: center; justify-content: space-between;
@@ -2425,13 +2434,19 @@ function renderHome(mc){
         <div class="hw-hero-avatar" onclick="hbTap(this,'profile')">${initials}</div>
       </div>
 
-      <!-- 4 kółka jak Revolut -->
+      <!-- 4 kółka + strzałka więcej jak Revolut -->
       <div class="hw-quick-actions">
         ${quickActions.map(a=>`
           <div class="hw-qa-item" onclick="hbTap(this,'${a.id}')">
             <div class="hw-qa-circle">${a.icon}</div>
             <span class="hw-qa-label">${a.label}</span>
           </div>`).join('')}
+        <div class="hw-qa-more" onclick="hbTap(this,'menu')">
+          <div class="hw-qa-more-circle">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.6)" stroke-width="2.2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+          </div>
+          <span class="hw-qa-more-label">Więcej</span>
+        </div>
       </div>
     </div>
 
