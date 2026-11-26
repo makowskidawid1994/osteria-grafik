@@ -620,21 +620,48 @@ body.view-home .bnav-item.active .bnav-icon-wrap { background: rgba(255,255,255,
 .hb-row-title { color: #fff !important; }
 .hb-row-arrow svg { stroke: rgba(255,255,255,.3) !important; }
 
-/* ── Karta Dzisiaj — jak Revolut banner ── */
-.hw-today-card {
+/* ── Banery ── */
+.hw-banners {
+  display: flex; flex-direction: column; gap: 12px;
+  padding: 8px 20px 0;
   position: relative; z-index: 1;
-  margin: 16px 20px 0;
-  border-radius: 20px;
-  background: rgba(255,255,255,.1);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  padding: 18px 20px;
+}
+.hw-banner {
+  position: relative; overflow: hidden;
+  border-radius: 22px;
+  padding: 22px 20px;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
-  transition: background .15s;
+  display: flex; align-items: center; justify-content: space-between;
   opacity: 0; animation: fadeIn .4s ease .2s forwards;
+  transition: transform .12s, opacity .12s;
 }
-.hw-today-card:active { background: rgba(255,255,255,.17); }
+.hw-banner:active { transform: scale(.97); opacity: .9; }
+.hw-banner-clock {
+  background: rgba(34,197,94,.18);
+  border: 1px solid rgba(34,197,94,.25);
+  backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+}
+.hw-banner-shift {
+  background: rgba(255,255,255,.12);
+  border: 1px solid rgba(255,255,255,.15);
+  backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+}
+.hw-banner-team {
+  background: rgba(255,255,255,.09);
+  border: 1px solid rgba(255,255,255,.12);
+  backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+}
+.hw-banner-left { display: flex; flex-direction: column; gap: 4px; }
+.hw-banner-eyebrow { font-size: 11px; font-weight: 600; color: rgba(255,255,255,.5); text-transform: uppercase; letter-spacing: .5px; }
+.hw-banner-big { font-size: 32px; font-weight: 800; color: #fff; letter-spacing: -1.2px; line-height: 1; font-variant-numeric: tabular-nums; }
+.hw-banner-sub { font-size: 12px; color: rgba(255,255,255,.5); margin-top: 2px; }
+.hw-banner-right-icon { width: 48px; height: 48px; border-radius: 50%; background: rgba(255,255,255,.12); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.hw-bav { width: 36px; height: 36px; border-radius: 50%; background: rgba(255,255,255,.2); border: 2px solid rgba(255,255,255,.3); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; color: #fff; }
+.hw-banner-avatars { display: flex; }
+
+/* ── Karta Dzisiaj — LEGACY (ukryta, zastąpiona banerami) ── */
+.hw-today-card { display: none; }
 .hw-today-label {
   font-size: 11px; font-weight: 600; color: rgba(255,255,255,.5);
   letter-spacing: .6px; text-transform: uppercase; margin-bottom: 6px;
@@ -2274,6 +2301,63 @@ function renderHome(mc){
     { id:'avail',  label:'Dyspozycja',icon: qaIcon('<circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15.5 15.5"/>') },
   ];
 
+  /* ── Dane do banerów ── */
+  const nowWorking = workSessions.filter(s=>!s.clock_out);
+  const todayShifts = shifts.filter(s=>s.date===tod);
+
+  /* Baner 1: zegar / zmiana */
+  const banner1 = active ? `
+    <div class="hw-banner hw-banner-clock" onclick="hbTap(this,'clock')">
+      <span class="hw-clock-pulse"></span>
+      <div class="hw-banner-left">
+        <div class="hw-banner-eyebrow">Trwa zmiana</div>
+        <div class="hw-banner-big" id="hw-live-timer">0:00:00</div>
+        <div class="hw-banner-sub">${clockHint}</div>
+      </div>
+      <div class="hw-banner-right-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.7)" stroke-width="1.8"><rect x="6" y="6" width="12" height="12" rx="2" fill="rgba(255,255,255,.85)" stroke="none"/></svg>
+      </div>
+      <div class="hw-clock-progress" style="position:absolute;bottom:0;left:0;right:0;height:3px;border-radius:0 0 20px 20px;background:rgba(255,255,255,.12)"><div class="hw-clock-progress-fill" id="hw-shift-fill"></div></div>
+    </div>` : myShiftToday ? `
+    <div class="hw-banner hw-banner-shift" onclick="hbTap(this,'clock')">
+      <div class="hw-banner-left">
+        <div class="hw-banner-eyebrow">Twoja zmiana dziś</div>
+        <div class="hw-banner-big">${(myShiftToday.start_time||'').slice(0,5)} – ${(myShiftToday.end_time||'').slice(0,5)}</div>
+        <div class="hw-banner-sub">Naciśnij Zacznij gdy jesteś gotowy</div>
+      </div>
+      <div class="hw-banner-right-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.8)" stroke-width="1.8"><polygon points="8 6 20 12 8 18 8 6" fill="rgba(255,255,255,.85)" stroke="none"/></svg>
+      </div>
+    </div>` : '';
+
+  /* Baner 2: zespół / grafik — tylko właściciel/manager */
+  const banner2 = isOwnerOrMgr ? (() => {
+    const names = nowWorking.slice(0,2).map(s=>s.employees?.name?.split(' ')[0]||'?').join(' · ');
+    const more = nowWorking.length > 2 ? ` +${nowWorking.length-2}` : '';
+    if(nowWorking.length > 0) return `
+    <div class="hw-banner hw-banner-team" onclick="hbTap(this,'clock')">
+      <div class="hw-banner-left">
+        <div class="hw-banner-eyebrow">Teraz w pracy</div>
+        <div class="hw-banner-big">${nowWorking.length} <span style="font-size:18px;font-weight:400;opacity:.7">os.</span></div>
+        <div class="hw-banner-sub">${names}${more}</div>
+      </div>
+      <div class="hw-banner-avatars">
+        ${nowWorking.slice(0,3).map((s,i)=>`<div class="hw-bav" style="margin-left:${i?'-10px':'0'};z-index:${3-i}">${(s.employees?.name||'?').slice(0,1)}</div>`).join('')}
+      </div>
+    </div>`;
+    return `
+    <div class="hw-banner hw-banner-team" onclick="hbTap(this,'sched')">
+      <div class="hw-banner-left">
+        <div class="hw-banner-eyebrow">Grafik dziś</div>
+        <div class="hw-banner-big">${todayShifts.length} <span style="font-size:18px;font-weight:400;opacity:.7">zmian</span></div>
+        <div class="hw-banner-sub">${todayShifts.length ? todayShifts.slice(0,2).map(s=>employees.find(e=>e.id===s.employee_id)?.name?.split(' ')[0]||'?').join(' · ') : 'Brak zaplanowanych'}</div>
+      </div>
+      <div class="hw-banner-right-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.7)" stroke-width="1.8"><rect x="3" y="4" width="18" height="18" rx="2.5"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+      </div>
+    </div>`;
+  })() : '';
+
   mc.innerHTML=`
   <div class="hw-wrap">
 
@@ -2287,7 +2371,7 @@ function renderHome(mc){
         <div class="hw-hero-avatar" onclick="hbTap(this,'profile')">${initials}</div>
       </div>
 
-      <!-- Kółka szybkich akcji -->
+      <!-- 4 kółka jak Revolut -->
       <div class="hw-quick-actions">
         ${quickActions.map(a=>`
           <div class="hw-qa-item" onclick="hbTap(this,'${a.id}')">
@@ -2297,66 +2381,10 @@ function renderHome(mc){
       </div>
     </div>
 
-    <!-- Blok zegara — tylko gdy pracuje -->
-    ${active ? `
-    <div class="hw-clock-block working" onclick="hbTap(this,'clock')">
-      <span class="hw-clock-pulse"></span>
-      <div class="hw-clock-icon-wrap">
-        <svg class="hw-clock-stop-icon" width="14" height="14" viewBox="0 0 24 24" fill="none"><rect x="6" y="6" width="12" height="12" rx="2" fill="rgba(255,255,255,.9)" stroke="none"/></svg>
-      </div>
-      <div class="hw-clock-center">
-        <div class="hw-clock-timer" id="hw-live-timer">0:00:00</div>
-        <div class="hw-clock-title">Trwa zmiana</div>
-        ${clockHint?`<div class="hw-clock-sub">${clockHint}</div>`:''}
-      </div>
-      <div class="hw-clock-progress"><div class="hw-clock-progress-fill" id="hw-shift-fill"></div></div>
-      <div class="hb-ripple-wrap"></div>
-    </div>` : ''}
-
-    <!-- ═══ KARTA DZISIAJ — jak Revolut banner ═══ -->
-    ${(()=>{
-      const nowWorking = workSessions.filter(s=>!s.clock_out);
-      const todayShifts = shifts.filter(s=>s.date===tod);
-      const names = nowWorking.slice(0,3).map(s=>s.employees?.name?.split(' ')[0]||'?').join(', ');
-      const moreCount = nowWorking.length > 3 ? `+${nowWorking.length-3}` : '';
-      if(isOwnerOrMgr && nowWorking.length > 0) return `
-      <div class="hw-today-card" onclick="hbTap(this,'clock')">
-        <div class="hw-today-label">Teraz w pracy</div>
-        <div class="hw-today-count">${nowWorking.length} <span>os.</span></div>
-        <div class="hw-today-names">${names}${moreCount ? ` <span class="hw-today-more">${moreCount}</span>` : ''}</div>
-        <div class="hw-today-sub">grafik dziś: ${todayShifts.length} zmian</div>
-      </div>`;
-      if(isOwnerOrMgr) return `
-      <div class="hw-today-card" onclick="hbTap(this,'sched')">
-        <div class="hw-today-label">Dzisiaj</div>
-        <div class="hw-today-count">${todayShifts.length} <span>zmian</span></div>
-        <div class="hw-today-names">${todayShifts.slice(0,3).map(s=>employees.find(e=>e.id===s.employee_id)?.name?.split(' ')[0]||'?').join(', ')||'Brak zaplanowanych'}</div>
-        <div class="hw-today-sub">nikt nie jest teraz w pracy</div>
-      </div>`;
-      // dla pracownika — jego zmiana dziś
-      if(myShiftToday) return `
-      <div class="hw-today-card" onclick="hbTap(this,'clock')">
-        <div class="hw-today-label">Twoja zmiana</div>
-        <div class="hw-today-count">${(myShiftToday.start_time||'').slice(0,5)} <span>– ${(myShiftToday.end_time||'').slice(0,5)}</span></div>
-        <div class="hw-today-names">${active ? 'Zmiana w toku' : 'Naciśnij Zacznij gdy jesteś gotowy'}</div>
-        <div class="hw-today-sub">${dayNames[todayDt.getDay()]}, ${todayDt.getDate()} ${monthNames2[todayDt.getMonth()]}</div>
-      </div>`;
-      return '';
-    })()}
-
-    <!-- ═══ MENU ═══ -->
-    <div class="hw-body">
-      <div class="hw-blocks">
-        ${rows.slice(0, 4).map(rowHTML).join('')}
-        ${rows.length > 4 ? `
-        <div class="hw-extra-rows" id="hw-extra-rows">
-          ${rows.slice(4).map(rowHTML).join('')}
-        </div>
-        <button class="hw-more-btn" id="hw-more-btn" onclick="toggleHwMore(this)">
-          <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
-          Więcej
-        </button>` : ''}
-      </div>
+    <!-- ═══ MAX 2 BANERY ═══ -->
+    <div class="hw-banners">
+      ${banner1}
+      ${banner2}
     </div>
 
   </div>`;
