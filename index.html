@@ -16,24 +16,24 @@
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
 :root {
-  --brand: #C0392B;
-  --brand-dark: #96281B;
-  --brand-light: #D44234;
-  --brand-soft: rgba(192,57,43,.12);
-  --brand-mid: rgba(192,57,43,.2);
-  --accent: #C0392B;
-  --accent-hover: #96281B;
-  --accent-soft: rgba(192,57,43,.1);
-  /* Ciemne tło aplikacji */
-  --bg: #111111;
-  --bg-card: #1C1C1C;
-  --bg-card2: #181818;
-  --surface: #1C1C1C;
-  --border: rgba(255,255,255,.1);
-  --border-2: rgba(255,255,255,.07);
-  --text: #FFFFFF;
-  --text-2: #A0A0A0;
-  --text-3: #666666;
+  --brand: #9B2335;
+  --brand-dark: #7A1826;
+  --brand-light: #C23045;
+  --brand-soft: rgba(155,35,53,.18);
+  --brand-mid: rgba(155,35,53,.28);
+  --accent: #C8622A;
+  --accent-hover: #A84E20;
+  --accent-soft: rgba(200,98,42,.15);
+  /* Ciepłe ciemne tło aplikacji */
+  --bg: #160D09;
+  --bg-card: #231510;
+  --bg-card2: #1C1009;
+  --surface: #231510;
+  --border: rgba(255,200,160,.1);
+  --border-2: rgba(255,200,160,.07);
+  --text: #FFF5EE;
+  --text-2: #BFA090;
+  --text-3: #7A5A4A;
   --danger: #F87171;
   --danger-bg: rgba(220,38,38,.15);
   --warn: #FBBF24;
@@ -196,15 +196,15 @@ body { font-family: var(--font); background: var(--bg); color: var(--text); min-
 /* ─── App shell ─── */
 #app { display: none; }
 .header {
-  background: #111111; color: var(--text); height: 56px; padding: 0 16px;
+  background: #160D09; color: var(--text); height: 56px; padding: 0 16px;
   display: flex; align-items: center; position: sticky; top: 0; z-index: 100;
   border-bottom: 1px solid rgba(255,255,255,.08); gap: 10px;
   transition: background .2s, border-color .2s;
 }
 /* Na home — ciemny nav i header */
 body.view-home .bnav {
-  background: rgba(17,17,17,.92);
-  border-top-color: rgba(255,255,255,.07);
+  background: rgba(22,13,9,.95);
+  border-top-color: rgba(255,200,160,.08);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
 }
@@ -216,8 +216,8 @@ body.view-home .bnav-item.active .bnav-icon-wrap { background: rgba(255,255,255,
 
 /* Na home — ciemny header jak tło aplikacji */
 body.view-home .header {
-  background: rgba(17,17,17,.88);
-  border-bottom-color: rgba(255,255,255,.07);
+  background: rgba(22,13,9,.92);
+  border-bottom-color: rgba(255,200,160,.07);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
 }
@@ -295,12 +295,14 @@ body.view-home #main-content { background: transparent; }
   padding-bottom: calc(62px + max(env(safe-area-inset-bottom), 12px) + 8px);
   -webkit-tap-highlight-color: transparent;
   position: relative;
-  background: #111111;
+  background: #160D09;
 }
 .hw-wrap::before {
   content: '';
   position: fixed; inset: 0; pointer-events: none; z-index: 0;
-  background: radial-gradient(ellipse 70% 40% at 50% 0%, rgba(192,57,43,.12) 0%, transparent 60%);
+  background:
+    radial-gradient(ellipse 80% 50% at 20% 10%, rgba(155,35,53,.18) 0%, transparent 55%),
+    radial-gradient(ellipse 60% 40% at 85% 20%, rgba(200,98,42,.14) 0%, transparent 50%);
 }
 
 /* Header */
@@ -329,8 +331,8 @@ body.view-home #main-content { background: transparent; }
   margin: 0 20px 10px;
   position: relative; overflow: hidden;
   border-radius: 14px;
-  background: rgba(255,255,255,.05);
-  border: 1px solid rgba(255,255,255,.08);
+  background: rgba(155,35,53,.12);
+  border: 1px solid rgba(155,35,53,.25);
   padding: 12px 16px;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
@@ -342,7 +344,7 @@ body.view-home #main-content { background: transparent; }
   gap: 4px;
   text-align: center;
 }
-.hw-clock-block:active { background: rgba(255,255,255,.08); }
+.hw-clock-block:active { background: rgba(155,35,53,.2); }
 
 /* Stan: pracuje */
 .hw-clock-block.working {

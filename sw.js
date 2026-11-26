@@ -1,5 +1,5 @@
 // Network-first: zawsze pobiera z sieci, cache tylko gdy offline
-const CACHE = 'osteria-v26';
+const CACHE = 'osteria-v27';
 
 self.addEventListener('install', e => {
   // Natychmiast przejmij kontrolę — nie czekaj na zamknięcie kart
