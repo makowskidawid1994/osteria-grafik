@@ -222,10 +222,10 @@ body.view-home .bnav-item.active { color: #8B1A2E; }
 body.view-home .bnav-item.active svg { stroke: #8B1A2E; }
 body.view-home .bnav-item.active .bnav-icon-wrap { background: rgba(139,26,46,.1); }
 
-/* Na home — głęboki amber header */
+/* Na home — header przezroczysty, zlewa się z tłem */
 body.view-home .header {
-  background: #2A1000;
-  border-bottom: 1px solid rgba(255,255,255,.06);
+  background: transparent;
+  border-bottom: 1px solid transparent;
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
 }
@@ -642,7 +642,6 @@ body.view-home .bnav-item.active .bnav-icon-wrap { background: rgba(255,255,255,
   position: relative; overflow: hidden;
   border-radius: 22px;
   padding: 22px 20px;
-  flex: 1;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
   display: flex; align-items: center; justify-content: space-between;
