@@ -1,37 +1,50 @@
-const CACHE = 'osteria-v21';
-const PRECACHE = ['/'];
+// Network-first: zawsze pobiera z sieci, cache tylko gdy offline
+const CACHE = 'osteria-v22';
 
 self.addEventListener('install', e => {
-  e.waitUntil(
-    caches.open(CACHE).then(c => c.addAll(PRECACHE)).then(() => self.skipWaiting())
-  );
+  // Natychmiast przejmij kontrolę — nie czekaj na zamknięcie kart
+  self.skipWaiting();
 });
 
 self.addEventListener('activate', e => {
+  // Usuń wszystkie stare cache'e
   e.waitUntil(
     caches.keys().then(keys =>
-      Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k)))
+      Promise.all(keys.map(k => caches.delete(k)))
     ).then(() => self.clients.claim())
   );
 });
 
 self.addEventListener('fetch', e => {
-  // Supabase i zewnętrzne API — zawsze sieć
-  if (e.request.url.includes('supabase.co') || e.request.url.includes('fonts.g')) {
-    return;
+  // API, Supabase, fonty — zawsze sieć, bez cache
+  if (
+    e.request.url.includes('supabase.co') ||
+    e.request.url.includes('fonts.g') ||
+    e.request.url.includes('fonts.googleapis') ||
+    e.request.url.includes('fonts.gstatic')
+  ) {
+    return; // przeglądarka obsługuje samodzielnie
   }
+
+  // Network-first dla wszystkiego innego
   e.respondWith(
-    fetch(e.request)
+    fetch(e.request, { cache: 'no-store' })
       .then(res => {
-        const clone = res.clone();
-        caches.open(CACHE).then(c => c.put(e.request, clone));
+        // Zapisz świeżą kopię do cache (jako fallback offline)
+        if (res.ok) {
+          const clone = res.clone();
+          caches.open(CACHE).then(c => c.put(e.request, clone));
+        }
         return res;
       })
-      .catch(() => caches.match(e.request))
+      .catch(() => {
+        // Offline fallback — zwróć z cache jeśli jest
+        return caches.match(e.request);
+      })
   );
 });
 
-// Obsługa wiadomości z aplikacji (np. powiadomienie o zmianie)
+// Obsługa wiadomości z aplikacji
 self.addEventListener('message', e => {
   if (e.data?.type === 'SKIP_WAITING') {
     self.skipWaiting();

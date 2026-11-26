@@ -6620,19 +6620,27 @@ function toggleAvatarMenu(e){
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', async () => {
     try {
+      // Odinstaluj wszystkie stare SW, zostaw tylko aktualny
+      const regs = await navigator.serviceWorker.getRegistrations();
+      for (const r of regs) await r.unregister();
+
+      // Wyczyść wszystkie cache
+      const keys = await caches.keys();
+      await Promise.all(keys.map(k => caches.delete(k)));
+
+      // Zarejestruj świeży SW
       const reg = await navigator.serviceWorker.register('/sw.js');
-      // Wymuś sprawdzenie aktualizacji przy każdym starcie
       reg.update();
-      // Gdy nowy SW czeka — natychmiast go aktywuj (skipWaiting)
+
       reg.addEventListener('updatefound', () => {
         const newSW = reg.installing;
         newSW?.addEventListener('statechange', () => {
-          if (newSW.state === 'installed' && navigator.serviceWorker.controller) {
+          if (newSW.state === 'installed') {
             newSW.postMessage({ type: 'SKIP_WAITING' });
           }
         });
       });
-      // Gdy SW się zmieni — odśwież stronę żeby załadować nową wersję
+
       let refreshing = false;
       navigator.serviceWorker.addEventListener('controllerchange', () => {
         if (!refreshing) { refreshing = true; window.location.reload(); }
