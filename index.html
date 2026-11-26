@@ -2504,6 +2504,19 @@ function renderHome(mc){
       </div>
     </div>`;
 
+  /* Baner "Rozliczenia" — tylko właściciel/manager */
+  const bannerSettlements = isOwnerOrMgr ? `
+    <div class="hw-banner hw-banner-team" onclick="hbTap(this,'settlements')" style="background:linear-gradient(135deg,rgba(100,20,15,.85) 0%,rgba(60,10,5,.85) 100%);border:1px solid rgba(220,80,20,.2)">
+      <div class="hw-banner-left">
+        <div class="hw-banner-eyebrow">Kasjer</div>
+        <div class="hw-banner-big" style="font-size:20px">Rozliczenia kelnerskie</div>
+        <div class="hw-banner-sub">Koperty · utargi · weryfikacja POS</div>
+      </div>
+      <div class="hw-banner-right-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.7)" stroke-width="1.8"><rect x="2" y="6" width="20" height="13" rx="2.5"/><path d="M2 11h20"/><path d="M6 15h4M15 15h3"/></svg>
+      </div>
+    </div>` : '';
+
   /* Baner 2: zespół / grafik — tylko właściciel/manager */
   const banner2 = isOwnerOrMgr ? (() => {
     const names = nowWorking.slice(0,2).map(s=>s.employees?.name?.split(' ')[0]||'?').join(' · ');
@@ -2683,6 +2696,9 @@ function renderHome(mc){
             <div class="hw-stat-lbl">Pracowników</div>
           </div>
         </div>
+
+        <!-- Baner rozliczeń — tylko właściciel/manager -->
+        ${bannerSettlements}
       </div>
     </div>
 
@@ -3781,15 +3797,6 @@ function renderKitchen(mc){
       </div>
       <svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:var(--text-3);fill:none;stroke-width:2;flex-shrink:0"><polyline points="9 18 15 12 9 6"/></svg>
     </div>
-    ${['owner','manager'].includes(currentRole)?`
-    <div class="home-tile" style="flex-direction:row;align-items:center;gap:14px;min-height:auto;padding:16px;border:1px solid rgba(123,29,46,.35);background:rgba(123,29,46,.08)" onclick="showView('settlements')">
-      <div class="home-tile-icon" style="background:rgba(123,29,46,.2);border:1px solid rgba(123,29,46,.4)"><svg viewBox="0 0 24 24" style="width:18px;height:18px;stroke:var(--brand-light);fill:none;stroke-width:1.8"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg></div>
-      <div style="flex:1">
-        <div class="home-tile-label" style="color:var(--text)">Rozliczenia kelnerskie</div>
-        <div class="home-tile-sub">Koperty, utargi, weryfikacja POS</div>
-      </div>
-      <svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:var(--text-3);fill:none;stroke-width:2;flex-shrink:0"><polyline points="9 18 15 12 9 6"/></svg>
-    </div>`:''}
   </div>`;
 }
 
@@ -4297,31 +4304,30 @@ function renderSettlementsUI(mc, rows){
   const missingCount = days.filter(d=>d.missing).length;
 
   mc.innerHTML=`
-  <div style="position:sticky;top:0;z-index:20;background:var(--bg);border-bottom:1px solid rgba(139,26,46,.08);padding:0 20px;height:56px;display:flex;align-items:center;gap:12px">
-    <button onclick="goHome()" style="display:flex;align-items:center;gap:4px;background:none;border:none;color:var(--text-2);font-size:15px;font-weight:500;cursor:pointer;font-family:var(--font);padding:8px 0;-webkit-tap-highlight-color:transparent">
-      <svg viewBox="0 0 24 24" style="width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2.5"><polyline points="15 18 9 12 15 6"/></svg>
-      Wróć
+  <div class="page-bar" style="gap:12px">
+    <button class="section-back-btn" onclick="goHome()">
+      <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>Wróć
     </button>
-    <div style="flex:1;font-size:17px;font-weight:700;color:var(--text)">Rozliczenia</div>
-    <button onclick="openSettlementForm()" style="display:flex;align-items:center;gap:5px;padding:8px 16px;background:var(--brand);border:none;border-radius:10px;color:#fff;font-size:14px;font-weight:600;cursor:pointer;font-family:var(--font)">
+    <div class="page-bar-title">Rozliczenia</div>
+    <button onclick="openSettlementForm()" style="margin-left:auto;display:flex;align-items:center;gap:5px;padding:7px 14px;background:var(--brand);border:none;border-radius:10px;color:#fff;font-size:14px;font-weight:600;cursor:pointer;font-family:var(--font)">
       <svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:#fff;fill:none;stroke-width:2.8"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
       Dodaj
     </button>
   </div>
 
-  <div style="padding:0 0 calc(80px + env(safe-area-inset-bottom));min-height:calc(100dvh - 56px);display:flex;flex-direction:column">
+  <div style="padding:0 0 calc(80px + env(safe-area-inset-bottom))">
 
     <!-- FORMULARZ (ukryty domyślnie) -->
-    <div id="settlement-form-wrap" style="display:none;margin:16px 16px 0;background:#FDFAF6;border-radius:16px;padding:20px;border:1px solid rgba(139,26,46,.1)"
+    <div id="settlement-form-wrap" style="display:none;margin:16px 16px 0;background:rgba(255,255,255,.07);border-radius:16px;padding:20px;border:1px solid rgba(255,255,255,.1)">
       <div style="font-size:16px;font-weight:700;color:var(--text);margin-bottom:16px">Nowe rozliczenie</div>
 
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
         <div>
-          <label style="font-size:12px;color:var(--text-2);display:block;margin-bottom:5px;font-weight:600">Data</label>
+          <label style="font-size:12px;color:var(--text-3);display:block;margin-bottom:5px;font-weight:600">Data</label>
           <input type="date" id="sf-date" value="${today}" style="${inputStyle()}">
         </div>
         <div>
-          <label style="font-size:12px;color:var(--text-2);display:block;margin-bottom:5px;font-weight:600">Kelner</label>
+          <label style="font-size:12px;color:var(--text-3);display:block;margin-bottom:5px;font-weight:600">Kelner</label>
           <input type="text" id="sf-waiter" placeholder="Imię i nazwisko" style="${inputStyle()}">
         </div>
       </div>
@@ -4341,54 +4347,53 @@ function renderSettlementsUI(mc, rows){
       </div>
 
       <div style="margin-bottom:10px">
-        <label style="font-size:12px;color:var(--text-2);display:block;margin-bottom:5px;font-weight:600">Komentarz</label>
+        <label style="font-size:12px;color:var(--text-3);display:block;margin-bottom:5px;font-weight:600">Komentarz</label>
         <textarea id="sf-comment" rows="2" placeholder="Uwagi, rozbieżności..." style="${inputStyle()}resize:none;"></textarea>
       </div>
 
       <div style="margin-bottom:16px">
-        <label style="font-size:12px;color:var(--text-2);display:block;margin-bottom:6px;font-weight:600">Zdjęcie koperty</label>
-        <label style="display:flex;align-items:center;gap:12px;background:rgba(139,26,46,.04);border:1.5px dashed rgba(139,26,46,.2);border-radius:10px;padding:12px 14px;cursor:pointer">
-          <svg viewBox="0 0 24 24" style="width:18px;height:18px;stroke:rgba(139,26,46,.4);fill:none;stroke-width:2;flex-shrink:0"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+        <label style="font-size:12px;color:var(--text-3);display:block;margin-bottom:6px;font-weight:600">Zdjęcie koperty</label>
+        <label style="display:flex;align-items:center;gap:12px;background:rgba(255,255,255,.05);border:1.5px dashed rgba(255,255,255,.15);border-radius:10px;padding:12px 14px;cursor:pointer">
+          <svg viewBox="0 0 24 24" style="width:18px;height:18px;stroke:rgba(255,255,255,.4);fill:none;stroke-width:2;flex-shrink:0"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
           <span style="font-size:14px;color:var(--text-2)" id="sf-photo-label">Zrób zdjęcie lub wybierz z telefonu</span>
           <input type="file" id="sf-photo" accept="image/*" capture="environment" onchange="onSettlementPhotoChange(this)" style="display:none">
         </label>
         <div id="sf-photo-preview" style="margin-top:8px;display:none">
-          <img id="sf-photo-img" style="width:100%;max-height:200px;object-fit:contain;border-radius:10px;border:1px solid rgba(139,26,46,.1)">
+          <img id="sf-photo-img" style="width:100%;max-height:200px;object-fit:contain;border-radius:10px;border:1px solid rgba(255,255,255,.1)">
         </div>
       </div>
 
       <div style="display:flex;gap:8px">
-        <button onclick="cancelSettlementForm()" style="flex:1;padding:13px;background:rgba(139,26,46,.06);border:none;border-radius:10px;color:var(--text-2);font-size:15px;font-weight:600;cursor:pointer;font-family:var(--font)">Anuluj</button>
-        <button onclick="saveSettlement()" style="flex:2;padding:13px;background:var(--brand);border:none;border-radius:10px;color:#fff;font-size:15px;font-weight:700;cursor:pointer;font-family:var(--font)" id="sf-save-btn">Zapisz</button>
+        <button onclick="cancelSettlementForm()" style="flex:1;padding:13px;background:rgba(255,255,255,.08);border:none;border-radius:10px;color:var(--text-2);font-size:15px;font-weight:600;cursor:pointer;font-family:var(--font)">Anuluj</button>
+        <button onclick="saveSettlement()" style="flex:2;padding:13px;background:var(--brand);border:none;border-radius:10px;color:#fff;font-size:15px;font-weight:700;cursor:pointer;font-family:var(--font)" id="sf-save-btn">Zapisz rozliczenie</button>
       </div>
     </div>
 
     <!-- LISTA DNI -->
-    <div id="settlements-list" style="margin:16px 16px 0;border-radius:16px;overflow:hidden;background:#FDFAF6;border:1px solid rgba(139,26,46,.08)">
+    <div id="settlements-list" style="margin:16px 16px 0;border-radius:16px;overflow:hidden;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08)">
       ${days.map((day,i)=>{
         const isToday = day.date===today;
         const label = isToday ? 'Dziś' : fmtDatePL(day.date);
         if(day.rows.length>0){
           return day.rows.map(r=>settlementCard(r,label,i>0&&days[i-1]?.date!==r.date)).join('');
         }
-        // Dzień bez rozliczenia
         const isMissing = day.missing;
-        return `<div style="display:flex;align-items:center;padding:14px 16px;${i<days.length-1?'border-bottom:1px solid rgba(139,26,46,.06)':''}">
-          <div style="width:36px;height:36px;border-radius:10px;background:${isMissing?'rgba(251,191,36,.1)':'rgba(139,26,46,.05)'};display:flex;align-items:center;justify-content:center;flex-shrink:0">
+        return `<div style="display:flex;align-items:center;padding:13px 16px;${i<days.length-1?'border-bottom:1px solid rgba(255,255,255,.05)':''}">
+          <div style="width:34px;height:34px;border-radius:9px;background:${isMissing?'rgba(251,191,36,.12)':'rgba(255,255,255,.05)'};display:flex;align-items:center;justify-content:center;flex-shrink:0">
             ${isMissing
-              ? `<svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:#C05A22;fill:none;stroke-width:2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>`
-              : `<svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:rgba(139,26,46,.25);fill:none;stroke-width:2"><rect x="2" y="6" width="20" height="13" rx="2"/><path d="M2 11h20"/></svg>`
+              ? `<svg viewBox="0 0 24 24" style="width:15px;height:15px;stroke:var(--warn);fill:none;stroke-width:2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>`
+              : `<svg viewBox="0 0 24 24" style="width:15px;height:15px;stroke:var(--text-3);fill:none;stroke-width:2"><circle cx="12" cy="12" r="10"/><polyline points="12 7 12 12 15.5 15.5"/></svg>`
             }
           </div>
           <div style="margin-left:12px;flex:1">
-            <div style="font-size:15px;font-weight:600;color:${isMissing?'#1A0A08':'rgba(90,56,40,.4)'}">
-              ${isToday?'<span style="color:var(--brand);font-weight:700">Dziś</span>':label}
+            <div style="font-size:15px;font-weight:600;color:${isToday?'var(--brand-light)':'var(--text)'}">
+              ${isToday?'<span style="color:var(--brand-light);font-weight:700">Dziś</span>':label}
             </div>
-            <div style="font-size:13px;color:${isMissing?'#C05A22':'rgba(90,56,40,.35)'};margin-top:1px">
+            <div style="font-size:12px;color:${isMissing?'var(--warn)':'var(--text-3)'};margin-top:1px">
               ${isMissing?'Brak rozliczenia':'Brak danych'}
             </div>
           </div>
-          ${isMissing?`<button onclick="openSettlementFormFor('${day.date}')" style="padding:6px 14px;background:rgba(192,90,34,.1);border:1px solid rgba(192,90,34,.2);border-radius:8px;color:#C05A22;font-size:12px;font-weight:600;cursor:pointer;font-family:var(--font)">Dodaj</button>`:''}
+          ${isMissing?`<button onclick="openSettlementFormFor('${day.date}')" style="padding:6px 14px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:8px;color:var(--text-2);font-size:12px;font-weight:600;cursor:pointer;font-family:var(--font)">Dodaj</button>`:''}
         </div>`;
       }).join('')}
     </div>
@@ -4397,13 +4402,13 @@ function renderSettlementsUI(mc, rows){
 
 function sfField(id, label){
   return `<div>
-    <label style="font-size:12px;color:rgba(90,56,40,.55);display:block;margin-bottom:6px;font-weight:600">${label}</label>
+    <label style="font-size:12px;color:var(--text-3);display:block;margin-bottom:6px;font-weight:600">${label}</label>
     <input type="number" id="${id}" step="0.01" placeholder="0.00" style="${inputStyle()}">
   </div>`;
 }
 
 function inputStyle(){
-  return `width:100%;padding:11px 12px;background:rgba(139,26,46,.04);border:1px solid rgba(139,26,46,.12);border-radius:10px;color:#1A0A08;font-size:15px;font-family:var(--font);`;
+  return `width:100%;padding:11px 12px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:10px;color:var(--text);font-size:15px;font-family:var(--font);`;
 }
 
 function fmtDatePL(ds){
@@ -4418,19 +4423,19 @@ function settlementCard(r){
   const diffColor = diff===null ? 'var(--text-3)' : Math.abs(diff)<1 ? 'var(--green)' : diff>0 ? '#FBBF24' : 'var(--danger)';
   const diffLabel = diff===null ? '' : `${diff>=0?'+':''}${diff.toFixed(2)} zł`;
   const verifiedBadge = r.verified
-    ? `<span style="font-size:11px;padding:3px 9px;border-radius:20px;background:rgba(34,197,94,.1);color:#15803d;font-weight:700;flex-shrink:0;letter-spacing:.2px">OK</span>`
-    : `<span style="font-size:11px;padding:3px 9px;border-radius:20px;background:rgba(192,90,34,.1);color:#C05A22;font-weight:700;flex-shrink:0;letter-spacing:.2px">Weryfikacja</span>`;
+    ? `<span style="font-size:11px;padding:3px 9px;border-radius:20px;background:var(--green-bg);color:var(--green);font-weight:700;flex-shrink:0;letter-spacing:.2px">OK</span>`
+    : `<span style="font-size:11px;padding:3px 9px;border-radius:20px;background:rgba(255,180,80,.1);color:var(--warn);font-weight:700;flex-shrink:0;letter-spacing:.2px">Weryfikacja</span>`;
 
   const utarg = r.field_c!=null ? parseFloat(r.field_c).toFixed(2) : null;
-  return `<div style="display:flex;align-items:center;padding:16px 20px;border-bottom:1px solid rgba(139,26,46,.06);cursor:pointer;-webkit-tap-highlight-color:transparent;transition:background .12s" onclick="openSettlementDetail('${r.id}')" ontouchstart="this.style.background='rgba(139,26,46,.03)'" ontouchend="this.style.background=''">
-    <div style="width:46px;height:46px;border-radius:14px;background:rgba(139,26,46,.1);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:800;color:#8B1A2E;flex-shrink:0;margin-right:16px">${(r.waiter_name||'?')[0].toUpperCase()}</div>
+  return `<div style="display:flex;align-items:center;padding:14px 16px;border-bottom:1px solid rgba(255,255,255,.05);cursor:pointer;-webkit-tap-highlight-color:transparent;transition:background .12s" onclick="openSettlementDetail('${r.id}')" ontouchstart="this.style.background='rgba(255,255,255,.04)'" ontouchend="this.style.background=''">
+    <div style="width:42px;height:42px;border-radius:12px;background:var(--brand-soft);display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:800;color:var(--brand-light);flex-shrink:0;margin-right:14px">${(r.waiter_name||'?')[0].toUpperCase()}</div>
     <div style="flex:1;min-width:0">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
-        <div style="font-size:16px;font-weight:700;color:#1A0A08;letter-spacing:-.2px">${r.waiter_name}</div>
-        ${utarg?`<div style="font-size:16px;font-weight:700;color:#1A0A08">${utarg} zł</div>`:''}
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:3px">
+        <div style="font-size:15px;font-weight:700;color:var(--text);letter-spacing:-.2px">${r.waiter_name}</div>
+        ${utarg?`<div style="font-size:15px;font-weight:700;color:var(--text)">${utarg} zł</div>`:''}
       </div>
       <div style="display:flex;align-items:center;justify-content:space-between">
-        <div style="font-size:14px;color:rgba(90,56,40,.5)">${fmtDatePL(r.date)}</div>
+        <div style="font-size:13px;color:var(--text-3)">${fmtDatePL(r.date)}</div>
         <div style="display:flex;align-items:center;gap:8px">
           ${diff!==null?`<span style="font-size:13px;font-weight:600;color:${diffColor}">${diffLabel}</span>`:''}
           ${verifiedBadge}
