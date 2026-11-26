@@ -59,6 +59,7 @@ body::before {
   background:
     radial-gradient(ellipse 100% 55% at 55% -5%, rgba(220,100,10,.65) 0%, rgba(160,60,0,.35) 35%, transparent 65%),
     radial-gradient(ellipse 60% 50% at 5% 35%, rgba(180,70,0,.2) 0%, transparent 55%),
+    radial-gradient(ellipse 70% 40% at 50% 60%, rgba(160,60,0,.18) 0%, transparent 60%),
     radial-gradient(ellipse 55% 40% at 95% 75%, rgba(140,50,0,.15) 0%, transparent 55%);
 }
 #app { background: transparent; }
@@ -215,6 +216,11 @@ body::before {
   transition: background .2s, border-color .2s;
   position: relative; z-index: 100;
 }
+/* Na home — ciemno-czerwone tło pokrywa cały ekran włącznie z obszarem pod bnav */
+body.view-home {
+  background: #1A0504;
+}
+
 /* Na home — floating nav */
 body.view-home .bnav-item { color: rgba(90,56,40,.45); }
 body.view-home .bnav-item svg { stroke: rgba(90,56,40,.45); }
@@ -330,11 +336,11 @@ body.view-home .bnav-item.active .bnav-icon-wrap { background: rgba(255,255,255,
 
 /* Wrapper — cały ekran (header ukryty na home, więc 100dvh) */
 .hw-wrap {
-  height: 100dvh;
+  min-height: 100dvh;
   display: flex; flex-direction: column;
   -webkit-tap-highlight-color: transparent;
   position: relative;
-  background: linear-gradient(180deg, #6B1A14 0%, #3D0C09 35%, #200706 70%, #150403 100%);
+  background: linear-gradient(180deg, #7A1E17 0%, #5C1210 20%, #3D0C09 45%, #2A0807 70%, #1A0504 100%);
   overflow: hidden;
 }
 
