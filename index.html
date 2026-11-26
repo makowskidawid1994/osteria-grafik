@@ -431,8 +431,10 @@ body.view-home #main-content { background: transparent; }
   padding: 0 20px 10px;
   display: grid;
   grid-template-columns: 1fr 1fr;
+  grid-template-rows: repeat(5, 1fr);
   gap: 7px;
   position: relative; z-index: 1;
+  flex: 1;
 }
 .hw-blocks-label { display: none; }
 
@@ -444,8 +446,8 @@ body.view-home #main-content { background: transparent; }
   align-items: center; justify-content: center;
   gap: 5px;
   padding: 0 10px;
-  background: rgba(255,255,255,.055);
-  border: 1px solid rgba(255,255,255,.09);
+  background: rgba(255,255,255,.07);
+  border: 1px solid rgba(255,255,255,.12);
   border-radius: 12px;
   min-height: 60px;
   -webkit-tap-highlight-color: transparent;
