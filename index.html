@@ -2451,7 +2451,7 @@ function renderHome(mc){
   const row2base = [
     { id:'kitchen', label:'Kuchnia',    icon: qaIcon('<path d="M6 2v20M6 15H2M6 9H2"/><path d="M22 15a6 6 0 0 0-6-6V2"/><path d="M22 15H10"/>') },
     { id:'recipes', label:'Receptury',  icon: qaIcon('<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/><line x1="12" y1="7" x2="12" y2="13"/><line x1="9" y1="10" x2="15" y2="10"/>') },
-    { id:'clock',   label: active ? 'Zakończ' : 'Rozpocznij', icon: active ? qaIcon('<rect x="6" y="6" width="12" height="12" rx="2" fill="rgba(255,255,255,.9)" stroke="none"/>') : qaIcon('<polygon points="8 6 20 12 8 18 8 6" fill="rgba(255,255,255,.9)" stroke="none"/>'), accent: active ? 'accent-red' : 'accent-green' },
+    { id:'clock',   label: active ? 'Zakończ' : 'Rozpocznij pracę', icon: active ? qaIcon('<rect x="6" y="6" width="12" height="12" rx="2" fill="rgba(255,255,255,.9)" stroke="none"/>') : qaIcon('<polygon points="8 6 20 12 8 18 8 6" fill="rgba(255,255,255,.9)" stroke="none"/>'), accent: active ? 'accent-red' : 'accent-green' },
   ];
   if(isOwnerOrMgr){
     row2base.push({ id:'panel', label:'Panel', icon: qaIcon('<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>') });
