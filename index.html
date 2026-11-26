@@ -2015,6 +2015,12 @@ function goHome(){showView('home');}
 
 // Obsługa przycisku wstecz przeglądarki
 window.addEventListener('popstate',e=>{
+  // Na iOS klawiatura może wywołać popstate — ignoruj jeśli formularz rozliczeń jest otwarty
+  const form = document.getElementById('settlement-form-wrap');
+  if(form && form.style.display !== 'none') {
+    history.pushState({view:'settlements'},'','#settlements');
+    return;
+  }
   const v=e.state?.view||'home';
   showView(v, false);
 });
@@ -3787,7 +3793,10 @@ function renderSettlementsUI(mc, rows){
       <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>Wróć
     </button>
     <div class="page-bar-title">Rozliczenia</div>
-    <button class="btn-primary btn-sm" onclick="openSettlementForm()">+ Dodaj</button>
+    <button onclick="openSettlementForm()" style="display:flex;align-items:center;gap:6px;padding:7px 14px;background:var(--brand);border:none;border-radius:8px;color:#fff;font-size:13px;font-weight:700;cursor:pointer;font-family:var(--font)">
+      <svg viewBox="0 0 24 24" style="width:15px;height:15px;stroke:#fff;fill:none;stroke-width:2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      Dodaj
+    </button>
   </div>
 
   <div style="padding:16px;padding-bottom:120px">
@@ -3936,7 +3945,11 @@ async function saveSettlement(){
   try{
     const date = document.getElementById('sf-date')?.value;
     const waiter = document.getElementById('sf-waiter')?.value?.trim();
-    if(!date||!waiter){ alert('Podaj datę i kelnera.'); return; }
+    if(!date||!waiter){
+      if(btn){ btn.disabled=false; btn.textContent='Zapisz rozliczenie'; }
+      showToast('Podaj datę i kelnera');
+      return;
+    }
 
     // Upload zdjęcia do Supabase Storage
     let photoUrl = null;
@@ -3987,12 +4000,15 @@ async function saveSettlement(){
     });
     if(!res.ok) throw new Error(await res.text());
 
-    // Odśwież listę
+    // Odśwież listę — zostań w widoku settlements
+    showToast('Rozliczenie zapisano ✓');
+    currentView = 'settlements';
     const mc = document.getElementById('main-content');
-    await renderSettlements(mc);
+    if(mc) await renderSettlements(mc);
 
   }catch(e){
-    alert('Błąd zapisu: '+e.message);
+    console.error('saveSettlement error', e);
+    showToast('Błąd zapisu: '+e.message);
     if(btn){ btn.disabled=false; btn.textContent='Zapisz rozliczenie'; }
   }
 }
