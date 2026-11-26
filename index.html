@@ -582,6 +582,40 @@ body.view-home .bnav-item.active .bnav-icon-wrap { background: rgba(255,255,255,
 .hb-row-title { color: #fff !important; }
 .hb-row-arrow svg { stroke: rgba(255,255,255,.3) !important; }
 
+/* ── Karta Dzisiaj — jak Revolut banner ── */
+.hw-today-card {
+  position: relative; z-index: 1;
+  margin: 16px 20px 0;
+  border-radius: 20px;
+  background: rgba(255,255,255,.1);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  padding: 18px 20px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: background .15s;
+  opacity: 0; animation: fadeIn .4s ease .2s forwards;
+}
+.hw-today-card:active { background: rgba(255,255,255,.17); }
+.hw-today-label {
+  font-size: 11px; font-weight: 600; color: rgba(255,255,255,.5);
+  letter-spacing: .6px; text-transform: uppercase; margin-bottom: 6px;
+}
+.hw-today-count {
+  font-size: 36px; font-weight: 800; color: #fff; letter-spacing: -1.5px; line-height: 1;
+}
+.hw-today-count span { font-size: 18px; font-weight: 500; color: rgba(255,255,255,.6); }
+.hw-today-names {
+  font-size: 14px; color: rgba(255,255,255,.8); margin-top: 6px; font-weight: 500;
+}
+.hw-today-more {
+  display: inline-block; background: rgba(255,255,255,.18);
+  border-radius: 8px; padding: 1px 7px; font-size: 12px;
+}
+.hw-today-sub {
+  font-size: 12px; color: rgba(255,255,255,.4); margin-top: 4px;
+}
+
 /* ── Chat FAB — zawsze widoczny ── */
 .chat-fab {
   position: fixed; right: 18px; z-index: 200;
@@ -2222,7 +2256,7 @@ function renderHome(mc){
       </div>
     </div>
 
-    <!-- Blok zegara — tylko gdy pracuje, widoczny pod hero -->
+    <!-- Blok zegara — tylko gdy pracuje -->
     ${active ? `
     <div class="hw-clock-block working" onclick="hbTap(this,'clock')">
       <span class="hw-clock-pulse"></span>
@@ -2238,7 +2272,38 @@ function renderHome(mc){
       <div class="hb-ripple-wrap"></div>
     </div>` : ''}
 
-    <!-- ═══ MENU — wszystko na jednym tle ═══ -->
+    <!-- ═══ KARTA DZISIAJ — jak Revolut banner ═══ -->
+    ${(()=>{
+      const nowWorking = workSessions.filter(s=>!s.clock_out);
+      const todayShifts = shifts.filter(s=>s.date===tod);
+      const names = nowWorking.slice(0,3).map(s=>s.employees?.name?.split(' ')[0]||'?').join(', ');
+      const moreCount = nowWorking.length > 3 ? `+${nowWorking.length-3}` : '';
+      if(isOwnerOrMgr && nowWorking.length > 0) return `
+      <div class="hw-today-card" onclick="hbTap(this,'clock')">
+        <div class="hw-today-label">Teraz w pracy</div>
+        <div class="hw-today-count">${nowWorking.length} <span>os.</span></div>
+        <div class="hw-today-names">${names}${moreCount ? ` <span class="hw-today-more">${moreCount}</span>` : ''}</div>
+        <div class="hw-today-sub">grafik dziś: ${todayShifts.length} zmian</div>
+      </div>`;
+      if(isOwnerOrMgr) return `
+      <div class="hw-today-card" onclick="hbTap(this,'sched')">
+        <div class="hw-today-label">Dzisiaj</div>
+        <div class="hw-today-count">${todayShifts.length} <span>zmian</span></div>
+        <div class="hw-today-names">${todayShifts.slice(0,3).map(s=>employees.find(e=>e.id===s.employee_id)?.name?.split(' ')[0]||'?').join(', ')||'Brak zaplanowanych'}</div>
+        <div class="hw-today-sub">nikt nie jest teraz w pracy</div>
+      </div>`;
+      // dla pracownika — jego zmiana dziś
+      if(myShiftToday) return `
+      <div class="hw-today-card" onclick="hbTap(this,'clock')">
+        <div class="hw-today-label">Twoja zmiana</div>
+        <div class="hw-today-count">${(myShiftToday.start_time||'').slice(0,5)} <span>– ${(myShiftToday.end_time||'').slice(0,5)}</span></div>
+        <div class="hw-today-names">${active ? 'Zmiana w toku' : 'Naciśnij Zacznij gdy jesteś gotowy'}</div>
+        <div class="hw-today-sub">${dayNames[todayDt.getDay()]}, ${todayDt.getDate()} ${monthNames2[todayDt.getMonth()]}</div>
+      </div>`;
+      return '';
+    })()}
+
+    <!-- ═══ MENU ═══ -->
     <div class="hw-body">
       <div class="hw-blocks">
         ${rows.map(rowHTML).join('')}
