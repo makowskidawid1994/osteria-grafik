@@ -228,12 +228,9 @@ body.view-home .bnav-item.active { color: #8B1A2E; }
 body.view-home .bnav-item.active svg { stroke: #8B1A2E; }
 body.view-home .bnav-item.active .bnav-icon-wrap { background: rgba(139,26,46,.1); }
 
-/* Na home — header przezroczysty, zlewa się z tłem */
+/* Na home — header ukryty, hw-wrap ma własny topbar */
 body.view-home .header {
-  background: transparent;
-  border-bottom: 1px solid transparent;
-  backdrop-filter: none;
-  -webkit-backdrop-filter: none;
+  display: none;
 }
 body.view-home .header-brand { color: rgba(255,255,255,.95); }
 body.view-home .header-brand em { color: rgba(255,255,255,.5); }
