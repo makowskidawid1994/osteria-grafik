@@ -16,24 +16,24 @@
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
 :root {
-  --brand: #7B1D2E;
-  --brand-dark: #5C1420;
-  --brand-light: #9B2D42;
-  --brand-soft: rgba(123,29,46,.12);
-  --brand-mid: rgba(123,29,46,.2);
-  --accent: #9B2D42;
-  --accent-hover: #7B1D2E;
-  --accent-soft: rgba(123,29,46,.1);
+  --brand: #C0392B;
+  --brand-dark: #96281B;
+  --brand-light: #D44234;
+  --brand-soft: rgba(192,57,43,.12);
+  --brand-mid: rgba(192,57,43,.2);
+  --accent: #C0392B;
+  --accent-hover: #96281B;
+  --accent-soft: rgba(192,57,43,.1);
   /* Ciemne tło aplikacji */
-  --bg: #1A0810;
-  --bg-card: #2A1018;
-  --bg-card2: #221020;
-  --surface: #2A1018;
+  --bg: #111111;
+  --bg-card: #1C1C1C;
+  --bg-card2: #181818;
+  --surface: #1C1C1C;
   --border: rgba(255,255,255,.1);
   --border-2: rgba(255,255,255,.07);
-  --text: #F5E8EC;
-  --text-2: #C9A0AE;
-  --text-3: #8A5A6A;
+  --text: #FFFFFF;
+  --text-2: #A0A0A0;
+  --text-3: #666666;
   --danger: #F87171;
   --danger-bg: rgba(220,38,38,.15);
   --warn: #FBBF24;
@@ -3818,9 +3818,9 @@ function renderSettlementsUI(mc, rows){
 
     <!-- LISTA ROZLICZEŃ -->
     ${rows.length>0?`<div style="padding:24px 20px 10px;font-size:12px;font-weight:700;color:rgba(255,255,255,.3);letter-spacing:.8px">OSTATNIE ROZLICZENIA</div>`:''}
-    <div id="settlements-list" style="margin:0 20px;border-radius:18px;overflow:hidden;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07)">
+    <div id="settlements-list" style="margin:0 20px;border-radius:18px;overflow:hidden;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);flex:1">
       ${rows.length===0?
-        `<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 24px;gap:14px">
+        `<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 24px;gap:14px;min-height:280px">
           <svg viewBox="0 0 24 24" style="width:40px;height:40px;stroke:rgba(255,255,255,.18);fill:none;stroke-width:1.5"><rect x="2" y="6" width="20" height="13" rx="2.5"/><path d="M2 11h20"/><path d="M6 15h4M15 15h3"/></svg>
           <div style="font-size:17px;color:rgba(255,255,255,.35);font-weight:600">Brak rozliczeń</div>
           <div style="font-size:14px;color:rgba(255,255,255,.25)">Kliknij <strong style="color:var(--brand)">+ Dodaj</strong></div>
