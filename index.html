@@ -2019,9 +2019,8 @@ function goHome(){showView('home');}
 
 // Obsługa przycisku wstecz przeglądarki
 window.addEventListener('popstate',e=>{
-  // Na iOS klawiatura może wywołać popstate — ignoruj jeśli formularz rozliczeń jest otwarty
-  const form = document.getElementById('settlement-form-wrap');
-  if(form && form.style.display !== 'none') {
+  // Na iOS scroll/klawiatura mogą wywołać popstate — ignoruj gdy jesteśmy w settlements
+  if(currentView==='settlements'){
     history.pushState({view:'settlements'},'','#settlements');
     return;
   }
@@ -3797,22 +3796,24 @@ function renderSettlementsUI(mc, rows){
       <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>Wróć
     </button>
     <div class="page-bar-title">Rozliczenia</div>
-    <button onclick="openSettlementForm()" style="display:flex;align-items:center;gap:6px;padding:7px 14px;background:var(--brand);border:none;border-radius:8px;color:#fff;font-size:13px;font-weight:700;cursor:pointer;font-family:var(--font)">
-      <svg viewBox="0 0 24 24" style="width:15px;height:15px;stroke:#fff;fill:none;stroke-width:2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+    <button onclick="openSettlementForm()" style="display:flex;align-items:center;gap:6px;padding:8px 16px;background:var(--brand);border:none;border-radius:10px;color:#fff;font-size:13px;font-weight:700;cursor:pointer;font-family:var(--font);letter-spacing:.2px">
+      <svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:#fff;fill:none;stroke-width:2.8"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
       Dodaj
     </button>
   </div>
 
-  <div style="padding:16px;padding-bottom:120px">
+  <div style="padding:20px 16px;padding-bottom:120px">
 
     ${missing.length>0?`
-    <div style="background:rgba(251,191,36,.1);border:1px solid rgba(251,191,36,.3);border-radius:12px;padding:12px 14px;margin-bottom:16px">
-      <div style="font-size:12px;font-weight:700;color:#FBBF24;margin-bottom:4px">⚠ Brakujące rozliczenia</div>
-      ${missing.map(d=>`<div style="font-size:12px;color:var(--text-2);padding:2px 0">— ${fmtDatePL(d)}</div>`).join('')}
+    <div style="border-radius:14px;padding:16px 18px;margin-bottom:20px;border-left:3px solid #FBBF24;background:rgba(251,191,36,.07)">
+      <div style="font-size:11px;font-weight:700;color:#FBBF24;letter-spacing:.6px;text-transform:uppercase;margin-bottom:10px">Brak rozliczenia</div>
+      <div style="display:flex;flex-direction:column;gap:6px">
+        ${missing.map(d=>`<div style="display:flex;align-items:center;gap:10px"><span style="width:5px;height:5px;border-radius:50%;background:#FBBF24;flex-shrink:0"></span><span style="font-size:14px;color:var(--text-2)">${fmtDatePL(d)}</span></div>`).join('')}
+      </div>
     </div>`:''}
 
     <!-- FORMULARZ (ukryty domyślnie) -->
-    <div id="settlement-form-wrap" style="display:none;background:var(--bg-card);border:1px solid var(--border);border-radius:16px;padding:16px;margin-bottom:20px">
+    <div id="settlement-form-wrap" style="display:none;background:var(--bg-card);border:1px solid var(--border);border-radius:16px;padding:20px;margin-bottom:24px">
       <div style="font-size:15px;font-weight:700;color:var(--text);margin-bottom:14px">Nowe rozliczenie</div>
 
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
@@ -3896,24 +3897,24 @@ function settlementCard(r){
   const diffColor = diff===null ? 'var(--text-3)' : Math.abs(diff)<1 ? 'var(--green)' : diff>0 ? '#FBBF24' : 'var(--danger)';
   const diffLabel = diff===null ? '' : `${diff>=0?'+':''}${diff.toFixed(2)} zł`;
   const verifiedBadge = r.verified
-    ? `<span style="font-size:10px;padding:2px 7px;border-radius:4px;background:var(--green-bg);color:var(--green);font-weight:700">✓ OK</span>`
-    : `<span style="font-size:10px;padding:2px 7px;border-radius:4px;background:rgba(251,191,36,.12);color:#FBBF24;font-weight:700">Do weryfik.</span>`;
+    ? `<span style="font-size:11px;padding:4px 10px;border-radius:6px;background:var(--green-bg);color:var(--green);font-weight:700;flex-shrink:0">✓ OK</span>`
+    : `<span style="font-size:11px;padding:4px 10px;border-radius:6px;background:rgba(251,191,36,.12);color:#FBBF24;font-weight:700;flex-shrink:0">Weryfikacja</span>`;
 
-  return `<div style="background:var(--bg-card);border:1px solid var(--border);border-radius:14px;padding:14px 16px;margin-bottom:10px;cursor:pointer" onclick="openSettlementDetail('${r.id}')">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+  return `<div style="background:var(--bg-card);border:1px solid var(--border);border-radius:16px;padding:18px 20px;margin-bottom:12px;cursor:pointer;transition:opacity .15s" onclick="openSettlementDetail('${r.id}')">
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px">
       <div>
-        <div style="font-size:14px;font-weight:700;color:var(--text)">${r.waiter_name}</div>
-        <div style="font-size:11px;color:var(--text-3);margin-top:1px">${fmtDatePL(r.date)}</div>
+        <div style="font-size:17px;font-weight:700;color:var(--text);letter-spacing:-.2px">${r.waiter_name}</div>
+        <div style="font-size:13px;color:var(--text-3);margin-top:3px">${fmtDatePL(r.date)}</div>
       </div>
       ${verifiedBadge}
     </div>
-    <div style="display:flex;gap:6px;flex-wrap:wrap">
-      ${r.field_c!=null?`<span style="font-size:11px;background:var(--bg);border:1px solid var(--border-2);border-radius:5px;padding:3px 7px;color:var(--text-2)">Utarg: <strong style="color:var(--text)">${parseFloat(r.field_c).toFixed(2)} zł</strong></span>`:''}
-      ${r.field_j!=null?`<span style="font-size:11px;background:var(--bg);border:1px solid var(--border-2);border-radius:5px;padding:3px 7px;color:var(--text-2)">Terminal: <strong style="color:var(--text)">${parseFloat(r.field_j).toFixed(2)} zł</strong></span>`:''}
-      ${diff!==null?`<span style="font-size:11px;background:var(--bg);border:1px solid var(--border-2);border-radius:5px;padding:3px 7px;color:${diffColor}">Różnica: <strong>${diffLabel}</strong></span>`:''}
-      ${r.photo_url?`<span style="font-size:11px;background:var(--bg);border:1px solid var(--border-2);border-radius:5px;padding:3px 7px;color:var(--text-3)">📷 foto</span>`:''}
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      ${r.field_c!=null?`<div style="background:var(--bg);border-radius:10px;padding:11px 14px"><div style="font-size:11px;color:var(--text-3);margin-bottom:3px">Utarg</div><div style="font-size:16px;font-weight:700;color:var(--text)">${parseFloat(r.field_c).toFixed(2)} <span style="font-size:12px;font-weight:400">zł</span></div></div>`:''}
+      ${r.field_j!=null?`<div style="background:var(--bg);border-radius:10px;padding:11px 14px"><div style="font-size:11px;color:var(--text-3);margin-bottom:3px">Terminal</div><div style="font-size:16px;font-weight:700;color:var(--text)">${parseFloat(r.field_j).toFixed(2)} <span style="font-size:12px;font-weight:400">zł</span></div></div>`:''}
+      ${diff!==null?`<div style="background:var(--bg);border-radius:10px;padding:11px 14px"><div style="font-size:11px;color:var(--text-3);margin-bottom:3px">Różnica</div><div style="font-size:16px;font-weight:700;color:${diffColor}">${diffLabel}</div></div>`:''}
+      ${r.photo_url?`<div style="background:var(--bg);border-radius:10px;padding:11px 14px;display:flex;align-items:center;gap:8px"><svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:var(--text-3);fill:none;stroke-width:2;flex-shrink:0"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg><span style="font-size:12px;color:var(--text-3)">Zdjęcie</span></div>`:''}
     </div>
-    ${r.comment?`<div style="font-size:12px;color:var(--text-3);margin-top:8px;font-style:italic">${r.comment}</div>`:''}
+    ${r.comment?`<div style="font-size:13px;color:var(--text-3);margin-top:12px;padding-top:12px;border-top:1px solid var(--border)">${r.comment}</div>`:''}
   </div>`;
 }
 
