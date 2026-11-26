@@ -6636,10 +6636,28 @@ function toggleAvatarMenu(e){
   });
 })();
 
-// PWA — rejestracja service workera
+// PWA — rejestracja service workera z wymuszeniem aktualizacji
 if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw.js').catch(() => {});
+  window.addEventListener('load', async () => {
+    try {
+      const reg = await navigator.serviceWorker.register('/sw.js');
+      // Wymuś sprawdzenie aktualizacji przy każdym starcie
+      reg.update();
+      // Gdy nowy SW czeka — natychmiast go aktywuj (skipWaiting)
+      reg.addEventListener('updatefound', () => {
+        const newSW = reg.installing;
+        newSW?.addEventListener('statechange', () => {
+          if (newSW.state === 'installed' && navigator.serviceWorker.controller) {
+            newSW.postMessage({ type: 'SKIP_WAITING' });
+          }
+        });
+      });
+      // Gdy SW się zmieni — odśwież stronę żeby załadować nową wersję
+      let refreshing = false;
+      navigator.serviceWorker.addEventListener('controllerchange', () => {
+        if (!refreshing) { refreshing = true; window.location.reload(); }
+      });
+    } catch(e) {}
   });
 }
 

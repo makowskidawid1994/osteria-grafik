@@ -33,6 +33,9 @@ self.addEventListener('fetch', e => {
 
 // Obsługa wiadomości z aplikacji (np. powiadomienie o zmianie)
 self.addEventListener('message', e => {
+  if (e.data?.type === 'SKIP_WAITING') {
+    self.skipWaiting();
+  }
   if (e.data?.type === 'SHIFT_NOTIFICATION') {
     const { duration } = e.data;
     const h = Math.floor(duration / 60), m = duration % 60;
