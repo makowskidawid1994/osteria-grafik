@@ -344,8 +344,12 @@ body.view-home .bnav-item.active .bnav-icon-wrap { background: rgba(255,255,255,
   padding: 52px 18px calc(env(safe-area-inset-bottom) + 12px);
   flex: 1;
   display: flex; flex-direction: column;
-  justify-content: space-between;
+  justify-content: flex-start;
   background: transparent;
+}
+.hw-bottom-group {
+  margin-top: auto;
+  display: flex; flex-direction: column; gap: 16px;
 }
 .hw-hero::before {
   content: '';
@@ -431,7 +435,7 @@ body.view-home .bnav-item.active .bnav-icon-wrap { background: rgba(255,255,255,
 /* ── Kółka szybkich akcji — dwa rzędy ── */
 .hw-quick-actions {
   display: flex; flex-direction: column;
-  gap: 16px;
+  gap: 14px;
   margin-top: 0;
   margin-bottom: 0;
   padding: 0 4px;
@@ -2588,6 +2592,8 @@ function renderHome(mc){
       <!-- Status zegarka (compact) -->
       ${statusBar}
 
+      <!-- Stats + kółka razem na dole -->
+      <div class="hw-bottom-group">
       <!-- Live stats card -->
       <div class="hw-stats-card" onclick="hbTap(this,'panel')">
         <div class="hw-stat">
@@ -2621,6 +2627,7 @@ function renderHome(mc){
             </div>`).join('')}
         </div>
       </div>
+      </div><!-- /hw-bottom-group -->
     </div>
 
   </div>`;
