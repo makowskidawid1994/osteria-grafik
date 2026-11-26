@@ -431,74 +431,80 @@ body.view-home #main-content { background: transparent; }
 @keyframes pulse-ring { 0%{transform:scale(1);opacity:.8;} 100%{transform:scale(4);opacity:0;} }
 @keyframes fadeInUp { from{opacity:0;transform:translateY(16px);} to{opacity:1;transform:translateY(0);} }
 
-/* ── Siatka ikon menu (FB/IG style) ── */
+/* ── Lista menu — wiersze pełnej szerokości ── */
 .hw-blocks {
-  padding: 16px 20px 10px;
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 12px;
+  padding: 8px 16px 10px;
+  display: flex; flex-direction: column;
+  gap: 0;
   position: relative; z-index: 1;
 }
 .hw-blocks-label { display: none; }
+.hw-section-label { display: none; }
 
-/* Etykiety sekcji */
-.hw-section-label {
-  font-size: 11px; font-weight: 700;
-  color: rgba(90,56,40,.45);
-  letter-spacing: .6px; text-transform: uppercase;
-  padding: 14px 20px 2px;
-  position: relative; z-index: 1;
-}
-
-/* Kafelek ikony */
+/* Kafelek — poziomy wiersz */
 .hb-row {
   position: relative; overflow: hidden;
   cursor: pointer;
-  display: flex; flex-direction: column;
-  align-items: center; justify-content: center;
-  gap: 8px;
-  padding: 18px 8px 14px;
-  background: rgba(255,255,255,.65);
-  border: 1px solid rgba(139,26,46,.08);
-  border-radius: 18px;
+  display: flex; flex-direction: row;
+  align-items: center;
+  gap: 14px;
+  padding: 13px 14px;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid rgba(139,26,46,.07);
+  border-radius: 0;
   -webkit-tap-highlight-color: transparent;
-  transition: background .12s, transform .1s;
+  transition: background .1s;
   opacity: 0;
-  animation: rowIn .3s cubic-bezier(.4,0,.2,1) forwards;
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
+  animation: rowIn .25s ease forwards;
 }
-.hw-blocks .hb-row:nth-child(1) { animation-delay: .04s; }
-.hw-blocks .hb-row:nth-child(2) { animation-delay: .07s; }
-.hw-blocks .hb-row:nth-child(3) { animation-delay: .10s; }
-.hw-blocks .hb-row:nth-child(4) { animation-delay: .13s; }
-.hw-blocks .hb-row:nth-child(5) { animation-delay: .16s; }
-.hw-blocks .hb-row:nth-child(6) { animation-delay: .19s; }
-.hw-blocks .hb-row:nth-child(7) { animation-delay: .22s; }
-.hw-blocks .hb-row:nth-child(8) { animation-delay: .25s; }
-.hw-blocks .hb-row:nth-child(9) { animation-delay: .28s; }
-.hw-blocks .hb-row:nth-child(10) { animation-delay: .31s; }
-@keyframes rowIn { from{opacity:0;transform:scale(.92);} to{opacity:1;transform:scale(1);} }
-.hb-row:active { background: rgba(139,26,46,.08); transform: scale(.96); }
+.hw-blocks .hb-row:first-child { border-radius: 16px 16px 0 0; }
+.hw-blocks .hb-row:last-child  { border-radius: 0 0 16px 16px; border-bottom: none; }
+.hw-blocks .hb-row:only-child  { border-radius: 16px; border-bottom: none; }
+.hw-blocks .hb-row:nth-child(1) { animation-delay: .03s; }
+.hw-blocks .hb-row:nth-child(2) { animation-delay: .06s; }
+.hw-blocks .hb-row:nth-child(3) { animation-delay: .09s; }
+.hw-blocks .hb-row:nth-child(4) { animation-delay: .12s; }
+.hw-blocks .hb-row:nth-child(5) { animation-delay: .15s; }
+.hw-blocks .hb-row:nth-child(6) { animation-delay: .18s; }
+.hw-blocks .hb-row:nth-child(7) { animation-delay: .21s; }
+.hw-blocks .hb-row:nth-child(8) { animation-delay: .24s; }
+.hw-blocks .hb-row:nth-child(9) { animation-delay: .27s; }
+.hw-blocks .hb-row:nth-child(10){ animation-delay: .30s; }
+@keyframes rowIn { from{opacity:0;transform:translateX(-6px);} to{opacity:1;transform:none;} }
+.hb-row:active { background: rgba(139,26,46,.05); }
 
-/* Ikona — okrągła chmurka */
+/* Ikona — kwadrat zaokrąglony */
 .hb-row-icon {
   display: flex; align-items: center; justify-content: center;
-  width: 52px; height: 52px; border-radius: 50%;
-  background: rgba(139,26,46,.09);
+  width: 44px; height: 44px; border-radius: 12px;
+  background: rgba(139,26,46,.08);
   flex-shrink: 0;
 }
 .hb-row-icon svg { stroke: #8B1A2E !important; }
-.hb-row-body { display: none; }
-.hb-row-arrow { display: none; }
-/* Etykieta pod ikoną */
-.hb-row-label {
-  display: block;
-  font-size: 12px; font-weight: 600; color: #3A1A14;
-  letter-spacing: -.1px; line-height: 1.2;
-  text-align: center;
+
+/* Treść środkowa */
+.hb-row-body {
+  display: flex; flex-direction: column; gap: 1px;
+  flex: 1; min-width: 0;
 }
-.hb-row-title { display: none; }
+
+/* Etykieta główna */
+.hb-row-label {
+  display: none; /* zastąpiona przez hb-row-title */
+}
+.hb-row-title {
+  display: block;
+  font-size: 15px; font-weight: 600; color: #1A0A08;
+  letter-spacing: -.2px; line-height: 1.2;
+}
+
+/* Strzałka */
+.hb-row-arrow {
+  display: flex; align-items: center; flex-shrink: 0;
+  color: rgba(139,26,46,.3);
+}
+.hb-row-arrow svg { width: 16px; height: 16px; stroke: rgba(139,26,46,.3); }
 
 /* Badge */
 .hb-badge {
@@ -2100,7 +2106,10 @@ function renderHome(mc){
     <div class="hb-row" data-id="${b.id}" onclick="hbTap(this,'${b.id}')">
       ${b.badge?`<span class="hb-badge">${b.badge}</span>`:''}
       <div class="hb-row-icon">${b.icon}</div>
-      <div class="hb-row-label">${b.label}</div>
+      <div class="hb-row-body">
+        <span class="hb-row-title">${b.label}</span>
+      </div>
+      <div class="hb-row-arrow"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></div>
       <div class="hb-ripple-wrap"></div>
     </div>`;
 
@@ -2126,12 +2135,6 @@ function renderHome(mc){
   const monthNames2 = ['stycznia','lutego','marca','kwietnia','maja','czerwca','lipca','sierpnia','września','października','listopada','grudnia'];
   const dateStr = `${dayNames[todayDt.getDay()]}, ${todayDt.getDate()} ${monthNames2[todayDt.getMonth()]}`;
 
-  /* Podział menu na sekcje (tylko jeśli manager) */
-  const baseRows = rows.filter(r=>['sched','board','events','avail'].includes(r.id));
-  const mgmtRows = rows.filter(r=>['emps','finance','settlements','tardiness','dash'].includes(r.id));
-  const kitchenRows = rows.filter(r=>r.id==='kitchen');
-  const allBaseRows = [...kitchenRows, ...baseRows];
-
   mc.innerHTML=`
   <div class="hw-wrap">
     <div class="hw-header">
@@ -2154,13 +2157,12 @@ function renderHome(mc){
       <div class="hb-ripple-wrap"></div>
     </div>
 
-    ${mgmtRows.length>0?`<div class="hw-section-label">Zarządzanie</div>
-    <div class="hw-blocks hw-blocks-mgmt">
-      ${mgmtRows.map(rowHTML).join('')}
-    </div>
-    <div class="hw-section-label">Operacje</div>`:''}
-    <div class="hw-blocks">
-      ${allBaseRows.map(rowHTML).join('')}
+    <div style="padding:0 16px 20px;">
+      <div style="background:#FDFAF6;border:1px solid rgba(139,26,46,.09);border-radius:18px;overflow:hidden;">
+        <div class="hw-blocks" style="padding:0;gap:0;">
+          ${rows.map(rowHTML).join('')}
+        </div>
+      </div>
     </div>
   </div>`;
 
