@@ -472,70 +472,49 @@ body.view-home #main-content { background: transparent; }
   padding: 8px 4px 6px;
 }
 
+/* Menu rows — styl Revolut/Linear: kompaktowe, ikona+label, zero ramek */
 .hb-row {
   position: relative; overflow: hidden;
-  border-radius: 0;
-  height: 76px;
+  height: 54px;
   cursor: pointer;
   display: flex; flex-direction: row;
-  align-items: center; justify-content: space-between;
+  align-items: center;
   padding: 0 16px;
-  background: rgba(255,255,255,.025);
+  background: transparent;
   border: none;
-  border-bottom: 1px solid rgba(255,255,255,.07);
+  border-bottom: 1px solid rgba(255,255,255,.05);
   width: 100%;
   -webkit-tap-highlight-color: transparent;
-  transition: background .1s ease;
-  will-change: background;
+  transition: background .12s;
   opacity: 0;
-  animation: rowIn .3s cubic-bezier(.4,0,.2,1) forwards;
+  animation: rowIn .25s cubic-bezier(.4,0,.2,1) forwards;
 }
 .hb-row:last-child { border-bottom: none; }
-.hw-blocks .hb-row:nth-child(1) { animation-delay: .15s; }
-.hw-blocks .hb-row:nth-child(2) { animation-delay: .19s; }
-.hw-blocks .hb-row:nth-child(3) { animation-delay: .23s; }
-.hw-blocks .hb-row:nth-child(4) { animation-delay: .27s; }
-.hw-blocks .hb-row:nth-child(5) { animation-delay: .31s; }
-.hw-blocks .hb-row:nth-child(6) { animation-delay: .35s; }
-.hw-blocks .hb-row:nth-child(7) { animation-delay: .39s; }
-@keyframes rowIn { from{opacity:0;transform:translateX(-6px);} to{opacity:1;transform:translateX(0);} }
-.hb-row:active { background: rgba(255,255,255,.08); border-radius: 10px; border-color: transparent; }
-@media (hover: hover) {
-  .hb-row:hover { background: rgba(255,255,255,.04); border-radius: 10px; }
-  .hb-row:hover .hb-row-arrow { color: rgba(255,255,255,.5); transform: translateX(2px); }
-}
-.hb-row-arrow { transition: color .15s, transform .15s; }
+.hw-blocks .hb-row:nth-child(1) { animation-delay: .05s; }
+.hw-blocks .hb-row:nth-child(2) { animation-delay: .08s; }
+.hw-blocks .hb-row:nth-child(3) { animation-delay: .11s; }
+.hw-blocks .hb-row:nth-child(4) { animation-delay: .14s; }
+.hw-blocks .hb-row:nth-child(5) { animation-delay: .17s; }
+.hw-blocks .hb-row:nth-child(6) { animation-delay: .20s; }
+.hw-blocks .hb-row:nth-child(7) { animation-delay: .23s; }
+@keyframes rowIn { from{opacity:0;transform:translateY(4px);} to{opacity:1;transform:translateY(0);} }
+.hb-row:active { background: rgba(255,255,255,.07); }
 
-/* Ikona */
 .hb-row-icon {
   display: flex; align-items: center; justify-content: center;
-  width: 48px; height: 48px; border-radius: 14px;
-  font-size: 22px; flex-shrink: 0;
-  margin-right: 16px;
+  width: 34px; height: 34px; border-radius: 9px;
+  flex-shrink: 0; margin-right: 13px;
+  background: rgba(255,255,255,.09);
 }
-.hb-row-icon { background: rgba(255,255,255,.07); }
-.hb-row[data-id="sched"]       .hb-row-icon { background: rgba(255,255,255,.07); }
-.hb-row[data-id="kitchen"]     .hb-row-icon { background: rgba(255,255,255,.07); }
-.hb-row[data-id="board"]       .hb-row-icon { background: rgba(255,255,255,.07); }
-.hb-row[data-id="events"]      .hb-row-icon { background: rgba(255,255,255,.07); }
-.hb-row[data-id="avail"]       .hb-row-icon { background: rgba(255,255,255,.07); }
-.hb-row[data-id="emps"]        .hb-row-icon { background: rgba(255,255,255,.07); }
-.hb-row[data-id="finance"]     .hb-row-icon { background: rgba(255,255,255,.07); }
-.hb-row[data-id="settlements"] .hb-row-icon { background: rgba(255,255,255,.07); }
-.hb-row[data-id="tardiness"]   .hb-row-icon { background: rgba(255,255,255,.07); }
-.hb-row[data-id="dash"]        .hb-row-icon { background: rgba(255,255,255,.07); }
-
 .hb-row-body { flex: 1; min-width: 0; }
 .hb-row-label { display: none; }
 .hb-row-title {
-  font-size: 19px; font-weight: 600; color: rgba(255,255,255,.92);
-  letter-spacing: -.3px; line-height: 1;
+  font-size: 15px; font-weight: 600; color: rgba(255,255,255,.9);
+  letter-spacing: -.1px;
   font-family: 'Nunito','Poppins',sans-serif;
 }
 .hb-row-arrow {
-  display: flex; align-items: center; justify-content: center;
-  color: rgba(255,255,255,.25); font-size: 16px; flex-shrink: 0;
-  margin-left: 8px;
+  color: rgba(255,255,255,.18); font-size: 20px; flex-shrink: 0; margin-left: 4px; line-height: 1;
 }
 
 /* Badge */
@@ -2148,7 +2127,7 @@ function renderHome(mc){
       <div class="hb-ripple-wrap"></div>
     </div>`;
 
-  const ic=(p)=>`<svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.85)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">${p}</svg>`;
+  const ic=(p)=>`<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.8)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">${p}</svg>`;
   const rows=[];
   rows.push({id:'sched',   label:'Grafik',      icon:ic('<rect x="3" y="4" width="18" height="18" rx="2.5"/><path d="M16 2v4M8 2v4M3 10h18"/>')});
   if(isOwnerOrMgr||isKitchen)
@@ -3796,7 +3775,7 @@ function renderSettlementsUI(mc, rows){
       <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>Wróć
     </button>
     <div class="page-bar-title">Rozliczenia</div>
-    <button onclick="openSettlementForm()" style="display:flex;align-items:center;gap:6px;padding:8px 16px;background:var(--brand);border:none;border-radius:10px;color:#fff;font-size:13px;font-weight:700;cursor:pointer;font-family:var(--font);letter-spacing:.2px">
+    <button onclick="openSettlementForm()" style="display:flex;align-items:center;gap:6px;padding:8px 16px;background:var(--brand);border:none;border-radius:10px;color:#fff;font-size:13px;font-weight:700;cursor:pointer;font-family:var(--font)">
       <svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:#fff;fill:none;stroke-width:2.8"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
       Dodaj
     </button>
@@ -3805,16 +3784,18 @@ function renderSettlementsUI(mc, rows){
   <div style="padding-bottom:100px">
 
     ${missing.length>0?`
-    <div style="background:rgba(251,191,36,.06);border-bottom:1px solid var(--border)">
-      <div style="padding:12px 16px 8px;font-size:11px;font-weight:700;color:#FBBF24;letter-spacing:.5px">BRAKUJĄCE ROZLICZENIA</div>
-      ${missing.map(d=>`<div style="padding:10px 16px;border-top:1px solid rgba(255,255,255,.04);display:flex;align-items:center;justify-content:space-between">
-        <span style="font-size:14px;color:var(--text)">${fmtDatePL(d)}</span>
-        <span style="font-size:11px;padding:3px 8px;background:rgba(251,191,36,.15);color:#FBBF24;border-radius:5px;font-weight:600">Brak</span>
-      </div>`).join('')}
+    <div style="margin:16px 16px 0;background:rgba(251,191,36,.08);border-radius:14px;padding:14px 16px;display:flex;align-items:center;gap:14px">
+      <div style="width:36px;height:36px;border-radius:50%;background:rgba(251,191,36,.15);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+        <svg viewBox="0 0 24 24" style="width:17px;height:17px;stroke:#FBBF24;fill:none;stroke-width:2.2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      </div>
+      <div>
+        <div style="font-size:14px;font-weight:700;color:rgba(255,255,255,.9)">Brak ${missing.length} ${missing.length===1?'rozliczenia':'rozliczeń'}</div>
+        <div style="font-size:12px;color:var(--text-3);margin-top:2px">${fmtDatePL(missing[missing.length-1])} – ${fmtDatePL(missing[0])}</div>
+      </div>
     </div>`:''}
 
     <!-- FORMULARZ (ukryty domyślnie) -->
-    <div id="settlement-form-wrap" style="display:none;background:var(--bg-card);border-bottom:1px solid var(--border);padding:20px;margin-bottom:0">
+    <div id="settlement-form-wrap" style="display:none;margin:16px 16px 0;background:var(--bg-card);border-radius:16px;padding:20px">
       <div style="font-size:15px;font-weight:700;color:var(--text);margin-bottom:14px">Nowe rozliczenie</div>
 
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
@@ -3866,12 +3847,13 @@ function renderSettlementsUI(mc, rows){
     </div>
 
     <!-- LISTA ROZLICZEŃ -->
-    <div id="settlements-list" style="background:var(--bg-card);min-height:50vh">
+    ${rows.length>0?`<div style="padding:16px 16px 6px;font-size:11px;font-weight:700;color:var(--text-3);letter-spacing:.8px;text-transform:uppercase">Ostatnie rozliczenia</div>`:''}
+    <div id="settlements-list" style="background:var(--bg-card);border-radius:14px;margin:0 16px;overflow:hidden">
       ${rows.length===0?
-        `<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 24px;gap:12px">
-          <svg viewBox="0 0 24 24" style="width:40px;height:40px;stroke:var(--text-3);fill:none;stroke-width:1.5"><rect x="2" y="6" width="20" height="13" rx="2.5"/><path d="M2 11h20"/><path d="M6 15h4M15 15h3"/></svg>
+        `<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:52px 24px;gap:10px">
+          <svg viewBox="0 0 24 24" style="width:32px;height:32px;stroke:var(--text-3);fill:none;stroke-width:1.5"><rect x="2" y="6" width="20" height="13" rx="2.5"/><path d="M2 11h20"/><path d="M6 15h4M15 15h3"/></svg>
           <div style="font-size:15px;color:var(--text-2);font-weight:600">Brak rozliczeń</div>
-          <div style="font-size:13px;color:var(--text-3)">Kliknij <strong style="color:var(--brand)">+ Dodaj</strong> aby dodać pierwsze</div>
+          <div style="font-size:13px;color:var(--text-3)">Kliknij <strong style="color:var(--brand)">+ Dodaj</strong></div>
         </div>`
         : rows.map(r=>settlementCard(r)).join('')
       }
@@ -3902,26 +3884,25 @@ function settlementCard(r){
   const diffColor = diff===null ? 'var(--text-3)' : Math.abs(diff)<1 ? 'var(--green)' : diff>0 ? '#FBBF24' : 'var(--danger)';
   const diffLabel = diff===null ? '' : `${diff>=0?'+':''}${diff.toFixed(2)} zł`;
   const verifiedBadge = r.verified
-    ? `<span style="font-size:11px;padding:4px 10px;border-radius:6px;background:var(--green-bg);color:var(--green);font-weight:700;flex-shrink:0">✓ OK</span>`
-    : `<span style="font-size:11px;padding:4px 10px;border-radius:6px;background:rgba(251,191,36,.12);color:#FBBF24;font-weight:700;flex-shrink:0">Weryfikacja</span>`;
+    ? `<span style="font-size:11px;padding:3px 9px;border-radius:20px;background:rgba(74,222,128,.12);color:#4ade80;font-weight:700;flex-shrink:0;letter-spacing:.2px">OK</span>`
+    : `<span style="font-size:11px;padding:3px 9px;border-radius:20px;background:rgba(251,191,36,.12);color:#FBBF24;font-weight:700;flex-shrink:0;letter-spacing:.2px">Weryfikacja</span>`;
 
-  return `<div style="background:var(--bg-card);border-bottom:1px solid var(--border);padding:16px;cursor:pointer;active:opacity:.7" onclick="openSettlementDetail('${r.id}')">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
-      <div style="display:flex;align-items:center;gap:12px">
-        <div style="width:40px;height:40px;border-radius:50%;background:var(--brand);display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:800;color:#fff;flex-shrink:0">${(r.waiter_name||'?')[0].toUpperCase()}</div>
-        <div>
-          <div style="font-size:15px;font-weight:700;color:var(--text)">${r.waiter_name}</div>
-          <div style="font-size:12px;color:var(--text-3);margin-top:1px">${fmtDatePL(r.date)}</div>
+  const utarg = r.field_c!=null ? parseFloat(r.field_c).toFixed(2) : null;
+  return `<div style="display:flex;align-items:center;padding:14px 16px;border-bottom:1px solid rgba(255,255,255,.05);cursor:pointer;-webkit-tap-highlight-color:transparent;transition:background .1s" onclick="openSettlementDetail('${r.id}')" ontouchstart="this.style.background='rgba(255,255,255,.05)'" ontouchend="this.style.background=''">
+    <div style="width:42px;height:42px;border-radius:50%;background:var(--brand);display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800;color:#fff;flex-shrink:0;margin-right:14px">${(r.waiter_name||'?')[0].toUpperCase()}</div>
+    <div style="flex:1;min-width:0">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:3px">
+        <div style="font-size:15px;font-weight:700;color:var(--text)">${r.waiter_name}</div>
+        ${utarg?`<div style="font-size:15px;font-weight:700;color:var(--text)">${utarg} zł</div>`:''}
+      </div>
+      <div style="display:flex;align-items:center;justify-content:space-between">
+        <div style="font-size:13px;color:var(--text-3)">${fmtDatePL(r.date)}</div>
+        <div style="display:flex;align-items:center;gap:8px">
+          ${diff!==null?`<span style="font-size:12px;font-weight:600;color:${diffColor}">${diffLabel}</span>`:''}
+          ${verifiedBadge}
         </div>
       </div>
-      ${verifiedBadge}
     </div>
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);border-radius:10px;overflow:hidden;margin-left:52px">
-      ${r.field_c!=null?`<div style="background:var(--bg);padding:10px 12px;text-align:center"><div style="font-size:10px;color:var(--text-3);margin-bottom:2px">UTARG</div><div style="font-size:15px;font-weight:700;color:var(--text)">${parseFloat(r.field_c).toFixed(0)}<span style="font-size:10px;font-weight:400"> zł</span></div></div>`:``}
-      ${r.field_j!=null?`<div style="background:var(--bg);padding:10px 12px;text-align:center"><div style="font-size:10px;color:var(--text-3);margin-bottom:2px">TERMINAL</div><div style="font-size:15px;font-weight:700;color:var(--text)">${parseFloat(r.field_j).toFixed(0)}<span style="font-size:10px;font-weight:400"> zł</span></div></div>`:``}
-      ${diff!==null?`<div style="background:var(--bg);padding:10px 12px;text-align:center"><div style="font-size:10px;color:var(--text-3);margin-bottom:2px">RÓŻNICA</div><div style="font-size:15px;font-weight:700;color:${diffColor}">${diffLabel}</div></div>`:``}
-    </div>
-    ${r.comment?`<div style="font-size:12px;color:var(--text-3);margin-top:8px;margin-left:52px">${r.comment}</div>`:''}
   </div>`;
 }
 
