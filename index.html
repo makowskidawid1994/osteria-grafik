@@ -426,25 +426,26 @@ body.view-home #main-content { background: transparent; }
 
 /* ── Grid menu ── */
 .hw-blocks {
-  padding: 4px 24px 24px;
+  padding: 0 16px 16px;
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 8px;
+  gap: 10px;
   position: relative; z-index: 1;
 }
 .hw-blocks-label { display: none; }
 
-/* Kafelki — Linear style: tekst-first, zero ikon, border subtle */
+/* Kafelki */
 .hb-row {
   position: relative; overflow: hidden;
   cursor: pointer;
   display: flex; flex-direction: column;
-  justify-content: flex-end;
-  padding: 14px 16px 13px;
-  background: rgba(255,255,255,.04);
-  border: 1px solid rgba(255,255,255,.07);
-  border-radius: 12px;
-  min-height: 60px;
+  align-items: center; justify-content: center;
+  gap: 10px;
+  padding: 20px 12px;
+  background: rgba(255,255,255,.06);
+  border: 1px solid rgba(255,255,255,.1);
+  border-radius: 16px;
+  min-height: 90px;
   -webkit-tap-highlight-color: transparent;
   transition: background .12s, border-color .12s;
   opacity: 0;
@@ -461,14 +462,17 @@ body.view-home #main-content { background: transparent; }
 .hw-blocks .hb-row:nth-child(9) { animation-delay: .24s; }
 .hw-blocks .hb-row:nth-child(10) { animation-delay: .26s; }
 @keyframes rowIn { from{opacity:0;transform:translateY(6px);} to{opacity:1;transform:translateY(0);} }
-.hb-row:active { background: rgba(255,255,255,.09); border-color: rgba(255,255,255,.14); }
+.hb-row:active { background: rgba(255,255,255,.12); border-color: rgba(255,255,255,.2); }
 
-.hb-row-icon { display: none; }
-.hb-row-body { flex: 1; min-width: 0; }
+.hb-row-icon {
+  display: flex; align-items: center; justify-content: center;
+  opacity: .7;
+}
+.hb-row-body { display: flex; align-items: center; justify-content: center; }
 .hb-row-label { display: none; }
 .hb-row-title {
-  font-size: 15px; font-weight: 500; color: rgba(255,255,255,.85);
-  letter-spacing: -.1px; line-height: 1.2;
+  font-size: 14px; font-weight: 600; color: rgba(255,255,255,.9);
+  letter-spacing: -.1px; line-height: 1.2; text-align: center;
 }
 .hb-row-arrow { display: none; }
 
@@ -2078,7 +2082,6 @@ function renderHome(mc){
       ${b.badge?`<span class="hb-badge">${b.badge}</span>`:''}
       <div class="hb-row-icon">${b.icon}</div>
       <div class="hb-row-body"><div class="hb-row-title">${b.label}</div></div>
-      <div class="hb-row-arrow">›</div>
       <div class="hb-ripple-wrap"></div>
     </div>`;
 
