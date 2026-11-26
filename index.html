@@ -426,59 +426,70 @@ body.view-home #main-content { background: transparent; }
 @keyframes pulse-ring { 0%{transform:scale(1);opacity:.8;} 100%{transform:scale(4);opacity:0;} }
 @keyframes fadeInUp { from{opacity:0;transform:translateY(16px);} to{opacity:1;transform:translateY(0);} }
 
-/* ── Grid menu ── */
+/* ── Lista menu ── */
 .hw-blocks {
-  padding: 0 20px 10px;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-template-rows: repeat(5, 1fr);
-  gap: 7px;
+  padding: 0 0 10px;
+  display: flex; flex-direction: column;
   position: relative; z-index: 1;
   flex: 1;
 }
 .hw-blocks-label { display: none; }
 
-/* Kafelki */
+/* Pozycja listy */
 .hb-row {
   position: relative; overflow: hidden;
   cursor: pointer;
-  display: flex; flex-direction: column;
-  align-items: center; justify-content: center;
-  gap: 5px;
-  padding: 0 10px;
-  background: rgba(255,255,255,.07);
-  border: 1px solid rgba(255,255,255,.12);
-  border-radius: 12px;
-  min-height: 60px;
+  display: flex; flex-direction: row;
+  align-items: center;
+  gap: 16px;
+  padding: 0 24px;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid rgba(255,255,255,.06);
+  border-radius: 0;
+  flex: 1;
   -webkit-tap-highlight-color: transparent;
-  transition: background .12s, border-color .12s;
+  transition: background .12s;
   opacity: 0;
   animation: rowIn .3s cubic-bezier(.4,0,.2,1) forwards;
 }
-.hw-blocks .hb-row:nth-child(1) { animation-delay: .08s; }
-.hw-blocks .hb-row:nth-child(2) { animation-delay: .10s; }
-.hw-blocks .hb-row:nth-child(3) { animation-delay: .12s; }
+.hb-row:first-child { border-top: 1px solid rgba(255,255,255,.06); }
+.hw-blocks .hb-row:nth-child(1) { animation-delay: .05s; }
+.hw-blocks .hb-row:nth-child(2) { animation-delay: .08s; }
+.hw-blocks .hb-row:nth-child(3) { animation-delay: .11s; }
 .hw-blocks .hb-row:nth-child(4) { animation-delay: .14s; }
-.hw-blocks .hb-row:nth-child(5) { animation-delay: .16s; }
-.hw-blocks .hb-row:nth-child(6) { animation-delay: .18s; }
-.hw-blocks .hb-row:nth-child(7) { animation-delay: .20s; }
-.hw-blocks .hb-row:nth-child(8) { animation-delay: .22s; }
-.hw-blocks .hb-row:nth-child(9) { animation-delay: .24s; }
-.hw-blocks .hb-row:nth-child(10) { animation-delay: .26s; }
-@keyframes rowIn { from{opacity:0;transform:translateY(6px);} to{opacity:1;transform:translateY(0);} }
-.hb-row:active { background: rgba(255,255,255,.11); border-color: rgba(255,255,255,.18); }
+.hw-blocks .hb-row:nth-child(5) { animation-delay: .17s; }
+.hw-blocks .hb-row:nth-child(6) { animation-delay: .20s; }
+.hw-blocks .hb-row:nth-child(7) { animation-delay: .23s; }
+.hw-blocks .hb-row:nth-child(8) { animation-delay: .26s; }
+.hw-blocks .hb-row:nth-child(9) { animation-delay: .29s; }
+.hw-blocks .hb-row:nth-child(10) { animation-delay: .32s; }
+@keyframes rowIn { from{opacity:0;transform:translateX(-8px);} to{opacity:1;transform:translateX(0);} }
+.hb-row:active { background: rgba(255,255,255,.06); }
 
 .hb-row-icon {
   display: flex; align-items: center; justify-content: center;
-  opacity: .65;
+  width: 36px; height: 36px; border-radius: 10px;
+  background: rgba(255,255,255,.08);
+  flex-shrink: 0;
 }
-.hb-row-body { display: flex; align-items: center; justify-content: center; }
+.hb-row-icon svg { opacity: .85; }
+.hb-row-body { flex: 1; display: flex; align-items: center; }
 .hb-row-label { display: none; }
 .hb-row-title {
-  font-size: 12px; font-weight: 700; color: rgba(255,255,255,.88);
-  letter-spacing: -.1px; line-height: 1.2; text-align: center;
+  font-size: 17px; font-weight: 600; color: rgba(255,255,255,.92);
+  letter-spacing: -.3px; line-height: 1.2;
 }
-.hb-row-arrow { display: none; }
+.hb-row-arrow {
+  display: flex; align-items: center; justify-content: center;
+  opacity: .25; flex-shrink: 0;
+}
+.hb-row-arrow::after {
+  content: '';
+  display: block; width: 7px; height: 7px;
+  border-right: 1.5px solid #fff; border-top: 1.5px solid #fff;
+  transform: rotate(45deg);
+}
 
 /* Badge */
 .hb-badge {
@@ -2086,6 +2097,7 @@ function renderHome(mc){
       ${b.badge?`<span class="hb-badge">${b.badge}</span>`:''}
       <div class="hb-row-icon">${b.icon}</div>
       <div class="hb-row-body"><div class="hb-row-title">${b.label}</div></div>
+      <div class="hb-row-arrow"></div>
       <div class="hb-ripple-wrap"></div>
     </div>`;
 
