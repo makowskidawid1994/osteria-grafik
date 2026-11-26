@@ -621,13 +621,15 @@ body.view-home .bnav-item.active .bnav-icon-wrap { background: rgba(255,255,255,
 /* ── Banery ── */
 .hw-banners {
   display: flex; flex-direction: column; gap: 12px;
-  padding: 8px 20px 0;
+  padding: 12px 20px 0;
   position: relative; z-index: 1;
+  flex: 1;
 }
 .hw-banner {
   position: relative; overflow: hidden;
   border-radius: 22px;
-  padding: 22px 20px;
+  padding: 28px 24px;
+  flex: 1;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
   display: flex; align-items: center; justify-content: space-between;
@@ -2344,7 +2346,7 @@ function renderHome(mc){
   const nowWorking = workSessions.filter(s=>!s.clock_out);
   const todayShifts = shifts.filter(s=>s.date===tod);
 
-  /* Baner 1: zegar / zmiana */
+  /* Baner 1: zegar / zmiana — zawsze widoczny */
   const banner1 = active ? `
     <div class="hw-banner hw-banner-clock" onclick="hbTap(this,'clock')">
       <span class="hw-clock-pulse"></span>
@@ -2367,7 +2369,17 @@ function renderHome(mc){
       <div class="hw-banner-right-icon">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.8)" stroke-width="1.8"><polygon points="8 6 20 12 8 18 8 6" fill="rgba(255,255,255,.85)" stroke="none"/></svg>
       </div>
-    </div>` : '';
+    </div>` : `
+    <div class="hw-banner hw-banner-shift" onclick="hbTap(this,'clock')">
+      <div class="hw-banner-left">
+        <div class="hw-banner-eyebrow">Ewidencja czasu</div>
+        <div class="hw-banner-big" style="font-size:24px">Brak zmiany</div>
+        <div class="hw-banner-sub">Dziś nie masz zaplanowanej zmiany</div>
+      </div>
+      <div class="hw-banner-right-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.6)" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      </div>
+    </div>`;
 
   /* Baner 2: zespół / grafik — tylko właściciel/manager */
   const banner2 = isOwnerOrMgr ? (() => {
