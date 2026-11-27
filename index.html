@@ -52,9 +52,9 @@ body {
   min-height: 100vh; font-size: 14px; line-height: 1.5;
   -webkit-font-smoothing: antialiased; overscroll-behavior-y: none;
 }
-/* Globalne tło — spójne na wszystkich widokach */
+/* Globalne tło — identyczne z hw-wrap (home) */
 body {
-  background: #1A0504;
+  background: linear-gradient(180deg, #7A1E17 0%, #5C1210 20%, #3D0C09 45%, #2A0807 70%, #1A0504 100%) fixed;
 }
 body::before {
   content: '';
@@ -64,12 +64,7 @@ body::before {
     radial-gradient(ellipse 70% 45% at 10% 40%, rgba(180,60,0,.15) 0%, transparent 55%),
     radial-gradient(ellipse 70% 45% at 90% 60%, rgba(140,40,0,.12) 0%, transparent 55%);
 }
-/* Na podstronach wyłącz pomarańczowy radial u góry — widać przez transparent header */
-body:not(.view-home)::before {
-  background:
-    radial-gradient(ellipse 70% 45% at 10% 40%, rgba(180,60,0,.10) 0%, transparent 55%),
-    radial-gradient(ellipse 70% 45% at 90% 60%, rgba(140,40,0,.08) 0%, transparent 55%);
-}
+/* Substrony mają to samo tło co home — orange radial zostaje */
 #app { background: transparent; }
 
 /* ─── AUTH — pełny ekran ─── */
@@ -217,12 +212,44 @@ body:not(.view-home)::before {
 
 /* ─── App shell ─── */
 #app { display: none; }
+/* Header ukryty — zastąpiony przez .sub-topbar w każdym widoku */
 .header {
   display: none !important;
 }
-/* Brak fixed headera — main content zaczyna się od safe-area-inset-top */
+
+/* Floating topbar — fixed, transparent, zawsze na wierzchu substron */
+#sub-topbar {
+  display: none;
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  padding: calc(env(safe-area-inset-top) + 10px) 20px 10px;
+  background: transparent;
+  align-items: center; justify-content: space-between;
+  pointer-events: none;
+}
+#sub-topbar > * { pointer-events: auto; }
+body:not(.view-home) #sub-topbar { display: flex; }
+.sub-topbar-brand {
+  font-size: 17px; font-weight: 900; letter-spacing: -0.5px;
+  color: rgba(255,255,255,.9); display: flex; align-items: center; gap: 6px;
+}
+.sub-topbar-brand em { font-style: normal; font-weight: 400; color: rgba(255,255,255,.45); font-size: 15px; }
+.sub-topbar-dot { width: 6px; height: 6px; border-radius: 50%; background: #e53935; flex-shrink: 0; }
+.sub-topbar-right { display: flex; align-items: center; gap: 8px; }
+.sub-topbar-role {
+  font-size: 10px; font-weight: 600; color: rgba(255,255,255,.55);
+  background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.1);
+  padding: 3px 9px; border-radius: 20px; letter-spacing: .3px; text-transform: uppercase;
+}
+.sub-topbar-avatar {
+  width: 34px; height: 34px; border-radius: 50%;
+  background: linear-gradient(135deg, #e53935, #b71c1c);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 800; color: #fff; cursor: pointer;
+  border: 2px solid rgba(255,255,255,.2);
+}
+/* Kompensata za floating sub-topbar */
 .main {
-  padding-top: env(safe-area-inset-top);
+  padding-top: calc(env(safe-area-inset-top) + 54px);
 }
 /* Na home — floating nav */
 body.view-home .bnav-item { color: rgba(90,56,40,.45); }
@@ -311,7 +338,7 @@ body.view-home .bnav-item.active .bnav-icon-wrap { background: rgba(255,255,255,
 }
 .bnav-item svg { width: 22px; height: 22px; stroke: rgba(255,255,255,.4); fill: none; stroke-width: 1.8; transition: stroke .2s; }
 
-.main { padding-top: env(safe-area-inset-top); padding-bottom: calc(60px + max(env(safe-area-inset-bottom), 12px) + 20px); min-height: 100dvh; background: transparent; position: relative; z-index: 1; }
+.main { padding-top: calc(env(safe-area-inset-top) + 54px); padding-bottom: calc(60px + max(env(safe-area-inset-bottom), 12px) + 20px); min-height: 100dvh; background: transparent; position: relative; z-index: 1; }
 .main.no-bnav { padding-bottom: 0; }
 /* Chat wypełnia dostępną przestrzeń */
 .main.chat-view { display: flex; flex-direction: column; height: 100dvh; min-height: 0; padding-bottom: 0; overflow: hidden; box-sizing: border-box; }
@@ -1828,6 +1855,14 @@ body:not(.view-home) .chat-fab {
 
 <!-- APP -->
 <div id="app">
+  <!-- Floating topbar — transparent, widoczny na subpages -->
+  <div id="sub-topbar">
+    <div class="sub-topbar-brand"><span class="sub-topbar-dot"></span>Osteria <em>Antonina</em></div>
+    <div class="sub-topbar-right">
+      <span class="sub-topbar-role" id="sub-role"></span>
+      <div class="sub-topbar-avatar" id="sub-avatar" onclick="toggleAvatarMenu(event)"></div>
+    </div>
+  </div>
   <div class="header">
     <div class="header-brand"><span class="header-brand-dot"></span>Osteria <em>Antonina</em></div>
     <span class="role-badge" id="hdr-role"></span>
@@ -2036,6 +2071,12 @@ async function doLogin() {
     // Awatar z inicjałami
     const av=document.getElementById('hdr-avatar');
     if(av){ const ini=displayFirst.slice(0,2).toUpperCase(); av.textContent=ini; av.title='Menu'; }
+    // Sub-topbar (floating, non-home)
+    const roleLabel={owner:'Właściciel',manager:'Manager',kitchen:'Szef kuchni',front:'Sala',employee:'Pracownik'}[currentRole]||currentRole;
+    const subRole=document.getElementById('sub-role');
+    if(subRole) subRole.textContent=roleLabel;
+    const subAv=document.getElementById('sub-avatar');
+    if(subAv) subAv.textContent=displayFirst.slice(0,2).toUpperCase();
     const menuName=document.getElementById('avatar-menu-name');
     if(menuName) menuName.textContent=email;
     if(!canEdit()){
@@ -2252,6 +2293,7 @@ function monthName(m){return['Styczeń','Luty','Marzec','Kwiecień','Maj','Czerw
 
 // Widoki które mają dolny nav
 const VIEWS_WITH_BNAV = new Set(['home','sched','emps','avail','dash','clock','chat']);
+
 
 function showView(v, pushHistory=true){
   const prev=currentView;
