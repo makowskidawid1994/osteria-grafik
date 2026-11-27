@@ -418,7 +418,7 @@ body.view-home .bnav-item.active .bnav-icon-wrap { background: rgba(200,50,35,.2
 }
 .hw-role-pill { display: none; }
 
-/* Home — bąbelki góra, panel dół, bez pustki */
+/* Home — bąbelki góra, zegar środek, panel dół */
 .hw-hero {
   position: relative; z-index: 1;
   flex: 1;
@@ -427,6 +427,23 @@ body.view-home .bnav-item.active .bnav-icon-wrap { background: rgba(200,50,35,.2
   justify-content: space-between;
   gap: 0;
   padding: 16px 16px calc(env(safe-area-inset-bottom) + 76px);
+}
+/* Żywy zegar w centrum */
+.hw-live-clock {
+  display: flex; flex-direction: column;
+  align-items: flex-start; justify-content: center;
+  flex: 1;
+  padding: 0 4px;
+  pointer-events: none;
+}
+.hw-live-clock-time {
+  font-size: 68px; font-weight: 800; color: rgba(255,255,255,.12);
+  letter-spacing: -4px; line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+.hw-live-clock-date {
+  font-size: 14px; font-weight: 400; color: rgba(255,255,255,.12);
+  letter-spacing: .2px; margin-top: 4px;
 }
 .hw-hero::before { content: none; }
 .hw-wrap::before { content: none; }
@@ -480,20 +497,16 @@ body.view-home .bnav-item.active .bnav-icon-wrap { background: rgba(200,50,35,.2
 /* Główna karta — "Teraz w pracy" */
 .hw-admin-main {
   border-radius: 20px;
-  background: linear-gradient(145deg, rgba(255,255,255,.13) 0%, rgba(255,255,255,.07) 100%);
-  border: 1px solid rgba(255,255,255,.18);
-  box-shadow: 0 4px 24px rgba(0,0,0,.25), inset 0 1px 0 rgba(255,255,255,.12);
+  background: rgba(255,255,255,.07);
+  border: none;
+  box-shadow: none;
   padding: 18px 20px 16px;
   cursor: pointer;
   transition: opacity .15s;
   position: relative; overflow: hidden;
 }
 .hw-admin-main:active { opacity: .75; }
-.hw-admin-main::before {
-  content: '';
-  position: absolute; top: 0; left: 0; right: 0; height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,.25), transparent);
-}
+.hw-admin-main::before { display: none; }
 .hw-admin-main-eyebrow {
   font-size: 11px; font-weight: 600; color: rgba(255,255,255,.45);
   letter-spacing: .8px; text-transform: uppercase; margin-bottom: 8px;
@@ -532,8 +545,8 @@ body.view-home .bnav-item.active .bnav-icon-wrap { background: rgba(200,50,35,.2
 }
 .hw-admin-mini {
   border-radius: 16px;
-  background: rgba(255,255,255,.08);
-  border: 1px solid rgba(255,255,255,.1);
+  background: rgba(255,255,255,.07);
+  border: none;
   padding: 14px 16px;
   cursor: pointer;
   transition: opacity .15s;
@@ -3113,7 +3126,7 @@ function renderHome(mc){
     <div class="hw-hero">
 
       <!-- Bąbelki akcji — zaraz pod topbarem -->
-      <div class="hw-quick-actions" style="margin-bottom:8px">
+      <div class="hw-quick-actions" style="margin-bottom:0">
         ${allActions.map((a,i)=>`
           <div class="hw-qa-item" onclick="hbTap(this,'${a.id}')">
             <div class="hw-qa-circle${a.accent?' '+a.accent:''}">${a.icon}</div>
@@ -3121,7 +3134,10 @@ function renderHome(mc){
           </div>`).join('')}
       </div>
 
-      <!-- Panel admina / info pracownika — wypełnia resztę, wyrównany do dołu -->
+      <!-- Żywy zegar — wypełnia środek jak saldo Revolut -->
+      <div class="hw-live-clock" id="hw-live-clock"></div>
+
+      <!-- Panel admina / info pracownika — na dole -->
       ${centerBlock}
 
     </div>
@@ -7704,7 +7720,7 @@ function toggleAvatarMenu(e){
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', async () => {
     try {
-      const reg = await navigator.serviceWorker.register('/sw.js?v=184');
+      const reg = await navigator.serviceWorker.register('/sw.js?v=185');
       reg.update();
       reg.addEventListener('updatefound', () => {
         const newSW = reg.installing;
