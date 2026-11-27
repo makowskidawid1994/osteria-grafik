@@ -377,6 +377,17 @@ body.view-home .bnav-item.active .bnav-icon-wrap { background: rgba(200,50,35,.2
   overflow: hidden;
   overflow-y: auto;
 }
+/* Glow — delikatna poświata w centrum, jak lampa */
+.hw-wrap::after {
+  content: '';
+  position: fixed;
+  top: 20%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 70vw; height: 70vw;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(220,60,30,.35) 0%, transparent 70%);
+  pointer-events: none; z-index: 0;
+}
 
 /* Górny pasek — Revolut style */
 .hw-topbar {
@@ -422,14 +433,14 @@ body.view-home .bnav-item.active .bnav-icon-wrap { background: rgba(200,50,35,.2
 /* Hero info — jak saldo Revolut, bez karty/ramki */
 .hw-center-block {
   display: flex; flex-direction: column; align-items: flex-start;
-  justify-content: flex-start;
+  justify-content: flex-end;
   position: relative; z-index: 1;
   width: 100%;
   background: none;
   border: none;
   border-radius: 0;
-  padding: 8px 4px 4px;
-  flex: 0 0 auto;
+  padding: 0 4px 16px;
+  flex: 1;
   overflow: hidden;
   cursor: pointer;
   transition: opacity .15s;
@@ -439,27 +450,49 @@ body.view-home .bnav-item.active .bnav-icon-wrap { background: rgba(200,50,35,.2
 .hw-center-block::before { content: none; }
 .hw-center-block::after { content: none; }
 .hw-center-label {
-  font-size: 13px; font-weight: 500; color: rgba(255,255,255,.55);
-  letter-spacing: .2px; margin-bottom: 2px;
+  font-size: 13px; font-weight: 500; color: rgba(255,255,255,.45);
+  letter-spacing: .5px; margin-bottom: 6px;
   text-align: left; text-transform: uppercase;
 }
 .hw-center-value {
-  font-size: 56px; font-weight: 800; color: #fff;
-  letter-spacing: -3px; line-height: 1;
+  font-size: 80px; font-weight: 800; color: #fff;
+  letter-spacing: -5px; line-height: .95;
   font-variant-numeric: tabular-nums;
-  margin: 0 0 4px;
+  margin: 0 0 10px;
   text-align: left;
   animation: countUp .5s cubic-bezier(.2,.8,.2,1) .1s both;
 }
 .hw-center-sub {
-  font-size: 15px; font-weight: 500; color: rgba(255,255,255,.75);
-  letter-spacing: -.1px;
+  font-size: 17px; font-weight: 500; color: rgba(255,255,255,.8);
+  letter-spacing: -.2px;
   text-align: left;
   display: flex; align-items: center; gap: 6px; width: 100%;
+  margin-bottom: 4px;
 }
 .hw-center-sub-small {
-  font-size: 12px; color: rgba(255,255,255,.4);
-  margin-top: 4px; text-align: left;
+  font-size: 13px; color: rgba(255,255,255,.4);
+  margin-top: 2px; text-align: left; font-weight: 400;
+}
+/* Chip z pracownikami */
+.hw-worker-chips {
+  display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px;
+}
+.hw-worker-chip {
+  display: flex; align-items: center; gap: 6px;
+  background: rgba(255,255,255,.1);
+  border: 1px solid rgba(255,255,255,.12);
+  border-radius: 20px;
+  padding: 4px 10px 4px 6px;
+  animation: fadeInUp .3s cubic-bezier(.2,.8,.2,1) both;
+}
+.hw-worker-chip-av {
+  width: 22px; height: 22px; border-radius: 50%;
+  background: rgba(255,255,255,.2);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px; font-weight: 700; color: #fff;
+}
+.hw-worker-chip-name {
+  font-size: 13px; font-weight: 500; color: rgba(255,255,255,.85);
 }
 .hw-bottom-group {
   display: flex; flex-direction: column; gap: 16px;
@@ -2931,23 +2964,25 @@ function renderHome(mc){
   /* ── Centrum ekranu — różne dla właściciela i pracownika ── */
   let centerBlock = '';
   if(isOwnerOrMgr){
-    /* Właściciel: kto jest teraz w pracy */
-    const workingNames = nowWorking.slice(0,3).map(s=>s.employees?.name?.split(' ')[0]||'?');
-    const moreCount = nowWorking.length > 3 ? `+${nowWorking.length-3}` : '';
-    const workingLine = nowWorking.length === 0
-      ? 'Nikt nie pracuje'
-      : workingNames.join(', ') + (moreCount ? ', ' + moreCount : '');
+    /* Właściciel: kto jest teraz w pracy — Revolut-style hero */
+    const workingChips = nowWorking.slice(0,4).map((s,i)=>{
+      const name = s.employees?.name?.split(' ')[0]||'?';
+      const av = name.slice(0,1).toUpperCase();
+      return `<div class="hw-worker-chip" style="animation-delay:${.1+i*.05}s">
+        <div class="hw-worker-chip-av">${av}</div>
+        <span class="hw-worker-chip-name">${name}</span>
+      </div>`;
+    }).join('');
+    const moreChip = nowWorking.length > 4
+      ? `<div class="hw-worker-chip"><span class="hw-worker-chip-name">+${nowWorking.length-4}</span></div>` : '';
+    const statusLine = nowWorking.length === 0 ? 'Nikt nie pracuje' : `${nowWorking.length === 1 ? '1 osoba' : nowWorking.length + ' osoby'} na zmianie`;
     centerBlock = `
       <div class="hw-center-block" onclick="hbTap(this,'panel')">
         <div class="hw-center-label">Teraz w pracy</div>
-        <div style="display:flex;align-items:flex-end;justify-content:space-between;width:100%">
-          <div>
-            <div class="hw-center-value">${nowWorking.length}</div>
-            <div class="hw-center-sub">${workingLine}</div>
-            ${todayShifts.length > 0 ? `<div style="font-size:12px;color:rgba(255,255,255,.45);margin-top:4px;font-weight:400">${todayShifts.length} zmian zaplanowanych</div>` : ''}
-          </div>
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.45)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="align-self:flex-end;margin-bottom:4px"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-        </div>
+        <div class="hw-center-value">${nowWorking.length}</div>
+        <div class="hw-center-sub">${statusLine}</div>
+        ${nowWorking.length > 0 ? `<div class="hw-worker-chips">${workingChips}${moreChip}</div>` : ''}
+        ${todayShifts.length > 0 ? `<div class="hw-center-sub-small">${todayShifts.length} zmian zaplanowanych dziś</div>` : ''}
       </div>`;
   } else {
     /* Pracownik: jego zmiana dziś */
@@ -7606,7 +7641,7 @@ function toggleAvatarMenu(e){
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', async () => {
     try {
-      const reg = await navigator.serviceWorker.register('/sw.js?v=181');
+      const reg = await navigator.serviceWorker.register('/sw.js?v=182');
       reg.update();
       reg.addEventListener('updatefound', () => {
         const newSW = reg.installing;
