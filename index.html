@@ -55,7 +55,7 @@ body {
 }
 /* Globalne tło — identyczne z hw-wrap (home) */
 body {
-  background: linear-gradient(180deg, #8B2010 0%, #6B1A0E 30%, #5A1510 60%, #4A1210 100%) fixed;
+  background: #5A1510 fixed;
 }
 /* Wrappery widoków nie mogą zakrywać gradientu body */
 #main-content > div:first-child {
@@ -64,10 +64,7 @@ body {
 body::before {
   content: '';
   position: fixed; inset: 0; pointer-events: none; z-index: 0;
-  background:
-    radial-gradient(ellipse 130% 60% at 50% 0%, rgba(220,100,10,.60) 0%, rgba(160,60,0,.30) 45%, transparent 75%),
-    radial-gradient(ellipse 100% 60% at 0% 100%, rgba(180,50,0,.25) 0%, transparent 60%),
-    radial-gradient(ellipse 100% 60% at 100% 60%, rgba(160,40,0,.18) 0%, transparent 60%);
+  background: radial-gradient(ellipse 150% 80% at 50% 10%, rgba(230,110,10,.65) 0%, rgba(170,60,0,.35) 50%, transparent 80%);
 }
 /* Substrony mają to samo tło co home — orange radial zostaje */
 #app { background: transparent; }
