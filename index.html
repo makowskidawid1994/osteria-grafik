@@ -1698,7 +1698,8 @@ body:not(.view-home) .chat-fab {
   background: linear-gradient(90deg, transparent, rgba(255,255,255,.25), transparent);
 }
 .clock-live-title { font-size: 10px; font-weight: 600; color: var(--text-3); text-transform: uppercase; letter-spacing: .5px; padding: 12px 14px 8px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
-.clock-live-row { display: flex; align-items: center; gap: 10px; padding: 10px 14px; border-bottom: 1px solid var(--border); }
+.clock-live-row { display: flex; align-items: center; gap: 10px; padding: 10px 14px; border-bottom: 1px solid rgba(255,255,255,.07); transition: background .12s; }
+.clock-live-row:hover { background: rgba(255,255,255,.03); }
 .clock-live-row:last-child { border-bottom: none; }
 .clr-name { flex: 1; font-size: 13px; font-weight: 600; }
 .clr-dept { font-size: 11px; color: var(--text-3); margin-top: 1px; }
@@ -1772,7 +1773,8 @@ body:not(.view-home) .chat-fab {
 .chat-time-inline { font-size: 10px; opacity: .6; margin-left: 6px; float: right; margin-top: 3px; }
 .chat-input-bar {
   display: flex; gap: 8px; padding: 10px 12px calc(env(safe-area-inset-bottom) + 10px);
-  background: var(--bg-card); border-top: 1px solid var(--border-2); align-items: flex-end;
+  background: linear-gradient(180deg, rgba(255,255,255,.07) 0%, rgba(255,255,255,.04) 100%);
+  border-top: 1px solid rgba(255,255,255,.08); align-items: flex-end;
 }
 .chat-input {
   flex: 1; padding: 10px 14px; border: 1.5px solid var(--border); border-radius: 22px;
@@ -1837,7 +1839,7 @@ body:not(.view-home) .chat-fab {
 .emp-week-strip::-webkit-scrollbar { display: none; }
 .emp-week-day {
   flex: 1; min-width: 40px; display: flex; flex-direction: column; align-items: center;
-  padding: 10px 4px; border-radius: 12px; background: var(--bg-card); border: 1.5px solid var(--border-2);
+  padding: 10px 4px; border-radius: 12px; background: linear-gradient(145deg, rgba(255,255,255,.08) 0%, rgba(255,255,255,.04) 100%); border: 1.5px solid rgba(255,255,255,.09);
   gap: 4px; transition: all .15s;
 }
 .emp-week-today { border-color: var(--brand); background: var(--brand); color: white; }
