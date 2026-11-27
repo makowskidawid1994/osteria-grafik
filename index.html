@@ -25,7 +25,8 @@
   --accent: #F05030;
   --accent-hover: #C03010;
   --accent-soft: rgba(220,50,20,.15);
-  --bg: #1E0A08;
+  --bg: transparent;
+  --bg-solid: #1E0A08;
   --bg-card: rgba(255,255,255,.08);
   --bg-card2: rgba(255,255,255,.05);
   --surface: rgba(255,255,255,.1);
@@ -55,6 +56,10 @@ body {
 /* Globalne tło — identyczne z hw-wrap (home) */
 body {
   background: linear-gradient(180deg, #7A1E17 0%, #5C1210 20%, #3D0C09 45%, #2A0807 70%, #1A0504 100%) fixed;
+}
+/* Wrappery widoków nie mogą zakrywać gradientu body */
+#main-content > div:first-child {
+  background: transparent !important;
 }
 body::before {
   content: '';
@@ -1005,7 +1010,7 @@ body:not(.view-home) .chat-fab {
   text-align: center; cursor: pointer; padding: 7px 3px; min-height: 52px;
   vertical-align: middle; transition: background .1s;
 }
-.td-day-cell:hover { background: var(--bg); }
+.td-day-cell:hover { background: var(--bg-solid); }
 .td-day-cell.is-today { background: rgba(0,0,0,.025); }
 .shift-chip {
   display: inline-flex; align-items: center; background: rgba(255,255,255,.2); color: white;
@@ -1587,10 +1592,10 @@ body:not(.view-home) .chat-fab {
 .clr-badge { font-size: 11px; font-weight: 600; padding: 3px 8px; border-radius: 4px; white-space: nowrap; }
 .clr-badge-in { background: var(--green-bg); color: var(--green); }
 .clr-badge-break { background: rgba(251,191,36,.12); color: var(--warn); }
-.clr-badge-out { background: var(--bg); color: var(--text-3); border: 1px solid var(--border); }
+.clr-badge-out { background: var(--bg-solid); color: var(--text-3); border: 1px solid var(--border); }
 .clr-time { font-size: 12px; color: var(--text-3); min-width: 60px; text-align: right; }
 .clr-edit-btn { background: none; border: 1px solid var(--border); border-radius: 6px; padding: 4px 8px; font-size: 11px; color: var(--text-3); cursor: pointer; font-family: var(--font); white-space: nowrap; }
-.clr-edit-btn:active { background: var(--bg); }
+.clr-edit-btn:active { background: var(--bg-solid); }
 
 /* Modal edycji sesji */
 .sess-edit-modal { padding: 20px; display: flex; flex-direction: column; gap: 14px; }
@@ -1660,7 +1665,7 @@ body:not(.view-home) .chat-fab {
   flex: 1; padding: 10px 14px; border: 1.5px solid var(--border); border-radius: 22px;
   font-size: 14px; font-family: var(--font); outline: none; resize: none;
   max-height: 120px; line-height: 1.4; transition: border-color .15s;
-  background: var(--bg); color: var(--text);
+  background: var(--bg-solid); color: var(--text);
 }
 .chat-input:focus { border-color: var(--brand-light); background: var(--surface); }
 .chat-send-btn {
@@ -1679,7 +1684,7 @@ body:not(.view-home) .chat-fab {
 .chat-empty { text-align: center; padding: 40px 20px; color: var(--text-3); font-size: 14px; }
 
 /* ─── Dashboard pracownika ─── */
-.emp-dash { padding: 0 0 100px; min-height: calc(100dvh - 56px); background: var(--bg); }
+.emp-dash { padding: 0 0 100px; min-height: calc(100dvh - 56px); background: var(--bg-solid); }
 .emp-dash-header {
   display: flex; align-items: center; justify-content: space-between;
   padding: 20px 16px 12px;
@@ -1785,7 +1790,7 @@ body:not(.view-home) .chat-fab {
 .profile-actions { padding: 16px 20px; display: flex; flex-direction: column; gap: 8px; }
 .profile-action-btn {
   display: flex; align-items: center; gap: 12px; padding: 13px 14px;
-  background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-lg);
+  background: var(--bg-solid); border: 1px solid var(--border); border-radius: var(--radius-lg);
   cursor: pointer; font-family: var(--font); font-size: 14px; font-weight: 500;
   color: var(--text); transition: all .12s; text-align: left;
 }
@@ -2343,7 +2348,7 @@ function renderView(){
   else if(currentView==='avail') renderAvail(mc);
   else if(currentView==='dash'){
     // Pokaż ciemny szkielet od razu — bez białego flashu
-    mc.innerHTML=`<div style="min-height:calc(100dvh - 56px);background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;"><div style="width:40px;height:40px;border:3px solid var(--border);border-top-color:var(--brand);border-radius:50%;animation:spin .7s linear infinite;"></div></div>`;
+    mc.innerHTML=`<div style="min-height:calc(100dvh - 56px);display:flex;flex-direction:column;align-items:center;justify-content:center;"><div style="width:40px;height:40px;border:3px solid var(--border);border-top-color:var(--brand);border-radius:50%;animation:spin .7s linear infinite;"></div></div>`;
     mc.classList.remove('view-transition'); void mc.offsetWidth; mc.classList.add('view-transition');
     renderDash(mc).then(()=>{ mc.classList.remove('view-transition'); void mc.offsetWidth; mc.classList.add('view-transition'); }).catch(e=>console.error(e));
   }
@@ -2356,15 +2361,15 @@ function renderView(){
   else if(currentView==='waste') renderWaste(mc);
   else if(currentView==='handover') renderHandover(mc);
   else if(currentView==='settlements'){
-    mc.innerHTML=`<div style="min-height:calc(100dvh - 56px);background:var(--bg);display:flex;align-items:center;justify-content:center;"><div style="width:36px;height:36px;border:3px solid var(--border);border-top-color:var(--brand);border-radius:50%;animation:spin .7s linear infinite;"></div></div>`;
+    mc.innerHTML=`<div style="min-height:calc(100dvh - 56px);display:flex;align-items:center;justify-content:center;"><div style="width:36px;height:36px;border:3px solid var(--border);border-top-color:var(--brand);border-radius:50%;animation:spin .7s linear infinite;"></div></div>`;
     renderSettlements(mc).catch(e=>console.error(e));
   }
   else if(currentView==='finance'){
-    mc.innerHTML=`<div style="min-height:calc(100dvh - 56px);background:var(--bg);display:flex;align-items:center;justify-content:center;"><div style="width:36px;height:36px;border:3px solid var(--border);border-top-color:var(--brand);border-radius:50%;animation:spin .7s linear infinite;"></div></div>`;
+    mc.innerHTML=`<div style="min-height:calc(100dvh - 56px);display:flex;align-items:center;justify-content:center;"><div style="width:36px;height:36px;border:3px solid var(--border);border-top-color:var(--brand);border-radius:50%;animation:spin .7s linear infinite;"></div></div>`;
     renderFinance(mc).catch(e=>console.error(e));
   }
   else if(currentView==='tardiness'){
-    mc.innerHTML=`<div style="min-height:calc(100dvh - 56px);background:var(--bg);display:flex;align-items:center;justify-content:center;"><div style="width:36px;height:36px;border:3px solid var(--border);border-top-color:var(--brand);border-radius:50%;animation:spin .7s linear infinite;"></div></div>`;
+    mc.innerHTML=`<div style="min-height:calc(100dvh - 56px);display:flex;align-items:center;justify-content:center;"><div style="width:36px;height:36px;border:3px solid var(--border);border-top-color:var(--brand);border-radius:50%;animation:spin .7s linear infinite;"></div></div>`;
     renderTardiness(mc).catch(e=>console.error(e));
   }
   else if(currentView==='chat'){
@@ -2375,9 +2380,9 @@ function renderView(){
       renderChat(mc); triggerAnim();
     } else {
       // Pokaż szkielet od razu (ciemny, nie biały)
-      mc.innerHTML=`<div style="display:flex;flex-direction:column;min-height:100%;background:var(--bg);">
+      mc.innerHTML=`<div style="display:flex;flex-direction:column;min-height:100%;">
         <div class="page-bar" style="position:sticky;top:0;z-index:10;flex-shrink:0;"><div class="page-bar-title">Chat zespołowy</div></div>
-        <div style="flex:1;background:var(--bg);padding-bottom:160px;"></div>
+        <div style="flex:1;padding-bottom:160px;"></div>
         <div class="chat-input-bar" style="position:fixed;bottom:72px;left:0;right:0;z-index:99;">
           <textarea class="chat-input" placeholder="Napisz coś do zespołu…" rows="1" disabled></textarea>
           <button class="chat-send-btn" disabled><svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button>
@@ -3497,7 +3502,7 @@ function renderRecipes(mc){
   if(!cat){
     // Widok kategorii z wyszukiwarką
     mc.innerHTML=`
-    <div style="min-height:100dvh;background:var(--bg);display:flex;flex-direction:column;">
+    <div style="min-height:100dvh;display:flex;flex-direction:column;">
     <div class="page-bar">
       <button class="section-back-btn" onclick="showView('kitchen')">
         <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>Wróć
@@ -3537,7 +3542,7 @@ function renderRecipes(mc){
   const list = recipesLocal.filter(r=>r.category===cat);
 
   mc.innerHTML=`
-  <div style="min-height:100dvh;background:var(--bg);display:flex;flex-direction:column;">
+  <div style="min-height:100dvh;display:flex;flex-direction:column;">
   <div class="page-bar">
     <button class="section-back-btn" onclick="currentRecipeCategory=null;renderView();">
       <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>Receptury
@@ -3570,7 +3575,7 @@ function renderRecipeDetail(mc){
   if(!r){ currentRecipeId=null; showView('recipes'); return; }
 
   mc.innerHTML=`
-  <div style="min-height:100dvh;background:var(--bg);display:flex;flex-direction:column;">
+  <div style="min-height:100dvh;display:flex;flex-direction:column;">
   <div class="page-bar">
     <button class="section-back-btn" onclick="showView('recipes');">
       <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
@@ -4678,14 +4683,14 @@ function openSettlementDetail(id){
           <div style="font-size:17px;font-weight:800;color:var(--text)">${r.waiter_name}</div>
           <div style="font-size:12px;color:var(--text-3)">${fmtDatePL(r.date)}</div>
         </div>
-        <button onclick="this.closest('#settlement-detail-modal').remove()" style="background:var(--bg);border:1px solid var(--border);border-radius:8px;width:32px;height:32px;cursor:pointer;font-size:16px;color:var(--text-2)">×</button>
+        <button onclick="this.closest('#settlement-detail-modal').remove()" style="background:var(--bg-solid);border:1px solid var(--border);border-radius:8px;width:32px;height:32px;cursor:pointer;font-size:16px;color:var(--text-2)">×</button>
       </div>
 
       ${r.photo_url?`<img src="${r.photo_url}" style="width:100%;max-height:220px;object-fit:contain;border-radius:10px;border:1px solid var(--border);margin-bottom:14px">`:''}
 
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px">
         ${fields.map(([label,val])=>`
-          <div style="background:var(--bg);border:1px solid var(--border-2);border-radius:8px;padding:9px 10px">
+          <div style="background:var(--bg-solid);border:1px solid var(--border-2);border-radius:8px;padding:9px 10px">
             <div style="font-size:10px;color:var(--text-3);margin-bottom:2px">${label}</div>
             <div style="font-size:14px;font-weight:700;color:var(--text)">${parseFloat(val).toFixed(2)} zł</div>
           </div>`).join('')}
@@ -4696,7 +4701,7 @@ function openSettlementDetail(id){
         <div style="font-size:22px;font-weight:800;color:${diffColor}">${diff>=0?'+':''}${diff.toFixed(2)} zł</div>
       </div>`:''}
 
-      ${r.comment?`<div style="background:var(--bg);border:1px solid var(--border-2);border-radius:8px;padding:10px 12px;margin-bottom:14px;font-size:13px;color:var(--text-2);font-style:italic">"${r.comment}"</div>`:''}
+      ${r.comment?`<div style="background:var(--bg-solid);border:1px solid var(--border-2);border-radius:8px;padding:10px 12px;margin-bottom:14px;font-size:13px;color:var(--text-2);font-style:italic">"${r.comment}"</div>`:''}
 
       <div style="font-size:11px;color:var(--text-3);text-align:center">Dodano przez: ${r.created_by||'—'}</div>
     </div>
@@ -4836,7 +4841,7 @@ let eventsLocal=[...EVENTS_DEFAULT];
 
 function renderEvents(mc){
   mc.innerHTML=`
-  <div style="min-height:100dvh;background:var(--bg);display:flex;flex-direction:column;">
+  <div style="min-height:100dvh;display:flex;flex-direction:column;">
   <div class="page-bar">
     <button class="section-back-btn" onclick="goHome()">
       <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>Wróć
@@ -5235,7 +5240,7 @@ function renderWeek(mc){
   const sun=new Date(monDate); sun.setDate(monDate.getDate()+6);
   const rng=`${monDate.getDate()}.${pad(monDate.getMonth()+1)} — ${sun.getDate()}.${pad(sun.getMonth()+1)}.${sun.getFullYear()}`;
 
-  let html=`<div style="min-height:100dvh;background:var(--bg);display:flex;flex-direction:column;"><div class="page-bar">
+  let html=`<div style="min-height:100dvh;display:flex;flex-direction:column;"><div class="page-bar">
     <button class="section-back-btn" onclick="goHome()">
       <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
       Wróć
@@ -5347,7 +5352,7 @@ function renderMonth(mc){
     return{d:i+1,date:dateStr,dow,weekend:dow===0||dow===6};
   });
 
-  let html=`<div style="min-height:100dvh;background:var(--bg);display:flex;flex-direction:column;"><div class="page-bar">
+  let html=`<div style="min-height:100dvh;display:flex;flex-direction:column;"><div class="page-bar">
     <button class="section-back-btn" onclick="goHome()">
       <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
       Wróć
@@ -5910,10 +5915,10 @@ async function renderDash(mc){
   });
 
   let html=`
-  <div style="min-height:calc(100dvh - 56px);background:var(--bg);display:flex;flex-direction:column;">
+  <div style="min-height:calc(100dvh - 56px);display:flex;flex-direction:column;">
 
   <!-- Hero manager -->
-  <div style="background:var(--bg);padding:24px 20px 20px;border-bottom:1px solid rgba(139,26,46,.1);position:relative;">
+  <div style="background:var(--bg-solid);padding:24px 20px 20px;border-bottom:1px solid rgba(139,26,46,.1);position:relative;">
     <div style="position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#8B1A2E 0%,#C05A22 60%,transparent 100%);border-radius:0;"></div>
     <div style="font-size:11px;color:rgba(90,56,40,.5);font-weight:600;letter-spacing:.6px;text-transform:uppercase;margin-bottom:4px;">Dashboard managera</div>
     <div style="font-size:24px;font-weight:800;letter-spacing:-.6px;color:var(--text);margin-bottom:16px;">Osteria Antonina</div>
@@ -6056,7 +6061,7 @@ async function renderEmpDash(mc){
   }
 
   let html=`
-  <div style="min-height:calc(100dvh - 56px);background:var(--bg);display:flex;flex-direction:column;">
+  <div style="min-height:calc(100dvh - 56px);display:flex;flex-direction:column;">
 
   <!-- Header z awatarem — ciemny, minimalistyczny -->
   <div style="padding:24px 20px 20px;border-bottom:1px solid var(--border-2);">
@@ -7533,22 +7538,22 @@ function openRevenueEdit(dateStr){
       <div>
         <label style="font-size:12px;color:var(--text-3);display:block;margin-bottom:4px">Gotówka (zł)</label>
         <input id="rev-cash" type="number" min="0" step="0.01" placeholder="0.00"
-          style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:11px 14px;color:var(--text);font-size:16px;font-family:var(--font);outline:none">
+          style="width:100%;background:var(--bg-solid);border:1px solid var(--border);border-radius:10px;padding:11px 14px;color:var(--text);font-size:16px;font-family:var(--font);outline:none">
       </div>
       <div>
         <label style="font-size:12px;color:var(--text-3);display:block;margin-bottom:4px">Karta (zł)</label>
         <input id="rev-card" type="number" min="0" step="0.01" placeholder="0.00"
-          style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:11px 14px;color:var(--text);font-size:16px;font-family:var(--font);outline:none">
+          style="width:100%;background:var(--bg-solid);border:1px solid var(--border);border-radius:10px;padding:11px 14px;color:var(--text);font-size:16px;font-family:var(--font);outline:none">
       </div>
       <div>
         <label style="font-size:12px;color:var(--text-3);display:block;margin-bottom:4px">Liczba gości</label>
         <input id="rev-covers" type="number" min="0" step="1" placeholder="0"
-          style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:11px 14px;color:var(--text);font-size:16px;font-family:var(--font);outline:none">
+          style="width:100%;background:var(--bg-solid);border:1px solid var(--border);border-radius:10px;padding:11px 14px;color:var(--text);font-size:16px;font-family:var(--font);outline:none">
       </div>
       <div>
         <label style="font-size:12px;color:var(--text-3);display:block;margin-bottom:4px">Notatka (opcjonalnie)</label>
         <input id="rev-note" type="text" placeholder="np. event, deszcz, wakacje…"
-          style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:11px 14px;color:var(--text);font-size:14px;font-family:var(--font);outline:none">
+          style="width:100%;background:var(--bg-solid);border:1px solid var(--border);border-radius:10px;padding:11px 14px;color:var(--text);font-size:14px;font-family:var(--font);outline:none">
       </div>
     </div>
     <div style="display:flex;gap:10px;margin-top:20px">
@@ -7619,7 +7624,7 @@ function openPosbistroImport(){
       Obsługiwane formaty: raport dzienny, tygodniowy lub za dowolny okres.
     </div>
     <div id="posbistro-drop" onclick="document.getElementById('posbistro-file-input').click()"
-      style="border:2px dashed var(--border);border-radius:12px;padding:28px 16px;text-align:center;cursor:pointer;background:var(--bg);transition:border-color .2s"
+      style="border:2px dashed var(--border);border-radius:12px;padding:28px 16px;text-align:center;cursor:pointer;background:var(--bg-solid);transition:border-color .2s"
       ondragover="event.preventDefault();this.style.borderColor='var(--brand)'"
       ondragleave="this.style.borderColor='var(--border)'"
       ondrop="event.preventDefault();this.style.borderColor='var(--border)';handlePosbistroFile(event.dataTransfer.files[0])">
