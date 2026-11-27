@@ -423,19 +423,25 @@ body.view-home .bnav-item.active .bnav-icon-wrap { background: rgba(200,50,35,.2
   justify-content: space-between;
   position: relative; z-index: 1;
   width: 100%;
-  background: rgba(255,255,255,.07);
-  border: 1px solid rgba(255,255,255,.10);
+  background: linear-gradient(145deg, rgba(255,255,255,.10) 0%, rgba(255,255,255,.05) 60%, rgba(255,255,255,.08) 100%);
+  border: 1px solid rgba(255,255,255,.12);
   border-radius: 24px;
   padding: 22px 22px 20px;
   flex: 1;
   backdrop-filter: none; -webkit-backdrop-filter: none;
-  box-shadow: 0 4px 20px rgba(0,0,0,.2);
+  box-shadow: 0 4px 32px rgba(0,0,0,.3), inset 0 1px 0 rgba(255,255,255,.1);
   overflow: hidden;
   cursor: pointer;
-  transition: transform .15s;
+  transition: transform .15s, box-shadow .15s;
+  animation: fadeInUp .4s cubic-bezier(.2,.8,.2,1) both;
 }
-.hw-center-block:active { transform: scale(.97); }
-.hw-center-block::before { content: none; }
+.hw-center-block:active { transform: scale(.97); box-shadow: 0 2px 16px rgba(0,0,0,.3); }
+.hw-center-block::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,.25), transparent);
+  border-radius: 24px 24px 0 0;
+}
 .hw-center-block::after { content: none; }
 .hw-center-label {
   font-size: 13px; font-weight: 500; color: rgba(255,255,255,.7);
@@ -471,6 +477,10 @@ body.view-home .bnav-item.active .bnav-icon-wrap { background: rgba(200,50,35,.2
 @keyframes slideUp { to { transform: translateY(0); } }
 @keyframes fadeInUp { from{opacity:0;transform:translateY(12px);} to{opacity:1;transform:none;} }
 @keyframes qaIn { from{opacity:0;transform:translateY(16px) scale(.85);} to{opacity:1;transform:none;} }
+@keyframes countUp { from{opacity:0;transform:translateY(8px);} to{opacity:1;transform:none;} }
+@keyframes shimmer { 0%{background-position:-200% 0} 100%{background-position:200% 0} }
+@keyframes pulse-live { 0%,100%{opacity:1;transform:scale(1);} 50%{opacity:.6;transform:scale(.8);} }
+@keyframes float-up { 0%{transform:translateY(0);} 50%{transform:translateY(-3px);} 100%{transform:translateY(0);} }
 
 /* ── Status bar (ukryty, zachowany dla timera) ── */
 .hw-status-bar { display: none; }
@@ -491,22 +501,31 @@ body.view-home .bnav-item.active .bnav-icon-wrap { background: rgba(200,50,35,.2
   justify-content: center; gap: 6px;
   cursor: pointer; -webkit-tap-highlight-color: transparent;
   position: relative;
-  /* Minimalistyczne jak Revolut — prawie niewidoczna karta */
-  background: rgba(255,255,255,.05);
-  border: 1px solid rgba(255,255,255,.07);
+  background: linear-gradient(160deg, rgba(255,255,255,.07) 0%, rgba(255,255,255,.04) 100%);
+  border: 1px solid rgba(255,255,255,.09);
   border-radius: 20px;
   padding: 14px 4px 12px;
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
-  box-shadow: none;
+  box-shadow: 0 2px 10px rgba(0,0,0,.15), inset 0 1px 0 rgba(255,255,255,.07);
   overflow: hidden;
   isolation: isolate;
-  transition: transform .15s cubic-bezier(.2,.8,.2,1), background .15s;
+  transition: transform .15s cubic-bezier(.2,.8,.2,1), background .15s, box-shadow .15s;
+  animation: qaIn .35s cubic-bezier(.2,.8,.2,1) both;
 }
+.hw-qa-item:nth-child(1) { animation-delay: .15s; }
+.hw-qa-item:nth-child(2) { animation-delay: .2s; }
+.hw-qa-item:nth-child(3) { animation-delay: .25s; }
+.hw-qa-item:nth-child(4) { animation-delay: .3s; }
+.hw-qa-item:nth-child(5) { animation-delay: .35s; }
+.hw-qa-item:nth-child(6) { animation-delay: .4s; }
+.hw-qa-item:nth-child(7) { animation-delay: .45s; }
+.hw-qa-item:nth-child(8) { animation-delay: .5s; }
 .hw-qa-item::before { content: none; }
 .hw-qa-item:active {
   transform: scale(.93);
-  background: rgba(255,255,255,.07);
+  background: rgba(255,255,255,.09);
+  box-shadow: 0 1px 6px rgba(0,0,0,.2);
 }
 /* Revolut-style: małe kółko tylko z ikoną, zero grubego bg */
 .hw-qa-circle {
@@ -529,8 +548,8 @@ body.view-home .bnav-item.active .bnav-icon-wrap { background: rgba(200,50,35,.2
 /* ── Live stats card — subtelna karta w tonie tła ── */
 .hw-stats-card {
   border-radius: 20px;
-  background: rgba(255,255,255,.05);
-  border: 1px solid rgba(255,255,255,.08);
+  background: linear-gradient(135deg, rgba(255,255,255,.07) 0%, rgba(255,255,255,.04) 100%);
+  border: 1px solid rgba(255,255,255,.09);
   padding: 16px 20px;
   display: flex; gap: 0;
   opacity: 1;
@@ -539,9 +558,14 @@ body.view-home .bnav-item.active .bnav-icon-wrap { background: rgba(200,50,35,.2
   position: relative; z-index: 1;
   overflow: hidden;
   cursor: pointer;
-  box-shadow: none;
+  box-shadow: 0 2px 16px rgba(0,0,0,.18);
+  animation: fadeInUp .4s cubic-bezier(.2,.8,.2,1) .1s both;
 }
-.hw-stats-card::before { content: none; }
+.hw-stats-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,.18), transparent);
+}
 .hw-stat {
   flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px;
   position: relative;
@@ -555,6 +579,7 @@ body.view-home .bnav-item.active .bnav-icon-wrap { background: rgba(200,50,35,.2
   font-size: 26px; font-weight: 800; color: #fff;
   letter-spacing: -.5px; line-height: 1;
   font-variant-numeric: tabular-nums;
+  animation: countUp .5s cubic-bezier(.2,.8,.2,1) .2s both;
 }
 .hw-stat-lbl {
   font-size: 10px; font-weight: 600; color: rgba(255,255,255,.6);
@@ -991,11 +1016,19 @@ body:not(.view-home) .chat-fab {
 
 /* ─── Cost strip ─── */
 .cost-strip {
-  margin: 10px 16px 0; background: rgba(255,255,255,.05);
+  margin: 10px 16px 0;
+  background: linear-gradient(135deg, rgba(255,255,255,.09) 0%, rgba(255,255,255,.05) 100%);
   border-radius: var(--radius-lg); padding: 12px 16px;
   display: flex; justify-content: space-between; align-items: center;
-  border: 1px solid rgba(255,255,255,.1);
-  backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255,255,255,.11);
+  backdrop-filter: none; -webkit-backdrop-filter: none;
+  box-shadow: 0 2px 14px rgba(0,0,0,.18), inset 0 1px 0 rgba(255,255,255,.1);
+  position: relative; overflow: hidden;
+  animation: fadeInUp .35s cubic-bezier(.2,.8,.2,1) .05s both;
+}
+.cost-strip::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,.22), transparent);
 }
 .cs-label { font-size: 10px; color: rgba(255,255,255,.45); font-weight: 500; letter-spacing: .2px; margin-bottom: 2px; }
 .cs-val { font-size: 19px; font-weight: 700; color: #fff; letter-spacing: -.5px; }
@@ -1004,7 +1037,9 @@ body:not(.view-home) .chat-fab {
 .sched-wrap { padding: 10px 16px 16px; overflow-x: auto; -webkit-overflow-scrolling: touch; }
 .sched-tbl {
   width: 100%; border-collapse: collapse; min-width: 480px;
-  background: rgba(255,255,255,.06); border-radius: var(--radius-lg); overflow: hidden;
+  background: linear-gradient(180deg, rgba(255,255,255,.08) 0%, rgba(255,255,255,.04) 100%);
+  border-radius: var(--radius-lg); overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0,0,0,.2);
   border: 1px solid rgba(255,255,255,.1);
 }
 .sched-tbl thead th {
@@ -1524,6 +1559,11 @@ body:not(.view-home) .chat-fab {
 .clock-btn-round.state-idle {
   background: linear-gradient(145deg, #E8402E, #B82E1E); color: white;
   box-shadow: 0 8px 36px rgba(200,50,30,.55), 0 2px 8px rgba(0,0,0,.3);
+  animation: idle-pulse 3s ease-in-out infinite;
+}
+@keyframes idle-pulse {
+  0%,100% { box-shadow: 0 8px 36px rgba(200,50,30,.55), 0 2px 8px rgba(0,0,0,.3); }
+  50% { box-shadow: 0 8px 48px rgba(200,50,30,.8), 0 2px 12px rgba(0,0,0,.35); }
 }
 .clock-btn-round.state-idle svg { stroke: none; fill: white; }
 
@@ -1599,8 +1639,15 @@ body:not(.view-home) .chat-fab {
 @keyframes pulse-dot { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.5;transform:scale(.8)} }
 
 .clock-history-card {
-  background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.1); border-radius: var(--radius-lg); overflow: hidden;
-  backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+  background: linear-gradient(145deg, rgba(255,255,255,.08) 0%, rgba(255,255,255,.04) 100%);
+  border: 1px solid rgba(255,255,255,.10); border-radius: var(--radius-lg); overflow: hidden;
+  backdrop-filter: none; -webkit-backdrop-filter: none;
+  box-shadow: 0 2px 14px rgba(0,0,0,.18);
+  position: relative;
+}
+.clock-history-card::after {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,.18), transparent);
 }
 .clock-history-title { font-size: 10px; font-weight: 600; color: rgba(255,255,255,.4); text-transform: uppercase; letter-spacing: .5px; padding: 12px 14px 8px; border-bottom: 1px solid rgba(255,255,255,.08); }
 .clock-session-row {
@@ -1616,7 +1663,17 @@ body:not(.view-home) .chat-fab {
 .csr-dur-min { font-size: 10px; color: var(--text-3); }
 
 /* Manager live panel */
-.clock-live-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 20px; overflow: hidden; backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px); }
+.clock-live-card {
+  background: linear-gradient(145deg, rgba(255,255,255,.10) 0%, rgba(255,255,255,.05) 100%);
+  border: 1px solid rgba(255,255,255,.12); border-radius: 20px; overflow: hidden;
+  backdrop-filter: none; -webkit-backdrop-filter: none;
+  box-shadow: 0 4px 20px rgba(0,0,0,.2), inset 0 1px 0 rgba(255,255,255,.10);
+  position: relative;
+}
+.clock-live-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,.25), transparent);
+}
 .clock-live-title { font-size: 10px; font-weight: 600; color: var(--text-3); text-transform: uppercase; letter-spacing: .5px; padding: 12px 14px 8px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
 .clock-live-row { display: flex; align-items: center; gap: 10px; padding: 10px 14px; border-bottom: 1px solid var(--border); }
 .clock-live-row:last-child { border-bottom: none; }
@@ -1729,13 +1786,16 @@ body:not(.view-home) .chat-fab {
   padding: 5px 11px; border-radius: 20px; white-space: nowrap; text-transform: capitalize;
 }
 .emp-next-shift {
-  margin: 4px 16px 16px; padding: 20px; border-radius: 16px;
-  background: var(--brand); color: white; position: relative; overflow: hidden;
+  margin: 4px 16px 16px; padding: 20px; border-radius: 18px;
+  background: linear-gradient(135deg, rgba(255,255,255,.12) 0%, rgba(255,255,255,.06) 100%);
+  border: 1px solid rgba(255,255,255,.14);
+  box-shadow: 0 4px 20px rgba(0,0,0,.25), inset 0 1px 0 rgba(255,255,255,.12);
+  color: white; position: relative; overflow: hidden;
+  animation: fadeInUp .4s cubic-bezier(.2,.8,.2,1) .05s both;
 }
 .emp-next-shift::before {
-  content: ''; position: absolute; right: -20px; top: -20px;
-  width: 100px; height: 100px; border-radius: 50%;
-  background: rgba(255,255,255,.06);
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,.3), transparent);
 }
 .emp-next-empty { background: var(--accent-soft); }
 .emp-next-empty .ens-eyebrow { color: var(--text-3); }
@@ -1767,9 +1827,15 @@ body:not(.view-home) .chat-fab {
 .ewd-off { font-size: 10px; color: transparent; height: 18px; }
 .emp-stats-row { display: flex; gap: 10px; padding: 0 16px; margin-bottom: 20px; }
 .emp-stat-card {
-  flex: 1; background: var(--bg-card); border: 1.5px solid var(--border-2); border-radius: 12px;
+  flex: 1;
+  background: linear-gradient(145deg, rgba(255,255,255,.09) 0%, rgba(255,255,255,.05) 100%);
+  border: 1px solid rgba(255,255,255,.10);
+  border-radius: 14px;
   padding: 14px 10px; text-align: center;
+  box-shadow: 0 2px 12px rgba(0,0,0,.18), inset 0 1px 0 rgba(255,255,255,.08);
+  transition: transform .15s;
 }
+.emp-stat-card:active { transform: scale(.97); }
 .esc-val { font-size: 22px; font-weight: 800; letter-spacing: -.5px; }
 .esc-label { font-size: 10px; color: var(--text-3); font-weight: 500; margin-top: 3px; }
 .emp-past-list { margin: 0 16px; border-radius: 16px; overflow: hidden; border: 1px solid var(--border); background: var(--bg-card); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px); }
@@ -1835,11 +1901,16 @@ body:not(.view-home) .chat-fab {
 .profile-action-btn.danger svg { color: var(--danger); }
 
 /* ─── Animacje wejścia kart ─── */
-@keyframes slide-up { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
-.anim-in { animation: slide-up .25s ease both; }
-.anim-in:nth-child(2) { animation-delay: .05s; }
-.anim-in:nth-child(3) { animation-delay: .1s; }
-.anim-in:nth-child(4) { animation-delay: .15s; }
+@keyframes slide-up { from { opacity:0; transform:translateY(18px); } to { opacity:1; transform:translateY(0); } }
+.anim-in { animation: slide-up .3s cubic-bezier(.2,.8,.2,1) both; }
+.anim-in:nth-child(1) { animation-delay: .03s; }
+.anim-in:nth-child(2) { animation-delay: .08s; }
+.anim-in:nth-child(3) { animation-delay: .13s; }
+.anim-in:nth-child(4) { animation-delay: .18s; }
+.anim-in:nth-child(5) { animation-delay: .23s; }
+.anim-in:nth-child(6) { animation-delay: .28s; }
+.anim-in:nth-child(7) { animation-delay: .33s; }
+.anim-in:nth-child(8) { animation-delay: .38s; }
 
 /* ─── Pull to refresh — iOS style ─── */
 .ptr-indicator {
@@ -5977,24 +6048,28 @@ async function renderDash(mc){
     <div style="font-size:11px;color:rgba(255,255,255,.45);font-weight:600;letter-spacing:.6px;text-transform:uppercase;margin-bottom:4px;">Dashboard managera</div>
     <div style="font-size:24px;font-weight:800;letter-spacing:-.6px;color:var(--text);margin-bottom:16px;">Osteria Antonina</div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
-      <div style="background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.12);border-radius:16px;padding:16px;">
+      <div style="background:linear-gradient(145deg,rgba(255,255,255,.12) 0%,rgba(255,255,255,.07) 100%);border:1px solid rgba(255,255,255,.14);border-radius:16px;padding:16px;box-shadow:0 2px 16px rgba(0,0,0,.2),inset 0 1px 0 rgba(255,255,255,.12);position:relative;overflow:hidden;animation:fadeInUp .4s cubic-bezier(.2,.8,.2,1) .05s both;">
+        <div style="position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.25),transparent);"></div>
         <div style="font-size:10px;color:rgba(255,255,255,.45);font-weight:600;text-transform:uppercase;letter-spacing:.3px;margin-bottom:4px;">Koszt pracy</div>
-        <div style="font-size:24px;font-weight:800;color:white;letter-spacing:-.5px;">${tc.toFixed(0)}<span style="font-size:14px;font-weight:400"> zł</span></div>
+        <div style="font-size:26px;font-weight:800;color:white;letter-spacing:-.8px;text-shadow:0 2px 8px rgba(0,0,0,.2);">${tc.toFixed(0)}<span style="font-size:14px;font-weight:400;opacity:.7"> zł</span></div>
         <div style="font-size:11px;color:rgba(255,255,255,.4);margin-top:2px;">${th.toFixed(1)} godz.</div>
       </div>
-      <div style="background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:16px;">
+      <div style="background:linear-gradient(145deg,rgba(255,255,255,.09) 0%,rgba(255,255,255,.05) 100%);border:1px solid rgba(255,255,255,.10);border-radius:16px;padding:16px;box-shadow:0 2px 12px rgba(0,0,0,.18),inset 0 1px 0 rgba(255,255,255,.08);position:relative;overflow:hidden;animation:fadeInUp .4s cubic-bezier(.2,.8,.2,1) .1s both;">
+        <div style="position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.18),transparent);"></div>
         <div style="font-size:10px;color:rgba(255,255,255,.45);font-weight:600;text-transform:uppercase;letter-spacing:.3px;margin-bottom:4px;">Pracownicy</div>
-        <div style="font-size:24px;font-weight:800;color:#fff;letter-spacing:-.5px;">${employees.length}</div>
+        <div style="font-size:26px;font-weight:800;color:#fff;letter-spacing:-.8px;text-shadow:0 2px 8px rgba(0,0,0,.2);">${employees.length}</div>
         <div style="font-size:11px;color:rgba(255,255,255,.4);margin-top:2px;">${shifts.length} zmian</div>
       </div>
-      <div style="background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:16px;">
+      <div style="background:linear-gradient(145deg,rgba(255,255,255,.09) 0%,rgba(255,255,255,.05) 100%);border:1px solid rgba(255,255,255,.10);border-radius:16px;padding:16px;box-shadow:0 2px 12px rgba(0,0,0,.18),inset 0 1px 0 rgba(255,255,255,.08);position:relative;overflow:hidden;animation:fadeInUp .4s cubic-bezier(.2,.8,.2,1) .15s both;">
+        <div style="position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.18),transparent);"></div>
         <div style="font-size:10px;color:rgba(255,255,255,.45);font-weight:600;text-transform:uppercase;letter-spacing:.3px;margin-bottom:4px;">Kuchnia</div>
-        <div style="font-size:22px;font-weight:800;color:#fff;letter-spacing:-.5px;">${kC.toFixed(0)}<span style="font-size:12px;font-weight:400;opacity:.7"> zł</span></div>
+        <div style="font-size:22px;font-weight:800;color:#fff;letter-spacing:-.6px;text-shadow:0 2px 8px rgba(0,0,0,.2);">${kC.toFixed(0)}<span style="font-size:12px;font-weight:400;opacity:.6"> zł</span></div>
         <div style="font-size:11px;color:rgba(255,255,255,.4);margin-top:2px;">${kH.toFixed(1)}h · ${employees.filter(e=>e.department==='kuchnia').length} os.</div>
       </div>
-      <div style="background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:16px;">
+      <div style="background:linear-gradient(145deg,rgba(255,255,255,.09) 0%,rgba(255,255,255,.05) 100%);border:1px solid rgba(255,255,255,.10);border-radius:16px;padding:16px;box-shadow:0 2px 12px rgba(0,0,0,.18),inset 0 1px 0 rgba(255,255,255,.08);position:relative;overflow:hidden;animation:fadeInUp .4s cubic-bezier(.2,.8,.2,1) .2s both;">
+        <div style="position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.18),transparent);"></div>
         <div style="font-size:10px;color:rgba(255,255,255,.45);font-weight:600;text-transform:uppercase;letter-spacing:.3px;margin-bottom:4px;">Sala</div>
-        <div style="font-size:22px;font-weight:800;color:#fff;letter-spacing:-.5px;">${sC.toFixed(0)}<span style="font-size:12px;font-weight:400;opacity:.7"> zł</span></div>
+        <div style="font-size:22px;font-weight:800;color:#fff;letter-spacing:-.6px;text-shadow:0 2px 8px rgba(0,0,0,.2);">${sC.toFixed(0)}<span style="font-size:12px;font-weight:400;opacity:.6"> zł</span></div>
         <div style="font-size:11px;color:rgba(255,255,255,.4);margin-top:2px;">${sH.toFixed(1)}h · ${employees.filter(e=>e.department==='sala').length} os.</div>
       </div>
     </div>
@@ -6004,7 +6079,8 @@ async function renderDash(mc){
   <div style="flex:1;padding:16px;display:flex;flex-direction:column;gap:12px;padding-bottom:100px;">
 
     <!-- Eksport -->
-    <div style="background:var(--bg-card);border:1px solid var(--border-2);border-radius:16px;padding:16px;">
+    <div style="background:linear-gradient(145deg,rgba(255,255,255,.09) 0%,rgba(255,255,255,.05) 100%);border:1px solid rgba(255,255,255,.10);border-radius:16px;padding:16px;box-shadow:0 2px 12px rgba(0,0,0,.15);position:relative;overflow:hidden;animation:fadeInUp .4s cubic-bezier(.2,.8,.2,1) .25s both;">
+      <div style="position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.18),transparent);"></div>
       <div style="font-size:11px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px;">Eksport raportu</div>
       <div class="month-sel-row" style="margin-bottom:10px;">
         ${exportMonths.map(m=>`<button class="msel-btn" onclick="exportMonthReport(${m.off})">${m.label}</button>`).join('')}
@@ -6017,7 +6093,8 @@ async function renderDash(mc){
 
     <!-- Lista pracowników -->
     <div style="font-size:11px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:.5px;padding:0 2px;">Stawki i koszty</div>
-    <div style="background:var(--bg-card);border:1px solid var(--border-2);border-radius:16px;overflow:hidden;">
+    <div style="background:linear-gradient(145deg,rgba(255,255,255,.08) 0%,rgba(255,255,255,.04) 100%);border:1px solid rgba(255,255,255,.09);border-radius:16px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,.15);position:relative;animation:fadeInUp .4s cubic-bezier(.2,.8,.2,1) .3s both;">
+    <div style="position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.15),transparent);"></div>
     <div class="dash-emp-rows" style="padding:0 16px;">`;
 
   [...employees].sort((a,b)=>(b.rate_net||0)-(a.rate_net||0)).forEach(emp=>{
@@ -6699,13 +6776,21 @@ function buildLivePanelRows(){
     const elStr=fmtElapsed(elapsed);
     const badgeClass=onBreak?'clr-badge-break':'clr-badge-in';
     const badgeText=onBreak?'Przerwa':'W pracy';
-    return`<div class="clock-live-row">
-      <div>
-        <div class="clr-name">${name}</div>
-        <div class="clr-dept">${dept}</div>
+    const dotStyle=onBreak
+      ?'width:7px;height:7px;border-radius:50%;background:#F59E0B;display:inline-block;margin-right:5px;flex-shrink:0;'
+      :'width:7px;height:7px;border-radius:50%;background:#4ADE80;display:inline-block;margin-right:5px;flex-shrink:0;animation:pulse-live 1.8s ease-in-out infinite;';
+    return`<div class="clock-live-row" style="animation:fadeInUp .3s cubic-bezier(.2,.8,.2,1) both;">
+      <div style="display:flex;align-items:center;gap:10px;flex:1;min-width:0;">
+        <div class="av" style="background:${avatarColor(name)};width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:white;flex-shrink:0;">${initials(name)}</div>
+        <div>
+          <div class="clr-name">${name}</div>
+          <div class="clr-dept">${dept}</div>
+        </div>
       </div>
-      <div class="clr-badge ${badgeClass}">${badgeText}</div>
-      <div class="clr-time">${elStr}</div>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;">
+        <div class="clr-badge ${badgeClass}" style="display:flex;align-items:center;"><span style="${dotStyle}"></span>${badgeText}</div>
+        <div class="clr-time">${elStr}</div>
+      </div>
     </div>`;
   });
 }
