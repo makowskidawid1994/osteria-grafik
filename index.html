@@ -2706,11 +2706,13 @@ function renderHome(mc){
     centerBlock = `
       <div class="hw-center-block" onclick="hbTap(this,'panel')">
         <div class="hw-center-label">Teraz w pracy</div>
-        <div class="hw-center-value">
-          ${nowWorking.length}
+        <div style="display:flex;align-items:flex-end;gap:12px;margin-top:2px">
+          <div class="hw-center-value">${nowWorking.length}</div>
+          <div style="display:flex;flex-direction:column;gap:2px;padding-bottom:5px">
+            <span class="hw-center-sub" style="margin:0">${workingLine}</span>
+            <span style="font-size:11px;color:rgba(255,255,255,.35)">${todayShifts.length} zmian dziś</span>
+          </div>
         </div>
-        <div class="hw-center-sub">${workingLine}</div>
-        <div class="hw-center-sub" style="margin-top:2px;font-size:11px;color:rgba(255,255,255,.35)">${todayShifts.length} zmian zaplanowanych dziś</div>
       </div>`;
   } else {
     /* Pracownik: jego zmiana dziś */
