@@ -2771,14 +2771,14 @@ function renderHome(mc){
         <div class="hw-quick-actions">
           <div class="hw-qa-row">
             ${qaRow1.map((a,i)=>`
-              <div class="hw-qa-item" onclick="hbTap(this,'${a.id}')" style="opacity:0;animation:qaIn .35s cubic-bezier(.34,1.56,.64,1) ${.1+i*.06}s forwards">
+              <div class="hw-qa-item" onclick="hbTap(this,'${a.id}')">
                 <div class="hw-qa-circle${a.accent?' '+a.accent:''}">${a.icon}</div>
                 <span class="hw-qa-label">${a.label}</span>
               </div>`).join('')}
           </div>
           <div class="hw-qa-row">
             ${qaRow2.map((a,i)=>`
-              <div class="hw-qa-item" onclick="hbTap(this,'${a.id}')" style="opacity:0;animation:qaIn .35s cubic-bezier(.34,1.56,.64,1) ${.34+i*.06}s forwards">
+              <div class="hw-qa-item" onclick="hbTap(this,'${a.id}')">
                 <div class="hw-qa-circle${a.accent?' '+a.accent:''}">${a.icon}</div>
                 <span class="hw-qa-label">${a.label}</span>
               </div>`).join('')}
@@ -2786,7 +2786,7 @@ function renderHome(mc){
         </div>
 
         <!-- Karta statystyk -->
-        <div class="hw-stats-card" onclick="hbTap(this,'sched')" style="opacity:0;animation:fadeIn .4s ease .55s forwards">
+        <div class="hw-stats-card" onclick="hbTap(this,'sched')">
           <div class="hw-stat">
             <div class="hw-stat-val">${nowWorking.length}</div>
             <div class="hw-stat-lbl">Na zmianie</div>
