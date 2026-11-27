@@ -54,7 +54,7 @@ body {
 }
 /* Globalne tło — spójne na wszystkich widokach */
 body {
-  background: linear-gradient(180deg, #7A1E17 0%, #5C1210 20%, #3D0C09 45%, #2A0807 70%, #1A0504 100%) fixed;
+  background: #1A0504;
 }
 body::before {
   content: '';
@@ -218,17 +218,11 @@ body:not(.view-home)::before {
 /* ─── App shell ─── */
 #app { display: none; }
 .header {
-  background: transparent; color: var(--text);
-  height: calc(56px + env(safe-area-inset-top));
-  padding: env(safe-area-inset-top) 16px 0;
-  display: flex; align-items: center;
-  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-  border-bottom: none; gap: 10px;
-  transition: background .2s, border-color .2s;
+  display: none !important;
 }
-/* Kompensata za fixed header — main content zaczyna się pod headerem */
+/* Brak fixed headera — main content zaczyna się od safe-area-inset-top */
 .main {
-  padding-top: calc(56px + env(safe-area-inset-top));
+  padding-top: env(safe-area-inset-top);
 }
 /* Na home — floating nav */
 body.view-home .bnav-item { color: rgba(90,56,40,.45); }
@@ -317,7 +311,7 @@ body.view-home .bnav-item.active .bnav-icon-wrap { background: rgba(255,255,255,
 }
 .bnav-item svg { width: 22px; height: 22px; stroke: rgba(255,255,255,.4); fill: none; stroke-width: 1.8; transition: stroke .2s; }
 
-.main { padding-top: calc(56px + env(safe-area-inset-top)); padding-bottom: calc(60px + max(env(safe-area-inset-bottom), 12px) + 20px); min-height: calc(100dvh - 56px); background: transparent; position: relative; z-index: 1; }
+.main { padding-top: env(safe-area-inset-top); padding-bottom: calc(60px + max(env(safe-area-inset-bottom), 12px) + 20px); min-height: 100dvh; background: transparent; position: relative; z-index: 1; }
 .main.no-bnav { padding-bottom: 0; }
 /* Chat wypełnia dostępną przestrzeń */
 .main.chat-view { display: flex; flex-direction: column; height: 100dvh; min-height: 0; padding-bottom: 0; overflow: hidden; box-sizing: border-box; }
@@ -2264,9 +2258,7 @@ function showView(v, pushHistory=true){
   currentView=v;
   if(pushHistory && prev!==v) history.pushState({view:v},'',`#${v}`);
   document.body.classList.toggle('view-home', v==='home');
-  // Header — ukryj całkowicie na home
-  const hdr=document.querySelector('.header');
-  if(hdr) hdr.style.display=v==='home'?'none':'flex';
+  // Header usunięty — zawsze ukryty
 
   // Dolny nav — tylko w starych widokach
   const bnav=document.getElementById('bottom-nav');
@@ -6189,8 +6181,6 @@ document.getElementById('auth-pass').addEventListener('keydown',e=>{if(e.key==='
     }
     currentView='home';
     document.body.classList.add('view-home');
-    const _hdr=document.querySelector('.header');
-    if(_hdr) _hdr.style.display='none';
     renderHome();
     // Odśwież token w tle
     saveSession();
