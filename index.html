@@ -407,17 +407,12 @@ body.view-home .bnav-item.active .bnav-icon-wrap { background: rgba(200,50,35,.2
 /* Środek — jak Revolut, elementy u góry */
 .hw-hero {
   position: relative; z-index: 1;
-  flex: 1;
+  flex: 0 0 auto;
   display: flex; flex-direction: column;
   align-items: stretch;
   justify-content: flex-start;
   gap: 10px;
-  padding: 10px 16px calc(env(safe-area-inset-bottom) + 72px);
-}
-.hw-bottom-group {
-  margin-top: auto;
-  display: flex; flex-direction: column;
-  gap: 10px;
+  padding: 10px 16px calc(env(safe-area-inset-bottom) + 76px);
 }
 .hw-hero::before {
   content: none;
@@ -428,7 +423,7 @@ body.view-home .bnav-item.active .bnav-icon-wrap { background: rgba(200,50,35,.2
 .hw-center-block {
   display: flex; flex-direction: column; align-items: flex-start;
   position: relative; z-index: 1;
-  width: 100%; flex: 1;
+  width: 100%;
   /* Hero karta — wyraźna bordo, ale nie pełna czerwień */
   background: linear-gradient(145deg, rgba(210,55,35,.8) 0%, rgba(155,28,18,.9) 100%);
   border: 1px solid rgba(255,120,80,.3);
@@ -468,7 +463,6 @@ body.view-home .bnav-item.active .bnav-icon-wrap { background: rgba(200,50,35,.2
   display: flex; flex-direction: column; gap: 12px;
   width: 100%;
   position: relative; z-index: 1;
-  margin-top: auto;
 }
 
 @keyframes fadeIn { to { opacity:1; } }
