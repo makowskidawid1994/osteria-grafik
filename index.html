@@ -330,9 +330,11 @@ body.view-home .bnav-item.active .bnav-icon-wrap { background: rgba(200,50,35,.2
 .bnav-item {
   flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
   gap: 3px; cursor: pointer; color: rgba(255,255,255,.4); font-size: 10px; font-weight: 500;
-  border: none; background: none; font-family: var(--font); transition: color .2s; position: relative;
-  padding: 0 4px; letter-spacing: -.1px;
+  border: none; background: none; font-family: var(--font);
+  transition: color .2s, transform .12s cubic-bezier(.2,.8,.2,1);
+  position: relative; padding: 0 4px; letter-spacing: -.1px;
 }
+.bnav-item:active { transform: scale(.9); }
 .bnav-item.active { color: #fff; }
 .bnav-item.active .bnav-icon-wrap { background: rgba(255,255,255,.07); }
 .bnav-item.active svg { stroke: #fff; }
@@ -695,12 +697,13 @@ body.view-home .bnav-item.active .bnav-icon-wrap { background: rgba(200,50,35,.2
   display: flex; flex-direction: row;
   align-items: center; gap: 12px;
   padding: 12px 14px;
-  background: rgba(255,255,255,.05);
-  border: 1px solid rgba(255,255,255,.07);
+  background: linear-gradient(135deg, rgba(255,255,255,.07) 0%, rgba(255,255,255,.04) 100%);
+  border: 1px solid rgba(255,255,255,.08);
   border-radius: 14px;
   -webkit-tap-highlight-color: transparent;
-  transition: background .1s, transform .1s;
-  opacity: 0; animation: rowIn .3s ease forwards;
+  transition: background .1s, transform .1s, box-shadow .1s;
+  box-shadow: 0 1px 8px rgba(0,0,0,.12);
+  opacity: 0; animation: rowIn .3s cubic-bezier(.2,.8,.2,1) forwards;
 }
 .hb-row:active { background: rgba(255,255,255,.08); transform: scale(.98); }
 .hb-row:nth-child(1) { animation-delay: .06s; }
@@ -1528,21 +1531,23 @@ body:not(.view-home) .chat-fab {
   font-variant-numeric: tabular-nums; line-height: 1; margin-bottom: 2px;
   font-family: 'Inter',sans-serif;
   position: relative; z-index: 1;
+  animation: countUp .5s cubic-bezier(.2,.8,.2,1) both;
 }
 .clock-date {
   font-size: 13px; color: rgba(255,255,255,.4); margin-bottom: 32px; letter-spacing: .2px;
   font-family: 'Inter',sans-serif;
   position: relative; z-index: 1;
+  animation: fadeInUp .4s cubic-bezier(.2,.8,.2,1) .1s both;
 }
 
 /* Wielki okrągły przycisk */
-.clock-big-btn-wrap { position: relative; margin-bottom: 20px; z-index: 1; }
+.clock-big-btn-wrap { position: relative; margin-bottom: 20px; z-index: 1; animation: fadeInUp .5s cubic-bezier(.2,.8,.2,1) .2s both; }
 .clock-ring {
   width: 160px; height: 160px; border-radius: 50%;
-  border: 1.5px solid rgba(255,255,255,.07);
+  border: 1.5px solid rgba(255,255,255,.08);
   display: flex; align-items: center; justify-content: center;
   position: relative;
-  box-shadow: 0 0 40px rgba(0,0,0,.3);
+  box-shadow: 0 0 40px rgba(0,0,0,.3), 0 0 0 1px rgba(255,255,255,.04);
 }
 .clock-ring::before {
   content: ''; position: absolute; inset: 7px; border-radius: 50%;
