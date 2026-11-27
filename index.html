@@ -54,7 +54,7 @@ body {
 }
 /* Globalne tło — spójne na wszystkich widokach */
 body {
-  background: linear-gradient(180deg, #6B1A14 0%, #3D0C09 30%, #200706 65%, #150403 100%) fixed;
+  background: linear-gradient(180deg, #7A1E17 0%, #5C1210 20%, #3D0C09 45%, #2A0807 70%, #1A0504 100%) fixed;
 }
 body::before {
   content: '';
@@ -63,6 +63,12 @@ body::before {
     radial-gradient(ellipse 110% 50% at 50% 0%, rgba(220,100,10,.55) 0%, rgba(160,60,0,.25) 40%, transparent 65%),
     radial-gradient(ellipse 70% 45% at 10% 40%, rgba(180,60,0,.15) 0%, transparent 55%),
     radial-gradient(ellipse 70% 45% at 90% 60%, rgba(140,40,0,.12) 0%, transparent 55%);
+}
+/* Na podstronach wyłącz pomarańczowy radial u góry — widać przez transparent header */
+body:not(.view-home)::before {
+  background:
+    radial-gradient(ellipse 70% 45% at 10% 40%, rgba(180,60,0,.10) 0%, transparent 55%),
+    radial-gradient(ellipse 70% 45% at 90% 60%, rgba(140,40,0,.08) 0%, transparent 55%);
 }
 #app { background: transparent; }
 
