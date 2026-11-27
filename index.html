@@ -424,22 +424,48 @@ body.view-home .bnav-item.active .bnav-icon-wrap { background: rgba(255,255,255,
   background: radial-gradient(ellipse 90% 60% at 50% 15%, rgba(255,80,30,.45) 0%, rgba(180,30,10,.2) 45%, transparent 70%);
 }
 .hw-center-block {
-  display: flex; flex-direction: column; align-items: center;
+  display: flex; flex-direction: column; align-items: flex-start;
   position: relative; z-index: 1;
-  margin-bottom: 36px;
+  margin-bottom: 20px;
+  width: 100%;
+  /* Revolut-style duży baner-karta */
+  background: linear-gradient(145deg, rgba(255,255,255,.18) 0%, rgba(255,120,30,.14) 50%, rgba(200,50,10,.10) 100%);
+  border: 1px solid rgba(255,255,255,.22);
+  border-radius: 28px;
+  padding: 24px 24px 20px;
+  backdrop-filter: blur(32px); -webkit-backdrop-filter: blur(32px);
+  box-shadow: 0 8px 40px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.18);
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform .15s cubic-bezier(.2,.8,.2,1);
+}
+.hw-center-block:active { transform: scale(.97); }
+/* shimmer u góry karty */
+.hw-center-block::before {
+  content: '';
+  position: absolute; top: 0; left: 10%; right: 10%; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,.5), transparent);
+}
+/* dekoracyjne koło w tle karty */
+.hw-center-block::after {
+  content: '';
+  position: absolute; right: -40px; top: -40px;
+  width: 180px; height: 180px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,160,60,.18) 0%, transparent 70%);
+  pointer-events: none;
 }
 .hw-center-label {
-  font-size: 13px; font-weight: 500; color: rgba(255,255,255,.55);
-  letter-spacing: .3px; margin-bottom: 6px;
+  font-size: 11px; font-weight: 600; color: rgba(255,255,255,.5);
+  letter-spacing: .8px; text-transform: uppercase; margin-bottom: 10px;
 }
 .hw-center-value {
-  font-size: 68px; font-weight: 800; color: #fff;
+  font-size: 56px; font-weight: 800; color: #fff;
   letter-spacing: -3px; line-height: 1;
   font-variant-numeric: tabular-nums;
 }
 .hw-center-sub {
-  font-size: 14px; font-weight: 400; color: rgba(255,255,255,.5);
-  margin-top: 6px; letter-spacing: -.1px;
+  font-size: 13px; font-weight: 400; color: rgba(255,255,255,.55);
+  margin-top: 8px; letter-spacing: -.1px;
 }
 .hw-bottom-group {
   display: flex; flex-direction: column; gap: 14px;
@@ -456,55 +482,61 @@ body.view-home .bnav-item.active .bnav-icon-wrap { background: rgba(255,255,255,
 .hw-status-bar { display: none; }
 @keyframes pulse-dot { 0%,100%{opacity:1;transform:scale(1);} 50%{opacity:.5;transform:scale(.7);} }
 
-/* ── Kółka szybkich akcji — dwa rzędy jak Revolut ── */
+/* ── Kafelki szybkich akcji — styl Revolut (prostokąty) ── */
 .hw-quick-actions {
-  display: flex; flex-direction: column;
-  gap: 20px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  gap: 10px;
   position: relative; z-index: 1;
   opacity: 0; animation: fadeIn .4s ease .2s forwards;
-  padding: 0 2px;
 }
-.hw-qa-row {
-  display: flex; flex-direction: row;
-  justify-content: space-around;
-  align-items: flex-start;
-}
+.hw-qa-row { display: contents; }
 .hw-qa-item {
-  display: flex; flex-direction: column; align-items: center; gap: 9px;
+  display: flex; flex-direction: column; align-items: center;
+  justify-content: center; gap: 8px;
   cursor: pointer; -webkit-tap-highlight-color: transparent;
-  flex: 1; min-width: 0;
   position: relative;
+  /* Revolut tile */
+  background: linear-gradient(145deg, rgba(255,255,255,.16) 0%, rgba(255,255,255,.08) 100%);
+  border: 1px solid rgba(255,255,255,.18);
+  border-radius: 20px;
+  padding: 14px 8px 12px;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  box-shadow: 0 4px 16px rgba(0,0,0,.25), inset 0 1px 0 rgba(255,255,255,.18);
+  overflow: hidden;
+  transition: transform .15s cubic-bezier(.2,.8,.2,1), box-shadow .15s;
 }
-.hw-qa-item:active .hw-qa-circle {
-  transform: scale(.84);
-  background: rgba(255,255,255,.24);
-}
-.hw-qa-circle {
-  width: 60px; height: 60px; border-radius: 50%;
-  background: rgba(255,255,255,.13);
-  border: 1px solid rgba(255,255,255,.11);
-  display: flex; align-items: center; justify-content: center;
-  transition: transform .15s cubic-bezier(.34,1.56,.64,1), background .15s;
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  position: relative; overflow: hidden;
-}
-/* ripple */
-.hw-qa-circle::after {
+/* shimmer u góry każdego kafelka */
+.hw-qa-item::before {
   content: '';
-  position: absolute; inset: 0; border-radius: 50%;
-  background: radial-gradient(circle, rgba(255,255,255,.3) 0%, transparent 70%);
-  opacity: 0; transform: scale(0);
-  transition: opacity .3s, transform .3s;
+  position: absolute; top: 0; left: 15%; right: 15%; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,.4), transparent);
+  border-radius: 50%;
 }
-.hw-qa-item:active .hw-qa-circle::after {
-  opacity: 1; transform: scale(1);
+.hw-qa-item:active {
+  transform: scale(.92);
+  box-shadow: 0 2px 8px rgba(0,0,0,.3), inset 0 1px 0 rgba(255,255,255,.12);
 }
-.hw-qa-circle.accent-red { background: rgba(239,68,68,.2); border: 1px solid rgba(239,68,68,.25); }
+/* ikona w kafelku — już nie jest osobnym kółkiem */
+.hw-qa-circle {
+  width: 36px; height: 36px; border-radius: 50%;
+  background: rgba(255,255,255,.15);
+  border: none;
+  display: flex; align-items: center; justify-content: center;
+  transition: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  position: relative; overflow: visible;
+  flex-shrink: 0;
+}
+.hw-qa-circle::after { display: none; }
+.hw-qa-circle.accent-red { background: rgba(239,68,68,.22); }
 .hw-qa-label {
-  font-size: 11px; font-weight: 500; color: rgba(255,255,255,.65);
+  font-size: 11px; font-weight: 600; color: rgba(255,255,255,.85);
   text-align: center; white-space: nowrap; overflow: hidden;
-  text-overflow: ellipsis; max-width: 66px;
+  text-overflow: ellipsis; max-width: 72px;
   letter-spacing: .05px;
 }
 
