@@ -2703,9 +2703,16 @@ function renderHome(mc){
     centerBlock = `
       <div class="hw-center-block" onclick="hbTap(this,'panel')">
         <div class="hw-center-label">Teraz w pracy</div>
-        <div class="hw-center-value">${nowWorking.length}</div>
-        <div class="hw-center-sub">${workingLine}</div>
-        <div style="font-size:11px;color:rgba(255,255,255,.38);margin-top:2px">${todayShifts.length} zmian dziś</div>
+        <div style="display:flex;align-items:flex-end;justify-content:space-between;width:100%">
+          <div>
+            <div class="hw-center-value">${nowWorking.length}</div>
+            <div class="hw-center-sub">${workingLine}</div>
+            <div style="font-size:11px;color:rgba(255,255,255,.38);margin-top:3px">${todayShifts.length} zmian dziś</div>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;padding-bottom:4px">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.4)" stroke-width="1.5" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </div>
+        </div>
       </div>`;
   } else {
     /* Pracownik: jego zmiana dziś */
