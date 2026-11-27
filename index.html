@@ -489,27 +489,24 @@ body.view-home .bnav-item.active .bnav-icon-wrap { background: rgba(200,50,35,.2
 .hw-status-bar { display: none; }
 @keyframes pulse-dot { 0%,100%{opacity:1;transform:scale(1);} 50%{opacity:.5;transform:scale(.7);} }
 
-/* ── Bąbelki akcji — styl Revolut/Apple ── */
+/* ── Bąbelki akcji — 4+4 grid ── */
 .hw-quick-actions {
-  display: flex;
-  flex-direction: row;
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-  gap: 0;
-  padding: 2px 0 4px;
-  scrollbar-width: none;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(2, auto);
+  gap: 12px 0;
+  padding: 4px 0 2px;
   position: relative; z-index: 1;
+  width: 100%;
 }
-.hw-quick-actions::-webkit-scrollbar { display: none; }
 .hw-qa-row { display: contents; }
 .hw-qa-item {
   display: flex; flex-direction: column; align-items: center;
-  justify-content: flex-start; gap: 7px;
+  justify-content: flex-start; gap: 6px;
   cursor: pointer; -webkit-tap-highlight-color: transparent;
   position: relative;
   background: none; border: none; border-radius: 0;
-  padding: 0 6px;
-  flex: 1 0 auto;
+  padding: 0 4px;
   transition: transform .15s cubic-bezier(.2,.8,.2,1), opacity .15s;
   animation: qaIn .35s cubic-bezier(.2,.8,.2,1) both;
 }
@@ -525,14 +522,14 @@ body.view-home .bnav-item.active .bnav-icon-wrap { background: rgba(200,50,35,.2
 .hw-qa-item:active { transform: scale(.88); opacity: .7; }
 /* Bąbelek — kółko z ikoną */
 .hw-qa-circle {
-  width: 44px; height: 44px; border-radius: 50%;
+  width: 48px; height: 48px; border-radius: 50%;
   background: rgba(255,255,255,.15);
   border: 1px solid rgba(255,255,255,.2);
   box-shadow: 0 2px 10px rgba(0,0,0,.2), inset 0 1px 0 rgba(255,255,255,.15);
   display: flex; align-items: center; justify-content: center;
   flex-shrink: 0;
 }
-.hw-qa-circle svg { width: 20px; height: 20px; stroke-width: 1.6; stroke: rgba(255,255,255,.9); }
+.hw-qa-circle svg { width: 22px; height: 22px; stroke-width: 1.6; stroke: rgba(255,255,255,.9); }
 .hw-qa-circle::after { display: none; }
 .hw-qa-circle.accent-red { background: rgba(255,255,255,.15); }
 .hw-qa-label {
