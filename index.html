@@ -26,7 +26,7 @@
   --accent-hover: #C03010;
   --accent-soft: rgba(220,50,20,.15);
   --bg: transparent;
-  --bg-solid: #1E0A08;
+  --bg-solid: #3D0E0C;
   --bg-card: rgba(255,255,255,.08);
   --bg-card2: rgba(255,255,255,.05);
   --surface: rgba(255,255,255,.1);
@@ -1343,7 +1343,7 @@ body:not(.view-home) .chat-fab {
 }
 .modal-overlay.open, .modal-overlay.active { opacity: 1; pointer-events: all; }
 .modal {
-  background: #1E0C00; border-radius: 16px 16px 0 0; width: 100%; max-width: 480px;
+  background: rgba(80,15,10,.92); border-radius: 16px 16px 0 0; width: 100%; max-width: 480px;
   padding: 18px 20px 36px; transform: translateY(100%);
   transition: transform .22s cubic-bezier(.32,.72,0,1); max-height: 88vh; overflow-y: auto;
   border: 1px solid rgba(255,255,255,.1); border-bottom: none;
@@ -1681,7 +1681,7 @@ body:not(.view-home) .chat-fab {
 .chat-empty { text-align: center; padding: 40px 20px; color: var(--text-3); font-size: 14px; }
 
 /* ─── Dashboard pracownika ─── */
-.emp-dash { padding: 0 0 100px; min-height: calc(100dvh - 56px); background: var(--bg-solid); }
+.emp-dash { padding: 0 0 100px; min-height: calc(100dvh - 56px); background: transparent; }
 .emp-dash-header {
   display: flex; align-items: center; justify-content: space-between;
   padding: 20px 16px 12px;
@@ -4396,7 +4396,7 @@ function renderSettlementsUI(mc, rows){
 
   <!-- BOTTOM SHEET FORMULARZ -->
   <div id="sf-overlay" onclick="cancelSettlementForm()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:100;backdrop-filter:blur(2px)"></div>
-  <div id="settlement-form-wrap" style="position:fixed;bottom:0;left:0;right:0;z-index:101;background:#1a0a08;border-radius:24px 24px 0 0;height:95dvh;transform:translateY(100%);transition:transform .32s cubic-bezier(.32,0,.67,0);display:flex;flex-direction:column;visibility:hidden;overflow-x:hidden">
+  <div id="settlement-form-wrap" style="position:fixed;bottom:0;left:0;right:0;z-index:101;background:rgba(80,15,10,.97);border-radius:24px 24px 0 0;height:95dvh;transform:translateY(100%);transition:transform .32s cubic-bezier(.32,0,.67,0);display:flex;flex-direction:column;visibility:hidden;overflow-x:hidden">
 
     <!-- Handle + nagłówek — przyklejone, nie scrollują -->
     <div style="flex-shrink:0;padding-bottom:8px">
@@ -5928,7 +5928,7 @@ async function renderDash(mc){
   <div style="min-height:calc(100dvh - 56px);display:flex;flex-direction:column;">
 
   <!-- Hero manager -->
-  <div style="background:var(--bg-solid);padding:24px 20px 20px;border-bottom:1px solid rgba(139,26,46,.1);position:relative;">
+  <div style="background:rgba(80,15,10,.6);padding:24px 20px 20px;border-bottom:1px solid rgba(139,26,46,.2);position:relative;backdrop-filter:blur(8px);">
     <div style="position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#8B1A2E 0%,#C05A22 60%,transparent 100%);border-radius:0;"></div>
     <div style="font-size:11px;color:rgba(90,56,40,.5);font-weight:600;letter-spacing:.6px;text-transform:uppercase;margin-bottom:4px;">Dashboard managera</div>
     <div style="font-size:24px;font-weight:800;letter-spacing:-.6px;color:var(--text);margin-bottom:16px;">Osteria Antonina</div>
