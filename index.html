@@ -63,7 +63,10 @@ body {
 body::before {
   content: '';
   position: fixed; inset: 0; pointer-events: none; z-index: 0;
-  background: radial-gradient(ellipse 100% 55% at 50% 0%, rgba(160,30,20,.18) 0%, transparent 70%), #0F0A09;
+  background:
+    radial-gradient(ellipse 120% 65% at 50% 0%, rgba(200,45,25,.35) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 80% 20%, rgba(180,30,15,.2) 0%, transparent 55%),
+    #0F0A09;
 }
 
 /* Wrappery widoków — zawsze transparent */
@@ -409,7 +412,7 @@ body.view-home .bnav-item.active .bnav-icon-wrap { background: rgba(200,50,35,.2
   align-items: stretch;
   justify-content: flex-start;
   gap: 10px;
-  padding: 10px 16px calc(env(safe-area-inset-bottom) + 80px);
+  padding: 10px 16px calc(env(safe-area-inset-bottom) + 72px);
 }
 .hw-hero::before {
   content: none;
@@ -422,8 +425,8 @@ body.view-home .bnav-item.active .bnav-icon-wrap { background: rgba(200,50,35,.2
   position: relative; z-index: 1;
   width: 100%;
   /* Hero karta — wyraźna bordo, ale nie pełna czerwień */
-  background: linear-gradient(145deg, rgba(185,45,30,.7) 0%, rgba(130,22,15,.8) 100%);
-  border: 1px solid rgba(240,100,70,.2);
+  background: linear-gradient(145deg, rgba(210,55,35,.8) 0%, rgba(155,28,18,.9) 100%);
+  border: 1px solid rgba(255,120,80,.3);
   border-radius: 24px;
   padding: 22px 22px 20px;
   backdrop-filter: none; -webkit-backdrop-filter: none;
