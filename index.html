@@ -401,16 +401,15 @@ body.view-home .bnav-item.active .bnav-icon-wrap { background: rgba(200,50,35,.2
 }
 .hw-role-pill { display: none; }
 
-/* Środek — jak Revolut, elementy u góry, nie rozciągnięte */
+/* Środek — jak Revolut, elementy u góry */
 .hw-hero {
   position: relative; z-index: 1;
-  flex: 1;
+  flex: 0 0 auto;
   display: flex; flex-direction: column;
   align-items: stretch;
   justify-content: flex-start;
   gap: 10px;
   padding: 10px 16px calc(env(safe-area-inset-bottom) + 80px);
-  overflow: hidden;
 }
 .hw-hero::before {
   content: none;
