@@ -1120,6 +1120,19 @@ body:not(.view-home) .chat-fab {
 .grd-sum-h { font-size: 12px; font-weight: 700; color: #fff; letter-spacing: -.3px; }
 .grd-sum-cost { font-size: 9px; color: rgba(255,255,255,.35); margin-top: 1px; }
 
+/* Month view: wąskie kolumny */
+.grd-mon-day { min-width: 30px !important; max-width: 36px !important; }
+.grd-dnum-sm { font-size: 12px !important; }
+
+/* Month dots */
+.grd-mdot {
+  width: 10px; height: 10px; border-radius: 50%;
+  background: rgba(255,255,255,.75); flex-shrink: 0;
+  box-shadow: 0 1px 4px rgba(0,0,0,.3);
+}
+.grd-mdot-we { background: #FCA5A5; }
+.grd-mdot-off { background: rgba(220,38,38,.4); border: 1px dashed rgba(252,165,165,.5); }
+
 /* ── stare klasy kart (zostają w CSS ale nie używane) ── */
 .emp-cards-list { display: flex; flex-direction: column; gap: 8px; padding: 0 16px 16px; }
 
@@ -5693,46 +5706,66 @@ function renderMonth(mc){
     </div>`;
   }
 
-  const dowLabels=['Nd','Pon','Wt','Śr','Czw','Pt','Sob'];
+  const dowLabels=['N','P','W','Ś','C','Pt','S'];
 
-  html+=`<div class="month-wrap"><table class="month-tbl"><thead><tr>
-    <th class="mth-emp">Pracownik</th>`;
+  // ── siatka miesiąca: sticky kolumna + 28-31 kolumn dni ──
+  html+=`<div class="grd-wrap">
+  <div class="grd-scroll">
+  <div class="grd-table">
+    <div class="grd-row grd-head-row">
+      <div class="grd-name-cell grd-head-name">PRACOWNIK</div>`;
   days.forEach(day=>{
-    const isT=day.date===tod;
-    const isWe=day.dow===0||day.dow===6;
-    html+=`<th class="mth-day${isT?' mtoday':''}${isWe?' mweekend-h':''}">
-      <span>${dowLabels[day.dow].slice(0,2)}</span>
-      <span class="mdn">${day.d}</span>
-    </th>`;
+    const isT=day.date===tod, isWe=day.weekend;
+    html+=`<div class="grd-day-cell grd-head-day grd-mon-day${isT?' grd-today':''}${isWe?' grd-wknd':''}">
+      <span class="grd-dlabel">${dowLabels[day.dow]}</span>
+      <span class="grd-dnum grd-dnum-sm">${day.d}</span>
+      ${isT?'<span class="grd-dot"></span>':''}
+    </div>`;
   });
-  html+=`</tr></thead><tbody>`;
+  if(canEdit()) html+=`<div class="grd-sum-cell grd-head-sum">Mies.</div>`;
+  html+=`</div>`;
 
-  viewEmps.forEach(emp=>{
-    const eS=shifts.filter(s=>s.employee_id===emp.id);
-    let eH=0; eS.forEach(s=>eH+=calcH(s.start_time||'10:00:00',s.end_time||'18:00:00'));
-    html+=`<tr><td><div class="mtd-emp">
-      <div class="av" style="background:${avatarColor(emp.name)};width:24px;height:24px;font-size:9px;border-radius:5px">${initials(emp.name)}</div>
-      <div>
-        <div style="font-size:12px;font-weight:500">${emp.name.split(' ')[0]}</div>
-        ${eH>0?`<div style="font-size:10px;color:var(--accent)">${eH.toFixed(0)}h</div>`:''}
-      </div>
-    </div></td>`;
+  viewEmps.forEach((emp,ri)=>{
+    const eS=shifts.filter(s=>s.employee_id===emp.id&&s.date>=from&&s.date<=to);
+    let eH=0,eCost=0,eCount=0;
+    eS.forEach(s=>{const h=calcH(s.start_time||'10:00:00',s.end_time||'18:00:00');eH+=h;eCost+=h*(emp.rate_net||0);eCount++;});
+    const dc=emp.department==='sala'?'#60A5FA':'#FBBF24';
+    html+=`<div class="grd-row${ri%2===1?' grd-row-alt':''}">
+      <div class="grd-name-cell">
+        <div class="grd-av" style="background:${avatarColor(emp.name)}">${initials(emp.name)}</div>
+        <div class="grd-empinfo">
+          <div class="grd-empname">${emp.name.split(' ')[0]}</div>
+          <div class="grd-empdept"><span class="grd-deptdot" style="background:${dc}"></span>${emp.department}</div>
+        </div>
+      </div>`;
     days.forEach(day=>{
       const shift=eS.find(s=>s.date===day.date);
-      const isT=day.date===tod;
-      const ca=canEdit()?`onclick="openShiftModal('${emp.id}','${emp.name}','${day.date}','${shift?.id||''}')"`:''
-      html+=`<td class="mtd-day${shift?' mfilled':''}${isT?' mtoday-cell':''}${day.weekend?' mweekend':''}" ${ca}>`;
-      if(shift){
-        html+=`<div class="mchip">${(shift.start_time||'10:00').slice(0,5)}</div>`;
+      const isWe=day.weekend, isT=day.date===tod;
+      const unavail=availDates.find(a=>a.employee_id===emp.id&&a.date===day.date&&a.available===false);
+      const onclick=canEdit()?`onclick="openShiftModal('${emp.id}','${emp.name}','${day.date}','${shift?.id||''}')"` :'';
+      let cls='grd-day-cell grd-mon-day'+(isWe?' grd-wknd':'')+(isT?' grd-today':'');
+      html+=`<div class="${cls}" ${onclick}>`;
+      if(unavail&&!shift){
+        html+=`<div class="grd-mdot grd-mdot-off"></div>`;
+      } else if(shift){
+        html+=`<div class="grd-mdot${isWe?' grd-mdot-we':''}"></div>`;
       } else if(canEdit()){
-        html+=`<span style="color:var(--border);font-size:12px">+</span>`;
+        html+=`<div class="grd-plus" style="font-size:12px">+</div>`;
       }
-      html+=`</td>`;
+      html+=`</div>`;
     });
-    html+=`</tr>`;
+    if(canEdit()){
+      html+=`<div class="grd-sum-cell">`;
+      if(eH>0){
+        html+=`<div class="grd-sum-h">${eH.toFixed(0)}h</div>`;
+        html+=`<div class="grd-sum-cost">${eCount} zm.</div>`;
+      } else html+=`<div class="grd-sum-h" style="opacity:.2">—</div>`;
+      html+=`</div>`;
+    }
+    html+=`</div>`;
   });
 
-  html+=`</tbody></table></div></div>`;
+  html+=`</div></div></div></div>`;
   mc.innerHTML=html;
 }
 
