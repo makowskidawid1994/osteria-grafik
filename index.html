@@ -1671,9 +1671,9 @@ body:not(.view-home) .chat-fab {
   padding: 8px 12px 6px; word-break: break-word; position: relative;
   font-size: 15px; line-height: 1.45;
 }
-/* Wiadomości innych — szare po lewej */
+/* Wiadomości innych — ciemne po lewej (Revolut-style) */
 .chat-bubble.other {
-  background: var(--surface); border: 1px solid var(--border-2); color: var(--text);
+  background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.07); color: var(--text);
   border-radius: 18px 18px 18px 4px;
 }
 /* Wiadomości własne — bordowe po prawej */
@@ -2324,7 +2324,7 @@ function calcH(s,e){
   let m=(eh*60+em)-(sh*60+sm); if(m<0)m+=1440; return m/60;
 }
 function avatarColor(n){
-  const c=['#334155','#166534','#92400E','#5B21B6','#1E40AF','#065F46','#9A3412','#881337'];
+  const c=['#7B1D2E','#6B1520','#8B2535','#5A1018','#9B2D40','#4A0D14','#7F1F30','#601228'];
   let h=0; for(let ch of n)h=ch.charCodeAt(0)+((h<<5)-h); return c[Math.abs(h)%c.length];
 }
 function initials(n){return n.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);}
