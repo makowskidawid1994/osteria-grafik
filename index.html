@@ -2297,11 +2297,24 @@ function monthName(m){return['Styczeń','Luty','Marzec','Kwiecień','Maj','Czerw
 const VIEWS_WITH_BNAV = new Set(['home','sched','emps','avail','dash','clock','chat']);
 
 
+function updateSubTopbar(){
+  const email=currentUser?.user?.email||currentUser?.email||'';
+  const empMatch=employees.find(e=>e.email&&e.email.toLowerCase()===email.toLowerCase());
+  const name=empMatch?.name||email;
+  const ini=name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2)||'?';
+  const roleMap={owner:'Właściciel',manager:'Manager',kitchen:'Szef kuchni',front:'Sala',employee:'Pracownik'};
+  const subAv=document.getElementById('sub-avatar');
+  const subRole=document.getElementById('sub-role');
+  if(subAv) subAv.textContent=ini;
+  if(subRole) subRole.textContent=roleMap[currentRole]||currentRole||'';
+}
+
 function showView(v, pushHistory=true){
   const prev=currentView;
   currentView=v;
   if(pushHistory && prev!==v) history.pushState({view:v},'',`#${v}`);
   document.body.classList.toggle('view-home', v==='home');
+  updateSubTopbar();
   // Header usunięty — zawsze ukryty
 
   // Dolny nav — tylko w starych widokach
