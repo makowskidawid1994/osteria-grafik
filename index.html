@@ -412,7 +412,8 @@ body.view-home .bnav-item.active .bnav-icon-wrap { background: rgba(255,255,255,
   flex: 1;
   display: flex; flex-direction: column;
   align-items: stretch;
-  justify-content: space-between;
+  justify-content: flex-start;
+  gap: 10px;
   padding: 10px 16px calc(env(safe-area-inset-bottom) + 76px);
   overflow: hidden;
 }
@@ -432,7 +433,7 @@ body.view-home .bnav-item.active .bnav-icon-wrap { background: rgba(255,255,255,
   background: linear-gradient(145deg, rgba(255,255,255,.22) 0%, rgba(255,120,30,.16) 50%, rgba(200,50,10,.12) 100%);
   border: 1px solid rgba(255,255,255,.28);
   border-radius: 24px;
-  padding: 20px 20px 16px;
+  padding: 16px 18px 14px;
   backdrop-filter: blur(32px); -webkit-backdrop-filter: blur(32px);
   box-shadow: 0 8px 40px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.22);
   overflow: hidden;
@@ -455,17 +456,17 @@ body.view-home .bnav-item.active .bnav-icon-wrap { background: rgba(255,255,255,
   pointer-events: none;
 }
 .hw-center-label {
-  font-size: 11px; font-weight: 600; color: rgba(255,255,255,.5);
-  letter-spacing: .8px; text-transform: uppercase; margin-bottom: 10px;
+  font-size: 10px; font-weight: 600; color: rgba(255,255,255,.5);
+  letter-spacing: .8px; text-transform: uppercase; margin-bottom: 6px;
 }
 .hw-center-value {
-  font-size: 56px; font-weight: 800; color: #fff;
+  font-size: 48px; font-weight: 800; color: #fff;
   letter-spacing: -3px; line-height: 1;
   font-variant-numeric: tabular-nums;
 }
 .hw-center-sub {
-  font-size: 13px; font-weight: 400; color: rgba(255,255,255,.55);
-  margin-top: 8px; letter-spacing: -.1px;
+  font-size: 12px; font-weight: 400; color: rgba(255,255,255,.55);
+  margin-top: 6px; letter-spacing: -.1px;
 }
 .hw-bottom-group {
   display: flex; flex-direction: column; gap: 12px;
@@ -489,7 +490,7 @@ body.view-home .bnav-item.active .bnav-icon-wrap { background: rgba(255,255,255,
   grid-template-rows: repeat(2, 1fr);
   gap: 10px;
   position: relative; z-index: 1;
-  opacity: 0; animation: fadeIn .4s ease .2s forwards;
+  opacity: 1;
 }
 .hw-qa-row { display: contents; }
 .hw-qa-item {
@@ -543,9 +544,9 @@ body.view-home .bnav-item.active .bnav-icon-wrap { background: rgba(255,255,255,
   border-radius: 20px;
   background: linear-gradient(145deg, rgba(255,255,255,.18) 0%, rgba(255,255,255,.10) 100%);
   border: 1px solid rgba(255,255,255,.22);
-  padding: 14px 16px;
+  padding: 12px 16px;
   display: flex; gap: 0;
-  opacity: 0; animation: fadeIn .4s ease .15s forwards;
+  opacity: 1;
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   position: relative; z-index: 1;
