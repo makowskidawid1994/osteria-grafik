@@ -56,16 +56,14 @@ body {
   min-height: 100vh; font-size: 14px; line-height: 1.5;
   -webkit-font-smoothing: antialiased; overscroll-behavior-y: none;
 }
-/* ═══ JEDNO SPÓJNE TŁO — Osteria Antonina ═══ */
-/* Głęboka burgundowa czerwień, pomarańczowy blask u góry — jeden motyw na każdym ekranie */
+/* ═══ TŁO — Revolut-style ciemny, bordeaux akcent ═══ */
 body {
-  background: #030000 fixed;
+  background: #0D0D0D fixed;
 }
 body::before {
   content: '';
   position: fixed; inset: 0; pointer-events: none; z-index: 0;
-  background:
-    linear-gradient(180deg, #0C0101 0%, #060101 50%, #030000 100%);
+  background: #0D0D0D;
 }
 
 /* Wrappery widoków — zawsze transparent */
@@ -402,13 +400,13 @@ body.view-home .bnav-item.active .bnav-icon-wrap { background: rgba(192,57,43,.5
 }
 .hw-role-pill { display: none; }
 
-/* Środek — duże dane jak saldo w Revolut */
+/* Środek — jak Revolut, wypełnia cały ekran */
 .hw-hero {
   position: relative; z-index: 1;
   flex: 1;
   display: flex; flex-direction: column;
   align-items: stretch;
-  justify-content: flex-start;
+  justify-content: space-between;
   gap: 12px;
   padding: 12px 16px calc(env(safe-area-inset-bottom) + 80px);
   overflow: hidden;
@@ -1534,8 +1532,8 @@ body:not(.view-home) .chat-fab {
 .clock-btn-round svg { width: 30px; height: 30px; }
 
 .clock-btn-round.state-idle {
-  background: linear-gradient(145deg, #FBBF24, #D97706); color: white;
-  box-shadow: 0 8px 36px rgba(217,119,6,.55), 0 2px 8px rgba(0,0,0,.3);
+  background: linear-gradient(145deg, #E8402E, #B82E1E); color: white;
+  box-shadow: 0 8px 36px rgba(200,50,30,.55), 0 2px 8px rgba(0,0,0,.3);
 }
 .clock-btn-round.state-idle svg { stroke: none; fill: white; }
 
@@ -1551,8 +1549,8 @@ body:not(.view-home) .chat-fab {
 }
 
 .clock-btn-round.state-break {
-  background: linear-gradient(145deg, #FBBF24, #D97706); color: white;
-  box-shadow: 0 8px 36px rgba(217,119,6,.5), 0 2px 8px rgba(0,0,0,.3);
+  background: linear-gradient(145deg, #E8402E, #B82E1E); color: white;
+  box-shadow: 0 8px 36px rgba(200,50,30,.5), 0 2px 8px rgba(0,0,0,.3);
 }
 .clock-btn-round.state-break svg { stroke: white; fill: none; stroke-width: 2; }
 .clock-btn-round:disabled { opacity: .45; cursor: not-allowed; }
@@ -5986,7 +5984,7 @@ async function renderDash(mc){
   <!-- Hero manager -->
   <div style="background:rgba(80,15,10,.6);padding:24px 20px 20px;border-bottom:1px solid rgba(139,26,46,.2);position:relative;backdrop-filter:blur(8px);">
     <div style="position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#8B1A2E 0%,#C05A22 60%,transparent 100%);border-radius:0;"></div>
-    <div style="font-size:11px;color:rgba(90,56,40,.5);font-weight:600;letter-spacing:.6px;text-transform:uppercase;margin-bottom:4px;">Dashboard managera</div>
+    <div style="font-size:11px;color:rgba(255,255,255,.45);font-weight:600;letter-spacing:.6px;text-transform:uppercase;margin-bottom:4px;">Dashboard managera</div>
     <div style="font-size:24px;font-weight:800;letter-spacing:-.6px;color:var(--text);margin-bottom:16px;">Osteria Antonina</div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
       <div style="background:var(--brand);border-radius:16px;padding:16px;">
