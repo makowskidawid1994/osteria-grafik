@@ -411,9 +411,11 @@ body.view-home .bnav-item.active .bnav-icon-wrap { background: rgba(255,255,255,
   position: relative; z-index: 1;
   flex: 1;
   display: flex; flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding-bottom: calc(env(safe-area-inset-bottom) + 88px);
+  align-items: stretch;
+  justify-content: flex-start;
+  padding: 12px 16px calc(env(safe-area-inset-bottom) + 80px);
+  gap: 12px;
+  overflow: hidden;
 }
 .hw-hero::before {
   content: none;
@@ -426,15 +428,14 @@ body.view-home .bnav-item.active .bnav-icon-wrap { background: rgba(255,255,255,
 .hw-center-block {
   display: flex; flex-direction: column; align-items: flex-start;
   position: relative; z-index: 1;
-  margin-bottom: 20px;
   width: 100%;
   /* Revolut-style duży baner-karta */
-  background: linear-gradient(145deg, rgba(255,255,255,.18) 0%, rgba(255,120,30,.14) 50%, rgba(200,50,10,.10) 100%);
-  border: 1px solid rgba(255,255,255,.22);
-  border-radius: 28px;
-  padding: 24px 24px 20px;
+  background: linear-gradient(145deg, rgba(255,255,255,.22) 0%, rgba(255,120,30,.16) 50%, rgba(200,50,10,.12) 100%);
+  border: 1px solid rgba(255,255,255,.28);
+  border-radius: 24px;
+  padding: 20px 20px 16px;
   backdrop-filter: blur(32px); -webkit-backdrop-filter: blur(32px);
-  box-shadow: 0 8px 40px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.18);
+  box-shadow: 0 8px 40px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.22);
   overflow: hidden;
   cursor: pointer;
   transition: transform .15s cubic-bezier(.2,.8,.2,1);
@@ -468,8 +469,8 @@ body.view-home .bnav-item.active .bnav-icon-wrap { background: rgba(255,255,255,
   margin-top: 8px; letter-spacing: -.1px;
 }
 .hw-bottom-group {
-  display: flex; flex-direction: column; gap: 14px;
-  width: 100%; padding: 0 6px;
+  display: flex; flex-direction: column; gap: 12px;
+  width: 100%;
   position: relative; z-index: 1;
 }
 
@@ -497,14 +498,14 @@ body.view-home .bnav-item.active .bnav-icon-wrap { background: rgba(255,255,255,
   justify-content: center; gap: 8px;
   cursor: pointer; -webkit-tap-highlight-color: transparent;
   position: relative;
-  /* Revolut tile */
-  background: linear-gradient(145deg, rgba(255,255,255,.16) 0%, rgba(255,255,255,.08) 100%);
-  border: 1px solid rgba(255,255,255,.18);
+  /* Revolut tile — jaśniejsze tło dla kontrastu */
+  background: linear-gradient(145deg, rgba(255,255,255,.26) 0%, rgba(255,255,255,.14) 100%);
+  border: 1px solid rgba(255,255,255,.30);
   border-radius: 20px;
   padding: 14px 8px 12px;
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  box-shadow: 0 4px 16px rgba(0,0,0,.25), inset 0 1px 0 rgba(255,255,255,.18);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  box-shadow: 0 4px 20px rgba(0,0,0,.30), inset 0 1px 0 rgba(255,255,255,.30);
   overflow: hidden;
   transition: transform .15s cubic-bezier(.2,.8,.2,1), box-shadow .15s;
 }
@@ -543,16 +544,17 @@ body.view-home .bnav-item.active .bnav-icon-wrap { background: rgba(255,255,255,
 /* ── Live stats card — jak sekcja "Karty" w Revolut ── */
 .hw-stats-card {
   border-radius: 20px;
-  background: rgba(255,255,255,.1);
-  border: 1px solid rgba(255,255,255,.12);
-  padding: 16px 20px;
+  background: linear-gradient(145deg, rgba(255,255,255,.18) 0%, rgba(255,255,255,.10) 100%);
+  border: 1px solid rgba(255,255,255,.22);
+  padding: 14px 16px;
   display: flex; gap: 0;
   opacity: 0; animation: fadeIn .4s ease .15s forwards;
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   position: relative; z-index: 1;
   overflow: hidden;
   cursor: pointer;
+  box-shadow: 0 4px 20px rgba(0,0,0,.25), inset 0 1px 0 rgba(255,255,255,.22);
 }
 .hw-stats-card::before {
   content: '';
