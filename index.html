@@ -423,12 +423,12 @@ body.view-home .bnav-item.active .bnav-icon-wrap { background: rgba(192,57,43,.5
   position: relative; z-index: 1;
   width: 100%;
   /* Revolut-style hero karta — jaśniejsza, wyróżniona */
-  background: linear-gradient(145deg, #C0392B 0%, #A02820 55%, #841F19 100%);
-  border: 1px solid rgba(255,255,255,.25);
-  border-radius: 22px;
-  padding: 18px 20px 16px;
+  background: linear-gradient(160deg, #D04030 0%, #B03025 50%, #901F1A 100%);
+  border: 1px solid rgba(255,255,255,.22);
+  border-radius: 24px;
+  padding: 22px 22px 20px;
   backdrop-filter: none; -webkit-backdrop-filter: none;
-  box-shadow: 0 8px 32px rgba(0,0,0,.55), 0 0 0 1px rgba(255,255,255,.05), inset 0 1px 0 rgba(255,255,255,.25);
+  box-shadow: 0 10px 40px rgba(0,0,0,.6), 0 0 0 1px rgba(255,255,255,.06), inset 0 1px 0 rgba(255,255,255,.28);
   overflow: hidden;
   cursor: pointer;
   transition: transform .15s cubic-bezier(.2,.8,.2,1);
@@ -449,18 +449,18 @@ body.view-home .bnav-item.active .bnav-icon-wrap { background: rgba(192,57,43,.5
   pointer-events: none;
 }
 .hw-center-label {
-  font-size: 11px; font-weight: 500; color: rgba(255,255,255,.5);
-  letter-spacing: .3px; text-transform: none; margin-bottom: 4px;
+  font-size: 12px; font-weight: 500; color: rgba(255,255,255,.55);
+  letter-spacing: .2px; text-transform: none; margin-bottom: 6px;
 }
 .hw-center-value {
-  font-size: 52px; font-weight: 800; color: #fff;
-  letter-spacing: -3px; line-height: 1;
+  font-size: 60px; font-weight: 800; color: #fff;
+  letter-spacing: -4px; line-height: 1;
   font-variant-numeric: tabular-nums;
-  margin: 2px 0;
+  margin: 0 0 4px;
 }
 .hw-center-sub {
-  font-size: 12px; font-weight: 400; color: rgba(255,255,255,.5);
-  margin-top: 5px; letter-spacing: -.1px;
+  font-size: 13px; font-weight: 400; color: rgba(255,255,255,.55);
+  margin-top: 2px; letter-spacing: -.1px;
 }
 .hw-bottom-group {
   display: flex; flex-direction: column; gap: 12px;
@@ -2703,13 +2703,9 @@ function renderHome(mc){
     centerBlock = `
       <div class="hw-center-block" onclick="hbTap(this,'panel')">
         <div class="hw-center-label">Teraz w pracy</div>
-        <div style="display:flex;align-items:flex-end;gap:12px;margin-top:2px">
-          <div class="hw-center-value">${nowWorking.length}</div>
-          <div style="display:flex;flex-direction:column;gap:2px;padding-bottom:5px">
-            <span class="hw-center-sub" style="margin:0">${workingLine}</span>
-            <span style="font-size:11px;color:rgba(255,255,255,.35)">${todayShifts.length} zmian dziś</span>
-          </div>
-        </div>
+        <div class="hw-center-value">${nowWorking.length}</div>
+        <div class="hw-center-sub">${workingLine}</div>
+        <div style="font-size:11px;color:rgba(255,255,255,.38);margin-top:2px">${todayShifts.length} zmian dziś</div>
       </div>`;
   } else {
     /* Pracownik: jego zmiana dziś */
