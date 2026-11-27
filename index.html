@@ -430,69 +430,127 @@ body.view-home .bnav-item.active .bnav-icon-wrap { background: rgba(200,50,35,.2
 .hw-hero::before { content: none; }
 .hw-wrap::before { content: none; }
 
-/* Hero info — jak saldo Revolut, bez karty/ramki */
+/* Hero info — pracownik: jego zmiana, bez karty */
 .hw-center-block {
   display: flex; flex-direction: column; align-items: flex-start;
   justify-content: flex-end;
   position: relative; z-index: 1;
   width: 100%;
-  background: none;
-  border: none;
-  border-radius: 0;
+  background: none; border: none; border-radius: 0;
   padding: 0 4px 16px;
   flex: 1;
-  overflow: hidden;
   cursor: pointer;
   transition: opacity .15s;
   animation: fadeInUp .4s cubic-bezier(.2,.8,.2,1) both;
 }
 .hw-center-block:active { opacity: .7; }
-.hw-center-block::before { content: none; }
-.hw-center-block::after { content: none; }
+.hw-center-block::before, .hw-center-block::after { content: none; }
 .hw-center-label {
   font-size: 13px; font-weight: 500; color: rgba(255,255,255,.45);
   letter-spacing: .5px; margin-bottom: 6px;
   text-align: left; text-transform: uppercase;
 }
 .hw-center-value {
-  font-size: 80px; font-weight: 800; color: #fff;
-  letter-spacing: -5px; line-height: .95;
+  font-size: 72px; font-weight: 800; color: #fff;
+  letter-spacing: -4px; line-height: .95;
   font-variant-numeric: tabular-nums;
-  margin: 0 0 10px;
-  text-align: left;
+  margin: 0 0 8px; text-align: left;
   animation: countUp .5s cubic-bezier(.2,.8,.2,1) .1s both;
 }
 .hw-center-sub {
-  font-size: 17px; font-weight: 500; color: rgba(255,255,255,.8);
-  letter-spacing: -.2px;
-  text-align: left;
+  font-size: 16px; font-weight: 500; color: rgba(255,255,255,.75);
+  letter-spacing: -.1px; text-align: left;
   display: flex; align-items: center; gap: 6px; width: 100%;
-  margin-bottom: 4px;
 }
 .hw-center-sub-small {
   font-size: 13px; color: rgba(255,255,255,.4);
-  margin-top: 2px; text-align: left; font-weight: 400;
+  margin-top: 4px; text-align: left; font-weight: 400;
 }
-/* Chip z pracownikami */
-.hw-worker-chips {
-  display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px;
+
+/* ── Admin panel cards — właściciel/manager ── */
+.hw-admin-panel {
+  flex: 1;
+  display: flex; flex-direction: column;
+  justify-content: flex-end;
+  gap: 10px;
+  padding-bottom: 16px;
+  position: relative; z-index: 1;
+  animation: fadeInUp .4s cubic-bezier(.2,.8,.2,1) both;
 }
-.hw-worker-chip {
-  display: flex; align-items: center; gap: 6px;
-  background: rgba(255,255,255,.1);
-  border: 1px solid rgba(255,255,255,.12);
+/* Główna karta — "Teraz w pracy" */
+.hw-admin-main {
   border-radius: 20px;
-  padding: 4px 10px 4px 6px;
-  animation: fadeInUp .3s cubic-bezier(.2,.8,.2,1) both;
+  background: linear-gradient(145deg, rgba(255,255,255,.13) 0%, rgba(255,255,255,.07) 100%);
+  border: 1px solid rgba(255,255,255,.18);
+  box-shadow: 0 4px 24px rgba(0,0,0,.25), inset 0 1px 0 rgba(255,255,255,.12);
+  padding: 18px 20px 16px;
+  cursor: pointer;
+  transition: opacity .15s;
+  position: relative; overflow: hidden;
 }
-.hw-worker-chip-av {
-  width: 22px; height: 22px; border-radius: 50%;
-  background: rgba(255,255,255,.2);
+.hw-admin-main:active { opacity: .75; }
+.hw-admin-main::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,.25), transparent);
+}
+.hw-admin-main-eyebrow {
+  font-size: 11px; font-weight: 600; color: rgba(255,255,255,.45);
+  letter-spacing: .8px; text-transform: uppercase; margin-bottom: 8px;
+}
+.hw-admin-main-row {
+  display: flex; align-items: flex-end; justify-content: space-between;
+}
+.hw-admin-main-num {
+  font-size: 56px; font-weight: 800; color: #fff;
+  letter-spacing: -3px; line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+.hw-admin-main-unit {
+  font-size: 20px; font-weight: 400; color: rgba(255,255,255,.5);
+  margin-left: 4px; margin-bottom: 6px;
+}
+.hw-admin-main-avatars {
+  display: flex; align-items: center;
+}
+.hw-admin-av {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: rgba(255,255,255,.25);
+  border: 2px solid rgba(255,255,255,.12);
   display: flex; align-items: center; justify-content: center;
-  font-size: 10px; font-weight: 700; color: #fff;
+  font-size: 12px; font-weight: 700; color: #fff;
+  margin-left: -10px;
 }
-.hw-worker-chip-name {
-  font-size: 13px; font-weight: 500; color: rgba(255,255,255,.85);
+.hw-admin-av:first-child { margin-left: 0; }
+.hw-admin-main-sub {
+  font-size: 13px; color: rgba(255,255,255,.55); font-weight: 400;
+  margin-top: 6px;
+}
+/* Rząd dwóch małych kart */
+.hw-admin-row {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+}
+.hw-admin-mini {
+  border-radius: 16px;
+  background: rgba(255,255,255,.08);
+  border: 1px solid rgba(255,255,255,.1);
+  padding: 14px 16px;
+  cursor: pointer;
+  transition: opacity .15s;
+  display: flex; flex-direction: column; gap: 4px;
+}
+.hw-admin-mini:active { opacity: .7; }
+.hw-admin-mini-label {
+  font-size: 11px; font-weight: 500; color: rgba(255,255,255,.4);
+  text-transform: uppercase; letter-spacing: .6px;
+}
+.hw-admin-mini-val {
+  font-size: 26px; font-weight: 700; color: #fff;
+  letter-spacing: -1px; line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+}
+.hw-admin-mini-sub {
+  font-size: 11px; color: rgba(255,255,255,.4); font-weight: 400;
 }
 .hw-bottom-group {
   display: flex; flex-direction: column; gap: 16px;
@@ -2964,25 +3022,47 @@ function renderHome(mc){
   /* ── Centrum ekranu — różne dla właściciela i pracownika ── */
   let centerBlock = '';
   if(isOwnerOrMgr){
-    /* Właściciel: kto jest teraz w pracy — Revolut-style hero */
-    const workingChips = nowWorking.slice(0,4).map((s,i)=>{
-      const name = s.employees?.name?.split(' ')[0]||'?';
-      const av = name.slice(0,1).toUpperCase();
-      return `<div class="hw-worker-chip" style="animation-delay:${.1+i*.05}s">
-        <div class="hw-worker-chip-av">${av}</div>
-        <span class="hw-worker-chip-name">${name}</span>
-      </div>`;
+    /* Właściciel: panel admina — dwie karty pod bąbelkami */
+    const workingAvatars = nowWorking.slice(0,4).map((s,i)=>{
+      const av = (s.employees?.name||'?').slice(0,1).toUpperCase();
+      return `<div class="hw-admin-av">${av}</div>`;
     }).join('');
-    const moreChip = nowWorking.length > 4
-      ? `<div class="hw-worker-chip"><span class="hw-worker-chip-name">+${nowWorking.length-4}</span></div>` : '';
-    const statusLine = nowWorking.length === 0 ? 'Nikt nie pracuje' : `${nowWorking.length === 1 ? '1 osoba' : nowWorking.length + ' osoby'} na zmianie`;
+    const moreAv = nowWorking.length > 4
+      ? `<div class="hw-admin-av">+${nowWorking.length-4}</div>` : '';
+    const workingSubNames = nowWorking.slice(0,3).map(s=>s.employees?.name?.split(' ')[0]||'?').join(', ')
+      + (nowWorking.length > 3 ? ` +${nowWorking.length-3}` : '');
+    const statusSub = nowWorking.length === 0 ? 'Nikt nie pracuje' : workingSubNames;
+    const tomorrowShifts = shifts.filter(s=>{
+      const tom = new Date(); tom.setDate(tom.getDate()+1);
+      return s.date === tom.toISOString().slice(0,10);
+    });
     centerBlock = `
-      <div class="hw-center-block" onclick="hbTap(this,'panel')">
-        <div class="hw-center-label">Teraz w pracy</div>
-        <div class="hw-center-value">${nowWorking.length}</div>
-        <div class="hw-center-sub">${statusLine}</div>
-        ${nowWorking.length > 0 ? `<div class="hw-worker-chips">${workingChips}${moreChip}</div>` : ''}
-        ${todayShifts.length > 0 ? `<div class="hw-center-sub-small">${todayShifts.length} zmian zaplanowanych dziś</div>` : ''}
+      <div class="hw-admin-panel">
+        <!-- Główna karta: Teraz w pracy -->
+        <div class="hw-admin-main" onclick="hbTap(this,'panel')">
+          <div class="hw-admin-main-eyebrow">Teraz w pracy</div>
+          <div class="hw-admin-main-row">
+            <div style="display:flex;align-items:flex-end;gap:4px">
+              <div class="hw-admin-main-num">${nowWorking.length}</div>
+              <div class="hw-admin-main-unit">os.</div>
+            </div>
+            ${nowWorking.length > 0 ? `<div class="hw-admin-main-avatars">${workingAvatars}${moreAv}</div>` : ''}
+          </div>
+          <div class="hw-admin-main-sub">${statusSub}</div>
+        </div>
+        <!-- Dwie mini karty -->
+        <div class="hw-admin-row">
+          <div class="hw-admin-mini" onclick="hbTap(this,'sched')">
+            <div class="hw-admin-mini-label">Zmian dziś</div>
+            <div class="hw-admin-mini-val">${todayShifts.length}</div>
+            <div class="hw-admin-mini-sub">${todayShifts.length === 0 ? 'Brak' : 'zaplanowanych'}</div>
+          </div>
+          <div class="hw-admin-mini" onclick="hbTap(this,'sched')">
+            <div class="hw-admin-mini-label">Jutro</div>
+            <div class="hw-admin-mini-val">${tomorrowShifts.length}</div>
+            <div class="hw-admin-mini-sub">${tomorrowShifts.length === 0 ? 'Brak zmian' : 'zmian'}</div>
+          </div>
+        </div>
       </div>`;
   } else {
     /* Pracownik: jego zmiana dziś */
@@ -3029,38 +3109,21 @@ function renderHome(mc){
       <div class="hw-hero-avatar" onclick="hbTap(this,'profile')">${initials}</div>
     </div>
 
-    <!-- Centrum — główna informacja (jak saldo w Revolut) -->
+    <!-- Hero — bąbelki na górze, panel/info na dole -->
     <div class="hw-hero">
+
+      <!-- Bąbelki akcji — zaraz pod topbarem -->
+      <div class="hw-quick-actions" style="margin-bottom:8px">
+        ${allActions.map((a,i)=>`
+          <div class="hw-qa-item" onclick="hbTap(this,'${a.id}')">
+            <div class="hw-qa-circle${a.accent?' '+a.accent:''}">${a.icon}</div>
+            <span class="hw-qa-label">${a.label}</span>
+          </div>`).join('')}
+      </div>
+
+      <!-- Panel admina / info pracownika — wypełnia resztę, wyrównany do dołu -->
       ${centerBlock}
 
-      <!-- Dół: kółka + karta -->
-      <div class="hw-bottom-group">
-        <!-- Bąbelki akcji — poziomy scroll -->
-        <div class="hw-quick-actions">
-          ${allActions.map((a,i)=>`
-            <div class="hw-qa-item" onclick="hbTap(this,'${a.id}')">
-              <div class="hw-qa-circle${a.accent?' '+a.accent:''}">${a.icon}</div>
-              <span class="hw-qa-label">${a.label}</span>
-            </div>`).join('')}
-        </div>
-
-        <!-- Karta statystyk -->
-        <div class="hw-stats-card" onclick="hbTap(this,'sched')">
-          <div class="hw-stat">
-            <div class="hw-stat-val">${nowWorking.length}</div>
-            <div class="hw-stat-lbl">Na zmianie</div>
-          </div>
-          <div class="hw-stat">
-            <div class="hw-stat-val">${todayShifts.length}</div>
-            <div class="hw-stat-lbl">Zmian dziś</div>
-          </div>
-          <div class="hw-stat">
-            <div class="hw-stat-val">${employees.filter(e=>e.active!==false).length}</div>
-            <div class="hw-stat-lbl">Pracowników</div>
-          </div>
-        </div>
-
-      </div>
     </div>
 
   </div>`;
@@ -7641,7 +7704,7 @@ function toggleAvatarMenu(e){
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', async () => {
     try {
-      const reg = await navigator.serviceWorker.register('/sw.js?v=182');
+      const reg = await navigator.serviceWorker.register('/sw.js?v=183');
       reg.update();
       reg.addEventListener('updatefound', () => {
         const newSW = reg.installing;
