@@ -65,8 +65,8 @@ body::before {
   content: '';
   position: fixed; inset: 0; pointer-events: none; z-index: 0;
   background:
-    radial-gradient(ellipse 170% 55% at 50% -5%, rgba(220,90,10,.75) 0%, rgba(160,40,5,.45) 42%, transparent 70%),
-    linear-gradient(180deg, #6B1A12 0%, #4A1010 30%, #2C0A08 65%, #1A0505 100%);
+    radial-gradient(ellipse 120% 40% at 50% -5%, rgba(180,50,20,.5) 0%, rgba(120,25,10,.3) 50%, transparent 72%),
+    linear-gradient(180deg, #4A1208 0%, #2E0A07 35%, #1E0605 65%, #150404 100%);
 }
 
 /* Wrappery widoków — zawsze transparent */
@@ -519,17 +519,17 @@ body.view-home .bnav-item.active .bnav-icon-wrap { background: rgba(255,255,255,
   transform: scale(.93);
   box-shadow: 0 1px 6px rgba(0,0,0,.35);
 }
-/* ikona — bez kółka, bezpośrednio na kaflu jak w Revolut */
+/* ikona — bezpośrednio na kaflu, brak kółka jak w Revolut */
 .hw-qa-circle {
   width: 36px; height: 36px; border-radius: 50%;
-  background: rgba(255,255,255,.12);
+  background: rgba(255,255,255,.0);
   border: none;
   display: flex; align-items: center; justify-content: center;
   flex-shrink: 0;
 }
-.hw-qa-circle svg { width: 20px; height: 20px; }
+.hw-qa-circle svg { width: 24px; height: 24px; stroke-width: 1.8; }
 .hw-qa-circle::after { display: none; }
-.hw-qa-circle.accent-red { background: rgba(239,68,68,.2); }
+.hw-qa-circle.accent-red { background: transparent; }
 .hw-qa-label {
   font-size: 11px; font-weight: 600; color: rgba(255,255,255,.9);
   text-align: center; white-space: nowrap; overflow: hidden;
