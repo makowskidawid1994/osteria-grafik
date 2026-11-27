@@ -508,8 +508,8 @@ body.view-home .bnav-item.active .bnav-icon-wrap { background: rgba(200,50,35,.2
   cursor: pointer; -webkit-tap-highlight-color: transparent;
   position: relative;
   background: none; border: none; border-radius: 0;
-  padding: 0 10px;
-  flex: 0 0 auto;
+  padding: 0 6px;
+  flex: 1 0 auto;
   transition: transform .15s cubic-bezier(.2,.8,.2,1), opacity .15s;
   animation: qaIn .35s cubic-bezier(.2,.8,.2,1) both;
 }
@@ -523,16 +523,16 @@ body.view-home .bnav-item.active .bnav-icon-wrap { background: rgba(200,50,35,.2
 .hw-qa-item:nth-child(8) { animation-delay: .4s; }
 .hw-qa-item::before { content: none; }
 .hw-qa-item:active { transform: scale(.88); opacity: .7; }
-/* Bąbelek — duże kółko z ikoną */
+/* Bąbelek — kółko z ikoną */
 .hw-qa-circle {
-  width: 52px; height: 52px; border-radius: 50%;
+  width: 44px; height: 44px; border-radius: 50%;
   background: rgba(255,255,255,.15);
   border: 1px solid rgba(255,255,255,.2);
   box-shadow: 0 2px 10px rgba(0,0,0,.2), inset 0 1px 0 rgba(255,255,255,.15);
   display: flex; align-items: center; justify-content: center;
   flex-shrink: 0;
 }
-.hw-qa-circle svg { width: 22px; height: 22px; stroke-width: 1.6; stroke: rgba(255,255,255,.9); }
+.hw-qa-circle svg { width: 20px; height: 20px; stroke-width: 1.6; stroke: rgba(255,255,255,.9); }
 .hw-qa-circle::after { display: none; }
 .hw-qa-circle.accent-red { background: rgba(255,255,255,.15); }
 .hw-qa-label {
