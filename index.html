@@ -2708,11 +2708,9 @@ function renderHome(mc){
           <div>
             <div class="hw-center-value">${nowWorking.length}</div>
             <div class="hw-center-sub">${workingLine}</div>
-            <div style="font-size:11px;color:rgba(255,255,255,.38);margin-top:3px">${todayShifts.length} zmian dziś</div>
+            ${todayShifts.length > 0 ? `<div style="font-size:12px;color:rgba(255,255,255,.45);margin-top:4px;font-weight:400">${todayShifts.length} zmian zaplanowanych</div>` : ''}
           </div>
-          <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;padding-bottom:4px">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.4)" stroke-width="1.5" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-          </div>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.45)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="align-self:flex-end;margin-bottom:4px"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
         </div>
       </div>`;
   } else {
