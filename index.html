@@ -1039,6 +1039,66 @@ body:not(.view-home) .chat-fab {
 
 /* ─── Schedule table ─── */
 .sched-wrap { padding: 10px 16px 16px; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+
+/* ── NOWY UKŁAD KART PRACOWNIKÓW (week view) ── */
+.emp-cards-list { display: flex; flex-direction: column; gap: 8px; padding: 0 16px 16px; }
+.emp-sched-card {
+  background: linear-gradient(145deg, rgba(255,255,255,.08) 0%, rgba(255,255,255,.04) 100%);
+  border: 1px solid rgba(255,255,255,.09);
+  border-radius: 16px; overflow: hidden; position: relative;
+  animation: fadeInUp .35s cubic-bezier(.2,.8,.2,1) both;
+}
+.emp-sched-card::before {
+  content:''; position:absolute; top:0; left:0; right:0; height:1px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,.18), transparent);
+}
+.emp-sched-card:nth-child(1){animation-delay:.03s}.emp-sched-card:nth-child(2){animation-delay:.07s}
+.emp-sched-card:nth-child(3){animation-delay:.11s}.emp-sched-card:nth-child(4){animation-delay:.15s}
+.emp-sched-card:nth-child(5){animation-delay:.19s}.emp-sched-card:nth-child(6){animation-delay:.23s}
+.emp-sched-card:nth-child(7){animation-delay:.27s}.emp-sched-card:nth-child(8){animation-delay:.31s}
+.emp-sched-card:nth-child(9){animation-delay:.35s}.emp-sched-card:nth-child(10){animation-delay:.39s}
+
+.esc-top { display:flex; align-items:center; gap:10px; padding:12px 14px 10px; }
+.esc-av { width:36px; height:36px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:800; color:#fff; flex-shrink:0; letter-spacing:-.3px; }
+.esc-info { flex:1; min-width:0; }
+.esc-name { font-size:14px; font-weight:700; letter-spacing:-.3px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.esc-dept { font-size:11px; color:rgba(255,255,255,.35); margin-top:1px; display:flex; align-items:center; gap:4px; }
+.esc-dept-dot { width:5px; height:5px; border-radius:50%; background:#FBBF24; flex-shrink:0; }
+.esc-dept-dot.sala { background:#60A5FA; }
+.esc-summary { text-align:right; flex-shrink:0; }
+.esc-sumval { font-size:13px; font-weight:700; letter-spacing:-.3px; }
+.esc-sumlbl { font-size:10px; color:rgba(255,255,255,.35); margin-top:1px; }
+
+.esc-days { display:grid; grid-template-columns:repeat(7,1fr); gap:3px; padding:0 10px 10px; }
+.esc-day {
+  border-radius:8px; cursor:pointer; display:flex; flex-direction:column;
+  align-items:center; justify-content:center; min-height:46px;
+  position:relative; overflow:hidden;
+  transition:transform .12s, opacity .12s;
+  -webkit-tap-highlight-color: transparent;
+}
+.esc-day:active { transform:scale(.88); opacity:.8; }
+.esc-day.empty {
+  background:rgba(255,255,255,.03);
+  border:1px dashed rgba(255,255,255,.07);
+}
+.esc-day.empty:hover { background:rgba(255,255,255,.07); border-color:rgba(255,255,255,.14); }
+.esc-day-plus { color:rgba(255,255,255,.14); font-size:14px; line-height:1; transition:color .12s; }
+.esc-day.empty:hover .esc-day-plus { color:rgba(255,255,255,.4); }
+.esc-day.has-shift {
+  background:rgba(255,255,255,.08);
+  border:1px solid rgba(255,255,255,.12);
+}
+.esc-day.has-shift::before { content:''; position:absolute; top:0; left:0; right:0; height:1px; background:rgba(255,255,255,.2); }
+.esc-day-time { font-size:9px; font-weight:700; color:#fff; letter-spacing:-.1px; white-space:nowrap; }
+.esc-day-hrs { font-size:8px; color:rgba(255,255,255,.5); font-weight:500; margin-top:1px; }
+.esc-day.weekend.empty { background:rgba(200,50,30,.04); border-color:rgba(200,50,30,.1); }
+.esc-day.weekend.has-shift { background:rgba(200,50,30,.16); border-color:rgba(200,50,30,.28); }
+.esc-day.weekend.has-shift .esc-day-time { color:#FCA5A5; }
+.esc-day.today-col.has-shift { background:rgba(200,50,30,.22); border-color:rgba(200,50,30,.45); box-shadow:0 2px 10px rgba(200,50,30,.2); }
+.esc-day.today-col.empty { border-color:rgba(200,50,30,.22); }
+.esc-day.unavail-day { background:rgba(220,38,38,.06); border:1px dashed rgba(220,38,38,.2); }
+.esc-day-unavail-x { font-size:11px; color:#FCA5A5; font-weight:600; }
 .sched-tbl {
   width: 100%; border-collapse: collapse; min-width: 480px;
   background: linear-gradient(180deg, rgba(255,255,255,.08) 0%, rgba(255,255,255,.04) 100%);
@@ -5398,17 +5458,20 @@ function renderWeek(mc){
     ?(currentDept==='all'?employees:employees.filter(e=>e.department===currentDept))
     :employees.filter(e=>e.email===currentUser?.user?.email);
 
-  let tc=0,th=0;
-  shifts.forEach(s=>{
+  let tc=0,th=0,tShifts=0;
+  const thisWeekShifts=shifts.filter(s=>s.date>=from&&s.date<=to);
+  thisWeekShifts.forEach(s=>{
     const emp=employees.find(e=>e.id===s.employee_id); if(!emp)return;
     const h=calcH(s.start_time||'10:00:00',s.end_time||'18:00:00');
-    tc+=h*(emp.rate_net||0); th+=h;
+    tc+=h*(emp.rate_net||0); th+=h; tShifts++;
   });
 
   const sun=new Date(monDate); sun.setDate(monDate.getDate()+6);
   const rng=`${monDate.getDate()}.${pad(monDate.getMonth()+1)} — ${sun.getDate()}.${pad(sun.getMonth()+1)}.${sun.getFullYear()}`;
 
-  let html=`<div style="min-height:100dvh;display:flex;flex-direction:column;"><div class="page-bar">
+  // ── nagłówek strony ──
+  let html=`<div style="min-height:100dvh;display:flex;flex-direction:column;">
+  <div class="page-bar">
     <button class="section-back-btn" onclick="goHome()">
       <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
       Wróć
@@ -5434,73 +5497,88 @@ function renderWeek(mc){
       <button class="dtab ${currentDept==='kuchnia'?'active':''}" onclick="setDept('kuchnia')">Kuchnia</button>
       <button class="dtab ${currentDept==='sala'?'active':''}" onclick="setDept('sala')">Sala</button>
     </div>`;
-    if(th>0){
-      html+=`<div class="cost-strip">
-        <div><div class="cs-label">Koszt tygodnia</div><div class="cs-val">${tc.toFixed(0)} zł</div></div>
-        <div style="text-align:right"><div class="cs-label">Godziny</div><div class="cs-val">${th.toFixed(1)} h</div></div>
-      </div>`;
-    }
+    // stat strip zamiast cost-strip
+    html+=`<div class="cost-strip" style="display:grid;grid-template-columns:1fr 1px 1fr 1px 1fr;align-items:stretch;gap:0;padding:0;">
+      <div style="padding:10px 14px;text-align:center;">
+        <div class="cs-label">Koszt tyg.</div>
+        <div class="cs-val">${tc>0?tc.toFixed(0)+' zł':'—'}</div>
+      </div>
+      <div style="background:rgba(255,255,255,.07);"></div>
+      <div style="padding:10px 14px;text-align:center;">
+        <div class="cs-label">Zmian</div>
+        <div class="cs-val">${tShifts}</div>
+      </div>
+      <div style="background:rgba(255,255,255,.07);"></div>
+      <div style="padding:10px 14px;text-align:center;">
+        <div class="cs-label">Godzin</div>
+        <div class="cs-val">${th>0?th.toFixed(1)+' h':'—'}</div>
+      </div>
+    </div>`;
   }
 
-  html+=`<div class="sched-wrap"><table class="sched-tbl"><thead><tr>
-    <th class="th-emp">Pracownik</th>`;
+  // ── nagłówek dni (zsynchronizowany z kartami) ──
+  html+=`<div style="display:grid;grid-template-columns:repeat(7,1fr);gap:3px;padding:10px 16px 6px;">`;
   days.forEach((day,i)=>{
     const isT=day.date===tod;
-    const isWe=i>=5; // Sat=5, Sun=6 (Mon=0 in our array)
-    html+=`<th class="th-day${isT?' today':''}${isWe?' weekend':''}"><span style="text-transform:uppercase;letter-spacing:.3px">${day.label}</span><span class="dn">${day.num}</span></th>`;
+    const isWe=i>=5;
+    html+=`<div style="text-align:center;">
+      <div style="font-size:9px;font-weight:600;color:${isT?'var(--danger)':'rgba(255,255,255,.3)'};text-transform:uppercase;letter-spacing:.4px;">${day.label}</div>
+      <div style="font-size:17px;font-weight:800;letter-spacing:-.5px;color:${isT?'#fff':'rgba(255,255,255,.35)'};line-height:1.1;margin-top:2px;">${day.num}</div>
+      <div style="width:4px;height:4px;border-radius:50%;background:var(--danger);margin:3px auto 0;opacity:${isT?1:0};"></div>
+    </div>`;
   });
-  if(canEdit()) html+=`<th class="th-sum">Tyg.</th>`;
-  html+=`</tr></thead><tbody>`;
+  html+=`</div>`;
 
+  // ── karty pracowników ──
+  html+=`<div class="emp-cards-list">`;
   viewEmps.forEach(emp=>{
-    const eS=shifts.filter(s=>s.employee_id===emp.id);
-    let eH=0,eC=0;
-    eS.forEach(s=>{const h=calcH(s.start_time||'10:00:00',s.end_time||'18:00:00');eH+=h;eC+=h*(emp.rate_net||0);});
-    const dc=emp.department==='kuchnia'?'#B45309':'#1D4ED8';
+    const eS=shifts.filter(s=>s.employee_id===emp.id&&s.date>=from&&s.date<=to);
+    let eH=0, eShifts=0;
+    eS.forEach(s=>{eH+=calcH(s.start_time||'10:00:00',s.end_time||'18:00:00'); eShifts++;});
+    const deptCls=emp.department==='sala'?'sala':'';
 
-    html+=`<tr><td><div class="td-emp-cell">
-      <div class="av" style="background:${avatarColor(emp.name)}">${initials(emp.name)}</div>
-      <div>
-        <div class="td-emp-name">${emp.name}</div>
-        <div class="td-emp-dept"><span class="dept-dot" style="background:${dc}"></span>${emp.department}</div>
+    html+=`<div class="emp-sched-card">
+      <div class="esc-top">
+        <div class="esc-av" style="background:${avatarColor(emp.name)}">${initials(emp.name)}</div>
+        <div class="esc-info">
+          <div class="esc-name">${emp.name}</div>
+          <div class="esc-dept"><span class="esc-dept-dot ${deptCls}"></span>${emp.department}</div>
+        </div>
+        <div class="esc-summary">
+          <div class="esc-sumval">${eH>0?eH.toFixed(0)+'h':'—'}</div>
+          <div class="esc-sumlbl">${eShifts>0?eShifts+' zmian':'wolny'}</div>
+        </div>
       </div>
-    </div></td>`;
+      <div class="esc-days">`;
 
     days.forEach((day,di)=>{
       const shift=eS.find(s=>s.date===day.date);
-      const isT=day.date===tod;
       const isWe=di>=5;
-      const h=shift?calcH(shift.start_time||'10:00:00',shift.end_time||'18:00:00'):0;
-      const cost=h*(emp.rate_net||0);
-      // Check date-based unavailability
+      const isT=day.date===tod;
       const unavail=availDates.find(a=>a.employee_id===emp.id&&a.date===day.date&&a.available===false);
-      const ca=canEdit()?`onclick="openShiftModal('${emp.id}','${emp.name}','${day.date}','${shift?.id||''}')"`:''
-      let cellCls='td-day-cell';
-      if(shift) cellCls+=' filled';
-      if(isT) cellCls+=' is-today';
-      if(isWe) cellCls+=' weekend';
-      if(unavail&&!shift) cellCls+=' unavail';
-      html+=`<td class="${cellCls}" ${ca}>`;
-      if(shift){
-        html+=`<div class="shift-chip">${(shift.start_time||'10:00').slice(0,5)}–${(shift.end_time||'18:00').slice(0,5)}</div>`;
-        if(canEdit()&&(emp.rate_net||0)>1) html+=`<div class="shift-cost-lbl">${cost.toFixed(0)} zł</div>`;
-      } else if(unavail){
-        html+=`<div class="cell-unavail">✕</div>`;
-      } else if(canEdit()){
-        html+=`<div class="cell-add">+</div>`;
+      const onclick=canEdit()?`onclick="openShiftModal('${emp.id}','${emp.name}','${day.date}','${shift?.id||''}')"` :'';
+
+      if(unavail&&!shift){
+        html+=`<div class="esc-day unavail-day" ${onclick}><div class="esc-day-unavail-x">✕</div></div>`;
+      } else if(shift){
+        const hS=(shift.start_time||'10:00').slice(0,5);
+        const hE=(shift.end_time||'18:00').slice(0,5);
+        const h=calcH(shift.start_time||'10:00:00',shift.end_time||'18:00:00');
+        html+=`<div class="esc-day has-shift${isWe?' weekend':''}${isT?' today-col':''}" ${onclick}>
+          <div class="esc-day-time">${hS}–${hE}</div>
+          <div class="esc-day-hrs">${h.toFixed(0)}h</div>
+        </div>`;
+      } else {
+        html+=`<div class="esc-day empty${isWe?' weekend':''}${isT?' today-col':''}" ${onclick}>
+          <div class="esc-day-plus">${canEdit()?'+':''}</div>
+        </div>`;
       }
-      html+=`</td>`;
     });
 
-    if(canEdit()){
-      html+=`<td class="td-sum-cell">
-        ${eH>0?`<div class="sum-h">${eH.toFixed(1)}h</div><div class="sum-cost">${(emp.rate_net||0)>1?eC.toFixed(0)+' zł':eS.length+' zm.'}</div>`:`<span style="color:var(--border)">—</span>`}
-      </td>`;
-    }
-    html+=`</tr>`;
+    html+=`</div></div>`;
   });
 
-  html+=`</tbody></table></div></div>`;
+  html+=`</div></div>`;
   mc.innerHTML=html;
 }
 
