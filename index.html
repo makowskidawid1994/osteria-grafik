@@ -27,11 +27,13 @@
   --accent-soft: rgba(220,50,20,.15);
   --bg: transparent;
   --bg-solid: #3D0E0C;
-  --bg-card: rgba(255,255,255,.08);
-  --bg-card2: rgba(255,255,255,.05);
-  --surface: rgba(255,255,255,.1);
-  --border: rgba(255,255,255,.1);
-  --border-2: rgba(255,255,255,.06);
+  --bg-card: rgba(255,255,255,.10);
+  --bg-card2: rgba(255,255,255,.06);
+  --surface: rgba(255,255,255,.12);
+  --border: rgba(255,255,255,.14);
+  --border-2: rgba(255,255,255,.08);
+  --glass: rgba(255,255,255,.10);
+  --glass-blur: blur(16px);
   --text: #ffffff;
   --text-2: rgba(255,255,255,.75);
   --text-3: rgba(255,255,255,.45);
@@ -53,20 +55,105 @@ body {
   min-height: 100vh; font-size: 14px; line-height: 1.5;
   -webkit-font-smoothing: antialiased; overscroll-behavior-y: none;
 }
-/* Globalne tło — identyczne z hw-wrap (home) */
+/* ═══ REVOLUT-STYLE: każdy widok = własny gradient ═══ */
 body {
-  background: #5A1510 fixed;
-}
-/* Wrappery widoków nie mogą zakrywać gradientu body */
-#main-content > div:first-child {
-  background: transparent !important;
+  background: #3D0C0A fixed;
+  transition: background 0.4s ease;
 }
 body::before {
   content: '';
   position: fixed; inset: 0; pointer-events: none; z-index: 0;
-  background: radial-gradient(ellipse 150% 80% at 50% 10%, rgba(230,110,10,.65) 0%, rgba(170,60,0,.35) 50%, transparent 80%);
+  transition: background 0.4s ease;
+  /* domyślne tło (home) */
+  background:
+    radial-gradient(ellipse 160% 70% at 50% 0%, rgba(230,100,10,.7) 0%, rgba(180,50,0,.4) 45%, transparent 75%),
+    linear-gradient(180deg, #7A1E14 0%, #5A1510 40%, #3D0C0A 100%);
 }
-/* Substrony mają to samo tło co home — orange radial zostaje */
+
+/* HOME — ciepła czerwień z pomarańczem */
+body.view-home { background: #3D0C0A fixed; }
+body.view-home::before {
+  background:
+    radial-gradient(ellipse 160% 70% at 50% 0%, rgba(230,100,10,.7) 0%, rgba(180,50,0,.4) 45%, transparent 75%),
+    linear-gradient(180deg, #7A1E14 0%, #5A1510 40%, #3D0C0A 100%);
+}
+
+/* GRAFIK/SCHED — głęboka wiśnia */
+body.view-sched { background: #2A0A18 fixed; }
+body.view-sched::before {
+  background:
+    radial-gradient(ellipse 160% 70% at 50% 0%, rgba(180,30,80,.65) 0%, rgba(120,15,50,.35) 50%, transparent 78%),
+    linear-gradient(180deg, #5C1030 0%, #3D0A20 40%, #2A0A18 100%);
+}
+
+/* EWIDENCJA/CLOCK — głęboka bordo/rubinowa */
+body.view-clock { background: #200816 fixed; }
+body.view-clock::before {
+  background:
+    radial-gradient(ellipse 150% 65% at 50% 0%, rgba(200,20,60,.7) 0%, rgba(140,10,40,.38) 48%, transparent 76%),
+    linear-gradient(180deg, #600A28 0%, #3A0618 40%, #200816 100%);
+}
+
+/* DASHBOARD/DASH — ciemny granat z bordowym */
+body.view-dash { background: #0E0A1E fixed; }
+body.view-dash::before {
+  background:
+    radial-gradient(ellipse 150% 65% at 50% 0%, rgba(100,30,160,.65) 0%, rgba(60,15,100,.35) 50%, transparent 78%),
+    linear-gradient(180deg, #2A1050 0%, #1A0A30 40%, #0E0A1E 100%);
+}
+
+/* CHAT — ciemny indygo */
+body.view-chat { background: #060A1A fixed; }
+body.view-chat::before {
+  background:
+    radial-gradient(ellipse 150% 65% at 50% 0%, rgba(50,80,200,.6) 0%, rgba(30,50,150,.3) 50%, transparent 78%),
+    linear-gradient(180deg, #101840 0%, #090E28 40%, #060A1A 100%);
+}
+
+/* RECEPTURY/KUCHNIA — głęboki zielony */
+body.view-recipes { background: #05140A fixed; }
+body.view-recipes::before {
+  background:
+    radial-gradient(ellipse 150% 65% at 50% 0%, rgba(20,130,70,.6) 0%, rgba(10,80,40,.32) 50%, transparent 78%),
+    linear-gradient(180deg, #0C3018 0%, #081E10 40%, #05140A 100%);
+}
+body.view-recipe-detail { background: #05140A fixed; }
+body.view-recipe-detail::before {
+  background:
+    radial-gradient(ellipse 150% 65% at 50% 0%, rgba(20,130,70,.6) 0%, rgba(10,80,40,.32) 50%, transparent 78%),
+    linear-gradient(180deg, #0C3018 0%, #081E10 40%, #05140A 100%);
+}
+body.view-kitchen { background: #05140A fixed; }
+body.view-kitchen::before {
+  background:
+    radial-gradient(ellipse 150% 65% at 50% 0%, rgba(20,130,70,.6) 0%, rgba(10,80,40,.32) 50%, transparent 78%),
+    linear-gradient(180deg, #0C3018 0%, #081E10 40%, #05140A 100%);
+}
+
+/* FINANSE — złoto/bursztyn */
+body.view-finance { background: #140A00 fixed; }
+body.view-finance::before {
+  background:
+    radial-gradient(ellipse 150% 65% at 50% 0%, rgba(200,130,10,.65) 0%, rgba(140,80,0,.34) 50%, transparent 78%),
+    linear-gradient(180deg, #3A2000 0%, #231400 40%, #140A00 100%);
+}
+
+/* PRACOWNICY/EMPS — ciemny morski */
+body.view-emps { background: #030E1A fixed; }
+body.view-emps::before {
+  background:
+    radial-gradient(ellipse 150% 65% at 50% 0%, rgba(10,100,160,.65) 0%, rgba(5,60,110,.34) 50%, transparent 78%),
+    linear-gradient(180deg, #082840 0%, #051828 40%, #030E1A 100%);
+}
+body.view-avail { background: #030E1A fixed; }
+body.view-avail::before {
+  background:
+    radial-gradient(ellipse 150% 65% at 50% 0%, rgba(10,100,160,.65) 0%, rgba(5,60,110,.34) 50%, transparent 78%),
+    linear-gradient(180deg, #082840 0%, #051828 40%, #030E1A 100%);
+}
+
+/* Wrappery widoków — zawsze transparent */
+#main-content > div:first-child { background: transparent !important; }
 #app { background: transparent; }
 
 /* ─── AUTH — pełny ekran ─── */
@@ -315,8 +402,8 @@ body.view-home .bnav-item.active .bnav-icon-wrap { background: rgba(255,255,255,
   position: fixed;
   bottom: max(env(safe-area-inset-bottom), 12px);
   left: 16px; right: 16px;
-  background: rgba(42,16,0,.95);
-  border: 1px solid rgba(255,255,255,.08);
+  background: rgba(0,0,0,.35);
+  border: 1px solid rgba(255,255,255,.14);
   border-radius: 24px;
   box-shadow: 0 4px 24px rgba(0,0,0,.4), 0 1px 4px rgba(0,0,0,.3);
   backdrop-filter: blur(20px);
@@ -896,7 +983,7 @@ body:not(.view-home) .chat-fab {
 }
 .section-back-btn svg { width: 18px; height: 18px; stroke: var(--brand); fill: none; stroke-width: 2; }
 .btn-sm { padding: 6px 14px; font-size: 12px; border-radius: 8px; }
-.home-tile { position: relative; display:flex; flex-direction:column; background:var(--bg-card); border:1px solid var(--border); border-radius:14px; cursor:pointer; overflow:hidden; }
+.home-tile { position: relative; display:flex; flex-direction:column; background:var(--bg-card); border:1px solid var(--border); border-radius:18px; cursor:pointer; overflow:hidden; backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px); }
 .home-tile-badge {
   position: absolute; top: 12px; right: 12px;
   background: var(--brand); color: white; font-size: 10px; font-weight: 700;
@@ -1343,10 +1430,11 @@ body:not(.view-home) .chat-fab {
 }
 .modal-overlay.open, .modal-overlay.active { opacity: 1; pointer-events: all; }
 .modal {
-  background: rgba(80,15,10,.92); border-radius: 16px 16px 0 0; width: 100%; max-width: 480px;
+  background: rgba(255,255,255,.12); border-radius: 24px 24px 0 0; width: 100%; max-width: 480px;
   padding: 18px 20px 36px; transform: translateY(100%);
   transition: transform .22s cubic-bezier(.32,.72,0,1); max-height: 88vh; overflow-y: auto;
-  border: 1px solid rgba(255,255,255,.1); border-bottom: none;
+  border: 1px solid rgba(255,255,255,.18); border-bottom: none;
+  backdrop-filter: blur(32px); -webkit-backdrop-filter: blur(32px);
 }
 .modal-overlay.open .modal, .modal-overlay.active .modal { transform: translateY(0); }
 .modal-pill { width: 32px; height: 3px; background: rgba(255,255,255,.18); border-radius: 2px; margin: 0 auto 16px; }
@@ -1580,7 +1668,7 @@ body:not(.view-home) .chat-fab {
 .csr-dur-min { font-size: 10px; color: var(--text-3); }
 
 /* Manager live panel */
-.clock-live-card { background: var(--bg-card); border: 1px solid var(--border-2); border-radius: var(--radius-lg); overflow: hidden; }
+.clock-live-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 20px; overflow: hidden; backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px); }
 .clock-live-title { font-size: 10px; font-weight: 600; color: var(--text-3); text-transform: uppercase; letter-spacing: .5px; padding: 12px 14px 8px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
 .clock-live-row { display: flex; align-items: center; gap: 10px; padding: 10px 14px; border-bottom: 1px solid var(--border); }
 .clock-live-row:last-child { border-bottom: none; }
@@ -1736,7 +1824,7 @@ body:not(.view-home) .chat-fab {
 }
 .esc-val { font-size: 22px; font-weight: 800; letter-spacing: -.5px; }
 .esc-label { font-size: 10px; color: var(--text-3); font-weight: 500; margin-top: 3px; }
-.emp-past-list { margin: 0 16px; border-radius: 12px; overflow: hidden; border: 1.5px solid var(--border-2); background: var(--bg-card); }
+.emp-past-list { margin: 0 16px; border-radius: 16px; overflow: hidden; border: 1px solid var(--border); background: var(--bg-card); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px); }
 .emp-past-row {
   display: flex; align-items: center; padding: 13px 14px; gap: 10px;
   border-bottom: 1px solid var(--border);
@@ -1763,10 +1851,12 @@ body:not(.view-home) .chat-fab {
 }
 .profile-sheet-overlay.open { opacity: 1; pointer-events: all; }
 .profile-sheet {
-  background: var(--bg-card); width: 100%; border-radius: 24px 24px 0 0;
+  background: rgba(255,255,255,.13); width: 100%; border-radius: 24px 24px 0 0;
   padding: 0 0 calc(env(safe-area-inset-bottom) + 20px);
   transform: translateY(100%); transition: transform .3s cubic-bezier(.4,0,.2,1);
   max-height: 85vh; overflow-y: auto;
+  backdrop-filter: blur(32px); -webkit-backdrop-filter: blur(32px);
+  border: 1px solid rgba(255,255,255,.18); border-bottom: none;
 }
 .profile-sheet-overlay.open .profile-sheet { transform: translateY(0); }
 .profile-sheet-pill { width: 36px; height: 4px; background: var(--border-2); border-radius: 2px; margin: 12px auto 0; }
@@ -2313,7 +2403,10 @@ function showView(v, pushHistory=true){
   const prev=currentView;
   currentView=v;
   if(pushHistory && prev!==v) history.pushState({view:v},'',`#${v}`);
-  document.body.classList.toggle('view-home', v==='home');
+  // Ustaw klasę widoku na body (jak Revolut — każdy widok = własny gradient)
+  const viewClasses = ['view-home','view-sched','view-clock','view-dash','view-chat','view-recipes','view-recipe-detail','view-kitchen','view-finance','view-emps','view-avail','view-waste','view-handover','view-manager'];
+  document.body.classList.remove(...viewClasses);
+  document.body.classList.add('view-'+v);
   updateSubTopbar();
   // Header usunięty — zawsze ukryty
 
