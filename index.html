@@ -59,14 +59,14 @@ body {
 /* ═══ JEDNO SPÓJNE TŁO — Osteria Antonina ═══ */
 /* Głęboka burgundowa czerwień, pomarańczowy blask u góry — jeden motyw na każdym ekranie */
 body {
-  background: #2C0A08 fixed;
+  background: #110302 fixed;
 }
 body::before {
   content: '';
   position: fixed; inset: 0; pointer-events: none; z-index: 0;
   background:
-    radial-gradient(ellipse 120% 40% at 50% -5%, rgba(180,50,20,.5) 0%, rgba(120,25,10,.3) 50%, transparent 72%),
-    linear-gradient(180deg, #4A1208 0%, #2E0A07 35%, #1E0605 65%, #150404 100%);
+    radial-gradient(ellipse 100% 35% at 50% -5%, rgba(160,40,15,.55) 0%, rgba(100,20,8,.25) 55%, transparent 75%),
+    linear-gradient(180deg, #380C06 0%, #1E0604 35%, #120302 65%, #0C0201 100%);
 }
 
 /* Wrappery widoków — zawsze transparent */
@@ -373,7 +373,7 @@ body.view-home .bnav-item.active .bnav-icon-wrap { background: rgba(255,255,255,
   position: fixed; inset: 0;
   display: flex; flex-direction: column;
   -webkit-tap-highlight-color: transparent;
-  background: linear-gradient(180deg, #6B1810 0%, #3D0C09 35%, #220808 65%, #180505 100%);
+  background: linear-gradient(180deg, #420E08 0%, #250804 35%, #160403 65%, #0F0202 100%);
   overflow: hidden;
   overflow-y: auto;
 }
