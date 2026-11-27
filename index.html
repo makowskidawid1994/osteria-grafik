@@ -1040,39 +1040,34 @@ body:not(.view-home) .chat-fab {
 /* ─── GRAFIK — nowy układ wierszowy ─── */
 .sched-wrap { padding: 0; }
 
-/* Nagłówek dni tygodnia */
-.sw-dayheader {
-  display: grid; grid-template-columns: 88px repeat(7,1fr);
-  padding: 6px 12px 4px; gap: 3px;
-}
-.sw-dh-emp { /* puste miejsce pod awatar */ }
+/* ── GRAFIK TYGODNIOWY — scroll poziomy ── */
+.sw-outer { overflow-x: auto; -webkit-overflow-scrolling: touch; padding-bottom: 16px; }
+.sw-inner { min-width: 520px; padding: 0 12px; }
+
+/* Nagłówek dni */
+.sw-dayheader { display: flex; padding: 6px 0 4px; gap: 3px; }
+.sw-dh-emp { width: 92px; flex-shrink: 0; }
 .sw-dh-day {
+  width: 44px; flex-shrink: 0;
   display: flex; flex-direction: column; align-items: center; gap: 1px;
   padding: 4px 2px 3px;
 }
 .sw-dh-label { font-size: 9px; font-weight: 600; letter-spacing: .3px; color: rgba(255,255,255,.3); text-transform: uppercase; }
-.sw-dh-num {
-  font-size: 15px; font-weight: 800; letter-spacing: -.5px;
-  color: rgba(255,255,255,.45); line-height: 1;
-}
+.sw-dh-num { font-size: 15px; font-weight: 800; letter-spacing: -.5px; color: rgba(255,255,255,.45); line-height: 1; }
 .sw-dh-day.sw-today .sw-dh-label { color: var(--danger); }
 .sw-dh-day.sw-today .sw-dh-num {
-  color: #fff;
-  background: var(--danger); border-radius: 8px;
-  width: 26px; height: 26px; display: flex; align-items: center; justify-content: center;
-  font-size: 13px;
+  color: #fff; background: var(--danger); border-radius: 8px;
+  width: 26px; height: 26px; display: flex; align-items: center; justify-content: center; font-size: 13px;
 }
 .sw-dh-day.sw-wknd .sw-dh-num { color: rgba(252,165,165,.45); }
 
 /* Lista pracowników */
-.sw-list { display: flex; flex-direction: column; gap: 2px; padding: 0 12px 16px; }
+.sw-list { display: flex; flex-direction: column; gap: 2px; }
 
 .sw-emp-row {
-  display: grid; grid-template-columns: 88px repeat(7,1fr);
-  gap: 3px; align-items: center;
-  padding: 4px 0;
-  border-radius: 10px;
+  display: flex; gap: 3px; align-items: center;
   animation: fadeInUp .28s cubic-bezier(.2,.8,.2,1) both;
+  padding: 2px 0;
 }
 .sw-emp-row:nth-child(1){animation-delay:.02s}.sw-emp-row:nth-child(2){animation-delay:.05s}
 .sw-emp-row:nth-child(3){animation-delay:.08s}.sw-emp-row:nth-child(4){animation-delay:.11s}
@@ -1081,67 +1076,42 @@ body:not(.view-home) .chat-fab {
 .sw-emp-row:nth-child(9){animation-delay:.26s}.sw-emp-row:nth-child(10){animation-delay:.29s}
 
 /* Lewa kolumna: awatar + imię */
-.sw-emp-id {
-  display: flex; align-items: center; gap: 7px; padding-right: 6px;
-  min-width: 0;
-}
+.sw-emp-id { width: 92px; flex-shrink: 0; display: flex; align-items: center; gap: 7px; padding-right: 4px; }
 .sw-av {
   width: 32px; height: 32px; border-radius: 50%; flex-shrink: 0;
   display: flex; align-items: center; justify-content: center;
   font-size: 11px; font-weight: 800; color: #fff; letter-spacing: -.3px;
 }
-.sw-empname {
-  font-size: 12px; font-weight: 700; color: rgba(255,255,255,.85);
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-  letter-spacing: -.2px;
-}
+.sw-empname { font-size: 12px; font-weight: 700; color: rgba(255,255,255,.85); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; letter-spacing: -.2px; }
 
-/* Kafelki dni */
+/* Kafelki dni — stały rozmiar 44×44 */
 .sw-tile {
-  aspect-ratio: 1; border-radius: 8px;
+  width: 44px; height: 44px; flex-shrink: 0; border-radius: 10px;
   display: flex; flex-direction: column; align-items: center; justify-content: center;
   cursor: pointer; position: relative; overflow: hidden;
   transition: transform .1s, opacity .1s;
   -webkit-tap-highlight-color: transparent;
-  min-height: 36px;
 }
 .sw-tile:active { transform: scale(.85); opacity: .75; }
 
-/* Pustka */
-.sw-tile.sw-empty {
-  background: rgba(255,255,255,.04);
-}
-.sw-tile.sw-empty.sw-wknd { background: rgba(200,50,30,.05); }
-.sw-tile.sw-empty.sw-tod  { background: rgba(200,50,30,.08); border: 1px solid rgba(200,50,30,.2); }
-.sw-plus { font-size: 14px; color: rgba(255,255,255,.12); line-height: 1; }
+.sw-tile.sw-empty { background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.07); }
+.sw-tile.sw-empty.sw-wknd { background: rgba(255,255,255,.04); border-color: rgba(255,255,255,.05); }
+.sw-tile.sw-empty.sw-tod  { background: rgba(200,50,30,.1); border: 1px solid rgba(200,50,30,.25); }
+.sw-plus { font-size: 15px; color: rgba(255,255,255,.15); line-height: 1; }
 
-/* Ze zmianą */
 .sw-tile.sw-has {
-  background: linear-gradient(145deg, rgba(255,255,255,.14) 0%, rgba(255,255,255,.07) 100%);
-  border: 1px solid rgba(255,255,255,.14);
+  background: rgba(255,255,255,.18); border: 1px solid rgba(255,255,255,.22);
 }
 .sw-tile.sw-has::before {
   content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
-  background: rgba(255,255,255,.25);
+  background: rgba(255,255,255,.35);
 }
-.sw-tile.sw-has.sw-wknd {
-  background: linear-gradient(145deg, rgba(200,50,30,.28) 0%, rgba(200,50,30,.14) 100%);
-  border-color: rgba(200,50,30,.35);
-}
-.sw-tile.sw-has.sw-tod {
-  background: linear-gradient(145deg, rgba(200,50,30,.4) 0%, rgba(200,50,30,.22) 100%);
-  border-color: rgba(200,50,30,.55);
-  box-shadow: 0 2px 10px rgba(200,50,30,.2);
-}
+.sw-tile.sw-has.sw-wknd { background: rgba(200,50,30,.35); border-color: rgba(200,50,30,.5); }
+.sw-tile.sw-has.sw-tod  { background: rgba(200,50,30,.5); border-color: rgba(200,50,30,.7); box-shadow: 0 2px 12px rgba(200,50,30,.3); }
 .sw-time { font-size: 8.5px; font-weight: 700; color: #fff; letter-spacing: -.1px; white-space: nowrap; }
-.sw-tile.sw-has.sw-wknd .sw-time { color: #FCA5A5; }
-.sw-hrs { font-size: 7.5px; color: rgba(255,255,255,.45); margin-top: 1px; }
+.sw-hrs  { font-size: 7px; color: rgba(255,255,255,.5); margin-top: 1px; }
 
-/* Niedostępny */
-.sw-tile.sw-off {
-  background: rgba(220,38,38,.06);
-  border: 1px dashed rgba(220,38,38,.2);
-}
+.sw-tile.sw-off { background: rgba(255,255,255,.03); border: 1px dashed rgba(255,255,255,.12); }
 .sw-off-x { font-size: 10px; color: rgba(252,165,165,.5); font-weight: 700; }
 
 /* Separator działów */
@@ -5636,7 +5606,8 @@ function renderWeek(mc){
     </div>`;
   }
 
-  // ── nagłówek dni ──
+  // ── nagłówek dni + lista (scroll poziomy) ──
+  html+=`<div class="sw-outer"><div class="sw-inner">`;
   html+=`<div class="sw-dayheader"><div class="sw-dh-emp"></div>`;
   days.forEach((day,i)=>{
     const isT=day.date===tod, isWe=i>=5;
@@ -5682,7 +5653,7 @@ function renderWeek(mc){
     });
     html+=`</div>`;
   });
-  html+=`</div></div>`;
+  html+=`</div></div></div>`;
   mc.innerHTML=html;
 }
 
