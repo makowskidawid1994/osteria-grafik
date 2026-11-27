@@ -1038,25 +1038,90 @@ body:not(.view-home) .chat-fab {
 .cs-val { font-size: 19px; font-weight: 700; color: #fff; letter-spacing: -.5px; }
 
 /* ─── Schedule table ─── */
-.sched-wrap { padding: 10px 16px 16px; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.sched-wrap { padding: 0; }
 
-/* ── NOWY UKŁAD KART PRACOWNIKÓW (week view) ── */
+/* ── NOWY UKŁAD SIATKI (week/month view) ── */
+.grd-wrap { padding: 0 0 16px; animation: fadeInUp .3s cubic-bezier(.2,.8,.2,1) both; }
+.grd-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; padding: 0 12px; }
+.grd-table { display: flex; flex-direction: column; min-width: max-content; border-radius: 14px; overflow: hidden; border: 1px solid rgba(255,255,255,.08); }
+
+/* Header row */
+.grd-head-row { background: rgba(255,255,255,.06); border-bottom: 1px solid rgba(255,255,255,.1); }
+.grd-head-name { font-size: 9px; font-weight: 700; letter-spacing: .6px; color: rgba(255,255,255,.35); text-transform: uppercase; }
+.grd-head-day { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; }
+.grd-dlabel { font-size: 9px; font-weight: 600; letter-spacing: .3px; color: rgba(255,255,255,.35); text-transform: uppercase; }
+.grd-dnum { font-size: 16px; font-weight: 800; letter-spacing: -.5px; color: rgba(255,255,255,.5); line-height: 1; }
+.grd-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--danger); display: block; }
+.grd-head-sum { font-size: 9px; font-weight: 700; letter-spacing: .4px; color: rgba(255,255,255,.3); text-transform: uppercase; text-align: center; }
+
+/* All rows base layout */
+.grd-row { display: flex; align-items: stretch; border-bottom: 1px solid rgba(255,255,255,.04); }
+.grd-row:last-child { border-bottom: none; }
+.grd-row-alt { background: rgba(255,255,255,.025); }
+
+/* Name cell — sticky */
+.grd-name-cell {
+  flex-shrink: 0; width: 108px; min-height: 48px;
+  display: flex; align-items: center; gap: 7px;
+  padding: 6px 8px 6px 10px;
+  position: sticky; left: 0; z-index: 2;
+  background: #181818;
+  border-right: 1px solid rgba(255,255,255,.07);
+}
+.grd-row-alt .grd-name-cell { background: #1c1c1c; }
+.grd-head-row .grd-name-cell { background: #1e1e1e; }
+
+.grd-av { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 800; color: #fff; flex-shrink: 0; letter-spacing: -.3px; }
+.grd-empinfo { flex: 1; min-width: 0; }
+.grd-empname { font-size: 12px; font-weight: 700; letter-spacing: -.3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.grd-empdept { font-size: 10px; color: rgba(255,255,255,.3); display: flex; align-items: center; gap: 3px; margin-top: 1px; }
+.grd-deptdot { width: 4px; height: 4px; border-radius: 50%; flex-shrink: 0; }
+
+/* Day cells */
+.grd-day-cell {
+  flex: 1; min-width: 48px; max-width: 70px;
+  display: flex; align-items: center; justify-content: center;
+  padding: 4px 2px; cursor: pointer; position: relative;
+  transition: background .12s;
+  border-right: 1px solid rgba(255,255,255,.04);
+}
+.grd-day-cell:last-of-type { border-right: none; }
+.grd-day-cell:active { background: rgba(255,255,255,.06); }
+.grd-head-day { padding: 8px 4px 7px; }
+
+/* Modifiers */
+.grd-wknd { background: rgba(200,50,30,.05); }
+.grd-head-row .grd-wknd { background: rgba(200,50,30,.08); }
+.grd-wknd .grd-dnum { color: rgba(252,165,165,.5); }
+.grd-today { background: rgba(200,50,30,.1) !important; }
+.grd-head-row .grd-today { background: rgba(200,50,30,.18) !important; }
+.grd-today .grd-dnum { color: #fff !important; }
+.grd-today .grd-dlabel { color: var(--danger) !important; }
+
+/* Shift chips */
+.grd-chip {
+  font-size: 9.5px; font-weight: 700; letter-spacing: -.2px; color: #fff;
+  background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.18);
+  border-radius: 5px; padding: 3px 5px; white-space: nowrap; line-height: 1;
+  box-shadow: 0 1px 4px rgba(0,0,0,.3);
+}
+.grd-chip-sep { opacity: .5; margin: 0 1px; }
+.grd-chip-we { background: rgba(200,50,30,.22); border-color: rgba(200,50,30,.4); color: #FCA5A5; }
+.grd-chip-off { font-size: 11px; color: rgba(252,165,165,.6); }
+.grd-plus { font-size: 16px; color: rgba(255,255,255,.1); line-height: 1; transition: color .12s; }
+.grd-day-cell:hover .grd-plus { color: rgba(255,255,255,.35); }
+
+/* Summary cell */
+.grd-sum-cell {
+  flex-shrink: 0; width: 56px; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; padding: 4px 6px;
+  border-left: 1px solid rgba(255,255,255,.07);
+}
+.grd-sum-h { font-size: 12px; font-weight: 700; color: #fff; letter-spacing: -.3px; }
+.grd-sum-cost { font-size: 9px; color: rgba(255,255,255,.35); margin-top: 1px; }
+
+/* ── stare klasy kart (zostają w CSS ale nie używane) ── */
 .emp-cards-list { display: flex; flex-direction: column; gap: 8px; padding: 0 16px 16px; }
-.emp-sched-card {
-  background: linear-gradient(145deg, rgba(255,255,255,.08) 0%, rgba(255,255,255,.04) 100%);
-  border: 1px solid rgba(255,255,255,.09);
-  border-radius: 16px; overflow: hidden; position: relative;
-  animation: fadeInUp .35s cubic-bezier(.2,.8,.2,1) both;
-}
-.emp-sched-card::before {
-  content:''; position:absolute; top:0; left:0; right:0; height:1px;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,.18), transparent);
-}
-.emp-sched-card:nth-child(1){animation-delay:.03s}.emp-sched-card:nth-child(2){animation-delay:.07s}
-.emp-sched-card:nth-child(3){animation-delay:.11s}.emp-sched-card:nth-child(4){animation-delay:.15s}
-.emp-sched-card:nth-child(5){animation-delay:.19s}.emp-sched-card:nth-child(6){animation-delay:.23s}
-.emp-sched-card:nth-child(7){animation-delay:.27s}.emp-sched-card:nth-child(8){animation-delay:.31s}
-.emp-sched-card:nth-child(9){animation-delay:.35s}.emp-sched-card:nth-child(10){animation-delay:.39s}
 
 .esc-top { display:flex; align-items:center; gap:10px; padding:12px 14px 10px; }
 .esc-av { width:36px; height:36px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:800; color:#fff; flex-shrink:0; letter-spacing:-.3px; }
@@ -5516,69 +5581,71 @@ function renderWeek(mc){
     </div>`;
   }
 
-  // ── nagłówek dni (zsynchronizowany z kartami) ──
-  html+=`<div style="display:grid;grid-template-columns:repeat(7,1fr);gap:3px;padding:10px 16px 6px;">`;
+  // ── tabela: sticky kolumna pracownika + 7 kolumn dni ──
+  // Wrapper z overflow-x dla samej tabeli, sticky działa przez position
+  html+=`<div class="grd-wrap">
+  <div class="grd-scroll">
+  <div class="grd-table">
+    <!-- HEADER ROW -->
+    <div class="grd-row grd-head-row">
+      <div class="grd-name-cell grd-head-name">PRACOWNIK</div>`;
   days.forEach((day,i)=>{
-    const isT=day.date===tod;
-    const isWe=i>=5;
-    html+=`<div style="text-align:center;">
-      <div style="font-size:9px;font-weight:600;color:${isT?'var(--danger)':'rgba(255,255,255,.3)'};text-transform:uppercase;letter-spacing:.4px;">${day.label}</div>
-      <div style="font-size:17px;font-weight:800;letter-spacing:-.5px;color:${isT?'#fff':'rgba(255,255,255,.35)'};line-height:1.1;margin-top:2px;">${day.num}</div>
-      <div style="width:4px;height:4px;border-radius:50%;background:var(--danger);margin:3px auto 0;opacity:${isT?1:0};"></div>
+    const isT=day.date===tod, isWe=i>=5;
+    html+=`<div class="grd-day-cell grd-head-day${isT?' grd-today':''}${isWe?' grd-wknd':''}">
+      <span class="grd-dlabel">${day.label}</span>
+      <span class="grd-dnum">${day.num}</span>
+      ${isT?'<span class="grd-dot"></span>':''}
     </div>`;
   });
+  if(canEdit()) html+=`<div class="grd-sum-cell grd-head-sum">Tyg.</div>`;
   html+=`</div>`;
 
-  // ── karty pracowników ──
-  html+=`<div class="emp-cards-list">`;
-  viewEmps.forEach(emp=>{
+  // EMPLOYEE ROWS
+  viewEmps.forEach((emp,ri)=>{
     const eS=shifts.filter(s=>s.employee_id===emp.id&&s.date>=from&&s.date<=to);
-    let eH=0, eShifts=0;
-    eS.forEach(s=>{eH+=calcH(s.start_time||'10:00:00',s.end_time||'18:00:00'); eShifts++;});
-    const deptCls=emp.department==='sala'?'sala':'';
-
-    html+=`<div class="emp-sched-card">
-      <div class="esc-top">
-        <div class="esc-av" style="background:${avatarColor(emp.name)}">${initials(emp.name)}</div>
-        <div class="esc-info">
-          <div class="esc-name">${emp.name}</div>
-          <div class="esc-dept"><span class="esc-dept-dot ${deptCls}"></span>${emp.department}</div>
+    let eH=0,eCost=0,eCount=0;
+    eS.forEach(s=>{const h=calcH(s.start_time||'10:00:00',s.end_time||'18:00:00');eH+=h;eCost+=h*(emp.rate_net||0);eCount++;});
+    const dc=emp.department==='sala'?'#60A5FA':'#FBBF24';
+    html+=`<div class="grd-row${ri%2===1?' grd-row-alt':''}">
+      <div class="grd-name-cell">
+        <div class="grd-av" style="background:${avatarColor(emp.name)}">${initials(emp.name)}</div>
+        <div class="grd-empinfo">
+          <div class="grd-empname">${emp.name.split(' ')[0]}</div>
+          <div class="grd-empdept"><span class="grd-deptdot" style="background:${dc}"></span>${emp.department}</div>
         </div>
-        <div class="esc-summary">
-          <div class="esc-sumval">${eH>0?eH.toFixed(0)+'h':'—'}</div>
-          <div class="esc-sumlbl">${eShifts>0?eShifts+' zmian':'wolny'}</div>
-        </div>
-      </div>
-      <div class="esc-days">`;
+      </div>`;
 
     days.forEach((day,di)=>{
       const shift=eS.find(s=>s.date===day.date);
-      const isWe=di>=5;
-      const isT=day.date===tod;
+      const isWe=di>=5, isT=day.date===tod;
       const unavail=availDates.find(a=>a.employee_id===emp.id&&a.date===day.date&&a.available===false);
       const onclick=canEdit()?`onclick="openShiftModal('${emp.id}','${emp.name}','${day.date}','${shift?.id||''}')"` :'';
-
+      let cls='grd-day-cell'+(isWe?' grd-wknd':'')+(isT?' grd-today':'');
+      html+=`<div class="${cls}" ${onclick}>`;
       if(unavail&&!shift){
-        html+=`<div class="esc-day unavail-day" ${onclick}><div class="esc-day-unavail-x">✕</div></div>`;
+        html+=`<div class="grd-chip grd-chip-off">✕</div>`;
       } else if(shift){
-        const hS=(shift.start_time||'10:00').slice(0,5);
-        const hE=(shift.end_time||'18:00').slice(0,5);
-        const h=calcH(shift.start_time||'10:00:00',shift.end_time||'18:00:00');
-        html+=`<div class="esc-day has-shift${isWe?' weekend':''}${isT?' today-col':''}" ${onclick}>
-          <div class="esc-day-time">${hS}–${hE}</div>
-          <div class="esc-day-hrs">${h.toFixed(0)}h</div>
-        </div>`;
-      } else {
-        html+=`<div class="esc-day empty${isWe?' weekend':''}${isT?' today-col':''}" ${onclick}>
-          <div class="esc-day-plus">${canEdit()?'+':''}</div>
-        </div>`;
+        const hS=(shift.start_time||'10:00').slice(0,5), hE=(shift.end_time||'18:00').slice(0,5);
+        html+=`<div class="grd-chip${isWe?' grd-chip-we':''}">${hS}<span class="grd-chip-sep">–</span>${hE}</div>`;
+      } else if(canEdit()){
+        html+=`<div class="grd-plus">+</div>`;
       }
+      html+=`</div>`;
     });
 
-    html+=`</div></div>`;
+    if(canEdit()){
+      html+=`<div class="grd-sum-cell">`;
+      if(eH>0){
+        html+=`<div class="grd-sum-h">${eH.toFixed(0)}h</div>`;
+        if((emp.rate_net||0)>1) html+=`<div class="grd-sum-cost">${eCost.toFixed(0)} zł</div>`;
+        else html+=`<div class="grd-sum-cost">${eCount} zm.</div>`;
+      } else html+=`<div class="grd-sum-h" style="opacity:.2">—</div>`;
+      html+=`</div>`;
+    }
+    html+=`</div>`;
   });
 
-  html+=`</div></div>`;
+  html+=`</div></div></div></div>`;
   mc.innerHTML=html;
 }
 
