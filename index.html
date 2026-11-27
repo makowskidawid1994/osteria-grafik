@@ -257,11 +257,7 @@ body:not(.view-home) #sub-topbar { display: flex; }
   padding-top: calc(env(safe-area-inset-top) + 54px);
 }
 /* Na home — floating nav */
-body.view-home .bnav-item { color: rgba(90,56,40,.45); }
-body.view-home .bnav-item svg { stroke: rgba(90,56,40,.45); }
-body.view-home .bnav-item.active { color: #8B1A2E; }
-body.view-home .bnav-item.active svg { stroke: #8B1A2E; }
-body.view-home .bnav-item.active .bnav-icon-wrap { background: rgba(139,26,46,.1); }
+/* (duplikat usunięty, patrz poniżej) */
 
 /* Na home — header ukryty, hw-wrap ma własny topbar */
 body.view-home .header {
@@ -284,11 +280,11 @@ body.view-home .bnav {
   background: rgba(26,8,4,.95);
   border: 1px solid rgba(255,255,255,.1);
 }
-body.view-home .bnav-item { color: rgba(255,255,255,.45); }
-body.view-home .bnav-item svg { stroke: rgba(255,255,255,.45); }
-body.view-home .bnav-item.active { color: #fff; }
+body.view-home .bnav-item { color: rgba(255,255,255,.4); }
+body.view-home .bnav-item svg { stroke: rgba(255,255,255,.4); }
+body.view-home .bnav-item.active { color: #fff; font-weight: 600; }
 body.view-home .bnav-item.active svg { stroke: #fff; }
-body.view-home .bnav-item.active .bnav-icon-wrap { background: rgba(180,50,35,.4); }
+body.view-home .bnav-item.active .bnav-icon-wrap { background: rgba(192,57,43,.55); border-radius: 14px; }
 
 .header-brand { font-size: 15px; font-weight: 800; flex: 1; letter-spacing: -.5px; color: var(--text); display: flex; align-items: center; gap: 6px; transition: color .2s; }
 .header-brand em { color: var(--text-3); font-style: normal; font-weight: 400; transition: color .2s; }
@@ -572,8 +568,8 @@ body.view-home .bnav-item.active .bnav-icon-wrap { background: rgba(180,50,35,.4
   font-variant-numeric: tabular-nums;
 }
 .hw-stat-lbl {
-  font-size: 10px; font-weight: 500; color: rgba(255,255,255,.4);
-  text-transform: uppercase; letter-spacing: .6px; text-align: center;
+  font-size: 10px; font-weight: 500; color: rgba(255,255,255,.5);
+  text-transform: uppercase; letter-spacing: .5px; text-align: center;
 }
 
 /* ── Blok zegarowy (ewidencja czasu) — tylko gdy na zmianie ── */
