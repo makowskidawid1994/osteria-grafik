@@ -7612,7 +7612,7 @@ function toggleAvatarMenu(e){
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', async () => {
     try {
-      const reg = await navigator.serviceWorker.register('/sw.js?v=176');
+      const reg = await navigator.serviceWorker.register('/sw.js?v=180');
       reg.update();
       reg.addEventListener('updatefound', () => {
         const newSW = reg.installing;
