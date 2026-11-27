@@ -413,13 +413,13 @@ body.view-home .bnav-item.active .bnav-icon-wrap { background: rgba(200,50,35,.2
   display: flex; flex-direction: column;
   align-items: stretch;
   justify-content: flex-start;
-  gap: 12px;
-  padding: 12px 16px calc(env(safe-area-inset-bottom) + 76px);
+  gap: 10px;
+  padding: 10px 16px calc(env(safe-area-inset-bottom) + 76px);
 }
 .hw-hero::before { content: none; }
 .hw-wrap::before { content: none; }
 
-/* Hero karta — jak Revolut balance card, zajmuje górę */
+/* Hero karta — kompaktowa, nie zajmuje połowy ekranu */
 .hw-center-block {
   display: flex; flex-direction: column; align-items: flex-start;
   justify-content: space-between;
@@ -427,9 +427,9 @@ body.view-home .bnav-item.active .bnav-icon-wrap { background: rgba(200,50,35,.2
   width: 100%;
   background: linear-gradient(145deg, rgba(255,255,255,.10) 0%, rgba(255,255,255,.05) 60%, rgba(255,255,255,.08) 100%);
   border: 1px solid rgba(255,255,255,.12);
-  border-radius: 24px;
-  padding: 22px 22px 20px;
-  flex: 1;
+  border-radius: 20px;
+  padding: 16px 18px 14px;
+  flex: 0 0 auto;
   backdrop-filter: none; -webkit-backdrop-filter: none;
   box-shadow: 0 4px 32px rgba(0,0,0,.3), inset 0 1px 0 rgba(255,255,255,.1);
   overflow: hidden;
@@ -451,10 +451,10 @@ body.view-home .bnav-item.active .bnav-icon-wrap { background: rgba(200,50,35,.2
   text-align: left;
 }
 .hw-center-value {
-  font-size: 80px; font-weight: 800; color: #fff;
-  letter-spacing: -5px; line-height: 1;
+  font-size: 52px; font-weight: 800; color: #fff;
+  letter-spacing: -3px; line-height: 1;
   font-variant-numeric: tabular-nums;
-  margin: 8px 0 0;
+  margin: 4px 0 0;
   text-align: left;
   text-shadow: 0 2px 20px rgba(0,0,0,.2);
   animation: countUp .5s cubic-bezier(.2,.8,.2,1) .1s both;
@@ -501,13 +501,13 @@ body.view-home .bnav-item.active .bnav-icon-wrap { background: rgba(200,50,35,.2
 .hw-qa-row { display: contents; }
 .hw-qa-item {
   display: flex; flex-direction: column; align-items: center;
-  justify-content: center; gap: 6px;
+  justify-content: center; gap: 5px;
   cursor: pointer; -webkit-tap-highlight-color: transparent;
   position: relative;
   background: linear-gradient(160deg, rgba(255,255,255,.07) 0%, rgba(255,255,255,.04) 100%);
   border: 1px solid rgba(255,255,255,.09);
-  border-radius: 20px;
-  padding: 14px 4px 12px;
+  border-radius: 14px;
+  padding: 10px 4px 9px;
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
   box-shadow: 0 2px 10px rgba(0,0,0,.15), inset 0 1px 0 rgba(255,255,255,.07);
@@ -532,13 +532,13 @@ body.view-home .bnav-item.active .bnav-icon-wrap { background: rgba(200,50,35,.2
 }
 /* Revolut-style: małe kółko tylko z ikoną, zero grubego bg */
 .hw-qa-circle {
-  width: 40px; height: 40px; border-radius: 50%;
+  width: 34px; height: 34px; border-radius: 50%;
   background: rgba(255,255,255,.08);
   border: none;
   display: flex; align-items: center; justify-content: center;
   flex-shrink: 0;
 }
-.hw-qa-circle svg { width: 20px; height: 20px; stroke-width: 1.6; stroke: rgba(255,255,255,.85); }
+.hw-qa-circle svg { width: 17px; height: 17px; stroke-width: 1.6; stroke: rgba(255,255,255,.85); }
 .hw-qa-circle::after { display: none; }
 .hw-qa-circle.accent-red { background: rgba(255,255,255,.08); }
 .hw-qa-label {
