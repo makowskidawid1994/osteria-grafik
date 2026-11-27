@@ -6290,9 +6290,7 @@ document.getElementById('auth-pass').addEventListener('keydown',e=>{if(e.key==='
       const nd=document.getElementById('nav-dash'); if(nd) nd.style.display='flex';
       const ne=document.getElementById('nav-emps'); if(ne) ne.style.display='none';
     }
-    currentView='home';
-    document.body.classList.add('view-home');
-    renderHome();
+    showView('home', false);
     // Odśwież token w tle
     saveSession();
   }
