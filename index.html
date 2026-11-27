@@ -410,9 +410,14 @@ body.view-home .bnav-item.active .bnav-icon-wrap { background: rgba(200,50,35,.2
   flex: 1;
   display: flex; flex-direction: column;
   align-items: stretch;
-  justify-content: space-between;
+  justify-content: flex-start;
   gap: 10px;
   padding: 10px 16px calc(env(safe-area-inset-bottom) + 72px);
+}
+.hw-bottom-group {
+  margin-top: auto;
+  display: flex; flex-direction: column;
+  gap: 10px;
 }
 .hw-hero::before {
   content: none;
