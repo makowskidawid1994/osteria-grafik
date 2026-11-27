@@ -406,14 +406,14 @@ body.view-home .bnav-item.active .bnav-icon-wrap { background: rgba(200,50,35,.2
 }
 .hw-role-pill { display: none; }
 
-/* Home — cały ekran podzielony: hero karta górna, kafelki dolne */
+/* Home — karta + kółka + stats bez pustej dziury */
 .hw-hero {
   position: relative; z-index: 1;
   flex: 1;
   display: flex; flex-direction: column;
   align-items: stretch;
-  justify-content: space-between;
-  gap: 10px;
+  justify-content: flex-start;
+  gap: 16px;
   padding: 10px 16px calc(env(safe-area-inset-bottom) + 76px);
 }
 .hw-hero::before { content: none; }
@@ -451,10 +451,10 @@ body.view-home .bnav-item.active .bnav-icon-wrap { background: rgba(200,50,35,.2
   text-align: left;
 }
 .hw-center-value {
-  font-size: 52px; font-weight: 800; color: #fff;
-  letter-spacing: -3px; line-height: 1;
+  font-size: 40px; font-weight: 800; color: #fff;
+  letter-spacing: -2px; line-height: 1;
   font-variant-numeric: tabular-nums;
-  margin: 4px 0 0;
+  margin: 2px 0 0;
   text-align: left;
   text-shadow: 0 2px 20px rgba(0,0,0,.2);
   animation: countUp .5s cubic-bezier(.2,.8,.2,1) .1s both;
@@ -470,10 +470,11 @@ body.view-home .bnav-item.active .bnav-icon-wrap { background: rgba(200,50,35,.2
   margin-top: 4px; text-align: left;
 }
 .hw-bottom-group {
-  display: flex; flex-direction: column; gap: 12px;
+  display: flex; flex-direction: column; gap: 16px;
   width: 100%;
   position: relative; z-index: 1;
   flex-shrink: 0;
+  margin-top: auto;
 }
 
 @keyframes fadeIn { to { opacity:1; } }
