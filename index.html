@@ -56,17 +56,17 @@ body {
   min-height: 100vh; font-size: 14px; line-height: 1.5;
   -webkit-font-smoothing: antialiased; overscroll-behavior-y: none;
 }
-/* ═══ TŁO — Revolut-style: głęboka ciemność z subtelnym bordo blaskiem ═══ */
+/* ═══ TŁO — Revolut-style: głęboka ciemność z bordo glow u góry ═══ */
 body {
-  background: #0F0A09 fixed;
+  background: #120305 fixed;
 }
 body::before {
   content: '';
   position: fixed; inset: 0; pointer-events: none; z-index: 0;
   background:
-    radial-gradient(ellipse 120% 65% at 50% 0%, rgba(200,45,25,.35) 0%, transparent 60%),
-    radial-gradient(ellipse 60% 40% at 80% 20%, rgba(180,30,15,.2) 0%, transparent 55%),
-    #0F0A09;
+    radial-gradient(ellipse 140% 70% at 50% -5%, rgba(210,50,25,.65) 0%, rgba(160,25,15,.3) 35%, transparent 65%),
+    radial-gradient(ellipse 80% 50% at 15% 10%, rgba(230,60,30,.2) 0%, transparent 50%),
+    radial-gradient(ellipse 60% 40% at 85% 15%, rgba(180,30,15,.15) 0%, transparent 50%);
 }
 
 /* Wrappery widoków — zawsze transparent */
@@ -404,65 +404,62 @@ body.view-home .bnav-item.active .bnav-icon-wrap { background: rgba(200,50,35,.2
 }
 .hw-role-pill { display: none; }
 
-/* Środek — jak Revolut, elementy u góry */
+/* Środek — floating content na tle gradientu, jak Revolut */
 .hw-hero {
   position: relative; z-index: 1;
   flex: 1;
   display: flex; flex-direction: column;
   align-items: stretch;
-  justify-content: flex-start;
-  gap: 10px;
-  padding: 10px 16px calc(env(safe-area-inset-bottom) + 76px);
-}
-.hw-hero::before {
-  content: none;
-}
-.hw-wrap::before {
-  content: none;
-}
-.hw-center-block {
-  display: flex; flex-direction: column; align-items: flex-start;
   justify-content: space-between;
+  gap: 0;
+  padding: 0 20px calc(env(safe-area-inset-bottom) + 80px);
+}
+.hw-hero::before { content: none; }
+.hw-wrap::before { content: none; }
+
+/* Środkowy blok — cyfra na środku ekranu, floating */
+.hw-center-block {
+  display: flex; flex-direction: column; align-items: center;
+  justify-content: center;
   position: relative; z-index: 1;
   width: 100%;
-  /* Hero karta — wyraźna bordo, ale nie pełna czerwień */
-  background: linear-gradient(145deg, rgba(210,55,35,.8) 0%, rgba(155,28,18,.9) 100%);
-  border: 1px solid rgba(255,120,80,.3);
-  border-radius: 24px;
-  padding: 22px 22px 20px;
+  background: none;
+  border: none;
+  border-radius: 0;
+  padding: 30px 0 20px;
   flex: 1;
   backdrop-filter: none; -webkit-backdrop-filter: none;
-  box-shadow: 0 6px 28px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.1);
-  overflow: hidden;
+  box-shadow: none;
+  overflow: visible;
   cursor: pointer;
-  transition: transform .15s cubic-bezier(.2,.8,.2,1);
 }
-.hw-center-block:active { transform: scale(.97); }
+.hw-center-block:active { opacity: .85; }
 .hw-center-block::before { content: none; }
-/* dekoracyjne bordo koło w tle */
-.hw-center-block::after {
-  content: '';
-  position: absolute; right: -20px; top: -20px;
-  width: 120px; height: 120px; border-radius: 50%;
-  background: radial-gradient(circle, rgba(220,70,45,.2) 0%, transparent 65%);
-  pointer-events: none;
-}
+.hw-center-block::after { content: none; }
 .hw-center-label {
-  font-size: 12px; font-weight: 500; color: rgba(255,255,255,.6);
-  letter-spacing: .2px; text-transform: none; margin-bottom: 8px;
+  font-size: 14px; font-weight: 500; color: rgba(255,255,255,.65);
+  letter-spacing: .2px; margin-bottom: 12px;
+  text-align: center;
 }
 .hw-center-value {
-  font-size: 80px; font-weight: 800; color: #fff;
-  letter-spacing: -5px; line-height: 1;
+  font-size: 88px; font-weight: 800; color: #fff;
+  letter-spacing: -6px; line-height: 1;
   font-variant-numeric: tabular-nums;
-  margin: 0 0 8px;
+  margin: 0 0 12px;
+  text-align: center;
+  text-shadow: 0 2px 40px rgba(255,255,255,.15);
 }
 .hw-center-sub {
-  font-size: 14px; font-weight: 500; color: rgba(255,255,255,.75);
+  font-size: 16px; font-weight: 500; color: rgba(255,255,255,.75);
   margin-top: 0; letter-spacing: -.1px;
+  text-align: center;
+}
+.hw-center-sub-small {
+  font-size: 12px; color: rgba(255,255,255,.45);
+  margin-top: 6px; text-align: center;
 }
 .hw-bottom-group {
-  display: flex; flex-direction: column; gap: 12px;
+  display: flex; flex-direction: column; gap: 14px;
   width: 100%;
   position: relative; z-index: 1;
 }
@@ -488,17 +485,17 @@ body.view-home .bnav-item.active .bnav-icon-wrap { background: rgba(200,50,35,.2
 .hw-qa-row { display: contents; }
 .hw-qa-item {
   display: flex; flex-direction: column; align-items: center;
-  justify-content: center; gap: 8px;
+  justify-content: center; gap: 7px;
   cursor: pointer; -webkit-tap-highlight-color: transparent;
   position: relative;
-  /* Revolut-style: ciemne, prawie przezroczyste z subtelnym bordo */
-  background: rgba(255,255,255,.07);
-  border: 1px solid rgba(255,255,255,.1);
-  border-radius: 20px;
-  padding: 16px 8px 14px;
+  /* Okrągłe — jak IMG_6934 */
+  background: rgba(255,255,255,.08);
+  border: 1px solid rgba(255,255,255,.13);
+  border-radius: 22px;
+  padding: 14px 6px 12px;
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
-  box-shadow: 0 2px 12px rgba(0,0,0,.3);
+  box-shadow: 0 4px 16px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.1);
   overflow: hidden;
   isolation: isolate;
   transition: transform .15s cubic-bezier(.2,.8,.2,1), background .15s;
@@ -526,12 +523,12 @@ body.view-home .bnav-item.active .bnav-icon-wrap { background: rgba(200,50,35,.2
   letter-spacing: .01px;
 }
 
-/* ── Live stats card — Revolut-style: ciemna, przezroczysta chmurka ── */
+/* ── Live stats card — glassmorphism ── */
 .hw-stats-card {
   border-radius: 20px;
-  background: rgba(255,255,255,.07);
-  border: 1px solid rgba(255,255,255,.1);
-  padding: 14px 16px;
+  background: rgba(255,255,255,.08);
+  border: 1px solid rgba(255,255,255,.12);
+  padding: 16px 20px;
   display: flex; gap: 0;
   opacity: 1;
   backdrop-filter: none;
@@ -539,7 +536,7 @@ body.view-home .bnav-item.active .bnav-icon-wrap { background: rgba(200,50,35,.2
   position: relative; z-index: 1;
   overflow: hidden;
   cursor: pointer;
-  box-shadow: 0 2px 12px rgba(0,0,0,.2);
+  box-shadow: 0 4px 20px rgba(0,0,0,.3), inset 0 1px 0 rgba(255,255,255,.1);
 }
 .hw-stats-card::before { content: none; }
 .hw-stat {
